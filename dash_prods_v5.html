@@ -16,46 +16,47 @@
             font-family: 'Inter', sans-serif;
         }
         
-        /* ****** ALTERAÇÃO DE TEMA (Verde SC.GOV para Azul CIASC) ****** */
-
-        /* Cores da Marca CIASC */
-        :root {
-            --ciasc-main-blue: #0054A6; /* Azul principal (links, destaques) */
-            --ciasc-dark-blue: #002C5A;  /* Azul escuro (rodapé) */
-        }
+        /* Tema Azul CIASC */
 
         /* Estilo para a aba ativa */
         .tab-active {
-            border-bottom-color: var(--ciasc-main-blue);
-            color: var(--ciasc-main-blue);
+            border-bottom-color: #1D4ED8; /* blue-700 (Cor do CIASC) */
+            color: #1D4ED8;
             font-weight: 600;
         }
         /* Estilo para o item de navegação ativo (na segunda aba) */
         .nav-item-active {
             background-color: #EFF6FF; /* blue-50 */
-            color: var(--ciasc-main-blue);
+            color: #1D4ED8; /* blue-700 */
             font-weight: 600;
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
 
-    <!-- NOVO: Cabeçalho Padrão CIASC (Simplificado) -->
-    <header id="page-header" class="bg-white shadow-md border-b border-gray-200 sticky top-0 z-10">
-        <div class="container mx-auto p-4 flex justify-between items-center">
-            <!-- Logo CIASC (Texto) -->
-            <a href="#" class="text-3xl font-bold" style="color: var(--ciasc-main-blue);">
-                CIASC
-            </a>
-            <!-- Logo GOV SC (Texto) -->
-            <div class="text-right">
-                <span class="text-xs font-semibold text-gray-500 tracking-wider">GOVERNO DE SANTA CATARINA</span>
-                <p class="text-sm font-medium text-gray-700">Secretaria da Ciência, Tecnologia e Inovação</p>
+    <!-- NOVO Header - Simulação CIASC -->
+    <header class="w-full bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
+            
+            <!-- ****** LOGO ATUALIZADA ****** -->
+            <!-- Logo CIASC -->
+            <div>
+                <img src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" 
+                     alt="Logo CIASC" 
+                     class="h-10 w-auto"> <!-- Altura ajustada -->
             </div>
+            
+            <!-- Nav Simulado -->
+            <nav class="hidden md:flex space-x-6 text-gray-700 font-medium">
+                <a href="#" class="hover:text-blue-700">A Empresa</a>
+                <a href="#" class="hover:text-blue-700">Soluções</a>
+                <a href="#" class="hover:text-blue-700">Clientes</a>
+                <a href="#" class="hover:text-blue-700">Transparência</a>
+            </nav>
         </div>
     </header>
 
-    <!-- Conteúdo Principal (Dashboard) -->
+    <!-- Conteúdo Principal do Dashboard (envolvido por 'flex-grow') -->
     <div class="container mx-auto p-4 md:p-8 flex-grow">
         
         <!-- Cabeçalho do Dashboard -->
@@ -149,49 +150,27 @@
         </main>
     </div>
 
-    <!-- NOVO: Rodapé Padrão CIASC -->
-    <footer style="background-color: var(--ciasc-dark-blue);">
-        <div class="container mx-auto px-6 py-10 text-gray-300">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Coluna 1: Logo e Endereço -->
-                <div>
-                    <h3 class="text-2xl font-bold text-white mb-4">CIASC</h3>
-                    <p class="text-sm leading-relaxed">
-                        Centro de Informática e Automação do Estado de Santa Catarina S.A.
-                    </p>
-                    <p class="text-sm mt-4">
-                        Rua Murilo Andriani, 327<br>
-                        Itacorubi - Florianópolis, SC<br>
-                        CEP 88034-902
-                    </p>
-                    <a href="https://www.ciasc.sc.gov.br" target="_blank" rel="noopener noreferrer" class="text-sm mt-2 inline-block text-blue-300 hover:text-blue-100">
-                        www.ciasc.sc.gov.br
-                    </a>
+    <!-- NOVO Footer - Simulação CIASC -->
+    <footer class="w-full bg-gray-800 text-gray-300 mt-12 py-10">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                
+                <!-- Coluna 1: Endereço (do PDF) -->
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold text-lg text-white mb-3">CIASC</h4>
+                    <p class="text-sm">Centro de Informática e Automação do Estado de Santa Catarina S.A.</p>
+                    <p class="text-sm mt-3">Rua Murilo Andriani, 327 - Bairro Itacorubi</p>
+                    <p class="text-sm">Florianópolis, SC - CEP 88034-902</p>
+                    <p class="text-sm mt-3"><a href="https://www.ciasc.sc.gov.br" target="_blank" rel="noopener" class="hover:underline text-blue-400">www.ciasc.sc.gov.br</a></p>
                 </div>
                 
-                <!-- Coluna 2: Links Rápidos (Simulado) -->
-                <div>
-                    <h4 class="text-lg font-semibold text-white mb-4">Links Úteis</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" rel="noopener noreferrer" class="hover:text-white">Portal da Transparência</a></li>
-                        <li><a href="https://www.sc.gov.br/" target="_blank" rel="noopener noreferrer" class="hover:text-white">Governo de SC</a></li>
-                        <li><a href="#" class="hover:text-white">Produtos e Serviços</a></li>
-                        <li><a href="#" class="hover:text-white">Contato</a></li>
-                    </ul>
-                </div>
-
-                <!-- Coluna 3: Logo GOV (Simulado) -->
-                <div>
-                    <h4 class="text-lg font-semibold text-white mb-4">Governo de SC</h4>
-                    <span class="text-xs font-semibold text-gray-400 tracking-wider">GOVERNO DE SANTA CATARINA</span>
+                <!-- Coluna 2: Copyright (Solicitado pelo usuário) -->
+                <div class="text-center md:text-right">
+                    <h4 class="font-bold text-lg text-white mb-3">AIT</h4>
+                    <p class="text-sm">Assessoria de Inovação e Tecnologia</p>
+                    <p class="text-sm mt-8">Todos os Direitos reservados - AIT (Assessoria de Inovação e Tecnologia) - CIASC 2025</p>
                 </div>
             </div>
-        </div>
-        <!-- Barra de Copyright -->
-        <div class="bg-black text-gray-500 text-center p-4">
-            <p class="text-sm">
-                &copy; Todos os Direitos reservados - AIT (Assessoria de Inovação e Tecnologia) - CIASC 2025
-            </p>
         </div>
     </footer>
 
@@ -509,13 +488,12 @@
         function initCharts() {
             
             // --- INÍCIO: Lógica de Destaque CIASC (Azul CIASC) ---
-            // ****** ALTERAÇÃO DE TEMA (Verde para Azul CIASC) ******
-            const highlightColor = 'rgba(0, 84, 166, 0.9)'; // #0054A6
+            const highlightColor = 'rgba(29, 78, 216, 0.9)'; // blue-700
             const defaultColor = 'rgba(156, 163, 175, 0.7)'; // gray-400
             
             // Cria arrays dinâmicos de estilo baseados no ID "ciasc"
             const backgroundColors = prodsData.map(prod => (prod.id === 'ciasc' ? highlightColor : defaultColor));
-            const borderColors = prodsData.map(prod => (prod.id === 'ciasc' ? 'rgba(0, 44, 90, 1)' : defaultColor)); // #002C5A
+            const borderColors = prodsData.map(prod => (prod.id === 'ciasc' ? 'rgba(30, 58, 138, 1)' : defaultColor)); // blue-800
             const borderWidths = prodsData.map(prod => (prod.id === 'ciasc' ? 2 : 0));
             
             // Labels agora incluem (2023) se o dado for daquele ano
@@ -607,8 +585,7 @@
                         label: 'Distribuição de Gênero (Média)',
                         data: [totalMale, totalFemale],
                         backgroundColor: [
-                            // ****** ALTERAÇÃO DE TEMA (Verde para Azul CIASC) ******
-                            'rgba(0, 84, 166, 0.8)',   // Azul CIASC
+                            'rgba(29, 78, 216, 0.7)',   // blue-700
                             'rgba(234, 88, 12, 0.7)'   // orange-600 (Mantido para contraste)
                         ],
                         hoverOffset: 4
@@ -667,11 +644,10 @@
             // HTML para Regimento Interno
             let regimentoHtml = '';
             if (prod.regimento && prod.regimento.startsWith('http')) {
-                // ****** ALTERAÇÃO DE TEMA (Verde para Azul CIASC) ******
-                // Usando Tailwind 'blue' para simplicidade
+                // Tema Azul CIASC
                 regimentoHtml = `
                     <a href="${prod.regimento}" target="_blank" rel="noopener noreferrer"
-                       class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+                       class="inline-block bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm">
                         Acessar Regimento Interno
                     </a>
                 `;
