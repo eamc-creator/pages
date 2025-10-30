@@ -3,33 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Análise de Virtualização</title>
+    <title>CIASC | Dashboard de Análise de Virtualização</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
-        /* --- GERAL --- */
+        /* --- GERAL (Tema CIASC) --- */
+        :root {
+            --ciasc-blue: #004b8d;
+            --ciasc-green: #009a44;
+            --ciasc-text-dark: #212529;
+            --ciasc-text-muted: #6c757d;
+            --ciasc-bg-light: #f8f9fa;
+            --ciasc-bg-white: #ffffff;
+            --ciasc-border-color: #dee2e6;
+        }
+
+        html {
+            height: 100%;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
-            background-color: #121212;
-            color: #e0e0e0;
+            flex-direction: column; /* Layout vertical: Header, Main, Footer */
+            background-color: var(--ciasc-bg-light);
+            color: var(--ciasc-text-dark);
             height: 100vh;
             overflow: hidden;
+        }
+
+        /* --- CABEÇALHO (Header) --- */
+        .header {
+            width: 100%;
+            background-color: var(--ciasc-bg-white);
+            padding: 10px 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            border-bottom: 3px solid var(--ciasc-blue);
+            box-sizing: border-box; /* Garante que o padding não estoure a largura */
+        }
+        .header img {
+            height: 45px;
+            margin-right: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--ciasc-blue);
+            font-weight: 600;
+        }
+
+        /* --- CONTAINER PRINCIPAL --- */
+        .main-container {
+            display: flex;
+            flex-grow: 1; /* Ocupa o espaço entre header e footer */
+            overflow: hidden; /* Controla o scroll */
         }
 
         /* --- SIDEBAR (NAVEGAÇÃO) --- */
         .sidebar {
             width: 240px;
-            background-color: #1e1e1e;
-            padding: 20px;
             flex-shrink: 0;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            background-color: var(--ciasc-blue);
+            color: var(--ciasc-bg-white);
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             z-index: 10;
+            overflow-y: auto;
         }
         .sidebar-header {
             text-align: center;
             margin-bottom: 30px;
+        }
+        .sidebar-header img {
+            height: 40px;
+            margin-bottom: 10px;
         }
         .sidebar-header h2 {
             margin: 0;
@@ -39,7 +92,7 @@
         .sidebar-header p {
             margin: 0;
             font-size: 0.8rem;
-            color: #00b8d4; /* Cor de destaque */
+            color: #b0d8ff;
         }
         .nav-menu {
             list-style: none;
@@ -53,18 +106,17 @@
             display: block;
             padding: 12px 15px;
             text-decoration: none;
-            color: #b0b0b0;
+            color: #ffffff;
             border-radius: 6px;
             transition: background-color 0.3s, color 0.3s;
             font-weight: 500;
         }
         .nav-menu a:hover {
-            background-color: #333;
-            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.1);
         }
         .nav-menu a.active {
-            background-color: #00b8d4;
-            color: #121212;
+            background-color: var(--ciasc-green);
+            color: #ffffff;
             font-weight: 700;
         }
 
@@ -73,19 +125,19 @@
             flex-grow: 1;
             padding: 30px;
             overflow-y: auto;
-            background-color: #181818;
+            background-color: var(--ciasc-bg-light);
         }
 
         .page {
-            display: none; /* Oculta todas as páginas por padrão */
+            display: none;
         }
         .page.active {
-            display: block; /* Mostra apenas a página ativa */
+            display: block;
         }
 
         h1 {
-            color: #ffffff;
-            border-bottom: 2px solid #00b8d4;
+            color: var(--ciasc-blue);
+            border-bottom: 2px solid var(--ciasc-green);
             padding-bottom: 10px;
             margin-top: 0;
         }
@@ -96,62 +148,64 @@
             gap: 20px;
             margin-top: 20px;
         }
-
         .grid-col-4 {
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         }
-        
         .grid-col-2 {
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
 
         .card {
-            background-color: #1e1e1e;
+            background-color: var(--ciasc-bg-white);
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--ciasc-border-color);
         }
         .card h3 {
             margin-top: 0;
-            color: #00b8d4;
-            border-bottom: 1px solid #444;
+            color: var(--ciasc-blue);
+            border-bottom: 1px solid var(--ciasc-border-color);
             padding-bottom: 8px;
         }
         .card p {
             line-height: 1.6;
+            color: var(--ciasc-text-dark);
         }
         .card ul {
             padding-left: 20px;
+        }
+        .card a {
+            color: var(--ciasc-blue);
+            font-weight: 600;
         }
 
         /* Card de KPI (Sumário) */
         .kpi-card {
             text-align: center;
+            border-top: 4px solid var(--ciasc-blue);
         }
         .kpi-card h4 {
             margin: 0 0 10px 0;
             font-size: 0.9rem;
-            color: #b0b0b0;
+            color: var(--ciasc-text-muted);
             text-transform: uppercase;
         }
         .kpi-card .kpi-value {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--ciasc-text-dark);
         }
         .kpi-card .kpi-subtext {
             font-size: 0.8rem;
-            color: #888;
+            color: var(--ciasc-text-muted);
         }
         
-        /* Placeholder de Gráfico */
+        /* Container do Gráfico */
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
-            display: flex; /* Garante que o canvas se centralize */
-            justify-content: center;
-            align-items: center;
         }
         
         /* Tabela Comparativa */
@@ -164,27 +218,27 @@
             margin-top: 20px;
         }
         .comparison-table th, .comparison-table td {
-            border: 1px solid #444;
+            border: 1px solid var(--ciasc-border-color);
             padding: 12px 15px;
             text-align: left;
         }
         .comparison-table th {
-            background-color: #333;
-            color: #00b8d4;
+            background-color: var(--ciasc-blue);
+            color: #ffffff;
         }
         .comparison-table tr:nth-child(even) {
-            background-color: #2a2a2a;
+            background-color: var(--ciasc-bg-light);
         }
         .comparison-table tr:hover {
-            background-color: #383838;
+            background-color: #e9ecef;
         }
         .comparison-table td:first-child {
             font-weight: 600;
         }
-        .check { color: #4caf50; font-weight: 700; } /* Verde */
-        .partial { color: #ffeb3b; font-weight: 700; } /* Amarelo */
-        .cross { color: #f44336; font-weight: 700; } /* Vermelho */
-        .money { color: #ff9800; font-weight: 700; } /* Laranja */
+        .check { color: #28a745; font-weight: 700; } /* Verde */
+        .partial { color: #fd7e14; font-weight: 700; } /* Laranja */
+        .cross { color: #dc3545; font-weight: 700; } /* Vermelho */
+        .money { color: var(--ciasc-blue); font-weight: 700; }
 
         /* Diagrama de Posicionamento */
         .diagrama-posicionamento {
@@ -195,14 +249,14 @@
         .diagrama-bloco {
             flex: 1;
             padding: 15px;
-            border: 2px solid #555;
+            border: 2px solid var(--ciasc-border-color);
             border-radius: 8px;
             text-align: center;
         }
-        .diagrama-bloco h4 { margin: 0 0 10px 0; color: #fff; }
+        .diagrama-bloco h4 { margin: 0 0 10px 0; color: var(--ciasc-text-dark); }
         .diagrama-bloco p { margin: 0; font-size: 0.9rem; }
-        .bloco-premium { border-color: #00b8d4; }
-        .bloco-standard { border-color: #888; }
+        .bloco-premium { border-color: var(--ciasc-blue); }
+        .bloco-standard { border-color: var(--ciasc-green); }
         
         /* Roadmap */
         .roadmap-list { list-style: none; padding-left: 0; }
@@ -210,12 +264,12 @@
             position: relative;
             padding: 10px 10px 10px 40px;
             margin-bottom: 15px;
-            background: #2a2a2a;
+            background: var(--ciasc-bg-light);
             border-radius: 6px;
-            border-left: 4px solid #00b8d4;
+            border-left: 4px solid var(--ciasc-blue);
         }
         .roadmap-list li strong {
-            color: #fff;
+            color: var(--ciasc-text-dark);
             display: block;
             font-size: 1.1rem;
         }
@@ -226,300 +280,364 @@
             top: 50%;
             transform: translateY(-50%);
             font-weight: 700;
-            color: #00b8d4;
+            color: var(--ciasc-blue);
             font-size: 1.2rem;
+        }
+
+        /* --- RODAPÉ (Footer) --- */
+        .footer {
+            width: 100%;
+            background-color: var(--ciasc-bg-white);
+            z-index: 100;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            border-top: 1px solid var(--ciasc-border-color);
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .footer-logo img {
+            height: 35px;
+        }
+        .footer-info {
+            font-size: 0.9rem;
+            color: var(--ciasc-text-muted);
+            text-align: right;
+        }
+        .footer-info p {
+            margin: 5px 0;
+        }
+        .footer-bottom-bar {
+            background-color: var(--ciasc-blue);
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 30px;
+        }
+        .footer-bottom-bar p {
+            margin: 0;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
         
     </style>
 </head>
 <body>
 
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <h2>Análise de Virtualização</h2>
-            <p>Assessoria Técnica (ATI)</p>
-        </div>
-        <ul class="nav-menu">
-            <li><a href="#" class="nav-link active" onclick="showPage('page-sumario', this)">Sumário Executivo</a></li>
-            <li><a href="#" class="nav-link" onclick="showPage('page-tecnica', this)">Análise Técnica</a></li>
-            <li><a href="#" class="nav-link" onclick="showPage('page-custo', this)">Análise de Custo/Mercado</a></li>
-            <li><a href="#" class="nav-link" onclick="showPage('page-roadmap', this)">Recomendações</a></li>
-        </ul>
-    </nav>
+    <header class="header">
+        <img src="https://ciasc.sc.gov.br/wp-content/themes/ciasc-novo/img/logo.svg" alt="Logo CIASC">
+        <h1>Dashboard de Análise de Virtualização</h1>
+    </header>
 
-    <main class="content">
+    <div class="main-container">
 
-        <div id="page-sumario" class="page active">
-            <h1>Sumário Executivo</h1>
-            <p>Visão geral da análise, motivações e principais conclusões para a tomada de decisão.</p>
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://ciasc.sc.gov.br/wp-content/themes/ciasc-novo/img/logo_simples_branca.svg" alt="Logo CIASC Branca">
+                <h2>Análise de Virtualização</h2>
+                <p>Assessoria de Inovação (ATI)</p>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link active" onclick="showPage('page-sumario', this)">Sumário Executivo</a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('page-tecnica', this)">Análise Técnica</a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('page-custo', this)">Análise de Custo/Mercado</a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('page-roadmap', this)">Recomendações</a></li>
+            </ul>
+        </nav>
 
-            <div class="grid-container grid-col-4">
-                <div class="card kpi-card">
-                    <h4>Gatilho da Análise</h4>
-                    <div class="kpi-value">Broadcom + VMware</div>
-                    <p class="kpi-subtext">Reposição estratégica do mercado</p>
+        <main class="content">
+
+            <div id="page-sumario" class="page active">
+                <h1>Sumário Executivo</h1>
+                <p>Visão geral da análise, motivações e principais conclusões para a tomada de decisão.</p>
+
+                <div class="grid-container grid-col-4">
+                    <div class="card kpi-card">
+                        <h4>Gatilho da Análise</h4>
+                        <div class="kpi-value">Broadcom + VMware</div>
+                        <p class="kpi-subtext">Reposição estratégica do mercado</p>
+                    </div>
+                    <div class="card kpi-card">
+                        <h4>Foco Principal</h4>
+                        <div class="kpi-value">Mitigação de Risco</div>
+                        <p class="kpi-subtext">Redução de Vendor Lock-in</p>
+                    </div>
+                    <div class="card kpi-card">
+                        <h4>Soluções Analisadas</h4>
+                        <div class="kpi-value">5+</div>
+                        <p class="kpi-subtext">VPS e Hiperconvergência</p>
+                    </div>
+                    <div class="card kpi-card">
+                        <h4>Recomendação ATI</h4>
+                        <div class="kpi-value">Diversificar</div>
+                        <p class="kpi-subtext">Desenvolver Know-how em Alternativas</p>
+                    </div>
                 </div>
-                <div class="card kpi-card">
-                    <h4>Foco Principal</h4>
-                    <div class="kpi-value">Mitigação de Risco</div>
-                    <p class="kpi-subtext">Redução de Vendor Lock-in</p>
-                </div>
-                <div class="card kpi-card">
-                    <h4>Soluções Analisadas</h4>
-                    <div class="kpi-value">5+</div>
-                    <p class="kpi-subtext">VPS e Hiperconvergência</p>
-                </div>
-                <div class="card kpi-card">
-                    <h4>Recomendação ATI</h4>
-                    <div class="kpi-value">Diversificar</div>
-                    <p class="kpi-subtext">Desenvolver Know-how em Alternativas</p>
+
+                <div class="grid-container grid-col-2" style="margin-top: 20px;">
+                    <div class="card">
+                        <h3>Contexto e Recomendação</h3>
+                        <p>A recente aquisição da VMware pela Broadcom introduziu incertezas significativas (custo, licenciamento, suporte) no mercado.</p>
+                        <p>Esta assessoria realizou um levantamento técnico de alternativas viáveis. <strong>A recomendação não é uma substituição imediata, mas sim a homologação de uma plataforma alternativa</strong> para:</p>
+                        <ul>
+                            <li>Atuar como plano de Recuperação de Desastres (DR).</li>
+                            <li>Possibilitar a criação de um portfólio de serviços diversificado.</li>
+                            <li>Reduzir o risco de dependência de um único fornecedor.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Proposta de Posicionamento de Serviço</h3>
+                        <p>Sugerimos um modelo de oferta em duas camadas:</p>
+                        <div class="diagrama-posicionamento" style="margin-top: 20px;">
+                            <div class="diagrama-bloco bloco-premium">
+                                <h4>Tier "Premium"</h4>
+                                <p>Plataforma atual (Ex: VMware)</p>
+                                <p><strong>Foco:</strong> Cargas críticas, alta performance, SLAs rigorosos.</p>
+                            </div>
+                            <div class="diagrama-bloco bloco-standard">
+                                <h4>Tier "Standard"</h4>
+                                <p>Plataforma Alternativa (Ex: Proxmox)</p>
+                                <p><strong>Foco:</strong> VPS de menor custo, ambientes de Dev/Test, DR.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid-container grid-col-2" style="margin-top: 20px;">
+            <div id="page-tecnica" class="page">
+                <h1>Análise Técnica Comparativa</h1>
+                <p>Comparativo de funcionalidades-chave entre as principais soluções. (Dados da planilha anexa)</p>
+
                 <div class="card">
-                    <h3>Contexto e Recomendação</h3>
-                    <p>A recente aquisição da VMware pela Broadcom introduziu incertezas significativas (custo, licenciamento, suporte) no mercado.</p>
-                    <p>Esta assessoria realizou um levantamento técnico de alternativas viáveis. <strong>A recomendação não é uma substituição imediata, mas sim a homologação de uma plataforma alternativa</strong> para:</p>
-                    <ul>
-                        <li>Atuar como plano de Recuperação de Desastres (DR).</li>
-                        <li>Possibilitar a criação de um portfólio de serviços diversificado.</li>
-                        <li>Reduzir o risco de dependência de um único fornecedor.</li>
-                    </ul>
+                    <h3>Matriz de Funcionalidades (Simplificada)</h3>
+                    <div class="table-wrapper">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Funcionalidade</th>
+                                    <th>VMware vSphere</th>
+                                    <th>Proxmox VE</th>
+                                    <th>Nutanix AHV</th>
+                                    <th>Hyper-V</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Hipervisor</td>
+                                    <td>ESXi (Proprietário)</td>
+                                    <td>KVM (Open Source)</td>
+                                    <td>KVM (Customizado)</td>
+                                    <td>Hyper-V (Proprietário)</td>
+                                </tr>
+                                <tr>
+                                    <td>Alta Disponibilidade (HA)</td>
+                                    <td class="check">✔️ Nativo</td>
+                                    <td class="check">✔️ Nativo (Cluster)</td>
+                                    <td class="check">✔️ Nativo</td>
+                                    <td class="check">✔️ Nativo (Cluster)</td>
+                                </tr>
+                                <tr>
+                                    <td>Migração "Live" (vMotion)</td>
+                                    <td class="check">✔️ Nativo</td>
+                                    <td class="check">✔️ Nativo</td>
+                                    <td class="check">✔️ Nativo</td>
+                                    <td class="check">✔️ Nativo</td>
+                                </tr>
+                                <tr>
+                                    <td>Storage Nativo (SDS)</td>
+                                    <td class="check">vSAN (Licença Extra)</td>
+                                    <td class="check">Ceph (Integrado)</td>
+                                    <td class="check">ADFS (Nativo)</td>
+                                    <td class="partial">Storage Spaces Direct</td>
+                                </tr>
+                                <tr>
+                                    <td>Gerenciamento Centralizado</td>
+                                    <td class="check">vCenter Server</td>
+                                    <td class="check">Web UI (Integrada)</td>
+                                    <td class="check">Prism Central</td>
+                                    <td class="partial">SCVMM (Extra)</td>
+                                </tr>
+                                <tr>
+                                    <td>Modelo de Licença</td>
+                                    <td class="money">Proprietário (Subscrição)</td>
+                                    <td class="check">Open Source (Suporte Opcional)</td>
+                                    <td class="money">Proprietário (Subscrição)</td>
+                                    <td class="partial">Incluso no Windows Server</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="grid-container grid-col-2" style="margin-top: 20px;">
+                    <div class="card">
+                        <h3>Scorecard de Solução (Radar)</h3>
+                        <div class="chart-container">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Curva de Aprendizado e Suporte</h3>
+                        <div class="chart-container">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-custo" class="page">
+                <h1>Análise de Custo e Mercado</h1>
+                <p>Análise do TCO (Custo Total de Propriedade) e posicionamento estratégico de cada solução.</p>
+
+                <div class="grid-container grid-col-2">
+                    <div class="card">
+                        <h3>TCO Estimado (3 Anos) - Cenário VPS</h3>
+                        <div class="chart-container">
+                            <canvas id="tcoChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Posicionamento de Mercado (HCI)</h3>
+                        <div class="chart-container">
+                            <canvas id="scatterChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 20px;">
+                    <h3>Análise SWOT (Exemplo: Proxmox VE)</h3>
+                    <div class="table-wrapper">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50%;">Forças (Strengths)</th>
+                                    <th style="width: 50%;">Fraquezas (Weaknesses)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>• Custo zero de licença (Open Source).</td>
+                                    <td>• Curva de aprendizado maior em recursos avançados (Ceph).</td>
+                                </tr>
+                                <tr>
+                                    <td>• Integração nativa de KVM e LXC.</td>
+                                    <td>• Suporte empresarial depende de parceiros ou da subscrição paga.</td>
+                                </tr>
+                                <tr>
+                                    <td>• SDS (Ceph) e Backup (PBS) integrados.</td>
+                                    <td>• Menor ecossistema de integrações de hardware (HCL) que o VMware.</td>
+                                </tr>
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th>Oportunidades (Opportunities)</th>
+                                    <th>Ameaças (Threats)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>• Captura de clientes VMware insatisfeitos.</td>
+                                    <td>• Forte domínio da VMware em ambientes corporativos críticos.</td>
+                                </tr>
+                                <tr>
+                                    <td>• Ideal para a oferta "VPS Standard" e DR.</td>
+                                    <td>• Concorrência de outras soluções Open Source (OpenStack).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-roadmap" class="page">
+                <h1>Recomendações e Próximos Passos</h1>
+                <p>Plano de ação sugerido pela Assessoria de Inovação e Tecnologia.</p>
+
+                <div class="grid-container grid-col-2">
+                    <div class="card">
+                        <h3>Cenários Recomendados</h3>
+                        <ul>
+                            <li>
+                                <strong>Recuperação de Desastres (DR):</strong>
+                                <p>Homologar a Solução B (Ex: Proxmox) como plataforma de DR, iniciando testes de replicação e recuperação do ambiente crítico.</p>
+                            </li>
+                            <li>
+                                <strong>Nova Oferta (VPS Standard):</strong>
+                                <p>Iniciar Prova de Conceito (PoC) da Solução B para validar a performance, segurança e automação da oferta de VPS "Standard".</p>
+                            </li>
+                            <li>
+                                <strong>Hiperconvergência (HCI):</strong>
+                                <p>Manter monitoramento das soluções (Ex: Nutanix, Hyper-V S2D) e reavaliar o TCO contra a solução atual no próximo ciclo de renovação de hardware.</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>Links e Documentação</h3>
+                        <p>Acesse os documentos originais para análise detalhada:</p>
+                        <ul>
+                            <li>
+                                <a href="https://docs.google.com/document/d/18kwg5Nj2cR7oPl4Mvu4BzP6mV2ZZ4-wFdmnm8lXMdrk/edit?tab=t.0" target="_blank">Documento de Análise Completa (Google Docs)</a>
+                            </li>
+                            <li>
+                                <a href="https://docs.google.com/spreadsheets/d/1-E_7kOxYGwHOQw14l0N6CPeovV1yOXZt/edit?gid=609538798#gid=609538798" target="_blank">Planilha Comparativa (Google Sheets)</a>
+                            </li>
+                        </ul>
+                        <hr style="border-color: #ddd; margin-top: 20px;">
+                        <p><strong>Contato:</strong> Assessoria de Inovação e Tecnologia (AIT)</p>
+                    </div>
                 </div>
                 
-                <div class="card">
-                    <h3>Proposta de Posicionamento de Serviço</h3>
-                    <p>Sugerimos um modelo de oferta em duas camadas:</p>
-                    <div class="diagrama-posicionamento" style="margin-top: 20px;">
-                        <div class="diagrama-bloco bloco-premium">
-                            <h4>Tier "Premium"</h4>
-                            <p>Plataforma atual (Ex: VMware)</p>
-                            <p><strong>Foco:</strong> Cargas críticas, alta performance, SLAs rigorosos.</p>
-                        </div>
-                        <div class="diagrama-bloco bloco-standard">
-                            <h4>Tier "Standard"</h4>
-                            <p>Plataforma Alternativa (Ex: Proxmox)</p>
-                            <p><strong>Foco:</strong> VPS de menor custo, ambientes de Dev/Test, DR.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-tecnica" class="page">
-            <h1>Análise Técnica Comparativa</h1>
-            <p>Comparativo de funcionalidades-chave entre as principais soluções. (Dados da planilha anexa)</p>
-
-            <div class="card">
-                <h3>Matriz de Funcionalidades (Simplificada)</h3>
-                <div class="table-wrapper">
-                    <table class="comparison-table">
-                        <thead>
-                            <tr>
-                                <th>Funcionalidade</th>
-                                <th>VMware vSphere</th>
-                                <th>Proxmox VE</th>
-                                <th>Nutanix AHV</th>
-                                <th>Hyper-V</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Hipervisor</td>
-                                <td>ESXi (Proprietário)</td>
-                                <td>KVM (Open Source)</td>
-                                <td>KVM (Customizado)</td>
-                                <td>Hyper-V (Proprietário)</td>
-                            </tr>
-                            <tr>
-                                <td>Alta Disponibilidade (HA)</td>
-                                <td class="check">✔️ Nativo</td>
-                                <td class="check">✔️ Nativo (Cluster)</td>
-                                <td class="check">✔️ Nativo</td>
-                                <td class="check">✔️ Nativo (Cluster)</td>
-                            </tr>
-                            <tr>
-                                <td>Migração "Live" (vMotion)</td>
-                                <td class="check">✔️ Nativo</td>
-                                <td class="check">✔️ Nativo</td>
-                                <td class="check">✔️ Nativo</td>
-                                <td class="check">✔️ Nativo</td>
-                            </tr>
-                            <tr>
-                                <td>Storage Nativo (SDS)</td>
-                                <td class="check">vSAN (Licença Extra)</td>
-                                <td class="check">Ceph (Integrado)</td>
-                                <td class="check">ADFS (Nativo)</td>
-                                <td class="partial">Storage Spaces Direct</td>
-                            </tr>
-                            <tr>
-                                <td>Gerenciamento Centralizado</td>
-                                <td class="check">vCenter Server</td>
-                                <td class="check">Web UI (Integrada)</td>
-                                <td class="check">Prism Central</td>
-                                <td class="partial">SCVMM (Extra)</td>
-                            </tr>
-                            <tr>
-                                <td>Modelo de Licença</td>
-                                <td class="money">Proprietário (Subscrição)</td>
-                                <td class="check">Open Source (Suporte Opcional)</td>
-                                <td class="money">Proprietário (Subscrição)</td>
-                                <td class="partial">Incluso no Windows Server</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="grid-container grid-col-2" style="margin-top: 20px;">
-                <div class="card">
-                    <h3>Scorecard de Solução (Radar)</h3>
-                    <div class="chart-container">
-                        <canvas id="radarChart"></canvas>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3>Curva de Aprendizado e Suporte</h3>
-                    <div class="chart-container">
-                        <canvas id="barChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-custo" class="page">
-            <h1>Análise de Custo e Mercado</h1>
-            <p>Análise do TCO (Custo Total de Propriedade) e posicionamento estratégico de cada solução.</p>
-
-            <div class="grid-container grid-col-2">
-                <div class="card">
-                    <h3>TCO Estimado (3 Anos) - Cenário VPS</h3>
-                    <div class="chart-container">
-                        <canvas id="tcoChart"></canvas>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3>Posicionamento de Mercado (HCI)</h3>
-                    <div class="chart-container">
-                        <canvas id="scatterChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" style="margin-top: 20px;">
-                <h3>Análise SWOT (Exemplo: Proxmox VE)</h3>
-                <div class="table-wrapper">
-                    <table class="comparison-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 50%;">Forças (Strengths)</th>
-                                <th style="width: 50%;">Fraquezas (Weaknesses)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>• Custo zero de licença (Open Source).</td>
-                                <td>• Curva de aprendizado maior em recursos avançados (Ceph).</td>
-                            </tr>
-                            <tr>
-                                <td>• Integração nativa de KVM e LXC.</td>
-                                <td>• Suporte empresarial depende de parceiros ou da subscrição paga.</td>
-                            </tr>
-                            <tr>
-                                <td>• SDS (Ceph) e Backup (PBS) integrados.</td>
-                                <td>• Menor ecossistema de integrações de hardware (HCL) que o VMware.</td>
-                            </tr>
-                        </tbody>
-                        <thead>
-                            <tr>
-                                <th>Oportunidades (Opportunities)</th>
-                                <th>Ameaças (Threats)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>• Captura de clientes VMware insatisfeitos.</td>
-                                <td>• Ideal para a oferta "VPS Standard" e DR.</td>
-                            </tr>
-                            <tr>
-                                <td>• Plataforma flexível para P&D.</td>
-                                <td>• Forte domínio da VMware em ambientes corporativos críticos.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-roadmap" class="page">
-            <h1>Recomendações e Próximos Passos</h1>
-            <p>Plano de ação sugerido pela Assessoria Técnica de Inovação.</p>
-
-            <div class="grid-container grid-col-2">
-                <div class="card">
-                    <h3>Cenários Recomendados</h3>
-                    <ul>
-                        <li>
-                            <strong>Recuperação de Desastres (DR):</strong>
-                            <p>Homologar a Solução B (Ex: Proxmox) como plataforma de DR, iniciando testes de replicação e recuperação do ambiente crítico.</p>
+                <div class="card" style="margin-top: 20px;">
+                    <h3>Roadmap Proposto</h3>
+                    <ul class="roadmap-list">
+                        <li data-fase="1">
+                            <strong>Q4/2025: Análise de Mercado (Concluído)</strong>
+                            Levantamento técnico das soluções e apresentação às áreas.
                         </li>
-                        <li>
-                            <strong>Nova Oferta (VPS Standard):</strong>
-                            <p>Iniciar Prova de Conceito (PoC) da Solução B para validar a performance, segurança e automação da oferta de VPS "Standard".</p>
+                        <li data-fase="2">
+                            <strong>Q1/2026: Prova de Conceito (PoC)</strong>
+                            Instalação e testes da Solução B em ambiente de laboratório para o cenário de VPS Standard e DR.
                         </li>
-                        <li>
-                            <strong>Hiperconvergência (HCI):</strong>
-                            <p>Manter monitoramento das soluções (Ex: Nutanix, Hyper-V S2D) e reavaliar o TCO contra a solução atual no próximo ciclo de renovação de hardware.</p>
+                        <li data-fase="3">
+                            <strong>Q2/2026: Definição de Arquitetura</strong>
+                            Desenho da nova oferta de serviço, integração com billing e automação (provisionamento).
+                        </li>
+                        <li data-fase="4">
+                            <strong>Q3/2026: Decisão Go/No-Go</strong>
+                            Apresentação dos resultados da PoC e decisão final de implementação em produção.
                         </li>
                     </ul>
                 </div>
-                <div class="card">
-                    <h3>Links e Documentação</h3>
-                    <p>Acesse os documentos originais para análise detalhada:</p>
-                    <ul>
-                        <li>
-                            <a href="https://docs.google.com/document/d/18kwg5Nj2cR7oPl4Mvu4BzP6mV2ZZ4-wFdmnm8lXMdrk/edit?tab=t.0" target="_blank" style="color: #00b8d4;">Documento de Análise Completa (Google Docs)</a>
-                        </li>
-                        <li>
-                            <a href="https://docs.google.com/spreadsheets/d/1-E_7kOxYGwHOQw14l0N6CPeovV1yOXZt/edit?gid=609538798#gid=609538798" target="_blank" style="color: #00b8d4;">Planilha Comparativa (Google Sheets)</a>
-                        </li>
-                    </ul>
-                    <hr style="border-color: #444; margin-top: 20px;">
-                    <p><strong>Contato:</strong> Assessoria Técnica de Inovação (ATI)</p>
-                </div>
             </div>
-            
-            <div class="card" style="margin-top: 20px;">
-                <h3>Roadmap Proposto</h3>
-                <ul class="roadmap-list">
-                    <li data-fase="1">
-                        <strong>Q4/2025: Análise de Mercado (Concluído)</strong>
-                        Levantamento técnico das soluções e apresentação às áreas.
-                    </li>
-                    <li data-fase="2">
-                        <strong>Q1/2026: Prova de Conceito (PoC)</strong>
-                        Instalação e testes da Solução B em ambiente de laboratório para o cenário de VPS Standard e DR.
-                    </li>
-                    <li data-fase="3">
-                        <strong>Q2/2026: Definição de Arquitetura</strong>
-                        Desenho da nova oferta de serviço, integração com billing e automação (provisionamento).
-                    </li>
-                    <li data-fase="4">
-                        <strong>Q3/2026: Decisão Go/No-Go</strong>
-                        Apresentação dos resultados da PoC e decisão final de implementação em produção.
-                    </li>
-                </ul>
+
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="https://ciasc.sc.gov.br/wp-content/themes/ciasc-novo/img/logo_governo_azul.svg" alt="Logo CIASC e Governo de SC">
+            </div>
+            <div class="footer-info">
+                <p><strong>Centro de Informática e Automação do Estado de Santa Catarina S.A. – CIASC</strong></p>
+                <p>Av. Rio Branco, 619 - Centro, Florianópolis - SC, 88015-203</p>
+                <p>Telefone: (48) 3664-2000</p>
             </div>
         </div>
-
-    </main>
+        <div class="footer-bottom-bar">
+            <p>Todos os Direitos reservados - AIT (Assessoria de Inovação e Tecnologia) - CIASC 2025</p>
+        </div>
+    </footer>
 
     <script>
         // --- SCRIPT PARA NAVEGAÇÃO EM ABAS ---
         document.addEventListener('DOMContentLoaded', () => {
             showPage('page-sumario', document.querySelector('.nav-link.active'));
-            // Inicializar gráficos apenas na primeira carga ou quando a página for ativa
+            // Inicializar gráficos apenas na primeira carga
             initializeCharts(); 
         });
 
@@ -542,19 +660,18 @@
             if (clickedLink) {
                 clickedLink.classList.add('active');
             }
-
-            // Opcional: Reinicializar/atualizar gráficos quando a página muda
-            // initializeCharts(); 
         }
 
         // --- SCRIPT PARA GRÁFICOS (CHART.JS) ---
         function initializeCharts() {
-            // Cores padrão para os gráficos
-            const primaryColor = '#00b8d4'; // Ciano
-            const secondaryColor = '#ff9800'; // Laranja
-            const thirdColor = '#4caf50'; // Verde
-            const fourthColor = '#f44336'; // Vermelho
-            const mutedColor = '#888888'; // Cinza
+            // Cores padrão para os gráficos (Tema CIASC)
+            const primaryColor = 'var(--ciasc-blue)';
+            const secondaryColor = 'var(--ciasc-green)';
+            const thirdColor = '#ff9800'; // Laranja (Bom contraste)
+            const fourthColor = '#dc3545'; // Vermelho (Bom contraste)
+            const textColor = 'var(--ciasc-text-dark)';
+            const mutedTextColor = 'var(--ciasc-text-muted)';
+            const gridColor = 'var(--ciasc-border-color)';
 
             // 1. Scorecard de Solução (Radar Chart)
             const radarCtx = document.getElementById('radarChart');
@@ -567,21 +684,21 @@
                             {
                                 label: 'VMware vSphere',
                                 data: [5, 5, 4, 5, 4, 2],
-                                backgroundColor: 'rgba(0, 184, 212, 0.2)',
+                                backgroundColor: 'rgba(0, 75, 141, 0.2)',
                                 borderColor: primaryColor,
                                 borderWidth: 2
                             },
                             {
                                 label: 'Proxmox VE',
                                 data: [4, 4, 3, 2, 3, 5],
-                                backgroundColor: 'rgba(255, 152, 0, 0.2)',
+                                backgroundColor: 'rgba(0, 154, 68, 0.2)',
                                 borderColor: secondaryColor,
                                 borderWidth: 2
                             },
                             {
                                 label: 'Nutanix AHV',
                                 data: [5, 5, 5, 3, 4, 3],
-                                backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                                backgroundColor: 'rgba(255, 152, 0, 0.2)',
                                 borderColor: thirdColor,
                                 borderWidth: 2
                             }
@@ -592,33 +709,21 @@
                         maintainAspectRatio: false,
                         scales: {
                             r: {
-                                angleLines: { color: '#444' },
-                                grid: { color: '#444' },
-                                pointLabels: { color: '#e0e0e0' },
+                                angleLines: { color: gridColor },
+                                grid: { color: gridColor },
+                                pointLabels: { color: textColor, font: { weight: '600' } },
                                 ticks: {
                                     beginAtZero: true,
                                     max: 5,
                                     stepSize: 1,
-                                    color: '#b0b0b0',
+                                    color: mutedTextColor,
                                     backdropColor: 'transparent'
                                 }
                             }
                         },
                         plugins: {
                             legend: {
-                                labels: { color: '#e0e0e0' }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        label += context.raw + '/5';
-                                        return label;
-                                    }
-                                }
+                                labels: { color: textColor }
                             }
                         }
                     }
@@ -637,15 +742,11 @@
                                 label: 'Complexidade de Aprendizado (1=Baixa, 5=Alta)',
                                 data: [3, 4, 3, 2],
                                 backgroundColor: primaryColor,
-                                borderColor: primaryColor,
-                                borderWidth: 1
                             },
                             {
-                                label: 'Qualidade do Suporte (1=Comunitário, 5=Empresarial 24/7)',
+                                label: 'Qualidade do Suporte (1=Comunitário, 5=Empresarial)',
                                 data: [5, 3, 4, 4],
                                 backgroundColor: secondaryColor,
-                                borderColor: secondaryColor,
-                                borderWidth: 1
                             }
                         ]
                     },
@@ -654,20 +755,20 @@
                         maintainAspectRatio: false,
                         scales: {
                             x: {
-                                ticks: { color: '#e0e0e0' },
-                                grid: { color: '#333' }
+                                ticks: { color: textColor },
+                                grid: { display: false }
                             },
                             y: {
                                 beginAtZero: true,
                                 max: 5,
                                 stepSize: 1,
-                                ticks: { color: '#e0e0e0' },
-                                grid: { color: '#333' }
+                                ticks: { color: textColor },
+                                grid: { color: gridColor }
                             }
                         },
                         plugins: {
                             legend: {
-                                labels: { color: '#e0e0e0' }
+                                labels: { color: textColor }
                             }
                         }
                     }
@@ -695,7 +796,7 @@
                             {
                                 label: 'Custo de Treinamento/Implantação',
                                 data: [8000, 6000, 9000, 7000],
-                                backgroundColor: mutedColor,
+                                backgroundColor: mutedTextColor,
                             }
                         ]
                     },
@@ -705,27 +806,25 @@
                         scales: {
                             x: {
                                 stacked: true,
-                                ticks: { color: '#e0e0e0' },
-                                grid: { color: '#333' }
+                                ticks: { color: textColor },
+                                grid: { display: false }
                             },
                             y: {
                                 stacked: true,
                                 beginAtZero: true,
-                                ticks: { color: '#e0e0e0', callback: function(value) { return 'R$ ' + value.toLocaleString(); } },
-                                grid: { color: '#333' }
+                                ticks: { color: textColor, callback: function(value) { return 'R$ ' + value.toLocaleString(); } },
+                                grid: { color: gridColor }
                             }
                         },
                         plugins: {
                             legend: {
-                                labels: { color: '#e0e0e0' }
+                                labels: { color: textColor }
                             },
                             tooltip: {
                                 callbacks: {
                                     label: function(context) {
                                         let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
+                                        if (label) { label += ': '; }
                                         label += 'R$ ' + context.raw.toLocaleString();
                                         return label;
                                     }
@@ -745,31 +844,23 @@
                         datasets: [
                             {
                                 label: 'VMware vSphere',
-                                data: [{ x: 5, y: 5, r: 15 }], // x: Adoção, y: Custo Licença, r: Tamanho da bolha
+                                data: [{ x: 5, y: 5, r: 15 }],
                                 backgroundColor: primaryColor,
-                                borderColor: 'white',
-                                borderWidth: 1,
                             },
                             {
                                 label: 'Proxmox VE',
                                 data: [{ x: 3, y: 1, r: 12 }],
                                 backgroundColor: secondaryColor,
-                                borderColor: 'white',
-                                borderWidth: 1,
                             },
                             {
                                 label: 'Nutanix AHV',
                                 data: [{ x: 4, y: 4, r: 14 }],
                                 backgroundColor: thirdColor,
-                                borderColor: 'white',
-                                borderWidth: 1,
                             },
                             {
                                 label: 'Hyper-V',
                                 data: [{ x: 4, y: 2, r: 13 }],
                                 backgroundColor: fourthColor,
-                                borderColor: 'white',
-                                borderWidth: 1,
                             }
                         ]
                     },
@@ -778,49 +869,25 @@
                         maintainAspectRatio: false,
                         scales: {
                             x: {
-                                type: 'linear',
-                                position: 'bottom',
-                                title: {
-                                    display: true,
-                                    text: 'Adoção de Mercado (1=Nicho, 5=Amplo)',
-                                    color: '#e0e0e0'
-                                },
-                                ticks: {
-                                    beginAtZero: true,
-                                    max: 5,
-                                    stepSize: 1,
-                                    color: '#e0e0e0'
-                                },
-                                grid: { color: '#333' }
+                                title: { display: true, text: 'Adoção de Mercado (1=Nicho, 5=Amplo)', color: textColor },
+                                ticks: { beginAtZero: true, max: 5, stepSize: 1, color: textColor },
+                                grid: { color: gridColor }
                             },
                             y: {
-                                type: 'linear',
-                                position: 'left',
-                                title: {
-                                    display: true,
-                                    text: 'Custo de Licença (1=Baixo, 5=Alto)',
-                                    color: '#e0e0e0'
-                                },
-                                ticks: {
-                                    beginAtZero: true,
-                                    max: 5,
-                                    stepSize: 1,
-                                    color: '#e0e0e0'
-                                },
-                                grid: { color: '#333' }
+                                title: { display: true, text: 'Custo de Licença (1=Baixo, 5=Alto)', color: textColor },
+                                ticks: { beginAtZero: true, max: 5, stepSize: 1, color: textColor },
+                                grid: { color: gridColor }
                             }
                         },
                         plugins: {
                             legend: {
-                                labels: { color: '#e0e0e0' }
+                                labels: { color: textColor }
                             },
                             tooltip: {
                                 callbacks: {
                                     label: function(context) {
                                         let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
+                                        if (label) { label += ': '; }
                                         label += `Adoção: ${context.raw.x}/5, Custo: ${context.raw.y}/5`;
                                         return label;
                                     }
