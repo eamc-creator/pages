@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Alternativas às Ferramentas de Gestão - CIASC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Corporate Clarity (Neutral grays/slates with a professional blue accent) -->
+    <!-- Application Structure Plan: A thematic, dashboard-style SPA. Starts with the core problem, allows interactive exploration of market alternatives via filters, visualizes the financial impact with a bar chart, details risks, and concludes with a clear visual diagram of the recommended strategic steps. This non-linear structure prioritizes user-driven discovery and data synthesis over a static report format. -->
+    <!-- Visualization & Content Choices: 1. Current Pain Points -> Goal: Inform -> Icon Cards -> Static -> Quick visual summary. 2. TCO Data -> Goal: Compare -> Bar Chart (Chart.js) -> Hover Tooltips -> High-impact financial comparison. 3. Tool Alternatives -> Goal: Organize/Inform -> Filterable Cards -> Click to filter -> Manages complexity and allows focused exploration. 4. Final Recommendation -> Goal: Organize -> HTML/CSS Flow Diagram -> Static -> Simplifies a complex strategic process into clear, actionable steps. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 450px;
+                max-height: 500px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #2563eb;
+        }
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        .filter-btn.active {
+            background-color: #2563eb;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold text-slate-800">
+                <span class="text-blue-600">CIASC</span> | Análise de Ferramentas
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#problema" class="nav-link text-slate-600 font-medium">O Problema</a>
+                <a href="#mercado" class="nav-link text-slate-600 font-medium">Análise de Mercado</a>
+                <a href="#financeiro" class="nav-link text-slate-600 font-medium">Análise Financeira</a>
+                <a href="#riscos" class="nav-link text-slate-600 font-medium">Riscos</a>
+                <a href="#tabelas" class="nav-link text-slate-600 font-medium">Tabelas Detalhadas</a>
+                <a href="#recomendacao" class="nav-link text-slate-600 font-medium">Recomendação</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-slate-800 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#problema" class="block py-2 nav-link text-slate-600 font-medium">O Problema</a>
+            <a href="#mercado" class="block py-2 nav-link text-slate-600 font-medium">Análise de Mercado</a>
+            <a href="#financeiro" class="block py-2 nav-link text-slate-600 font-medium">Análise Financeira</a>
+            <a href="#riscos" class="block py-2 nav-link text-slate-600 font-medium">Riscos</a>
+            <a href="#tabelas" class="block py-2 nav-link text-slate-600 font-medium">Tabelas Detalhadas</a>
+            <a href="#recomendacao" class="block py-2 nav-link text-slate-600 font-medium">Recomendação</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section id="inicio" class="text-center mb-20">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Análise Estratégica de Alternativas ao Jira</h1>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-10">Uma análise interativa sobre as alternativas à plataforma Atlassian, focada em otimização de custos, eficiência operacional e alinhamento estratégico.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200">
+                    <p class="text-sm font-semibold text-slate-500 uppercase">Custo Anual Atual (Jira)</p>
+                    <p class="text-3xl font-bold text-red-600 mt-2">R$ 854.966,36</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200">
+                    <p class="text-sm font-semibold text-slate-500 uppercase">Economia Potencial em 5 Anos</p>
+                    <p class="text-3xl font-bold text-green-600 mt-2">Até 80%</p>
+                    <p class="text-xs text-slate-500">(~ R$ 3,45 Milhões com Businessmap)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="problema" class="mb-20 pt-16 -mt-16">
+            <h2 class="text-3xl font-bold text-center mb-4 text-slate-900">O Cenário Atual: As Dores Centrais</h2>
+            <p class="text-center text-slate-600 mb-12 max-w-3xl mx-auto">A análise revelou que os desafios com a plataforma Jira vão além do custo, impactando diretamente a experiência do cliente e a eficiência dos fluxos de trabalho internos.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-t-4 border-red-500">
+                    <div class="flex items-center justify-center bg-red-100 rounded-full w-12 h-12 mb-4">
+                        <span class="text-2xl">💰</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Custo Elevado</h3>
+                    <p class="text-slate-600 text-sm">O Jira Service Management (ITSM) representa aproximadamente 70% do custo total, um valor desproporcional aos benefícios percebidos.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-t-4 border-yellow-500">
+                     <div class="flex items-center justify-center bg-yellow-100 rounded-full w-12 h-12 mb-4">
+                        <span class="text-2xl">😠</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Experiência do Cliente</h3>
+                    <p class="text-slate-600 text-sm">O portal do cliente na versão Cloud é considerado um retrocesso, gerando reclamações sobre falta de transparência e usabilidade.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-t-4 border-blue-500">
+                     <div class="flex items-center justify-center bg-blue-100 rounded-full w-12 h-12 mb-4">
+                        <span class="text-2xl">🔗</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Quebra de Fluxo</h3>
+                    <p class="text-slate-600 text-sm">Dificuldade crônica em converter chamados de clientes em tarefas de desenvolvimento de forma nativa e eficiente dentro da plataforma.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-t-4 border-purple-500">
+                    <div class="flex items-center justify-center bg-purple-100 rounded-full w-12 h-12 mb-4">
+                        <span class="text-2xl">📚</span>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Lacuna Estratégica</h3>
+                    <p class="text-slate-600 text-sm">A ausência do Confluence (base de conhecimento) gera documentação dispersa e dificulta a gestão do conhecimento na companhia.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="mercado" class="mb-20 pt-16 -mt-16">
+            <h2 class="text-3xl font-bold text-center mb-4 text-slate-900">Análise de Mercado</h2>
+            <p class="text-center text-slate-600 mb-8 max-w-3xl mx-auto">O GT avaliou um ecossistema diverso de ferramentas. Explore as alternativas filtrando por categoria para entender os pontos fortes de cada uma.</p>
+            <div id="tool-filters" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-10">
+                <button data-filter="all" class="filter-btn active px-4 py-2 text-sm font-semibold bg-white text-slate-700 rounded-full shadow-sm border border-slate-300 hover:bg-slate-100">Todas</button>
+                <button data-filter="workos" class="filter-btn px-4 py-2 text-sm font-semibold bg-white text-slate-700 rounded-full shadow-sm border border-slate-300 hover:bg-slate-100">Work OS</button>
+                <button data-filter="portfolio" class="filter-btn px-4 py-2 text-sm font-semibold bg-white text-slate-700 rounded-full shadow-sm border border-slate-300 hover:bg-slate-100">Gestão de Portfólio</button>
+                <button data-filter="opensource" class="filter-btn px-4 py-2 text-sm font-semibold bg-white text-slate-700 rounded-full shadow-sm border border-slate-300 hover:bg-slate-100">Open-Source</button>
+                <button data-filter="itsm" class="filter-btn px-4 py-2 text-sm font-semibold bg-white text-slate-700 rounded-full shadow-sm border border-slate-300 hover:bg-slate-100">ITSM Especialista</button>
+            </div>
+            <div id="tool-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+        </section>
+
+        <section id="financeiro" class="mb-20 pt-16 -mt-16 bg-slate-100 rounded-2xl py-12 px-4 md:px-8">
+            <h2 class="text-3xl font-bold text-center mb-4 text-slate-900">Análise Financeira</h2>
+            <p class="text-center text-slate-600 mb-12 max-w-3xl mx-auto">A migração representa uma economia substancial. O gráfico abaixo compara o Custo Total de Propriedade (TCO) estimado para um período de 5 anos, incluindo licenças e suporte.</p>
+            <div class="chart-container">
+                <canvas id="tcoChart"></canvas>
+            </div>
+            <div class="text-center mt-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 max-w-3xl mx-auto rounded-r-lg">
+                <p class="font-semibold">Nota Importante:</p>
+                <p class="text-sm">Para qualquer alternativa (paga ou open-source), será imprescindível a contratação de suporte especializado para migração, treinamento e manutenção contínua.</p>
+            </div>
+        </section>
+        
+        <section id="riscos" class="mb-20 pt-16 -mt-16">
+            <h2 class="text-3xl font-bold text-center mb-4 text-slate-900">Viabilidade e Riscos da Migração</h2>
+            <p class="text-center text-slate-600 mb-12 max-w-3xl mx-auto">A migração é um projeto complexo de transformação, não apenas uma troca de software. É crucial estar ciente dos desafios técnicos, humanos e operacionais.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+                    <h3 class="text-xl font-semibold mb-3 text-blue-800">Desafios Técnicos</h3>
+                    <ul class="space-y-2 text-slate-600 text-sm list-disc list-inside">
+                        <li><span class="font-semibold">Fidelidade de Dados:</span> Nenhuma migração é 100% perfeita. Perdas de dados ou de contexto são um risco real.</li>
+                        <li><span class="font-semibold">Recriação de Workflows:</span> Todas as automações e regras de negócio do Jira deverão ser recriadas manualmente na nova plataforma.</li>
+                        <li><span class="font-semibold">Integrações:</span> Conexões com outros sistemas (ex: GLPI) podem exigir desenvolvimento via API.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+                    <h3 class="text-xl font-semibold mb-3 text-green-800">Fatores Humanos</h3>
+                    <ul class="space-y-2 text-slate-600 text-sm list-disc list-inside">
+                        <li><span class="font-semibold">Resistência à Mudança:</span> As equipes estão habituadas ao Jira. A adaptação a uma nova interface e fluxos é um desafio cultural.</li>
+                        <li><span class="font-semibold">Curva de Aprendizado:</span> Haverá uma queda temporária de produtividade enquanto os usuários se familiarizam com a nova ferramenta.</li>
+                        <li><span class="font-semibold">Comunicação e Treinamento:</span> Um plano robusto de capacitação e comunicação é fundamental para o sucesso e a adoção.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-500">
+                    <h3 class="text-xl font-semibold mb-3 text-orange-800">Custos Ocultos</h3>
+                     <ul class="space-y-2 text-slate-600 text-sm list-disc list-inside">
+                        <li><span class="font-semibold">Suporte Especializado:</span> O custo de consultoria para migração e implementação pode ser significativo.</li>
+                        <li><span class="font-semibold">Tempo da Equipe Interna:</span> Horas de trabalho de colaboradores do CIASC dedicadas ao projeto de migração, que poderiam estar em outras atividades.</li>
+                         <li><span class="font-semibold">Manutenção Contínua:</span> Especialmente para soluções open-source, os custos de infraestrutura e manutenção são recorrentes.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="tabelas" class="mb-20 pt-16 -mt-16">
+            <h2 class="text-3xl font-bold text-center mb-4 text-slate-900">Tabelas de Análise Detalhada</h2>
+            <p class="text-center text-slate-600 mb-12 max-w-3xl mx-auto">Para uma análise aprofundada, navegue pelas tabelas de dados que embasaram o estudo do Grupo de Trabalho. Use a barra de rolagem horizontal em telas menores.</p>
+
+            <div>
+                <div class="mb-4 border-b border-slate-200">
+                    <nav class="-mb-px flex flex-wrap justify-center gap-x-6 gap-y-2" aria-label="Tabs">
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-blue-600 text-blue-600" data-tab="funcionalidades">
+                            Funcionalidades (2.4)
+                        </button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300" data-tab="custos">
+                            Custos Diretos (3.1)
+                        </button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300" data-tab="tco">
+                            TCO 5 Anos (3.2)
+                        </button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300" data-tab="migracao">
+                            Fidelidade Migração (4.2)
+                        </button>
+                    </nav>
+                </div>
+                
+                <div id="tab-content" class="bg-white rounded-lg shadow-lg p-4 md:p-8">
+                    <div id="tab-funcionalidades" class="tab-panel">
+                        <h3 class="text-xl font-semibold mb-6 text-center">Tabela 2.4: Comparativa de Funcionalidades Essenciais</h3>
+                        <div class="overflow-x-auto rounded-lg border border-slate-200">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Funcionalidade</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Jira</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ClickUp</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Businessmap</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">OpenProject</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Zammad</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">GLPI</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-200">
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Gestão de Projetos (Ágil/Kanban)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Avançado)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Avançado)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Avançado)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Avançado)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Não</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Parcial</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Gestão de Portfólio (Roadmap)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Premium)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Avançado)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Parcial</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Não</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Não</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">ITSM (Service Desk)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (JSM)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Formulários/Email)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Formulários/Email)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Parcial (Helpdesk)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Avançado)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Avançado)</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Base de Conhecimento</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Plugin (Confluence)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Docs)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Básico)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Wiki)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Gestão de Ativos (ITAM)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Plugin (Assets)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Parcial (Listas)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Não</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Não</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Parcial</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Avançado)</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Relatórios e Dashboards</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Avançado)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo (Avançado)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Nativo</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="tab-custos" class="tab-panel hidden">
+                        <h3 class="text-xl font-semibold mb-6 text-center">Tabela 3.1: Comparativo de Custos de Licenciamento (Anual - 300 Usuários)</h3>
+                         <div class="overflow-x-auto rounded-lg border border-slate-200">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Ferramenta</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Plano</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Custo/Usuário/Mês (Est.)</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Custo Anual (300 Usuários)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-200">
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Jira (Atlassian)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Cloud Premium</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 237,49</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">R$ 854.966,36</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">ClickUp</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Business Plus</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 62,40 (USD 12)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">R$ 224.640,00</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Businessmap</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Standard</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 35,26 (USD 6.78)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">R$ 126.964,80</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">OpenProject</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Enterprise (Cloud)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 90,33 (EUR 16.5)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">R$ 325.200,00</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Zammad</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Plus (Cloud)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 73,67 (EUR 13.5)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">R$ 265.200,00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="tab-tco" class="tab-panel hidden">
+                        <h3 class="text-xl font-semibold mb-6 text-center">Tabela 3.2: Projeção de Custo Total de Propriedade (TCO) - 5 Anos</h3>
+                        <div class="overflow-x-auto rounded-lg border border-slate-200">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Ferramenta</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Custo Licença (5 Anos)</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Suporte/Migração (Est.)</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">TCO Total (5 Anos)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-200">
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Manter Jira Cloud</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 4.274.830,00</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 0,00</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">R$ 4.274.830,00</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Migrar p/ ClickUp</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 1.123.200,00</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 766.581,00</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">R$ 1.889.781,00</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Migrar p/ Businessmap</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 634.824,00</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 180.806,00</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">R$ 815.630,00</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Migrar p/ OpenProject (On-Prem)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 813.000,00</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">R$ 1.199.600,00</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">R$ 2.012.600,00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="tab-migracao" class="tab-panel hidden">
+                        <h3 class="text-xl font-semibold mb-6 text-center">Tabela 4.2: Matriz de Fidelidade de Dados na Migração</h3>
+                        <div class="overflow-x-auto rounded-lg border border-slate-200">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Tipo de Dado</th>
+                                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">ClickUp</th>
+                                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Businessmap</th>
+                                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">OpenProject</th>
+                                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">ServiceNow</th>
+                                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Zammad</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-200">
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Projetos / Quadros</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Parcial</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Parcial</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Tarefas / Issues</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Epics / Hierarquia</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Parcial</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Manual</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Campos Customizados</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Parcial</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Parcial</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Manual</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Parcial</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Anexos</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Parcial</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Comentários / Histórico</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Nativo</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Parcial</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Parcial</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Parcial</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Workflows (Automações)</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Manual</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Manual</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Manual</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Manual</span></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Manual</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-4 text-center">Legenda: <span class="font-semibold text-green-700">Nativo</span> (Importador automático), <span class="font-semibold text-yellow-700">Parcial</span> (Importação via CSV/API com perda de dados), <span class="font-semibold text-red-700">Manual</span> (Recriação manual necessária).</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="recomendacao" class="pt-16 -mt-16 text-center bg-white rounded-2xl shadow-lg py-12 px-4 md:px-8">
+            <!--h2 class="text-3xl font-bold text-center mb-4 text-slate-900">Recomendação Final e Próximos Passos</h2>-->
+            <!--<p class="text-center text-slate-600 mb-12 max-w-3xl mx-auto">O Grupo de Trabalho concluiu que não há uma "bala de prata". A substituição por uma única ferramenta é arriscada. A recomendação é um caminho estratégico, focado em mapear necessidades e explorar o mercado de forma estruturada.</p>-->
+            <div class="relative flex flex-col md:flex-row justify-center items-center gap-4 md:gap-0 my-12">
+        <section id="recomendacao" class="pt-16 -mt-16 text-left bg-white rounded-2xl shadow-lg py-12 px-8 md:px-12">
+            <h2 class="text-3xl font-bold text-center mb-4 text-slate-900">Recomendação Final e Roteiro de Ação</h2>
+            <p class="text-center text-slate-600 mb-12 max-w-4xl mx-auto">Com base no exposto, a comissão recomenda um caminho estratégico focado na preparação para uma contratação futura, garantindo a assertividade na escolha e a governança da nova solução.</p>
+
+            <div class="max-w-4xl mx-auto text-slate-700 space-y-4">
+                <p class="font-medium text-slate-900">Para viabilizar a escolha da(s) nova(s) ferramenta(s) de forma transparente e competitiva, recomenda-se que o CIASC inicie um processo de construção para uma futura licitação, começando com uma <strong class="text-blue-600">RFI (Request for Information)</strong>.</p>
+                
+                <p>O produto final desta RFI deverá prever não só atender as necessidades das áreas que possuem maior necessidade (dor) neste primeiro momento, mas que preveja, <strong class="text-slate-800">OU</strong>, a integração com os sistemas utilizados em outras áreas (técnica, por exemplo), <strong class="text-slate-800">OU</strong> a substituição e migração plena dos dados e fluxos já existentes nas atuais ferramentas (Jira Software, Jira Software Management e GLPI).</p>
+                
+                <p>Este instrumento permitirá que o mercado de soluções privadas demonstre formalmente seus produtos e capacidades, fornecendo ao CIASC os insumos necessários para a construção de um <strong class="text-slate-800">Termo de Referência</strong> robusto e focado na resolução efetiva das dores e necessidades da companhia.</p>
+                
+                <p class="text-sm text-slate-600 bg-slate-100 p-4 rounded-lg border-l-4 border-slate-300">Pela complexidade prevista por este processo de busca e posterior contratação, a comissão não irá neste momento sugerir um cronograma, pois como já dito anteriormente, é uma decisão estratégica e que necessita de tempo e assertividade na preparação da RFI.</p>
+
+                <h4 class="text-xl font-semibold text-slate-800 pt-4">Pré-requisitos Fundamentais para o Sucesso</h4>
+                
+                <p>Independentemente da decisão da diretoria, é fundamental que:</p>
+                
+                <ul class="space-y-3 list-disc list-inside pl-2">
+                    <li>Seja realizada a <strong class="text-slate-800">contratação de suporte externo</strong>, devido à necessidade de <em>know-how</em> específico e à escassez de mão de obra interna para um projeto desta magnitude.</li>
+                    
+                    <li>Uma <strong class="text-slate-800">equipe interna seja designada e treinada</strong>. Esta equipe será responsável pela customização, treinamento, definição da política interna de uso e pelo suporte de primeiro nível da ferramenta escolhida, além de atuar como promotora da utilização da ferramenta no CIASC.</li>
+                    
+                    <li>Haja a <strong class="text-slate-800">definição clara da política de utilização e suas diretrizes</strong> por uma equipe multidisciplinar e pela diretoria. Isso possibilitará que a equipe possa definir os requisitos de cada ferramenta com base na sua destinação.</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 text-center py-6 mt-16">
+        <p class="text-sm">Relatório Interativo gerado a partir do estudo do Grupo de Trabalho – Resolução PRESI 025/2025.</p>
+        <p class="text-xs mt-1">CIASC - Centro de Informática e Automação do Estado de Santa Catarina S.A.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: '-30% 0px -70% 0px' });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('border-blue-600', 'text-blue-600');
+                        btn.classList.add('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+                    });
+
+                    button.classList.add('border-blue-600', 'text-blue-600');
+                    button.classList.remove('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+
+                    tabPanels.forEach(panel => {
+                        panel.classList.add('hidden');
+                        if (panel.id === `tab-${tabId}`) {
+                            panel.classList.remove('hidden');
+                        }
+                    });
+                });
+            });
+
+            const toolsData = [
+                { name: 'ClickUp', category: 'workos', description: 'Plataforma "tudo-em-um" que unifica tarefas, documentos, metas e chat. Altamente customizável.', pros: 'Flexível, ótimo custo-benefício, interface moderna.', cons: 'Pode ser complexo para configurar inicialmente.' },
+                { name: 'Monday.com', category: 'workos', description: 'Work OS visual e intuitivo, forte em automações e dashboards. Foco em equipes não-técnicas.', pros: 'Fácil de usar, visualmente atraente.', cons: 'Pode se tornar caro com mais usuários e funcionalidades.' },
+                { name: 'Businessmap', category: 'portfolio', description: 'Especialista em conectar a execução operacional com a estratégia (OKRs), forte em Kanban e SAFe.', pros: 'Visibilidade de portfólio, métricas de fluxo nativas.', cons: 'Menos focado em colaboração de documentos.' },
+                { name: 'OpenProject', category: 'opensource', description: 'Solução open-source completa para gestão de projetos clássicos e ágeis. Permite auto-hospedagem.', pros: 'Soberania de dados, sem custo de licença.', cons: 'Exige manutenção de infraestrutura e suporte especializado.' },
+                { name: 'Zammad', category: 'opensource', description: 'Sistema de helpdesk e ticketing open-source com foco em uma experiência moderna para clientes e agentes.', pros: 'Interface limpa, focado em ITSM.', cons: 'Não é uma ferramenta de gestão de projetos.' },
+                { name: 'GLPI', category: 'opensource', description: 'Ferramenta open-source robusta para ITSM e gestão de ativos de TI. Já em uso no CIASC para operações.', pros: 'Gestão de ativos, maturidade no mercado.', cons: 'Interface datada, funcionalidades de projeto limitadas.' },
+                { name: 'ServiceNow', category: 'itsm', description: 'Plataforma líder de mercado para ITSM e automação de fluxos de trabalho corporativos.', pros: 'Poderoso, escalável, alinhado com ITIL.', cons: 'Custo muito elevado, implementação complexa.' },
+                { name: 'Freshservice', category: 'itsm', description: 'Solução de ITSM em nuvem com foco em usabilidade e automação inteligente para equipes de TI.', pros: 'Fácil de usar, bom custo-benefício.', cons: 'Menos abrangente que ServiceNow.' },
+            ];
+
+            const toolGrid = document.getElementById('tool-grid');
+            const filterButtons = document.querySelectorAll('#tool-filters button');
+
+            const renderTools = (filter) => {
+                toolGrid.innerHTML = '';
+                const filteredTools = filter === 'all' ? toolsData : toolsData.filter(tool => tool.category === filter);
+
+                filteredTools.forEach(tool => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1';
+                    card.innerHTML = `
+                        <h3 class="text-xl font-bold mb-2">${tool.name}</h3>
+                        <p class="text-slate-600 text-sm mb-4">${tool.description}</p>
+                        <div class="text-sm">
+                            <p class="mb-1"><span class="font-semibold text-green-600">Prós:</span> ${tool.pros}</p>
+                            <p><span class="font-semibold text-red-600">Contras:</span> ${tool.cons}</p>
+                        </div>
+                    `;
+                    toolGrid.appendChild(card);
+                });
+            };
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const filter = button.dataset.filter;
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderTools(filter);
+                });
+            });
+
+            renderTools('all');
+
+
+            const tcoData = {
+                labels: ['Manter Jira', 'Migrar p/ ClickUp', 'Migrar p/ Businessmap', 'Migrar p/ OpenProject'],
+                datasets: [{
+                    label: 'Custo Total em 5 Anos (R$)',
+                    data: [4274830, 1889781, 815630, 2012600],
+                    backgroundColor: [
+                        'rgba(239, 68, 68, 0.7)',
+                        'rgba(59, 130, 246, 0.7)',
+                        'rgba(16, 185, 129, 0.7)',
+                        'rgba(249, 115, 22, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(239, 68, 68, 1)',
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(16, 185, 129, 1)',
+                        'rgba(249, 115, 22, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            const tcoChartCtx = document.getElementById('tcoChart').getContext('2d');
+            new Chart(tcoChartCtx, {
+                type: 'bar',
+                data: tcoData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        const value = context.parsed.x;
+                                        label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+                                        if (context.dataIndex > 0) {
+                                            const jiraCost = context.chart.data.datasets[0].data[0];
+                                            const saving = jiraCost - value;
+                                            const savingPercent = (saving / jiraCost * 100).toFixed(0);
+                                            label += ` (Economia de ~${savingPercent}%)`;
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    if (value >= 1000000) {
+                                        return 'R$ ' + (value / 1000000) + 'M';
+                                    }
+                                    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+                                }
+                            }
+                        },
+                         y: {
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+

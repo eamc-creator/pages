@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard: Análise de Trabalho Híbrido</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define a fonte Inter como padrão */
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Estilo para a aba ativa */
+        .tab-active {
+            border-bottom-width: 2px;
+            border-color: #3b82f6; /* Azul */
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        /* Estilo para a aba inativa */
+        .tab-inactive {
+            color: #9ca3af; /* Cinza */
+            border-bottom-width: 2px;
+            border-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-white text-center">Dashboard: Análise do Trabalho Híbrido no Setor Público de TI</h1>
+            <p class="text-center text-lg text-gray-400 mt-2">Análise comparativa (ABEP-TIC), riscos operacionais e recomendações para o CIASC</p>
+        </header>
+
+        <nav class="flex justify-center border-b border-gray-700 mb-8">
+            <div class="flex space-x-4 md:space-x-8">
+                <button onclick="changeTab('resumo')" id="tab-resumo" class="tab-active py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+                    Resumo Executivo
+                </button>
+                <button onclick="changeTab('comparativo')" id="tab-comparativo" class="tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+                    Comparativo ABEP-TIC
+                </button>
+                <button onclick="changeTab('estudos')" id="tab-estudos" class="tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+                    Estudos Acadêmicos
+                </button>
+                <button onclick="changeTab('riscos')" id="tab-riscos" class="tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+                    Riscos & Recomendações
+                </button>
+            </div>
+        </nav>
+
+        <main>
+            <div id="content-resumo" class="space-y-8">
+                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Resumo Executivo</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-300">Modelo CIASC (Atual)</h3>
+                        <p class="text-3xl font-bold text-green-400 mt-2">Híbrido (1x4)</p>
+                        <p class="text-gray-400 mt-1">1 dia presencial e 4 dias remotos.</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-300">Tendência ABEP-TIC</h3>
+                        <p class="text-3xl font-bold text-green-400 mt-2">Híbrido Flexível</p>
+                        <p class="text-gray-400 mt-1">Maioria adota 2 a 4 dias remotos.</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-300">Risco Principal (RTO*)</h3>
+                        <p class="text-3xl font-bold text-red-400 mt-2">Apagão Tecnológico</p>
+                        <p class="text-gray-400 mt-1">*Retorno Obrigatório ao Presencial.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold text-white mb-4">Modelos de Trabalho nas Prods (Amostra ABEP)</h3>
+                        <div class="relative h-64 md:h-80">
+                            <canvas id="modelosChart"></canvas>
+                        </div>
+                        <p class="text-center text-gray-400 mt-4">A maioria das empresas públicas de TI adota o modelo híbrido, reconhecendo a flexibilidade como essencial.</p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
+                        <h3 class="text-xl font-semibold text-white mb-4">Contexto Crítico do CIASC</h3>
+                        <div>
+                            <h4 class="text-lg font-semibold text-yellow-400">1. PDVI em Andamento</h4>
+                            <p class="text-gray-300">Saída de profissionais experientes, resultando em perda de conhecimento crítico e sobrecarga das equipes remanescentes.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-red-400">2. Risco de Evasão de Talentos</h4>
+                            <p class="text-gray-300">Profissionais de TI (especialmente os mais novos e qualificados) são altamente assediados pela iniciativa privada, que oferece flexibilidade total (remoto) e salários maiores.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-orange-400">3. Restrições de Reposição</h4>
+                            <p class="text-gray-300">A morosidade de concursos públicos e as restrições legais em SC para terceirização de atividade-fim impedem a reposição ágil da força de trabalho.</p>
+                        </div>
+                        <div class="bg-red-900/50 p-4 rounded-md border border-red-700">
+                            <p class="font-semibold text-red-300">Conclusão: Um RTO forçado agravaria a evasão de talentos, criando um risco operacional severo para os serviços essenciais do Estado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-comparativo" class="hidden">
+                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Comparativo de Modelos de Trabalho (ABEP-TIC)</h2>
+                <div class="bg-gray-800 p-4 md:p-6 rounded-lg shadow-lg overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="bg-gray-700/50">
+                            <tr>
+                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Empresa (Estado)</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Modelo Adotado</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Detalhes do Regime</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Flexibilidade</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-gray-800 divide-y divide-gray-700">
+                            <tr class="bg-blue-900/30">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">CIASC (SC)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-green-400">Híbrido (1x4)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-200">1 presencial, 4 remotos (jornada 6h, escolha do dia).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Muito Alta</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODEST (ES)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido (3x2)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">3 dias remotos, 2 dias presenciais (mín. 16h semanais).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Alta</td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODESP (SP)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Presencial</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">100% Presencial (Conforme dados ABEP).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Nenhuma</td>
+                            </tr>
+
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">CELEPAR (PR)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Presencial</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Retorno ao presencial desde Jan/2025 (Info. Diretor).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Nenhuma</td>
+                            </tr>
+
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODEMGE (MG)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido Flexível</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Áreas 100% remoto, áreas 100% presencial, e híbrido (4x1).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Muito Alta</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODAM (AM)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido (4x1)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">4 dias remotos, 1 presencial (foco em Desenvolvimento).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Muito Alta</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PROCERGS (RS)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Híbrido (Variável)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Estudos para 3x2 (Técnica), 1x4 (Comercial), 5x0 (Adm).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Média (por área)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODERJ (RJ)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Máx. 70% da equipe em remoto por setor (Portaria 793/2020).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Alta (com gestão)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">MTI (MT)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Híbrido (Dinâmico)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">1 a 5 dias remotos (acordo com gestor). Tendência de retorno.</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Variável</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">ETICE (CE)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Modelo híbrido sem tendência de retorno total.</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Alta</td>
+                            </tr>
+                             <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">ATI-PE / PRODEPA (PA) / etc.</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Presencial</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Algumas Prods menores ou com gestão mais tradicional retornaram 100%.</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Nenhuma</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="content-estudos" class="hidden">
+                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Evidências e Estudos Científicos</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col">
+                        <h3 class="text-xl font-semibold text-white">Universidade de Stanford (N. Bloom)</h3>
+                        <div class="flex items-center my-3">
+                            <span class="text-green-400 text-2xl mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            </span>
+                            <span class="text-lg font-semibold text-green-300">Posição Clara: Pró-Híbrido/Remoto</span>
+                        </div>
+                        <p class="text-gray-300 flex-grow">
+                            A pesquisa de Stanford (incluindo o famoso estudo "Ctrip") demonstra que o trabalho híbrido/remoto <strong>AUMENTA a produtividade</strong> (em média 13%), <strong>REDUZ drasticamente a rotatividade</strong> de pessoal (em até 50%) e melhora a satisfação dos empregados. O estudo conclui que um modelo híbrido bem gerenciado é um "ganha-ganha-ganha" para empresas, funcionários e sociedade.
+                        </p>
+                        <a href="https://news.stanford.edu/stories/2024/06/hybrid-work-is-a-win-win-win-for-companies-workers/" target="_blank" class="mt-4 text-blue-400 hover:text-blue-300 text-sm font-medium">Ver fonte (Stanford News) &rarr;</a>
+                    </div>
+
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col">
+                        <h3 class="text-xl font-semibold text-white">FGV / FIA (Brasil)</h3>
+                        <div class="flex items-center my-3">
+                             <span class="text-green-400 text-2xl mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            </span>
+                            <span class="text-lg font-semibold text-green-300">Posição: Pró-Flexibilidade</span>
+                        </div>
+                        <p class="text-gray-300 flex-grow">
+                            Estudos no Brasil ("Remote Work in Brazil", "Pesquisa Home Office Brasil") confirmam a tendência global. A percepção de produtividade é maior no home office (70-80% dos gestores e funcionários relatam aumento). A flexibilidade é o <strong>segundo maior atrativo</strong> para profissionais de TI no país, atrás apenas do salário.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col">
+                        <h3 class="text-xl font-semibold text-white">Análises de RTO (Gartner / Univ. Pittsburgh)</h3>
+                        <div class="flex items-center my-3">
+                             <span class="text-red-400 text-2xl mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 102 0v-2a1 1 0 10-2 0v2zM9 7a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
+                            </span>
+                            <span class="text-lg font-semibold text-red-300">Posição: Contra RTO Forçado</span>
+                        </div>
+                        <p class="text-gray-300 flex-grow">
+                            Estudos sobre mandatos de Retorno ao Escritório (RTO) forçados mostram que eles <strong>NÃO aumentam a produtividade</strong> nem o desempenho financeiro da empresa. Em vez disso, geram queda no moral, aumento do "presenteísmo" e <strong>aumento significativo na rotatividade</strong>, especialmente entre os profissionais de melhor desempenho e maior experiência.
+                        </p>
+                        <a href="https://www.businessinsider.com/return-to-office-mandates-no-impact-company-performance-study-2024-5" target="_blank" class="mt-4 text-blue-400 hover:text-blue-300 text-sm font-medium">Ver fonte (Business Insider) &rarr;</a>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="content-riscos" class="hidden">
+                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Riscos Operacionais e Recomendações (CIASC)</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
+                        <h3 class="text-xl font-semibold text-red-400 mb-4">Análise de Risco: A "Tempestade Perfeita"</h3>
+                        <div class="flex items-start">
+                            <span class="text-red-500 text-3xl mr-3 mt-1">1</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Saída de Experientes (PDVI)</h4>
+                                <p class="text-gray-300">O PDVI drena o conhecimento sênior da empresa, essencial para sistemas legados e críticos.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-red-500 text-3xl mr-3 mt-1">2</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Evasão de Talentos (Se RTO Forçado)</h4>
+                                <p class="text-gray-300">Um RTO (ex: volta para 3x2 ou pior) expulsaria talentos para o mercado privado, que oferece 100% remoto.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-red-500 text-3xl mr-3 mt-1">3</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Impossibilidade de Reposição</h4>
+                                <p class="text-gray-300">A combinação de concursos (lentos) e restrições à terceirização (legais) impede cobrir as vagas abertas.</p>
+                            </div>
+                        </div>
+                        <div class="bg-red-900/50 p-4 mt-4 rounded-md border border-red-700">
+                            <h4 class="text-xl font-bold text-red-300 text-center">Risco Iminente (Se RTO): APAGÃO TECNOLÓGICO</h4>
+                            <p class="text-center text-red-200">Paralisação de serviços essenciais ao cidadão e ao governo (Defesa Civil, Saúde, Educação, Segurança) por falta de pessoal técnico qualificado.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
+                        <h3 class="text-xl font-semibold text-green-400 mb-4">Recomendações para Evolução da Norma CIASC</h3>
+                        <div class="flex items-start">
+                            <span class="text-green-500 text-3xl mr-3 mt-1">1</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Manter e Valorizar o 1x4</h4>
+                                <p class="text-gray-300">Sustentar o modelo atual (1 presencial, 4 remotos), que posiciona o CIASC como competitivo na atração e retenção.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-green-500 text-3xl mr-3 mt-1">2</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Foco em Gestão, não em Presença</h4>
+                                <p class="text-gray-300">Migrar de um controle de frequência (ponto) para um controle de produtividade (entregas), inspirado no PGD do Gov. Federal.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-green-500 text-3xl mr-3 mt-1">3</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Implementar OKRs e KPIs Claros</h4>
+                                <p class="text-gray-300">Definir "Objectives and Key Results" (OKRs) trimestrais e KPIs (Key Performance Indicators) claros para empregados, setores e empresa, como critério objetivo de adesão e permanência no modelo.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-green-500 text-3xl mr-3 mt-1">4</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Segmentação (Opcional)</h4>
+                                <p class="text-gray-300">Considerar segmentar a flexibilidade por área apenas se houver forte justificativa operacional para áreas específicas exigirem mais dias presenciais (ex: suporte técnico local).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Script para Gráfico (Chart.js) ---
+        // Dados para o gráfico de pizza (amostra ABEP-TIC atualizada)
+        const chartData = {
+            // Contagem atualizada: 10 Híbrido, 7 Presencial (Celepar movida para Presencial)
+            labels: ['Híbrido', 'Presencial'],
+            datasets: [{
+                label: 'Modelos de Trabalho',
+                data: [10, 7], // 10 Híbrido, 7 Presencial
+                backgroundColor: [
+                    'rgba(59, 130, 246, 0.7)', // Azul (Híbrido)
+                    'rgba(239, 68, 68, 0.7)', // Vermelho (Presencial)
+                ],
+                borderColor: [
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(239, 68, 68, 1)',
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Configuração do gráfico
+        const chartConfig = {
+            type: 'doughnut', // Tipo de gráfico: rosca
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#e5e7eb', // Cor do texto da legenda
+                            font: {
+                                size: 14,
+                                family: 'Inter'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        titleFont: {
+                            family: 'Inter'
+                        },
+                        bodyFont: {
+                            family: 'Inter'
+                        }
+                    }
+                }
+            }
+        };
+
+        // Renderiza o gráfico
+        const ctx = document.getElementById('modelosChart').getContext('2d');
+        new Chart(ctx, chartConfig);
+
+
+        // --- Script para Navegação por Abas ---
+        let activeTab = 'resumo';
+
+        function changeTab(tabId) {
+            // Se a aba clicada já é a ativa, não faz nada
+            if (tabId === activeTab) return;
+
+            // Esconde o conteúdo da aba antiga
+            document.getElementById('content-' + activeTab).classList.add('hidden');
+            // Remove a classe 'ativa' da aba antiga
+            document.getElementById('tab-' + activeTab).classList.remove('tab-active');
+            document.getElementById('tab-' + activeTab).classList.add('tab-inactive');
+
+
+            // Mostra o conteúdo da nova aba
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            // Adiciona a classe 'ativa' à nova aba
+            document.getElementById('tab-' + tabId).classList.add('tab-active');
+            document.getElementById('tab-' + tabId).classList.remove('tab-inactive');
+
+            // Atualiza a aba ativa
+            activeTab = tabId;
+        }
+    </script>
+</body>
+</html>
