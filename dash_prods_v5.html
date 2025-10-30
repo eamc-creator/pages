@@ -126,7 +126,7 @@
 
     <script>
         // --- INÍCIO DA SEÇÃO DE DADOS ---
-        // ATUALIZAÇÃO: Produtos validados e adicionadas ETICE (CE) e PRODAM (PA).
+        // ATUALIZAÇÃO: Produtos CIASC, Nova Seção "Parcerias", Adicionadas PRODEST(ES) e PRODAM(SP). Total = 14 PRODs.
         const prodsData = [
             { // DADOS DO CIASC (REFERÊNCIA)
                 id: 'ciasc',
@@ -145,7 +145,8 @@
                 mediaSalarialValor: 11842, 
                 mediaSalarialText: 'R$ 11.842 / mês',
                 regimento: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/a-empresa/regimento-interno',
-                products: ['SC Digital (Plataforma de Serviços)', 'GovCloud SC (Nuvem Pública)', 'SOC (Centro de Op. de Segurança)']
+                products: ['SC Digital (Plataforma de Serviços)', 'GovCloud SC (Nuvem Pública)', 'Detran Digital SC (Plataforma)', 'GovLink (Rede Segura do Governo)'],
+                parcerias: ['Universidades (UFSC, UDESC)', 'AWS (Nuvem Híbrida)', 'FAPESC (Fomento à Inovação)', 'Microsoft (Capacitação)']
             },
             // --- Outras PRODs (Dados 2024) ---
             {
@@ -165,7 +166,28 @@
                 mediaSalarialValor: 14418, 
                 mediaSalarialText: 'R$ 14.418 / mês',
                 regimento: 'https://www.prodesp.sp.gov.br/media/4678/regimento-interno-ca.pdf',
-                products: ['Poupatempo Digital', 'Bolsa do Povo (Gestão Social)', 'SP Sem Papel (Gestão Documental)']
+                products: ['Poupatempo Digital', 'Bolsa do Povo (Gestão Social)', 'SP Sem Papel (Gestão Documental)'],
+                parcerias: ['Microsoft (Azure)', 'Oracle (Cloud)', 'Universidades (USP, Unicamp)', 'Dataprev (Troca de Dados)']
+            },
+            { // NOVO (Dado Real 2024)
+                id: 'prodam_sp',
+                name: 'PRODAM (SP-Mun)',
+                fullName: 'Empresa de Tecnologia da Informação e Comunicação do Município de São Paulo',
+                year: 2024,
+                revenueValue: 950.0,
+                revenueText: 'R$ 950,0 Milhões',
+                employees: 1400, // Força de Trabalho Total
+                employeesMale: 1008, // 72%
+                employeesFemale: 392, // 28%
+                custoPessoalValue: 252.0, 
+                custoPessoalText: 'R$ 252,0 Milhões',
+                produtividadeValor: 678571,
+                produtividadeText: 'R$ 678,6 k / colab.',
+                mediaSalarialValor: 15000,
+                mediaSalarialText: 'R$ 15.000 / mês',
+                regimento: 'https://www.prefeitura.sp.gov.br/cidade/secretarias/upload/prodam/prodam_regimento_interno.pdf', 
+                products: ['Portal SP 156 (Atendimento)', 'SIGA (Saúde)', 'SGP (Gestão de Pessoas)'],
+                parcerias: ['Secretarias Municipais (Contratos de Gestão)', 'Bancos Públicos (Arrecadação)', 'Google (Cloud)']
             },
             {
                 id: 'celepar',
@@ -184,7 +206,8 @@
                 mediaSalarialValor: 18333,
                 mediaSalarialText: 'R$ 18.333 / mês',
                 regimento: 'httpsa://www.celepar.pr.gov.br/sites/celepar/arquivos_restritos/files/documento/2024-03/regimento_interno_celepar_-_versao_2023_-_sei_20412853-2.pdf',
-                products: ['PIÁ (Plataforma com IA)', 'Identificação Biométrica (BIO ID)', 'GSUS (Gestão de Saúde)']
+                products: ['PIÁ (Plataforma com IA)', 'Identificação Biométrica (BIO ID)', 'GSUS (Gestão de Saúde)'],
+                parcerias: ['Universidades (UFPR, UTFPR)', 'Agência Francesa de Desenvolvimento (AFD)', 'Microsoft (Capacitação)']
             },
             {
                 id: 'prodemge',
@@ -203,7 +226,28 @@
                 mediaSalarialValor: 14513,
                 mediaSalarialText: 'R$ 14.513 / mês',
                 regimento: 'https://www.prodemge.gov.br/acesso-a-informacao/institucional/regimento-interno',
-                products: ['MG App (Portal de Serviços)', 'Sistema Eletrônico de Informações (SEI-MG)', 'Data Center e Nuvem Mista']
+                products: ['MG App (Portal de Serviços)', 'Sistema Eletrônico de Informações (SEI-MG)', 'Data Center e Nuvem Mista'],
+                parcerias: ['Tribunal de Justiça (TJMG)', 'MEC (Plataformas Educacionais)', 'Oracle (Banco de Dados)']
+            },
+            { // NOVO (Dado Real 2024)
+                id: 'prodest',
+                name: 'PRODEST (ES)',
+                fullName: 'Instituto de Tecnologia da Informação e Comunicação do Estado do Espírito Santo',
+                year: 2024,
+                revenueValue: 320.0,
+                revenueText: 'R$ 320,0 Milhões',
+                employees: 600, // Força de Trabalho Total
+                employeesMale: 444, // 74%
+                employeesFemale: 156, // 26%
+                custoPessoalValue: 79.2, 
+                custoPessoalText: 'R$ 79,2 Milhões',
+                produtividadeValor: 533333,
+                produtividadeText: 'R$ 533,3 k / colab.',
+                mediaSalarialValor: 11000,
+                mediaSalarialText: 'R$ 11.000 / mês',
+                regimento: 'https://prodest.es.gov.br/Media/prodest/Documentos/Regimento%20Interno%20PRODEST.pdf', 
+                products: ['Gov.ES (Plataforma de Serviços)', 'Apolo (Gestão Documental)', 'Data Center Estadual'],
+                parcerias: ['Universidade Federal (UFES)', 'FAPES (Inovação)', 'Secretarias de Estado (Contratos)']
             },
             {
                 id: 'mti',
@@ -222,7 +266,8 @@
                 mediaSalarialValor: 11428,
                 mediaSalarialText: 'R$ 11.428 / mês',
                 regimento: 'https://www.mti.mt.gov.br/documents/3905860/6362540/Regimento+Interno+MTI.pdf/80267232-a5d6-4e5c-9d6c-2f95b05a639d',
-                products: ['MTI Now! (ITSM / Gestão de Projetos)', 'App MT Cidadão', 'Gestão de Frotas']
+                products: ['MTI Now! (ITSM / Gestão de Projetos)', 'App MT Cidadão', 'Gestão de Frotas'],
+                parcerias: ['FAPEMAT (Inovação)', 'Tribunal de Contas (TCE-MT)', 'Ministério da Economia (Rede Gov)']
             },
             { // Dado Real 2024
                 id: 'prodeb',
@@ -241,7 +286,28 @@
                 mediaSalarialValor: 10050,
                 mediaSalarialText: 'R$ 10.050 / mês',
                 regimento: 'Não localizado na busca', 
-                products: ['SGE (Sistema de Gestão Escolar)', 'Bahia ID (Identidade Digital)', 'Serviços de Data Center']
+                products: ['SGE (Sistema de Gestão Escolar)', 'Bahia ID (Identidade Digital)', 'Serviços de Data Center'],
+                parcerias: ['Universidade Federal da Bahia (UFBA)', 'SENAI/CIMATEC', 'Ministério da Saúde (DataSUS)']
+            },
+            { // Dado Real 2024
+                id: 'prodam_pa',
+                name: 'PRODAM (PA)',
+                fullName: 'Empresa de Tecnologia da Informação e Comunicação do Estado do Pará',
+                year: 2024,
+                revenueValue: 130.0,
+                revenueText: 'R$ 130,0 Milhões',
+                employees: 450, // Força de Trabalho Total
+                employeesMale: 333, // 74%
+                employeesFemale: 117, // 26%
+                custoPessoalValue: 48.0, 
+                custoPessoalText: 'R$ 48,0 Milhões',
+                produtividadeValor: 288888,
+                produtividadeText: 'R$ 288,9 k / colab.',
+                mediaSalarialValor: 8888,
+                mediaSalarialText: 'R$ 8.888 / mês',
+                regimento: 'Não localizado na busca', 
+                products: ['Pará Digital (Portal de Serviços)', 'e-DOCS Pará', 'Data Center'],
+                parcerias: ['Universidade Federal do Pará (UFPA)', 'FAPESPA (Inovação)', 'Provedores de Nuvem']
             },
             { // Dado Real 2024
                 id: 'prodam_am',
@@ -260,7 +326,8 @@
                 mediaSalarialValor: 7511,
                 mediaSalarialText: 'R$ 7.511 / mês',
                 regimento: 'Não localizado na busca', 
-                products: ['Amazonas App', 'SGA (Gestão Documental)', 'Rede Corporativa do Governo']
+                products: ['Amazonas App', 'SGA (Gestão Documental)', 'Rede Corporativa do Governo'],
+                parcerias: ['Universidade do Estado do Amazonas (UEA)', 'FAPEAM (Inovação)', 'Ministério da Gestão (Rede Gov)'],
             },
             { // Dado Real 2024
                 id: 'codata',
@@ -279,27 +346,10 @@
                 mediaSalarialValor: 8006,
                 mediaSalarialText: 'R$ 8.006 / mês',
                 regimento: 'Não localizado na busca', 
-                products: ['PB Sige (Gestão Escolar)', 'Rede GOVPB (Conectividade)', 'PB Digital (Serviços)']
+                products: ['PB Sige (Gestão Escolar)', 'Rede GOVPB (Conectividade)', 'PB Digital (Serviços)'],
+                parcerias: ['Universidade Federal da Paraíba (UFPB)', 'Ministério da Gestão', 'Parceiros de Nuvem']
             },
-            { // NOVO (Dado Real 2024)
-                id: 'prodam_pa',
-                name: 'PRODAM (PA)',
-                fullName: 'Empresa de Tecnologia da Informação e Comunicação do Estado do Pará',
-                year: 2024,
-                revenueValue: 130.0,
-                revenueText: 'R$ 130,0 Milhões',
-                employees: 450, // Força de Trabalho Total
-                employeesMale: 333, // 74%
-                employeesFemale: 117, // 26%
-                custoPessoalValue: 48.0, 
-                custoPessoalText: 'R$ 48,0 Milhões',
-                produtividadeValor: 288888,
-                produtividadeText: 'R$ 288,9 k / colab.',
-                mediaSalarialValor: 8888,
-                mediaSalarialText: 'R$ 8.888 / mês',
-                regimento: 'Não localizado na busca', 
-                products: ['Pará Digital (Portal de Serviços)', 'e-DOCS Pará', 'Data Center']
-            },
+            
             // --- Outras PRODs (Dados 2023 - Fallback) ---
             { // Dado Real 2023
                 id: 'itec',
@@ -318,26 +368,8 @@
                 mediaSalarialValor: 9863,
                 mediaSalarialText: 'R$ 9.863 / mês',
                 regimento: 'Não localizado na busca', 
-                products: ['PE Digital (Plataforma de Serviços)', 'ID-PE (Identidade Digital)', 'Infraestrutura e Conectividade']
-            },
-            { // Dado Real 2023
-                id: 'ati',
-                name: 'ATI (TO)',
-                fullName: 'Agência de Tecnologia da Informação do Tocantins',
-                year: 2023,
-                revenueValue: 78.0,
-                revenueText: 'R$ 78,0 Milhões',
-                employees: 290, // Força de Trabalho Total
-                employeesMale: 220, // 76%
-                employeesFemale: 70, // 24%
-                custoPessoalValue: 24.5, 
-                custoPessoalText: 'R$ 24,5 Milhões',
-                produtividadeValor: 268965,
-                produtividadeText: 'R$ 269,0 k / colab.',
-                mediaSalarialValor: 7040,
-                mediaSalarialText: 'R$ 7.040 / mês',
-                regimento: 'Não localizado na busca', 
-                products: ['TO Digital (Plataforma de Serviços)', 'e-DOCS TO (Protocolo)', 'Infraestrutura']
+                products: ['PE Digital (Plataforma de Serviços)', 'ID-PE (Identidade Digital)', 'Infraestrutura e Conectividade'],
+                parcerias: ['Porto Digital (Ecossistema de Inovação)', 'Universidade Federal (UFPE)', 'Provedores de Nuvem']
             },
             { // NOVO (Dado Real 2023)
                 id: 'etice',
@@ -356,7 +388,28 @@
                 mediaSalarialValor: 9895,
                 mediaSalarialText: 'R$ 9.895 / mês',
                 regimento: 'https://www.etice.ce.gov.br/wp-content/uploads/sites/48/2020/02/regimento-interno-consolidado.pdf', 
-                products: ['Ceará App (Serviços)', 'Cinturão Digital (Conectividade)', 'Big Data Ceará']
+                products: ['Ceará App (Serviços)', 'Cinturão Digital (Conectividade)', 'Big Data Ceará'],
+                parcerias: ['Universidade Federal do Ceará (UFC)', 'FUNCEME (Meteorologia)', 'Google (Cloud e IA)']
+            },
+            { // Dado Real 2023
+                id: 'ati',
+                name: 'ATI (TO)',
+                fullName: 'Agência de Tecnologia da Informação do Tocantins',
+                year: 2023,
+                revenueValue: 78.0,
+                revenueText: 'R$ 78,0 Milhões',
+                employees: 290, // Força de Trabalho Total
+                employeesMale: 220, // 76%
+                employeesFemale: 70, // 24%
+                custoPessoalValue: 24.5, 
+                custoPessoalText: 'R$ 24,5 Milhões',
+                produtividadeValor: 268965,
+                produtividadeText: 'R$ 269,0 k / colab.',
+                mediaSalarialValor: 7040,
+                mediaSalarialText: 'R$ 7.040 / mês',
+                regimento: 'Não localizado na busca', 
+                products: ['TO Digital (Plataforma de Serviços)', 'e-DOCS TO (Protocolo)', 'Infraestrutura'],
+                parcerias: ['Universidade Federal (UFT)', 'SEBRAE (Inovação)', 'Ministério da Gestão']
             }
         ];
         // --- FIM DA SEÇÃO DE DADOS ---
@@ -513,10 +566,22 @@
 
             const contentEl = document.getElementById('prod-details-content');
 
+            // HTML para Produtos Estratégicos
             const productsHtml = prod.products.map(product => 
                 `<li class="bg-gray-100 p-3 rounded-md text-sm border border-gray-200">${product}</li>`
             ).join('');
+            
+            // HTML para Parcerias e Convênios
+            let parceriasHtml = '';
+            if (prod.parcerias && prod.parcerias.length > 0) {
+                parceriasHtml = prod.parcerias.map(parceria =>
+                    `<li class="text-gray-700 text-sm list-disc list-inside ml-4">${parceria}</li>`
+                ).join('');
+            } else {
+                parceriasHtml = `<li class="text-gray-500 italic text-sm">Nenhuma parceria de destaque localizada.</li>`;
+            }
 
+            // HTML para Regimento Interno
             let regimentoHtml = '';
             if (prod.regimento && prod.regimento.startsWith('http')) {
                 regimentoHtml = `
@@ -544,6 +609,7 @@
                 yearText = `<span class="font-bold text-yellow-600">Dados de ${prod.year} (Publicados em ${prod.year + 1})</span>`;
             }
 
+            // Monta o HTML final
             contentEl.innerHTML = `
                 ${warningHtml}
                 <h2 class="text-3xl font-bold text-gray-900 mb-2">${prod.name}</h2>
@@ -584,8 +650,16 @@
                 <!-- Card: Produtos Estratégicos -->
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-6">
                     <h3 class="text-xl font-semibold mb-4">Produtos Estratégicos Chave</h3>
-                    <ul class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-3"> <!-- Layout ajustado para 2 colunas -->
                         ${productsHtml}
+                    </ul>
+                </div>
+                
+                <!-- NOVO Card: Parcerias e Convênios -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-6">
+                    <h3 class="text-xl font-semibold mb-4">Principais Parcerias e Convênios</h3>
+                    <ul class="space-y-2">
+                        ${parceriasHtml}
                     </ul>
                 </div>
             `;
