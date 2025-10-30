@@ -15,16 +15,19 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        
+        /* ****** ALTERAÇÃO DE TEMA (Azul para Verde SC.GOV) ****** */
+
         /* Estilo para a aba ativa */
         .tab-active {
-            border-bottom-color: #2563EB; /* blue-600 */
-            color: #2563EB;
+            border-bottom-color: #16A34A; /* green-600 (Cor do SC.GOV) */
+            color: #16A34A;
             font-weight: 600;
         }
         /* Estilo para o item de navegação ativo (na segunda aba) */
         .nav-item-active {
-            background-color: #EFF6FF; /* blue-50 */
-            color: #2563EB; /* blue-600 */
+            background-color: #F0FDF4; /* green-50 */
+            color: #16A34A; /* green-600 */
             font-weight: 600;
         }
     </style>
@@ -75,7 +78,6 @@
 
                 <!-- Linha 2: Receita por Colaborador e Média Salarial -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                    <!-- ****** ALTERAÇÃO DE TEXTO AQUI ****** -->
                     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
                         <h2 class="text-2xl font-semibold mb-4 text-center">Receita por Colaborador (2023/2024)</h2>
                         <canvas id="produtividade-chart"></canvas>
@@ -127,7 +129,7 @@
 
     <script>
         // --- INÍCIO DA SEÇÃO DE DADOS ---
-        // (Variáveis 'produtividadeValor' e 'produtividadeText' mantidas por instrução)
+        // (Sem alteração nos dados)
         const prodsData = [
             { // DADOS DO CIASC (REFERÊNCIA)
                 id: 'ciasc',
@@ -437,13 +439,14 @@
          */
         function initCharts() {
             
-            // --- INÍCIO: Lógica de Destaque CIASC ---
-            const highlightColor = 'rgba(37, 99, 235, 0.9)'; // blue-600
+            // --- INÍCIO: Lógica de Destaque CIASC (Verde SC.GOV) ---
+            // ****** ALTERAÇÃO DE TEMA (Azul para Verde SC.GOV) ******
+            const highlightColor = 'rgba(22, 163, 74, 0.9)'; // green-600
             const defaultColor = 'rgba(156, 163, 175, 0.7)'; // gray-400
             
             // Cria arrays dinâmicos de estilo baseados no ID "ciasc"
             const backgroundColors = prodsData.map(prod => (prod.id === 'ciasc' ? highlightColor : defaultColor));
-            const borderColors = prodsData.map(prod => (prod.id === 'ciasc' ? 'rgba(30, 64, 175, 1)' : defaultColor));
+            const borderColors = prodsData.map(prod => (prod.id === 'ciasc' ? 'rgba(21, 128, 61, 1)' : defaultColor)); // green-700
             const borderWidths = prodsData.map(prod => (prod.id === 'ciasc' ? 2 : 0));
             
             // Labels agora incluem (2023) se o dado for daquele ano
@@ -484,13 +487,12 @@
             });
 
             // --- Gráfico de Receita por Colaborador ---
-            // ****** ALTERAÇÃO DE TEXTO AQUI ******
             createOrUpdateChart('produtividade-chart', {
                 type: 'bar',
                 data: {
                     labels: chartLabels,
                     datasets: [{
-                        label: 'Receita por Colaborador (R$ k)', // Alterado
+                        label: 'Receita por Colaborador (R$ k)', 
                         data: prodsData.map(p => (p.produtividadeValor / 1000).toFixed(1)), // Em R$ k
                         backgroundColor: backgroundColors,
                         borderColor: borderColors,
@@ -503,7 +505,7 @@
                     scales: { 
                         y: { 
                             beginAtZero: true, 
-                            title: { display: true, text: 'Receita por Colaborador (R$ k)' } // Alterado
+                            title: { display: true, text: 'Receita por Colaborador (R$ k)' } 
                         } 
                     } 
                 }
@@ -536,8 +538,9 @@
                         label: 'Distribuição de Gênero (Média)',
                         data: [totalMale, totalFemale],
                         backgroundColor: [
-                            'rgba(59, 130, 246, 0.7)', // blue-500
-                            'rgba(234, 88, 12, 0.7)'   // orange-600
+                            // ****** ALTERAÇÃO DE TEMA (Azul para Verde SC.GOV) ******
+                            'rgba(22, 163, 74, 0.7)',   // green-600
+                            'rgba(234, 88, 12, 0.7)'   // orange-600 (Mantido para contraste)
                         ],
                         hoverOffset: 4
                     }]
@@ -595,9 +598,10 @@
             // HTML para Regimento Interno
             let regimentoHtml = '';
             if (prod.regimento && prod.regimento.startsWith('http')) {
+                // ****** ALTERAÇÃO DE TEMA (Azul para Verde SC.GOV) ******
                 regimentoHtml = `
                     <a href="${prod.regimento}" target="_blank" rel="noopener noreferrer"
-                       class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+                       class="inline-block bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm">
                         Acessar Regimento Interno
                     </a>
                 `;
@@ -635,7 +639,6 @@
                             <p><strong>Receita:</strong> ${prod.revenueText}</p>
                             <p><strong>Custo com Pessoal:</strong> ${prod.custoPessoalText}</p>
                             <hr class="border-gray-200 my-2">
-                            <!-- ****** ALTERAÇÃO DE TEXTO AQUI ****** -->
                             <p><strong>Receita por Colaborador:</strong> ${prod.produtividadeText}</p>
                             <p><strong>Média Salarial:</strong> ${prod.mediaSalarialText}</p>
                         </div>
