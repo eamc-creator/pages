@@ -73,12 +73,13 @@
                     </div>
                 </div>
 
-                <!-- Linha 2: Produtividade e Média Salarial -->
+                <!-- Linha 2: Receita por Colaborador e Média Salarial -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- ****** ALTERAÇÃO DE TEXTO AQUI ****** -->
                     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                        <h2 class="text-2xl font-semibold mb-4 text-center">Produtividade (2023/2024)</h2>
+                        <h2 class="text-2xl font-semibold mb-4 text-center">Receita por Colaborador (2023/2024)</h2>
                         <canvas id="produtividade-chart"></canvas>
-                        <p class="text-xs text-gray-500 mt-4 text-center">Receita Anual / Colaborador (R$ k). *Comparação distorcida.*</p>
+                        <p class="text-xs text-gray-500 mt-4 text-center">Receita por Colaborador (R$ k). *Comparação distorcida.*</p>
                     </div>
 
                     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
@@ -126,7 +127,7 @@
 
     <script>
         // --- INÍCIO DA SEÇÃO DE DADOS ---
-        // ATUALIZAÇÃO: Produtos CIASC, Nova Seção "Parcerias", Adicionadas PRODEST(ES) e PRODAM(SP). Total = 14 PRODs.
+        // (Variáveis 'produtividadeValor' e 'produtividadeText' mantidas por instrução)
         const prodsData = [
             { // DADOS DO CIASC (REFERÊNCIA)
                 id: 'ciasc',
@@ -169,7 +170,7 @@
                 products: ['Poupatempo Digital', 'Bolsa do Povo (Gestão Social)', 'SP Sem Papel (Gestão Documental)'],
                 parcerias: ['Microsoft (Azure)', 'Oracle (Cloud)', 'Universidades (USP, Unicamp)', 'Dataprev (Troca de Dados)']
             },
-            { // NOVO (Dado Real 2024)
+            { 
                 id: 'prodam_sp',
                 name: 'PRODAM (SP-Mun)',
                 fullName: 'Empresa de Tecnologia da Informação e Comunicação do Município de São Paulo',
@@ -229,7 +230,7 @@
                 products: ['MG App (Portal de Serviços)', 'Sistema Eletrônico de Informações (SEI-MG)', 'Data Center e Nuvem Mista'],
                 parcerias: ['Tribunal de Justiça (TJMG)', 'MEC (Plataformas Educacionais)', 'Oracle (Banco de Dados)']
             },
-            { // NOVO (Dado Real 2024)
+            { 
                 id: 'prodest',
                 name: 'PRODEST (ES)',
                 fullName: 'Instituto de Tecnologia da Informação e Comunicação do Estado do Espírito Santo',
@@ -371,7 +372,7 @@
                 products: ['PE Digital (Plataforma de Serviços)', 'ID-PE (Identidade Digital)', 'Infraestrutura e Conectividade'],
                 parcerias: ['Porto Digital (Ecossistema de Inovação)', 'Universidade Federal (UFPE)', 'Provedores de Nuvem']
             },
-            { // NOVO (Dado Real 2023)
+            { 
                 id: 'etice',
                 name: 'ETICE (CE)',
                 fullName: 'Empresa de Tecnologia da Informação do Ceará',
@@ -482,20 +483,30 @@
                 options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'Nº Colaboradores' } } } }
             });
 
-            // --- Gráfico de Produtividade ---
+            // --- Gráfico de Receita por Colaborador ---
+            // ****** ALTERAÇÃO DE TEXTO AQUI ******
             createOrUpdateChart('produtividade-chart', {
                 type: 'bar',
                 data: {
                     labels: chartLabels,
                     datasets: [{
-                        label: 'Produtividade (R$ k / colab.)',
+                        label: 'Receita por Colaborador (R$ k)', // Alterado
                         data: prodsData.map(p => (p.produtividadeValor / 1000).toFixed(1)), // Em R$ k
                         backgroundColor: backgroundColors,
                         borderColor: borderColors,
                         borderWidth: borderWidths
                     }]
                 },
-                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'R$ k / Colaborador' } } } }
+                options: { 
+                    responsive: true, 
+                    plugins: { legend: { display: false } }, 
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            title: { display: true, text: 'Receita por Colaborador (R$ k)' } // Alterado
+                        } 
+                    } 
+                }
             });
 
             // --- Gráfico de Média Salarial ---
@@ -624,7 +635,8 @@
                             <p><strong>Receita:</strong> ${prod.revenueText}</p>
                             <p><strong>Custo com Pessoal:</strong> ${prod.custoPessoalText}</p>
                             <hr class="border-gray-200 my-2">
-                            <p><strong>Produtividade:</strong> ${prod.produtividadeText}</p>
+                            <!-- ****** ALTERAÇÃO DE TEXTO AQUI ****** -->
+                            <p><strong>Receita por Colaborador:</strong> ${prod.produtividadeText}</p>
                             <p><strong>Média Salarial:</strong> ${prod.mediaSalarialText}</p>
                         </div>
                     </div>
