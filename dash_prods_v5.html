@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Comparativo PRODS 2024</title>
+    <!-- Adiciona o Favicon -->
+    <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" type="image/png">
     <!-- Carrega o Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Carrega a biblioteca de gráficos Chart.js -->
@@ -36,7 +36,7 @@
 
     <!-- NOVO Header - Simulação CIASC -->
     <header class="w-full bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-4 md:px-8 py-4 flex justify-start items-center"> <!-- Alterado de justify-between para justify-start -->
             
             <!-- ****** LOGO ATUALIZADA ****** -->
             <!-- Logo CIASC -->
@@ -46,13 +46,8 @@
                      class="h-10 w-auto"> <!-- Altura ajustada -->
             </div>
             
-            <!-- Nav Simulado -->
-            <nav class="hidden md:flex space-x-6 text-gray-700 font-medium">
-                <a href="#" class="hover:text-blue-700">A Empresa</a>
-                <a href="#" class="hover:text-blue-700">Soluções</a>
-                <a href="#" class="hover:text-blue-700">Clientes</a>
-                <a href="#" class="hover:text-blue-700">Transparência</a>
-            </nav>
+            <!-- Links de navegação removidos -->
+
         </div>
     </header>
 
@@ -151,7 +146,7 @@
     </div>
 
     <!-- NOVO Footer - Simulação CIASC -->
-    <footer class="w-full bg-gray-800 text-gray-300 mt-12 py-10">
+    <footer class="w-full bg-blue-900 text-gray-300 mt-12 py-10"> <!-- Cor alterada de bg-gray-800 -->
         <div class="container mx-auto px-4 md:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 
@@ -838,4 +833,6 @@
     </script>
 </body>
 </html>
+
+
 
