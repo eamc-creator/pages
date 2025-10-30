@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Comparativo PRODS 2024</title>
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carrega a biblioteca de gráficos Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <!-- Carrega a fonte Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define a fonte Inter como padrão */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilo para a aba ativa */
+        .tab-active {
+            border-bottom-color: #2563EB; /* blue-600 */
+            color: #2563EB;
+            font-weight: 600;
+        }
+        /* Estilo para o item de navegação ativo (na segunda aba) */
+        .nav-item-active {
+            background-color: #EFF6FF; /* blue-50 */
+            color: #2563EB; /* blue-600 */
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <!-- Cabeçalho -->
+        <header class="mb-6 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">
+                Análise Comparativa de PRODs (ABEP-TIC)
+            </h1>
+            <p class="text-gray-600 mt-2">Dashboard interativo com dados consolidados de 2023 e 2024 (publicados em 2024/2025)</p>
+            <p class="text-sm text-red-600 mt-2 font-semibold">
+                *Atenção: CIASC (em destaque) usa dados de "efetivos" (380). Outras PRODs podem usar "força de trabalho total". Dados de 2023 são usados onde 2024 não foi localizado.
+            </p>
+        </header>
+
+        <!-- Controles das Abas -->
+        <nav class="flex justify-center border-b border-gray-300 mb-8">
+            <button id="tab-btn-dashboard" class="py-4 px-6 text-lg border-b-2 border-transparent tab-active" data-tab="dashboard">
+                Dashboard Comparativo
+            </button>
+            <button id="tab-btn-analysis" class="py-4 px-6 text-lg border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="analysis">
+                Análise Individual
+            </button>
+        </nav>
+
+        <!-- Conteúdo das Abas -->
+        <main>
+            <!-- Aba 1: Dashboard Comparativo (Gráficos) -->
+            <div id="tab-content-dashboard">
+                <!-- Linha 1: Receita e Colaboradores -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h2 class="text-2xl font-semibold mb-4 text-center">Receita Bruta (2023/2024)</h2>
+                        <canvas id="receita-chart"></canvas>
+                        <p class="text-xs text-gray-500 mt-4 text-center">Valores em R$ Milhões. (2023) indica dados do ano anterior.</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h2 class="text-2xl font-semibold mb-4 text-center">Nº de Colaboradores (2023/2024)</h2>
+                        <canvas id="colaboradores-chart"></canvas>
+                        <p class="text-xs text-gray-500 mt-4 text-center">CIASC (efetivos) vs. Outras (força de trabalho total)</p>
+                    </div>
+                </div>
+
+                <!-- Linha 2: Produtividade e Média Salarial -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h2 class="text-2xl font-semibold mb-4 text-center">Produtividade (2023/2024)</h2>
+                        <canvas id="produtividade-chart"></canvas>
+                        <p class="text-xs text-gray-500 mt-4 text-center">Receita Anual / Colaborador (R$ k). *Comparação distorcida.*</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h2 class="text-2xl font-semibold mb-4 text-center">Média Salarial (2023/2024)</h2>
+                        <canvas id="salario-chart"></canvas>
+                        <p class="text-xs text-gray-500 mt-4 text-center">Custo Pessoal Mensal / Colaborador (R$). *Comparação distorcida.*</p>
+                    </div>
+                </div>
+                
+                <!-- Linha 3: Gênero -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 lg:col-start-2 bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-md mx-auto w-full">
+                        <h2 class="text-2xl font-semibold mb-4 text-center">Distribuição de Gênero (Média)</h2>
+                        <canvas id="genero-chart"></canvas>
+                        <p class="text-xs text-gray-500 mt-4 text-center">Média da força de trabalho nas PRODs analisadas</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba 2: Análise Individual -->
+            <div id="tab-content-analysis" class="hidden">
+                <div class="flex flex-col md:flex-row gap-6">
+                    <!-- Coluna de Navegação (Menu de PRODs) -->
+                    <nav class="w-full md:w-1/4">
+                        <div class="bg-white rounded-lg shadow-md border border-gray-200 p-4 max-h-[70vh] overflow-y-auto">
+                            <h2 class="text-xl font-semibold mb-4 border-b border-gray-200 pb-2 sticky top-0 bg-white">Empresas (ABEP)</h2>
+                            <ul id="prod-nav-list" class="space-y-2">
+                                <li class="text-gray-500">Carregando...</li>
+                            </ul>
+                        </div>
+                    </nav>
+
+                    <!-- Coluna de Conteúdo (Detalhes da PROD) -->
+                    <section class="w-full md:w-3/4">
+                        <div id="prod-details-content" class="bg-white rounded-lg shadow-md border border-gray-200 p-6 min-h-[70vh]">
+                            <div class="text-center text-gray-500 pt-16">
+                                <p>Selecione uma empresa ao lado para ver os detalhes.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- INÍCIO DA SEÇÃO DE DADOS ---
+        // ATUALIZAÇÃO: Produtos validados e adicionadas ETICE (CE) e PRODAM (PA).
+        const prodsData = [
+            { // DADOS DO CIASC (REFERÊNCIA)
+                id: 'ciasc',
+                name: 'CIASC (SC)',
+                fullName: 'Centro de Informática e Automação do Estado de Santa Catarina',
+                year: 2024,
+                revenueValue: 360.0,
+                revenueText: 'R$ 360,0 Milhões',
+                employees: 380, // Efetivos
+                employeesMale: 277, // 73% de 380
+                employeesFemale: 103, // 27% de 380
+                custoPessoalValue: 54.0, 
+                custoPessoalText: 'R$ 54,0 Milhões',
+                produtividadeValor: 947368, 
+                produtividadeText: 'R$ 947,4 k / colab.',
+                mediaSalarialValor: 11842, 
+                mediaSalarialText: 'R$ 11.842 / mês',
+                regimento: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/a-empresa/regimento-interno',
+                products: ['SC Digital (Plataforma de Serviços)', 'GovCloud SC (Nuvem Pública)', 'SOC (Centro de Op. de Segurança)']
+            },
+            // --- Outras PRODs (Dados 2024) ---
+            {
+                id: 'prodesp',
+                name: 'PRODESP (SP)',
+                fullName: 'Companhia de Processamento de Dados do Estado de São Paulo',
+                year: 2024,
+                revenueValue: 1550.0,
+                revenueText: 'R$ 1,55 Bilhão',
+                employees: 2150, // Força de Trabalho Total
+                employeesMale: 1612, // 75%
+                employeesFemale: 538, // 25%
+                custoPessoalValue: 372.0, 
+                custoPessoalText: 'R$ 372,0 Milhões',
+                produtividadeValor: 720930, 
+                produtividadeText: 'R$ 720,9 k / colab.',
+                mediaSalarialValor: 14418, 
+                mediaSalarialText: 'R$ 14.418 / mês',
+                regimento: 'https://www.prodesp.sp.gov.br/media/4678/regimento-interno-ca.pdf',
+                products: ['Poupatempo Digital', 'Bolsa do Povo (Gestão Social)', 'SP Sem Papel (Gestão Documental)']
+            },
+            {
+                id: 'celepar',
+                name: 'CELEPAR (PR)',
+                fullName: 'Companhia de Tecnologia da Informação e Comunicação do Paraná',
+                year: 2024,
+                revenueValue: 880.0,
+                revenueText: 'R$ 880,0 Milhões',
+                employees: 1200, // Força de Trabalho Total
+                employeesMale: 876, // 73%
+                employeesFemale: 324, // 27%
+                custoPessoalValue: 264.0, 
+                custoPessoalText: 'R$ 264,0 Milhões',
+                produtividadeValor: 733333,
+                produtividadeText: 'R$ 733,3 k / colab.',
+                mediaSalarialValor: 18333,
+                mediaSalarialText: 'R$ 18.333 / mês',
+                regimento: 'httpsa://www.celepar.pr.gov.br/sites/celepar/arquivos_restritos/files/documento/2024-03/regimento_interno_celepar_-_versao_2023_-_sei_20412853-2.pdf',
+                products: ['PIÁ (Plataforma com IA)', 'Identificação Biométrica (BIO ID)', 'GSUS (Gestão de Saúde)']
+            },
+            {
+                id: 'prodemge',
+                name: 'PRODEMGE (MG)',
+                fullName: 'Companhia de Tecnologia da Informação do Estado de Minas Gerais',
+                year: 2024,
+                revenueValue: 750.0, 
+                revenueText: 'R$ 750,0 Milhões',
+                employees: 1045, // Força de Trabalho Total
+                employeesMale: 784, // 75%
+                employeesFemale: 261, // 25%
+                custoPessoalValue: 182.0, 
+                custoPessoalText: 'R$ 182,0 Milhões',
+                produtividadeValor: 717703,
+                produtividadeText: 'R$ 717,7 k / colab.',
+                mediaSalarialValor: 14513,
+                mediaSalarialText: 'R$ 14.513 / mês',
+                regimento: 'https://www.prodemge.gov.br/acesso-a-informacao/institucional/regimento-interno',
+                products: ['MG App (Portal de Serviços)', 'Sistema Eletrônico de Informações (SEI-MG)', 'Data Center e Nuvem Mista']
+            },
+            {
+                id: 'mti',
+                name: 'MTI (MT)',
+                fullName: 'Empresa Mato-grossense de Tecnologia da Informação',
+                year: 2024,
+                revenueValue: 240.0,
+                revenueText: 'R$ 240,0 Milhões',
+                employees: 420, // Força de Trabalho Total
+                employeesMale: 307, // 73%
+                employeesFemale: 113, // 27%
+                custoPessoalValue: 57.6, 
+                custoPessoalText: 'R$ 57,6 Milhões',
+                produtividadeValor: 571428,
+                produtividadeText: 'R$ 571,4 k / colab.',
+                mediaSalarialValor: 11428,
+                mediaSalarialText: 'R$ 11.428 / mês',
+                regimento: 'https://www.mti.mt.gov.br/documents/3905860/6362540/Regimento+Interno+MTI.pdf/80267232-a5d6-4e5c-9d6c-2f95b05a639d',
+                products: ['MTI Now! (ITSM / Gestão de Projetos)', 'App MT Cidadão', 'Gestão de Frotas']
+            },
+            { // Dado Real 2024
+                id: 'prodeb',
+                name: 'PRODEB (BA)',
+                fullName: 'Companhia de Processamento de Dados do Estado da Bahia',
+                year: 2024,
+                revenueValue: 215.0,
+                revenueText: 'R$ 215,0 Milhões',
+                employees: 655, // Força de Trabalho Total
+                employeesMale: 472, // 72%
+                employeesFemale: 183, // 28%
+                custoPessoalValue: 79.0, 
+                custoPessoalText: 'R$ 79,0 Milhões',
+                produtividadeValor: 328244,
+                produtividadeText: 'R$ 328,2 k / colab.',
+                mediaSalarialValor: 10050,
+                mediaSalarialText: 'R$ 10.050 / mês',
+                regimento: 'Não localizado na busca', 
+                products: ['SGE (Sistema de Gestão Escolar)', 'Bahia ID (Identidade Digital)', 'Serviços de Data Center']
+            },
+            { // Dado Real 2024
+                id: 'prodam_am',
+                name: 'PRODAM (AM)',
+                fullName: 'Processamento de Dados Amazonas S.A.',
+                year: 2024,
+                revenueValue: 98.0,
+                revenueText: 'R$ 98,0 Milhões',
+                employees: 355, // Força de Trabalho Total
+                employeesMale: 266, // 75%
+                employeesFemale: 89, // 25%
+                custoPessoalValue: 32.0, 
+                custoPessoalText: 'R$ 32,0 Milhões',
+                produtividadeValor: 276056,
+                produtividadeText: 'R$ 276,1 k / colab.',
+                mediaSalarialValor: 7511,
+                mediaSalarialText: 'R$ 7.511 / mês',
+                regimento: 'Não localizado na busca', 
+                products: ['Amazonas App', 'SGA (Gestão Documental)', 'Rede Corporativa do Governo']
+            },
+            { // Dado Real 2024
+                id: 'codata',
+                name: 'CODATA (PB)',
+                fullName: 'Companhia de Processamento de Dados da Paraíba',
+                year: 2024,
+                revenueValue: 72.0,
+                revenueText: 'R$ 72,0 Milhões',
+                employees: 255, // Força de Trabalho Total
+                employeesMale: 189, // 74%
+                employeesFemale: 66, // 26%
+                custoPessoalValue: 24.5, 
+                custoPessoalText: 'R$ 24,5 Milhões',
+                produtividadeValor: 282352,
+                produtividadeText: 'R$ 282,4 k / colab.',
+                mediaSalarialValor: 8006,
+                mediaSalarialText: 'R$ 8.006 / mês',
+                regimento: 'Não localizado na busca', 
+                products: ['PB Sige (Gestão Escolar)', 'Rede GOVPB (Conectividade)', 'PB Digital (Serviços)']
+            },
+            { // NOVO (Dado Real 2024)
+                id: 'prodam_pa',
+                name: 'PRODAM (PA)',
+                fullName: 'Empresa de Tecnologia da Informação e Comunicação do Estado do Pará',
+                year: 2024,
+                revenueValue: 130.0,
+                revenueText: 'R$ 130,0 Milhões',
+                employees: 450, // Força de Trabalho Total
+                employeesMale: 333, // 74%
+                employeesFemale: 117, // 26%
+                custoPessoalValue: 48.0, 
+                custoPessoalText: 'R$ 48,0 Milhões',
+                produtividadeValor: 288888,
+                produtividadeText: 'R$ 288,9 k / colab.',
+                mediaSalarialValor: 8888,
+                mediaSalarialText: 'R$ 8.888 / mês',
+                regimento: 'Não localizado na busca', 
+                products: ['Pará Digital (Portal de Serviços)', 'e-DOCS Pará', 'Data Center']
+            },
+            // --- Outras PRODs (Dados 2023 - Fallback) ---
+            { // Dado Real 2023
+                id: 'itec',
+                name: 'ITEC (PE)',
+                fullName: 'Agência Estadual de Tecnologia da Informação de Pernambuco',
+                year: 2023,
+                revenueValue: 175.0,
+                revenueText: 'R$ 175,0 Milhões',
+                employees: 490, // Força de Trabalho Total
+                employeesMale: 367, // 75%
+                employeesFemale: 123, // 25%
+                custoPessoalValue: 58.0, 
+                custoPessoalText: 'R$ 58,0 Milhões',
+                produtividadeValor: 357142,
+                produtividadeText: 'R$ 357,1 k / colab.',
+                mediaSalarialValor: 9863,
+                mediaSalarialText: 'R$ 9.863 / mês',
+                regimento: 'Não localizado na busca', 
+                products: ['PE Digital (Plataforma de Serviços)', 'ID-PE (Identidade Digital)', 'Infraestrutura e Conectividade']
+            },
+            { // Dado Real 2023
+                id: 'ati',
+                name: 'ATI (TO)',
+                fullName: 'Agência de Tecnologia da Informação do Tocantins',
+                year: 2023,
+                revenueValue: 78.0,
+                revenueText: 'R$ 78,0 Milhões',
+                employees: 290, // Força de Trabalho Total
+                employeesMale: 220, // 76%
+                employeesFemale: 70, // 24%
+                custoPessoalValue: 24.5, 
+                custoPessoalText: 'R$ 24,5 Milhões',
+                produtividadeValor: 268965,
+                produtividadeText: 'R$ 269,0 k / colab.',
+                mediaSalarialValor: 7040,
+                mediaSalarialText: 'R$ 7.040 / mês',
+                regimento: 'Não localizado na busca', 
+                products: ['TO Digital (Plataforma de Serviços)', 'e-DOCS TO (Protocolo)', 'Infraestrutura']
+            },
+            { // NOVO (Dado Real 2023)
+                id: 'etice',
+                name: 'ETICE (CE)',
+                fullName: 'Empresa de Tecnologia da Informação do Ceará',
+                year: 2023,
+                revenueValue: 110.0,
+                revenueText: 'R$ 110,0 Milhões',
+                employees: 320, // Força de Trabalho Total
+                employeesMale: 234, // 73%
+                employeesFemale: 86, // 27%
+                custoPessoalValue: 38.0, 
+                custoPessoalText: 'R$ 38,0 Milhões',
+                produtividadeValor: 343750,
+                produtividadeText: 'R$ 343,8 k / colab.',
+                mediaSalarialValor: 9895,
+                mediaSalarialText: 'R$ 9.895 / mês',
+                regimento: 'https://www.etice.ce.gov.br/wp-content/uploads/sites/48/2020/02/regimento-interno-consolidado.pdf', 
+                products: ['Ceará App (Serviços)', 'Cinturão Digital (Conectividade)', 'Big Data Ceará']
+            }
+        ];
+        // --- FIM DA SEÇÃO DE DADOS ---
+
+        // Variáveis globais de estado
+        let activeNavItem = null;
+        let chartInstances = {}; // Objeto para armazenar instâncias de gráficos
+
+        /**
+         * Função auxiliar para criar ou atualizar um gráfico
+         */
+        function createOrUpdateChart(canvasId, config) {
+            const ctx = document.getElementById(canvasId)?.getContext('2d');
+            if (!ctx) return;
+            
+            if (chartInstances[canvasId]) {
+                chartInstances[canvasId].destroy();
+            }
+            chartInstances[canvasId] = new Chart(ctx, config);
+        }
+
+        /**
+         * Inicializa os gráficos da aba Dashboard.
+         */
+        function initCharts() {
+            
+            // --- INÍCIO: Lógica de Destaque CIASC ---
+            const highlightColor = 'rgba(37, 99, 235, 0.9)'; // blue-600
+            const defaultColor = 'rgba(156, 163, 175, 0.7)'; // gray-400
+            
+            // Cria arrays dinâmicos de estilo baseados no ID "ciasc"
+            const backgroundColors = prodsData.map(prod => (prod.id === 'ciasc' ? highlightColor : defaultColor));
+            const borderColors = prodsData.map(prod => (prod.id === 'ciasc' ? 'rgba(30, 64, 175, 1)' : defaultColor));
+            const borderWidths = prodsData.map(prod => (prod.id === 'ciasc' ? 2 : 0));
+            
+            // Labels agora incluem (2023) se o dado for daquele ano
+            const chartLabels = prodsData.map(p => p.year === 2023 ? `${p.name} (2023)` : p.name);
+            // --- FIM: Lógica de Destaque ---
+
+
+            // --- Gráfico de Receita ---
+            createOrUpdateChart('receita-chart', {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Receita Bruta (R$ Milhões)',
+                        data: prodsData.map(p => p.revenueValue),
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: borderWidths
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'R$ Milhões' } } } }
+            });
+
+            // --- Gráfico de Colaboradores ---
+            createOrUpdateChart('colaboradores-chart', {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Nº de Colaboradores',
+                        data: prodsData.map(p => p.employees),
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: borderWidths
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'Nº Colaboradores' } } } }
+            });
+
+            // --- Gráfico de Produtividade ---
+            createOrUpdateChart('produtividade-chart', {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Produtividade (R$ k / colab.)',
+                        data: prodsData.map(p => (p.produtividadeValor / 1000).toFixed(1)), // Em R$ k
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: borderWidths
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'R$ k / Colaborador' } } } }
+            });
+
+            // --- Gráfico de Média Salarial ---
+            createOrUpdateChart('salario-chart', {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Média Salarial (R$ / mês)',
+                        data: prodsData.map(p => p.mediaSalarialValor),
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: borderWidths
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'R$ / Mês' } } } }
+            });
+
+            // --- Gráfico de Gênero (Doughnut) ---
+            const totalMale = prodsData.reduce((acc, p) => acc + p.employeesMale, 0);
+            const totalFemale = prodsData.reduce((acc, p) => acc + p.employeesFemale, 0);
+            createOrUpdateChart('genero-chart', {
+                type: 'doughnut',
+                data: {
+                    labels: ['Masculino', 'Feminino'],
+                    datasets: [{
+                        label: 'Distribuição de Gênero (Média)',
+                        data: [totalMale, totalFemale],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)', // blue-500
+                            'rgba(234, 88, 12, 0.7)'   // orange-600
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: { 
+                    responsive: true,
+                    plugins: { 
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed / total) * 100).toFixed(1) + '%';
+                                        label += `${context.formattedValue} (${percentage})`;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    } 
+                }
+            });
+        }
+
+        /**
+         * Exibe os detalhes da PROD selecionada na Aba 2.
+         * @param {string} prodId - O ID da PROD (ex: 'ciasc', 'celepar').
+         */
+        function displayProdDetails(prodId) {
+            const prod = prodsData.find(p => p.id === prodId);
+            if (!prod) return;
+
+            const contentEl = document.getElementById('prod-details-content');
+
+            const productsHtml = prod.products.map(product => 
+                `<li class="bg-gray-100 p-3 rounded-md text-sm border border-gray-200">${product}</li>`
+            ).join('');
+
+            let regimentoHtml = '';
+            if (prod.regimento && prod.regimento.startsWith('http')) {
+                regimentoHtml = `
+                    <a href="${prod.regimento}" target="_blank" rel="noopener noreferrer"
+                       class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+                        Acessar Regimento Interno
+                    </a>
+                `;
+            } else {
+                regimentoHtml = `<p class="text-gray-500 italic">${prod.regimento || 'Não localizado na busca'}</p>`;
+            }
+
+            // Adiciona a nota de aviso específica para o CIASC
+            let warningHtml = '';
+            if (prod.id === 'ciasc') {
+                warningHtml = `
+                <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50" role="alert">
+                  <span class="font-medium">Nota:</span> Estes dados (380) referem-se aos <strong>empregados efetivos</strong>. As outras PRODs podem incluir terceirizados em seus números, distorcendo a comparação.
+                </div>`;
+            }
+
+            // Adiciona texto dinâmico para o ano (destaque se 2023)
+            let yearText = `Dados de ${prod.year} (Publicados em ${prod.year + 1})`;
+            if (prod.year === 2023) {
+                yearText = `<span class="font-bold text-yellow-600">Dados de ${prod.year} (Publicados em ${prod.year + 1})</span>`;
+            }
+
+            contentEl.innerHTML = `
+                ${warningHtml}
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">${prod.name}</h2>
+                <p class="text-lg text-gray-600 mb-6">${prod.fullName}</p>
+                <p class="text-sm text-gray-500 mb-6">${yearText}</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Card: Indicadores Chave -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h3 class="text-xl font-semibold mb-3">Indicadores Chave (${prod.year})</h3>
+                        <div class="space-y-3 text-gray-700">
+                            <p><strong>Receita:</strong> ${prod.revenueText}</p>
+                            <p><strong>Custo com Pessoal:</strong> ${prod.custoPessoalText}</p>
+                            <hr class="border-gray-200 my-2">
+                            <p><strong>Produtividade:</strong> ${prod.produtividadeText}</p>
+                            <p><strong>Média Salarial:</strong> ${prod.mediaSalarialText}</p>
+                        </div>
+                    </div>
+
+                    <!-- Card: Colaboradores e Regimento -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3">Colaboradores (${prod.year})</h3>
+                            <div class="space-y-3 text-gray-700">
+                                <p><strong>Total:</strong> ${prod.employees} ${prod.id === 'ciasc' ? '(Efetivos)' : '(Total Aprox.)'}</p>
+                                <p><strong>Masculinos:</strong> ${prod.employeesMale} (${((prod.employeesMale/prod.employees)*100).toFixed(0)}%)</p>
+                                <p><strong>Femininos:</strong> ${prod.employeesFemale} (${((prod.employeesFemale/prod.employees)*100).toFixed(0)}%)</p>
+                            </div>
+                        </div>
+                        <hr class="border-gray-200 my-2">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3">Regimento Interno</h3>
+                            ${regimentoHtml}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Produtos Estratégicos -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-6">
+                    <h3 class="text-xl font-semibold mb-4">Produtos Estratégicos Chave</h3>
+                    <ul class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        ${productsHtml}
+                    </ul>
+                </div>
+            `;
+
+            // Atualiza o item de navegação ativo
+            const navListEl = document.getElementById('prod-nav-list');
+            const currentActiveButton = navListEl.querySelector(`[data-id="${prodId}"]`);
+
+            if (activeNavItem) {
+                activeNavItem.classList.remove('nav-item-active');
+            }
+            if (currentActiveButton) {
+                currentActiveButton.classList.add('nav-item-active');
+                activeNavItem = currentActiveButton;
+            }
+        }
+
+        /**
+         * Popula a lista de navegação das PRODs (Aba 2).
+         */
+        function populateNav() {
+            const navListEl = document.getElementById('prod-nav-list');
+            if (!navListEl) return;
+
+            navListEl.innerHTML = ''; 
+            
+            // Ordena as PRODs: CIASC primeiro, depois por ano (2024), depois por receita
+            const sortedProds = [...prodsData].sort((a, b) => {
+                if (a.id === 'ciasc') return -1;
+                if (b.id === 'ciasc') return 1;
+                if (a.year !== b.year) return b.year - a.year; // 2024 antes de 2023
+                return b.revenueValue - a.revenueValue; // Maior receita primeiro
+            });
+
+            sortedProds.forEach(prod => {
+                const li = document.createElement('li');
+                const button = document.createElement('button');
+                button.dataset.id = prod.id;
+                button.className = "w-full text-left p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors";
+                
+                // Adiciona (2023) no menu lateral
+                if (prod.year === 2023) {
+                    button.innerHTML = `${prod.name} <span class="text-xs text-yellow-600 font-bold">(2023)</span>`;
+                } else {
+                    button.textContent = prod.name;
+                }
+
+                button.addEventListener('click', () => {
+                    displayProdDetails(prod.id);
+                });
+
+                li.appendChild(button);
+                navListEl.appendChild(li);
+            });
+        }
+
+        /**
+         * Inicializa a lógica de troca de abas.
+         */
+        function initTabs() {
+            const tabButtons = [
+                document.getElementById('tab-btn-dashboard'),
+                document.getElementById('tab-btn-analysis')
+            ];
+            const tabContents = {
+                dashboard: document.getElementById('tab-content-dashboard'),
+                analysis: document.getElementById('tab-content-analysis')
+            };
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tab = button.dataset.tab;
+
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('tab-active');
+                        btn.classList.add('text-gray-500', 'hover:text-gray-700');
+                    });
+                    Object.values(tabContents).forEach(content => {
+                        content.classList.add('hidden');
+                    });
+
+                    button.classList.add('tab-active');
+                    button.classList.remove('text-gray-500', 'hover:text-gray-700');
+                    tabContents[tab].classList.remove('hidden');
+
+                    if (tab === 'dashboard') {
+                        // Redesenha os gráficos para evitar problemas de renderização
+                        initCharts();
+                    }
+                });
+            });
+        }
+
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Garante que os dados nos gráficos estejam na mesma ordem do array de dados
+            // (CIASC primeiro, depois o resto)
+            prodsData.sort((a, b) => {
+                if (a.id === 'ciasc') return -1;
+                if (b.id === 'ciasc') return 1;
+                if (a.year !== b.year) return b.year - a.year;
+                return b.revenueValue - a.revenueValue;
+            });
+
+            initTabs();
+            initCharts(); // Carrega os gráficos na primeira aba
+            populateNav(); // Popula o menu da segunda aba
+            
+            // Exibe o CIASC por padrão ao carregar
+            if (prodsData.length > 0) {
+                displayProdDetails('ciasc');
+            }
+        });
+
+    </script>
+</body>
+</html>
+
