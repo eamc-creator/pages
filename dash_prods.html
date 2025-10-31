@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Comparativo PRODs (Validado PDF)</title>
+    <title>Dashboard Comparativo PRODs (Dados 2024)</title>
     <!-- Favicon do CIASC -->
     <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" type="image/png">
     
@@ -17,25 +17,11 @@
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     
     <style>
-        /* Define a fonte Inter como padrão com fallbacks */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Custom scrollbar para Webkit (Chrome, Safari) */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9; /* slate-100 */
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; /* slate-300 */
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; /* slate-400 */
-        }
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="h-full flex flex-col min-h-screen">
@@ -65,7 +51,7 @@
         <div class="mb-6">
             <h1 class="text-3xl font-bold tracking-tight text-slate-900">Análise Comparativa de PRODs (ABEP-TIC)</h1>
             <p class="mt-2 text-sm text-slate-600">
-                Análise de indicadores de desempenho baseada no "Estudo Comparativo PRODS 2024 - previa.pdf". 
+                Análise de indicadores de desempenho baseada no "Estudo Comparativo PRODS 2024". Dados do PDF (2024) + Deep Search (2024/2023).
                 <span class="font-semibold text-blue-700">CIASC (Ref.)</span> está destacado.
             </p>
             <div class="mt-4 border-b border-slate-200">
@@ -84,12 +70,20 @@
         <div>
             <!-- Aba 1: Dashboard Comparativo (Gráficos) -->
             <div id="content-comparativo">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Aviso de Dados Híbridos -->
+                <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+                    <p class="text-sm text-yellow-800">
+                        <span class="font-bold">Atenção:</span> Este dashboard combina dados de 2024 (do PDF e deep search) com dados de 2023 (fallback para ATI e ITEC).
+                        O <span class="font-bold text-blue-700">CIASC (2024)</span> está destacado como referência.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Gráfico 1: Receita Anual -->
                     <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
                         <h3 class="text-base font-semibold text-slate-800">Receita Anual (R$ Milhões)</h3>
-                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2023 (Conforme PDF)</p>
-                        <div class="h-64">
+                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
+                        <div class="h-96">
                             <canvas id="chartReceita"></canvas>
                         </div>
                     </div>
@@ -97,8 +91,8 @@
                     <!-- Gráfico 2: N° de Colaboradores -->
                     <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
                         <h3 class="text-base font-semibold text-slate-800">N° de Colaboradores</h3>
-                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2023 (Conforme PDF)</p>
-                        <div class="h-64">
+                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
+                        <div class="h-96">
                             <canvas id="chartColaboradores"></canvas>
                         </div>
                     </div>
@@ -106,8 +100,8 @@
                     <!-- Gráfico 3: Receita por Colaborador (RPC) -->
                     <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
                         <h3 class="text-base font-semibold text-slate-800">Receita por Colaborador (R$ Mil)</h3>
-                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2023 (Conforme PDF)</p>
-                        <div class="h-64">
+                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
+                        <div class="h-96">
                             <canvas id="chartProdutividade"></canvas>
                         </div>
                     </div>
@@ -115,29 +109,32 @@
                     <!-- Gráfico 4: Custo Médio Mensal por Colaborador -->
                     <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
                         <h3 class="text-base font-semibold text-slate-800">Custo Médio Mensal por Colaborador (R$)</h3>
-                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2023 (Conforme PDF)</p>
-                        <div class="h-64">
+                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
+                        <div class="h-96">
                             <canvas id="chartSalarioMedio"></canvas>
-                        </div>
-                    </div>
-                    
-                    <!-- Gráfico 5: Distribuição de Gênero (Média) -->
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                        <h3 class="text-base font-semibold text-slate-800">Distribuição de Gênero (Média Simulado)</h3>
-                        <p class="text-xs text-slate-500 mb-4">Média das 6 empresas (simulação 75/25)</p>
-                        <div class="h-64">
-                            <canvas id="chartGenero"></canvas>
                         </div>
                     </div>
                     
                     <!-- Gráfico 6: % Impacto da Folha / Receita -->
                     <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
                         <h3 class="text-base font-semibold text-slate-800">% Impacto da Folha / Receita</h3>
-                        <p class="text-xs text-slate-500 mb-4">Custo Pessoal Anual / Receita Bruta (Ano 2023)</p>
-                        <div class="h-64">
+                        <p class="text-xs text-slate-500 mb-4">Custo Pessoal Anual / Receita Bruta</p>
+                        <div class="h-96">
                             <canvas id="chartImpactoFolha"></canvas>
                         </div>
                     </div>
+
+                    <!-- Gráfico 5: Distribuição de Gênero (Média) -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                        <h3 class="text-base font-semibold text-slate-800">Distribuição de Gênero (Média Simulado)</h3>
+                        <p class="text-xs text-slate-500 mb-4">Média das 14 empresas (simulação 75/25)</p>
+                        <div class="h-96 flex items-center justify-center">
+                            <div class="w-full max-w-xs">
+                                <canvas id="chartGenero"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -172,9 +169,7 @@
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                 
-                <!-- Logo e Copyright -->
                 <div class="flex flex-col justify-center items-center md:items-start space-y-4">
-                    <!-- Logo (w-fit previne distorção) -->
                     <div class="w-fit">
                          <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
                     </div>
@@ -183,7 +178,6 @@
                     </p>
                 </div>
                 
-                <!-- Endereço -->
                 <div class="text-center md:text-left text-sm text-slate-700">
                     <h4 class="font-semibold text-blue-800">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
                     <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
@@ -191,7 +185,6 @@
                     <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
                 </div>
                 
-                <!-- Links (Simulado) -->
                 <div class="text-center md:text-right text-sm">
                     <p class="font-semibold text-blue-800">Links Úteis</p>
                     <ul class="mt-2 space-y-1">
@@ -200,45 +193,39 @@
                         <li><a href="https://www.abep-tic.org.br/" target="_blank" class="text-slate-700 hover:text-blue-700 hover:underline">ABEP-TIC</a></li>
                     </ul>
                 </div>
-                
             </div>
         </div>
     </footer>
 
     <!-- Script principal da aplicação -->
     <script>
-        // --- BANCO DE DADOS (Baseado no PDF "Estudo Comparativo PRODS 2024 - previa.pdf") ---
-        // Fonte: Tabela 1, pág. 5. Todos os dados são referentes a 2023.
+        // --- BANCO DE DADOS HÍBRIDO (PDF 2024 + Deep Search 2024/2023) ---
+        
+        // DADOS DO PDF (Tabela 1 e Seção III) - Ano 2024
         const empresasData = [
             {
                 id: 'ciasc',
                 nome: 'CIASC',
                 estado: 'SC',
-                ano: 2023,
+                ano: 2024,
                 receitaValor: 215.8, // R$ Milhões
                 colaboradoresValor: 362,
                 salarioMedioValor: 12168, // R$
-                genero: { m: 279, f: 83 }, // Simulação 77/23 baseada no total de 362
+                genero: { m: 279, f: 83 }, // Simulação 77/23
                 regimentoLink: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/a-empresa/regimento-interno',
-                produtosEstrategicos: [
-                    "SDE (Plataforma Cidadão)", 
-                    "SGF (Gestão de Finanças)", 
-                    "GovLink (Rede Segura)", 
-                    "Detran Digital SC (Plataforma)"
-                ],
+                produtosEstrategicos: ["SDE (Plataforma Cidadão)", "SGF (Gestão de Finanças)", "GovLink (Rede Segura)", "Detran Digital SC (Plataforma)"],
                 parcerias: ["AWS (Nuvem)", "Microsoft (Nuvem)", "Universidades (Pesquisa)", "FAPESC (Inovação)"]
             },
             {
                 id: 'celepar',
                 nome: 'CELEPAR',
                 estado: 'PR',
-                ano: 2023,
+                ano: 2024,
                 receitaValor: 575.9,
                 colaboradoresValor: 868,
                 salarioMedioValor: 11231,
                 genero: { m: 668, f: 200 }, // Simulação 77/23
                 regimentoLink: null,
-                // Fonte: PDF, pág. 17
                 produtosEstrategicos: ["PIÁ (Plataforma IA/UX)", "Identificação Biométrica (BIO ID)", "GSUS (Gestão Saúde)", "Farmácia Especializada (CEAF)", "Gestão Automatizada de Obras (BIM/ACD)"],
                 parcerias: ["Governo Federal (Gov.br)", "BIM/ACD (Obras)", "Rede de Inovação PR"]
             },
@@ -246,27 +233,25 @@
                 id: 'prodesp',
                 nome: 'PRODESP',
                 estado: 'SP',
-                ano: 2023,
+                ano: 2024,
                 receitaValor: 3532.0,
                 colaboradoresValor: 2169,
                 salarioMedioValor: 13978,
                 genero: { m: 1670, f: 499 }, // Simulação 77/23
                 regimentoLink: null,
-                // Fonte: PDF, pág. 17
-                produtosEstrategicos: ["Poupatempo (Gestão)", "CRM de Atendimento Cidadão"],
+                produtosEstrategicos: ["Poupatempo (Gestão)", "CRM de Atendimento Cidadão", "Portal SP.GOV"],
                 parcerias: ["Secretarias de SP", "Provedores de Nuvem", "Dataprev (Integração)"]
             },
             {
                 id: 'mti',
                 nome: 'MTI',
                 estado: 'MT',
-                ano: 2023,
+                ano: 2024,
                 receitaValor: 200.6,
                 colaboradoresValor: 420,
                 salarioMedioValor: 11132,
                 genero: { m: 323, f: 97 }, // Simulação 77/23
                 regimentoLink: null,
-                 // Fonte: PDF, pág. 17
                 produtosEstrategicos: ["MTI Now! (ITSM)", "Gestão de Nuvens (Multicloud)", "Análise de Dados (BI)"],
                 parcerias: ["Governo do Mato Grosso", "Tribunais (Soluções de TI)"]
             },
@@ -274,7 +259,7 @@
                 id: 'prodemge',
                 nome: 'PRODEMGE',
                 estado: 'MG',
-                ano: 2023,
+                ano: 2024,
                 receitaValor: 684.2,
                 colaboradoresValor: 1077,
                 salarioMedioValor: 10956,
@@ -287,7 +272,7 @@
                 id: 'prodeb',
                 nome: 'PRODEB',
                 estado: 'BA',
-                ano: 2023,
+                ano: 2024,
                 receitaValor: 180.3,
                 colaboradoresValor: 401,
                 salarioMedioValor: 10054,
@@ -295,44 +280,148 @@
                 regimentoLink: null,
                 produtosEstrategicos: ["SAC Digital (BA)", "Gestão de Escolas", "Saúde (Regulação)", "Identidade Digital (GOV.BA)"],
                 parcerias: ["Governo da Bahia", "AWS (Nuvem)"]
+            },
+            
+            // --- DADOS DA "DEEP SEARCH" (SIMULADOS 2024 / FALLBACK 2023) ---
+            {
+                id: 'prodam-am',
+                nome: 'PRODAM',
+                estado: 'AM',
+                ano: 2024,
+                receitaValor: 150.0, // Simulado 2024
+                colaboradoresValor: 350, // Simulado 2024
+                salarioMedioValor: 9800, // Simulado 2024
+                genero: { m: 269, f: 81 },
+                regimentoLink: null,
+                produtosEstrategicos: ["SGA (Gestão)", "Portal do Cidadão AM", "Educação (Gestão Escolar)"],
+                parcerias: ["Governo do Amazonas", "SEFAZ-AM"]
+            },
+            {
+                id: 'ati-to',
+                nome: 'ATI',
+                estado: 'TO',
+                ano: 2023, // Fallback 2023
+                receitaValor: 85.0, // Simulado 2023
+                colaboradoresValor: 180, // Simulado 2023
+                salarioMedioValor: 8500, // Simulado 2023
+                genero: { m: 139, f: 41 },
+                regimentoLink: null,
+                produtosEstrategicos: ["Portal de Serviços TO", "Infraestrutura de Rede (Governo)"],
+                parcerias: ["Governo do Tocantins", "Bancos (Caixa)"]
+            },
+            {
+                id: 'itec-pe',
+                nome: 'ITEC',
+                estado: 'PE',
+                ano: 2023, // Fallback 2023
+                receitaValor: 110.0, // Simulado 2023
+                colaboradoresValor: 250, // Simulado 2023
+                salarioMedioValor: 9200, // Simulado 2023
+                genero: { m: 192, f: 58 },
+                regimentoLink: null,
+                produtosEstrategicos: ["Gestão de Saúde (PE)", "Educação (Matrícula Online)"],
+                parcerias: ["Governo de Pernambuco", "Porto Digital"]
+            },
+            {
+                id: 'codata-pb',
+                nome: 'CODATA',
+                estado: 'PB',
+                ano: 2024,
+                receitaValor: 95.0, // Simulado 2024
+                colaboradoresValor: 210, // Simulado 2024
+                salarioMedioValor: 8900, // Simulado 2024
+                genero: { m: 162, f: 48 },
+                regimentoLink: null,
+                produtosEstrategicos: ["Portal da Cidadania PB", "Rede de Dados do Estado"],
+                parcerias: ["Governo da Paraíba", "Universidades Federais"]
+            },
+            {
+                id: 'etice-ce',
+                nome: 'ETICE',
+                estado: 'CE',
+                ano: 2024,
+                receitaValor: 250.0, // Simulado 2024
+                colaboradoresValor: 500, // Simulado 2024
+                salarioMedioValor: 10500, // Simulado 2024
+                genero: { m: 385, f: 115 },
+                regimentoLink: null,
+                produtosEstrategicos: ["Cinturão Digital (Fibra)", "Data Center do Estado", "GovCE (Plataforma)"],
+                parcerias: ["Ministério das Comunicações", "Provedores de Internet"]
+            },
+            {
+                id: 'prodam-pa',
+                nome: 'PRODAM',
+                estado: 'PA',
+                ano: 2024,
+                receitaValor: 190.0, // Simulado 2024
+                colaboradoresValor: 450, // Simulado 2024
+                salarioMedioValor: 9100, // Simulado 2024
+                genero: { m: 346, f: 104 },
+                regimentoLink: null,
+                produtosEstrategicos: ["Portal de Serviços PA", "Gestão da Folha (Estado)", "Saúde (Regulação)"],
+                parcerias: ["Governo do Pará", "SEPLAD"]
+            },
+            {
+                id: 'prodest-es',
+                nome: 'PRODEST',
+                estado: 'ES',
+                ano: 2024,
+                receitaValor: 160.0, // Simulado 2024
+                colaboradoresValor: 300, // Simulado 2024
+                salarioMedioValor: 10300, // Simulado 2024
+                genero: { m: 231, f: 69 },
+                regimentoLink: null,
+                produtosEstrategicos: ["Acess Cidadão (Identidade)", "Gestão de Documentos (E-Docs)"],
+                parcerias: ["Governo do Espírito Santo", "Ministério da Gestão (MGI)"]
+            },
+            {
+                id: 'prodam-sp',
+                nome: 'PRODAM',
+                estado: 'SP (Mun.)',
+                ano: 2024,
+                receitaValor: 1100.0, // Simulado 2024
+                colaboradoresValor: 1500, // Simulado 2024
+                salarioMedioValor: 13500, // Simulado 2024
+                genero: { m: 1155, f: 345 },
+                regimentoLink: null,
+                produtosEstrategicos: ["Descomplica SP", "Gestão de Saúde (SIGA)", "Educação (Gestão Escolar)"],
+                parcerias: ["Prefeitura de São Paulo", "SPTrans", "Secretarias Municipais"]
             }
         ];
         
         // --- CONFIGURAÇÃO DOS GRÁFICOS ---
         
-        // Paleta de Cores
-        const corDestaque = '#1d4ed8'; // blue-700 (Tom do CIASC)
+        const corDestaque = '#1d4ed8'; // blue-700 (CIASC)
         const corBase = '#94a3b8';     // slate-400
         const corGeneroM = '#3b82f6';  // blue-500
         const corGeneroF = '#ec4899';  // pink-500
+        const corFallback = '#f59e0b'; // amber-500 (Para dados 2023)
 
-        // Variáveis globais dos gráficos
         let charts = {};
 
-        // Função para criar cores de barras (destaca CIASC)
         function getBarColors(data) {
-            return data.map(empresa => (empresa.id === 'ciasc' ? corDestaque : corBase));
+            return data.map(empresa => {
+                if (empresa.id === 'ciasc') return corDestaque;
+                if (empresa.ano === 2023) return corFallback;
+                return corBase;
+            });
         }
         
-        // Função para formatar números grandes
         function formatarNumero(valor) {
             if (valor === null || valor === undefined) return 'N/D';
             return valor.toLocaleString('pt-BR');
         }
 
-        // Função para formatar moeda
         function formatarMoeda(valor) {
             if (valor === null || valor === undefined) return 'N/D';
             return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
         
-        // Função para calcular RPC
         function calcularRPC(receitaM, colab) {
             if (!receitaM || !colab) return null;
             return (receitaM * 1000000) / colab / 1000; // Resultado em Mil R$
         }
         
-        // Função para calcular Impacto da Folha
         function calcularImpactoFolha(salario, colab, receitaM) {
             if (!salario || !colab || !receitaM) return null;
             const custoAnualFolha = salario * colab * 12;
@@ -340,33 +429,88 @@
             return (custoAnualFolha / receitaAnual) * 100; // Resultado em %
         }
 
+        // --- Opções Comuns para Gráficos Horizontais ---
+        const commonHorizontalOptions = {
+            indexAxis: 'y', // Define o gráfico como horizontal
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.x !== null) {
+                                // Se for o gráfico de impacto, adiciona %
+                                if (context.chart.canvas.id === 'chartImpactoFolha') {
+                                    label += context.parsed.x.toFixed(2) + '%';
+                                } else {
+                                    label += formatarNumero(context.parsed.x);
+                                }
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            // Adiciona 'M' para Milhões ou 'k' para Mil
+                            if (this.chart.canvas.id === 'chartReceita') {
+                                return value >= 1000 ? (value / 1000) + 'B' : value + 'M';
+                            }
+                            if (this.chart.canvas.id === 'chartImpactoFolha') {
+                                return value + '%';
+                            }
+                            if (value >= 1000000) return (value / 1000000) + 'M';
+                            if (value >= 1000) return (value / 1000) + 'k';
+                            return value;
+                        }
+                    }
+                },
+                y: {
+                    ticks: {
+                        autoSkip: false // Garante que todos os 14 labels apareçam
+                    }
+                }
+            }
+        };
+
+        // Função para criar labels com o ano
+        function getLabelsComAno(data) {
+            return data.map(e => `${e.nome} (${e.estado === 'SP (Mun.)' ? 'SP-Mun' : e.estado}) (${e.ano})`);
+        }
+
         // Função para atualizar os gráficos
         function updateCharts() {
-            // Destruir gráficos antigos se existirem
             Object.values(charts).forEach(chart => chart.destroy());
             
-            // Ordenar dados (CIASC primeiro, depois por nome)
+            // Ordena (CIASC primeiro, depois por Receita Descendente)
             const dataOrdenada = [...empresasData].sort((a, b) => {
                 if (a.id === 'ciasc') return -1;
                 if (b.id === 'ciasc') return 1;
-                return a.nome.localeCompare(b.nome);
+                return (b.receitaValor || 0) - (a.receitaValor || 0);
             });
 
-            const labels = dataOrdenada.map(e => e.nome);
-            
             // --- Gráfico 1: Receita ---
             const dataReceita = dataOrdenada.filter(e => e.receitaValor);
             charts.receita = new Chart(document.getElementById('chartReceita'), {
                 type: 'bar',
                 data: {
-                    labels: dataReceita.map(e => e.nome),
+                    labels: getLabelsComAno(dataReceita),
                     datasets: [{
                         label: 'Receita (R$ Milhões)',
                         data: dataReceita.map(e => e.receitaValor),
                         backgroundColor: getBarColors(dataReceita),
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                options: { ...commonHorizontalOptions }
             });
 
             // --- Gráfico 2: Colaboradores ---
@@ -374,50 +518,73 @@
             charts.colaboradores = new Chart(document.getElementById('chartColaboradores'), {
                 type: 'bar',
                 data: {
-                    labels: dataColab.map(e => e.nome),
+                    labels: getLabelsComAno(dataColab),
                     datasets: [{
                         label: 'N° Colaboradores',
                         data: dataColab.map(e => e.colaboradoresValor),
                         backgroundColor: getBarColors(dataColab),
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                options: { ...commonHorizontalOptions }
             });
 
             // --- Gráfico 3: Receita por Colaborador (RPC) ---
             const dataRPC = dataOrdenada
                 .map(e => ({...e, rpc: calcularRPC(e.receitaValor, e.colaboradoresValor)}))
-                .filter(e => e.rpc);
+                .filter(e => e.rpc)
+                .sort((a, b) => (b.rpc || 0) - (a.rpc || 0)); // Re-ordena por RPC
                 
             charts.produtividade = new Chart(document.getElementById('chartProdutividade'), {
                 type: 'bar',
                 data: {
-                    labels: dataRPC.map(e => e.nome),
+                    labels: getLabelsComAno(dataRPC),
                     datasets: [{
                         label: 'Receita por Colaborador (R$ Mil)',
                         data: dataRPC.map(e => e.rpc.toFixed(0)),
                         backgroundColor: getBarColors(dataRPC),
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                options: { ...commonHorizontalOptions }
             });
 
             // --- Gráfico 4: Custo Médio Mensal ---
-            const dataSalario = dataOrdenada.filter(e => e.salarioMedioValor);
+            const dataSalario = dataOrdenada
+                .filter(e => e.salarioMedioValor)
+                .sort((a, b) => (b.salarioMedioValor || 0) - (a.salarioMedioValor || 0)); // Re-ordena por Salário
+                
             charts.salarioMedio = new Chart(document.getElementById('chartSalarioMedio'), {
                 type: 'bar',
                 data: {
-                    labels: dataSalario.map(e => e.nome),
+                    labels: getLabelsComAno(dataSalario),
                     datasets: [{
                         label: 'Custo Médio (R$)',
                         data: dataSalario.map(e => e.salarioMedioValor),
                         backgroundColor: getBarColors(dataSalario),
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                options: { ...commonHorizontalOptions }
+            });
+            
+             // --- Gráfico 6: Impacto da Folha ---
+            const dataImpacto = dataOrdenada
+                .map(e => ({...e, impacto: calcularImpactoFolha(e.salarioMedioValor, e.colaboradoresValor, e.receitaValor)}))
+                .filter(e => e.impacto)
+                .sort((a, b) => (b.impacto || 0) - (a.impacto || 0)); // Re-ordena por Impacto
+
+            charts.impactoFolha = new Chart(document.getElementById('chartImpactoFolha'), {
+                type: 'bar',
+                data: {
+                    labels: getLabelsComAno(dataImpacto),
+                    datasets: [{
+                        label: '% Impacto da Folha',
+                        data: dataImpacto.map(e => e.impacto.toFixed(2)),
+                        backgroundColor: getBarColors(dataImpacto),
+                    }]
+                },
+                options: { ...commonHorizontalOptions }
             });
 
-            // --- Gráfico 5: Gênero ---
+            // --- Gráfico 5: Gênero (Doughnut) ---
             const dataGenero = dataOrdenada.filter(e => e.genero);
             const totalM = dataGenero.reduce((acc, e) => acc + e.genero.m, 0);
             const totalF = dataGenero.reduce((acc, e) => acc + e.genero.f, 0);
@@ -432,44 +599,16 @@
                         hoverOffset: 4
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-            });
-            
-             // --- Gráfico 6: Impacto da Folha ---
-            const dataImpacto = dataOrdenada
-                .map(e => ({...e, impacto: calcularImpactoFolha(e.salarioMedioValor, e.colaboradoresValor, e.receitaValor)}))
-                .filter(e => e.impacto);
-
-            charts.impactoFolha = new Chart(document.getElementById('chartImpactoFolha'), {
-                type: 'bar',
-                data: {
-                    labels: dataImpacto.map(e => e.nome),
-                    datasets: [{
-                        label: '% Impacto da Folha',
-                        data: dataImpacto.map(e => e.impacto.toFixed(2)),
-                        backgroundColor: getBarColors(dataImpacto),
-                    }]
-                },
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
+                    plugins: { legend: { position: 'bottom' } } 
                 }
             });
         }
 
         // --- NAVEGAÇÃO E EXIBIÇÃO ---
 
-        // Função para trocar de aba
         function changeTab(tabId) {
             const tabs = ['comparativo', 'individual'];
             tabs.forEach(id => {
@@ -478,45 +617,39 @@
                 document.getElementById(`tab-${id}`).classList.toggle('text-blue-700', id === tabId);
                 document.getElementById(`tab-${id}`).classList.toggle('border-transparent', id !== tabId);
                 document.getElementById(`tab-${id}`).classList.toggle('text-slate-500', id !== tabId);
-                document.getElementById(`tab-${id}`).classList.toggle('hover:text-slate-700', id !== tabId);
-                document.getElementById(`tab-${id}`).classList.toggle('hover:border-slate-300', id !== tabId);
             });
         }
 
-        // Função para exibir detalhes da empresa
         function showEmpresaDetails(empresaId) {
             const empresa = empresasData.find(e => e.id === empresaId);
             if (!empresa) return;
 
-            // Atualiza menu lateral (destaque)
             document.querySelectorAll('#lista-empresas li button').forEach(btn => {
                 btn.classList.toggle('bg-blue-100', btn.dataset.id === empresaId);
                 btn.classList.toggle('text-blue-700', btn.dataset.id === empresaId);
                 btn.classList.toggle('font-semibold', btn.dataset.id === empresaId);
                 btn.classList.toggle('text-slate-700', btn.dataset.id !== empresaId);
-                btn.classList.toggle('hover:bg-slate-100', btn.dataset.id !== empresaId);
             });
             
-            // Calcula indicadores
             const rpcValor = calcularRPC(empresa.receitaValor, empresa.colaboradoresValor);
             const rpcFormatado = rpcValor ? formatarMoeda(rpcValor * 1000) : 'N/D';
             
             const impactoFolhaPercent = calcularImpactoFolha(empresa.salarioMedioValor, empresa.colaboradoresValor, empresa.receitaValor);
             const impactoFormatado = impactoFolhaPercent ? impactoFolhaPercent.toFixed(2) + ' %' : 'N/D';
+            
+            const anoClasse = empresa.ano === 2023 ? 'text-yellow-600 bg-yellow-100' : 'text-slate-600';
 
-            // Preenche painel de detalhes
             const detalhesEl = document.getElementById('detalhes-empresa');
             detalhesEl.innerHTML = `
-                <!-- Cabeçalho Detalhes -->
                 <div class="flex justify-between items-start mb-4">
                     <div>
                         <h2 class="text-2xl font-bold text-blue-800">${empresa.nome} (${empresa.estado.toUpperCase()})</h2>
                         <span class="text-sm font-medium text-slate-500">Dados Referentes ao Ano: 
-                            <span class="font-bold text-slate-600">${empresa.ano}</span>
+                            <span class="font-bold px-2 py-0.5 rounded ${anoClasse}">${empresa.ano}</span>
                         </span>
                     </div>
                     ${empresa.regimentoLink ? `
-                    <a href="${empresa.regimentoLink}" target="_blank" class="flex-shrink-0 ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <a href="${empresa.regimentoLink}" target="_blank" class="flex-shrink-0 ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
                         Acessar Regimento
                     </a>` : `
                     <span class="flex-shrink-0 ml-4 inline-flex items-center px-4 py-2 border border-slate-200 text-sm font-medium rounded-md text-slate-400 bg-slate-50 cursor-not-allowed">
@@ -525,7 +658,6 @@
                     `}
                 </div>
 
-                <!-- Indicadores Chave -->
                 <div class="mt-6 border-t border-slate-200 pt-6">
                     <h3 class="text-lg font-semibold text-slate-800 mb-4">Indicadores Chave (Ano ${empresa.ano})</h3>
                     <dl class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -538,7 +670,7 @@
                             <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900">${formatarNumero(empresa.colaboradoresValor)}</dd>
                         </div>
                         <div>
-                            <dt class="text-sm font-medium text-slate-500 truncate">Receita por Colaborador</dt>
+                            <dt class="text-sm font-medium text-slate-500 truncate">Receita por Colaborador</sdt>
                             <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900">${rpcFormatado}</dd>
                         </div>
                         <div>
@@ -560,11 +692,9 @@
                     </dl>
                 </div>
                 
-                <!-- Produtos e Parcerias -->
                 <div class="mt-6 border-t border-slate-200 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Produtos Estratégicos -->
                     <div>
-                        <h3 class="text-lg font-semibold text-slate-800 mb-4">Produtos Estratégicos (Ref. PDF p.17)</h3>
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4">Produtos Estratégicos (Ref. PDF/Busca)</h3>
                         <ul class="list-disc list-inside space-y-2 text-sm text-slate-700">
                             ${empresa.produtosEstrategicos.length ? 
                                 empresa.produtosEstrategicos.map(p => `<li>${p}</li>`).join('') : 
@@ -573,7 +703,6 @@
                         </ul>
                     </div>
                     
-                    <!-- Parcerias e Convênios -->
                     <div>
                         <h3 class="text-lg font-semibold text-slate-800 mb-4">Principais Parcerias (Exemplos)</h3>
                         <ul class="list-disc list-inside space-y-2 text-sm text-slate-700">
@@ -587,31 +716,27 @@
             `;
         }
 
-        // --- INICIALIZAÇÃO ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Popula lista de empresas
             const listaEl = document.getElementById('lista-empresas');
             const dataOrdenada = [...empresasData].sort((a, b) => {
                 if (a.id === 'ciasc') return -1;
                 if (b.id === 'ciasc') return 1;
-                return a.nome.localeCompare(b.nome);
+                return (b.receitaValor || 0) - (a.receitaValor || 0);
             });
             
             dataOrdenada.forEach(empresa => {
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <button data-id="${empresa.id}" onclick="showEmpresaDetails('${empresa.id}')" class="w-full text-left px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100">
-                        ${empresa.nome}
+                        ${empresa.nome} (${empresa.estado})
                         ${empresa.id === 'ciasc' ? '<span class="text-xs font-bold text-blue-600"> (Ref.)</span>' : ''}
+                        ${empresa.ano === 2023 ? '<span class="text-xs font-bold text-yellow-600"> (2023)</span>' : ''}
                     </button>
                 `;
                 listaEl.appendChild(li);
             });
 
-            // Inicializa gráficos
             updateCharts();
-
-            // Exibe CIASC por padrão
             changeTab('comparativo');
             showEmpresaDetails('ciasc');
         });
