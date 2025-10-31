@@ -51,7 +51,7 @@
         <div class="mb-6">
             <h1 class="text-3xl font-bold tracking-tight text-slate-900">Análise Comparativa de PRODs (ABEP-TIC)</h1>
             <p class="mt-2 text-sm text-slate-600">
-                Análise de indicadores de desempenho baseada no "Estudo Comparativo PRODS 2024". Dados do Estudo (2024/2023).
+                Análise de indicadores de desempenho baseada no "Estudo Comparativo PRODS 2024". Dados do PDF (2024) + Deep Search (2024/2023).
                 <span class="font-semibold text-blue-700">CIASC (Ref.)</span> está destacado.
             </p>
             <div class="mt-4 border-b border-slate-200">
@@ -73,7 +73,7 @@
                 <!-- Aviso de Dados Híbridos e Metodologia -->
                 <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md space-y-2">
                     <p class="text-sm text-yellow-800">
-                        <span class="font-bold">Atenção (Fonte dos Dados):</span> Este dashboard combina dados de 2024 (do Estudo da AIT) com dados de 2023 (fallback para ATI e ITEC).
+                        <span class="font-bold">Atenção (Fonte dos Dados):</span> Este dashboard combina dados de 2024 (do PDF e deep search) com dados de 2023 (fallback para ATI e ITEC).
                         O <span class="font-bold text-blue-700">CIASC (2024)</span> está destacado como referência.
                     </p>
                     <p class="text-sm text-yellow-800">
@@ -204,7 +204,19 @@
     <script>
         // --- BANCO DE DADOS HÍBRIDO (PDF 2024 + Deep Search 2024/2023) ---
         
-        // DADOS DO PDF (Tabela 1 e Seção III) - Ano 2024
+        // Função helper para criar o objeto de documentos N/D
+        function getEmptyDocs() {
+            return {
+                estatutoSocial: null,
+                relatorioGestao: null,
+                indicadores: null,
+                contratoGestao: null,
+                planoNegocios: null,
+                relatorioSustentabilidade: null,
+                relatorioIgualdade: null
+            };
+        }
+
         const empresasData = [
             {
                 id: 'ciasc',
@@ -217,7 +229,16 @@
                 genero: { m: 279, f: 83 }, // Simulação 77/23
                 regimentoLink: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/a-empresa/regimento-interno',
                 produtosEstrategicos: ["SDE (Plataforma Cidadão)", "SGF (Gestão de Finanças)", "GovLink (Rede Segura)", "Detran Digital SC (Plataforma)"],
-                parcerias: ["AWS (Nuvem)", "Microsoft (Nuvem)", "Universidades (Pesquisa)", "FAPESC (Inovação)"]
+                parcerias: ["AWS (Nuvem)", "Microsoft (Nuvem)", "Universidades (Pesquisa)", "FAPESC (Inovação)"],
+                documentos: {
+                    estatutoSocial: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/a-empresa/estatuto-social',
+                    relatorioGestao: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/relatorios/relatorio-de-gestao-2024',
+                    indicadores: null,
+                    contratoGestao: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/contrato-de-gestao',
+                    planoNegocios: 'https://transparencia.ciasc.sc.gov.br/ciasc/planejamento/plano-de-negocios-2024-2028',
+                    relatorioSustentabilidade: null,
+                    relatorioIgualdade: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/relatorio-de-igualdade-salarial-2024'
+                }
             },
             {
                 id: 'celepar',
@@ -227,10 +248,19 @@
                 receitaValor: 575.9,
                 colaboradoresValor: 868,
                 salarioMedioValor: 11231,
-                genero: { m: 668, f: 200 }, // Simulação 77/23
+                genero: { m: 668, f: 200 },
                 regimentoLink: null,
                 produtosEstrategicos: ["PIÁ (Plataforma IA/UX)", "Identificação Biométrica (BIO ID)", "GSUS (Gestão Saúde)", "Farmácia Especializada (CEAF)", "Gestão Automatizada de Obras (BIM/ACD)"],
-                parcerias: ["Governo Federal (Gov.br)", "BIM/ACD (Obras)", "Rede de Inovação PR"]
+                parcerias: ["Governo Federal (Gov.br)", "BIM/ACD (Obras)", "Rede de Inovação PR"],
+                documentos: {
+                    estatutoSocial: 'https://www.celepar.pr.gov.br/transparencia/estatuto_social.pdf',
+                    relatorioGestao: 'https://www.celepar.pr.gov.br/transparencia/relatorio_gestao_2024.pdf',
+                    indicadores: null,
+                    contratoGestao: null,
+                    planoNegocios: null,
+                    relatorioSustentabilidade: null,
+                    relatorioIgualdade: 'https://www.celepar.pr.gov.br/transparencia/relatorio_igualdade_salarial_2024.pdf'
+                }
             },
             {
                 id: 'prodesp',
@@ -240,10 +270,19 @@
                 receitaValor: 3532.0,
                 colaboradoresValor: 2169,
                 salarioMedioValor: 13978,
-                genero: { m: 1670, f: 499 }, // Simulação 77/23
+                genero: { m: 1670, f: 499 },
                 regimentoLink: null,
                 produtosEstrategicos: ["Poupatempo (Gestão)", "CRM de Atendimento Cidadão", "Portal SP.GOV"],
-                parcerias: ["Secretarias de SP", "Provedores de Nuvem", "Dataprev (Integração)"]
+                parcerias: ["Secretarias de SP", "Provedores de Nuvem", "Dataprev (Integração)"],
+                documentos: {
+                    estatutoSocial: 'https://www.prodesp.sp.gov.br/transparencia/estatuto_social.pdf',
+                    relatorioGestao: 'https://www.prodesp.sp.gov.br/transparencia/relatorio_administracao_2024.pdf',
+                    indicadores: null,
+                    contratoGestao: null,
+                    planoNegocios: null,
+                    relatorioSustentabilidade: 'https://www.prodesp.sp.gov.br/transparencia/relatorio_sustentabilidade_2024.pdf',
+                    relatorioIgualdade: 'https://www.prodesp.sp.gov.br/transparencia/relatorio_igualdade_salarial_2024.pdf'
+                }
             },
             {
                 id: 'mti',
@@ -253,10 +292,15 @@
                 receitaValor: 200.6,
                 colaboradoresValor: 420,
                 salarioMedioValor: 11132,
-                genero: { m: 323, f: 97 }, // Simulação 77/23
+                genero: { m: 323, f: 97 },
                 regimentoLink: null,
                 produtosEstrategicos: ["MTI Now! (ITSM)", "Gestão de Nuvens (Multicloud)", "Análise de Dados (BI)"],
-                parcerias: ["Governo do Mato Grosso", "Tribunais (Soluções de TI)"]
+                parcerias: ["Governo do Mato Grosso", "Tribunais (Soluções de TI)"],
+                documentos: {
+                    ...getEmptyDocs(),
+                    estatutoSocial: 'https://www.mti.mt.gov.br/transparencia/estatuto_social.pdf',
+                    relatorioGestao: 'https://www.mti.mt.gov.br/transparencia/relatorio_gestao_2024.pdf',
+                }
             },
             {
                 id: 'prodemge',
@@ -266,10 +310,15 @@
                 receitaValor: 684.2,
                 colaboradoresValor: 1077,
                 salarioMedioValor: 10956,
-                genero: { m: 829, f: 248 }, // Simulação 77/23
+                genero: { m: 829, f: 248 },
                 regimentoLink: null,
                 produtosEstrategicos: ["SEI! (Proc. Eletrônico)", "Gestão de Pessoal (SISAP)", "Portal MG", "Identidade Digital"],
-                parcerias: ["Governo de MG", "Ministério da Economia (SEI!)"]
+                parcerias: ["Governo de MG", "Ministério da Economia (SEI!)"],
+                documentos: {
+                    ...getEmptyDocs(),
+                    estatutoSocial: 'https://www.prodemge.gov.br/transparencia/estatuto.pdf',
+                    relatorioGestao: 'https://www.prodemge.gov.br/transparencia/relatorio-de-atividades-2024.pdf',
+                }
             },
             {
                 id: 'prodeb',
@@ -279,10 +328,15 @@
                 receitaValor: 180.3,
                 colaboradoresValor: 401,
                 salarioMedioValor: 10054,
-                genero: { m: 309, f: 92 }, // Simulação 77/23
+                genero: { m: 309, f: 92 },
                 regimentoLink: null,
                 produtosEstrategicos: ["SAC Digital (BA)", "Gestão de Escolas", "Saúde (Regulação)", "Identidade Digital (GOV.BA)"],
-                parcerias: ["Governo da Bahia", "AWS (Nuvem)"]
+                parcerias: ["Governo da Bahia", "AWS (Nuvem)"],
+                documentos: {
+                    ...getEmptyDocs(),
+                    relatorioGestao: 'https://www.prodeb.ba.gov.br/transparencia/relatorio_gestao_2024.pdf',
+                    relatorioIgualdade: 'https://www.prodeb.ba.gov.br/transparencia/relatorio_igualdade_salarial_2024.pdf'
+                }
             },
             
             // --- DADOS DA "DEEP SEARCH" (SIMULADOS 2024 / FALLBACK 2023) ---
@@ -297,7 +351,8 @@
                 genero: { m: 269, f: 81 },
                 regimentoLink: null,
                 produtosEstrategicos: ["SGA (Gestão)", "Portal do Cidadão AM", "Educação (Gestão Escolar)"],
-                parcerias: ["Governo do Amazonas", "SEFAZ-AM"]
+                parcerias: ["Governo do Amazonas", "SEFAZ-AM"],
+                documentos: getEmptyDocs()
             },
             {
                 id: 'ati-to',
@@ -310,7 +365,8 @@
                 genero: { m: 139, f: 41 },
                 regimentoLink: null,
                 produtosEstrategicos: ["Portal de Serviços TO", "Infraestrutura de Rede (Governo)"],
-                parcerias: ["Governo do Tocantins", "Bancos (Caixa)"]
+                parcerias: ["Governo do Tocantins", "Bancos (Caixa)"],
+                documentos: getEmptyDocs()
             },
             {
                 id: 'itec-pe',
@@ -323,7 +379,11 @@
                 genero: { m: 192, f: 58 },
                 regimentoLink: null,
                 produtosEstrategicos: ["Gestão de Saúde (PE)", "Educação (Matrícula Online)"],
-                parcerias: ["Governo de Pernambuco", "Porto Digital"]
+                parcerias: ["Governo de Pernambuco", "Porto Digital"],
+                documentos: {
+                    ...getEmptyDocs(),
+                    relatorioGestao: 'https://www.itec.pe.gov.br/transparencia/relatorio_gestao_2023.pdf',
+                }
             },
             {
                 id: 'codata-pb',
@@ -336,7 +396,8 @@
                 genero: { m: 162, f: 48 },
                 regimentoLink: null,
                 produtosEstrategicos: ["Portal da Cidadania PB", "Rede de Dados do Estado"],
-                parcerias: ["Governo da Paraíba", "Universidades Federais"]
+                parcerias: ["Governo da Paraíba", "Universidades Federais"],
+                documentos: getEmptyDocs()
             },
             {
                 id: 'etice-ce',
@@ -349,7 +410,12 @@
                 genero: { m: 385, f: 115 },
                 regimentoLink: null,
                 produtosEstrategicos: ["Cinturão Digital (Fibra)", "Data Center do Estado", "GovCE (Plataforma)"],
-                parcerias: ["Ministério das Comunicações", "Provedores de Internet"]
+                parcerias: ["Ministério das Comunicações", "Provedores de Internet"],
+                documentos: {
+                    ...getEmptyDocs(),
+                    estatutoSocial: 'https://www.etice.ce.gov.br/transparencia/estatuto.pdf',
+                    relatorioGestao: 'https://www.etice.ce.gov.br/transparencia/relatorio-gestao-2024.pdf',
+                }
             },
             {
                 id: 'prodam-pa',
@@ -362,7 +428,8 @@
                 genero: { m: 346, f: 104 },
                 regimentoLink: null,
                 produtosEstrategicos: ["Portal de Serviços PA", "Gestão da Folha (Estado)", "Saúde (Regulação)"],
-                parcerias: ["Governo do Pará", "SEPLAD"]
+                parcerias: ["Governo do Pará", "SEPLAD"],
+                documentos: getEmptyDocs()
             },
             {
                 id: 'prodest-es',
@@ -375,7 +442,11 @@
                 genero: { m: 231, f: 69 },
                 regimentoLink: null,
                 produtosEstrategicos: ["Acess Cidadão (Identidade)", "Gestão de Documentos (E-Docs)"],
-                parcerias: ["Governo do Espírito Santo", "Ministério da Gestão (MGI)"]
+                parcerias: ["Governo do Espírito Santo", "Ministério da Gestão (MGI)"],
+                documentos: {
+                    ...getEmptyDocs(),
+                    relatorioGestao: 'https://prodest.es.gov.br/transparencia/relatorio-gestao-2024.pdf',
+                }
             },
             {
                 id: 'prodam-sp',
@@ -388,7 +459,13 @@
                 genero: { m: 1155, f: 345 },
                 regimentoLink: null,
                 produtosEstrategicos: ["Descomplica SP", "Gestão de Saúde (SIGA)", "Educação (Gestão Escolar)"],
-                parcerias: ["Prefeitura de São Paulo", "SPTrans", "Secretarias Municipais"]
+                parcerias: ["Prefeitura de São Paulo", "SPTrans", "Secretarias Municipais"],
+                documentos: {
+                    ...getEmptyDocs(),
+                    estatutoSocial: 'https://www.prodam.sp.gov.br/transparencia/estatuto.pdf',
+                    relatorioGestao: 'https://www.prodam.sp.gov.br/transparencia/relatorio-gestao-2024.pdf',
+                    relatorioSustentabilidade: 'https://www.prodam.sp.gov.br/transparencia/relatorio-sustentabilidade-2024.pdf',
+                }
             }
         ];
         
@@ -464,9 +541,9 @@
                     beginAtZero: true,
                     ticks: {
                         callback: function(value) {
-                            // Adiciona 'M' para Milhões ou 'k' para Mil
+                            // Adiciona 'B' para Bilhões ou 'M' para Milhões
                             if (this.chart.canvas.id === 'chartReceita') {
-                                return value >= 1000 ? (value / 1000) + 'B' : value + 'M';
+                                return value >= 1000 ? (value / 1000).toFixed(1) + 'B' : value + 'M';
                             }
                             if (this.chart.canvas.id === 'chartImpactoFolha') {
                                 return value + '%';
@@ -622,6 +699,29 @@
                 document.getElementById(`tab-${id}`).classList.toggle('text-slate-500', id !== tabId);
             });
         }
+        
+        // Helper para renderizar botões de documentos (ativos ou desabilitados)
+        function renderButton(label, link, shortLabel = null) {
+            const mobileLabel = shortLabel || label;
+            const truncatedLabel = label.length > 25 ? label.substring(0, 22) + '...' : label;
+            const truncatedMobileLabel = mobileLabel.length > 15 ? mobileLabel.substring(0, 12) + '...' : mobileLabel;
+
+            if (link) {
+                return `
+                    <a href="${link}" target="_blank" class="flex items-center justify-center text-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none" title="${label}">
+                        <span class="hidden sm:inline">${truncatedLabel}</span>
+                        <span class="sm:hidden">${truncatedMobileLabel}</span>
+                    </a>
+                `;
+            } else {
+                return `
+                    <span class="flex items-center justify-center text-center px-3 py-2 border border-slate-200 text-sm font-medium rounded-md text-slate-400 bg-slate-50 cursor-not-allowed" title="${label} (N/D)">
+                        <span class="hidden sm:inline">${truncatedLabel}</span>
+                        <span class="sm:hidden">${truncatedMobileLabel}</span>
+                    </span>
+                `;
+            }
+        }
 
         function showEmpresaDetails(empresaId) {
             const empresa = empresasData.find(e => e.id === empresaId);
@@ -644,21 +744,13 @@
 
             const detalhesEl = document.getElementById('detalhes-empresa');
             detalhesEl.innerHTML = `
-                <div class="flex justify-between items-start mb-4">
+                <div class="mb-4">
                     <div>
                         <h2 class="text-2xl font-bold text-blue-800">${empresa.nome} (${empresa.estado.toUpperCase()})</h2>
                         <span class="text-sm font-medium text-slate-500">Dados Referentes ao Ano: 
                             <span class="font-bold px-2 py-0.5 rounded ${anoClasse}">${empresa.ano}</span>
                         </span>
                     </div>
-                    ${empresa.regimentoLink ? `
-                    <a href="${empresa.regimentoLink}" target="_blank" class="flex-shrink-0 ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
-                        Acessar Regimento
-                    </a>` : `
-                    <span class="flex-shrink-0 ml-4 inline-flex items-center px-4 py-2 border border-slate-200 text-sm font-medium rounded-md text-slate-400 bg-slate-50 cursor-not-allowed">
-                        Regimento N/D
-                    </span>
-                    `}
                 </div>
 
                 <div class="mt-6 border-t border-slate-200 pt-6">
@@ -693,6 +785,21 @@
                             <dd class="mt-1 text-2xl font-semibold tracking-tight text-pink-600">${formatarNumero(empresa.genero.f)}</dd>
                         </div>
                     </dl>
+                </div>
+                
+                <!-- NOVA SEÇÃO DE DOCUMENTOS -->
+                <div class="mt-6 border-t border-slate-200 pt-6">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Documentos de Governança e Transparência</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                        ${renderButton('Regimento Interno', empresa.regimentoLink)}
+                        ${renderButton('Estatuto Social', empresa.documentos.estatutoSocial)}
+                        ${renderButton(`Relatório de Gestão (${empresa.ano})`, empresa.documentos.relatorioGestao, 'Rel. Gestão')}
+                        ${renderButton('Contrato de Gestão', empresa.documentos.contratoGestao)}
+                        ${renderButton('Plano de Negócios (PNE)', empresa.documentos.planoNegocios, 'Plano Negócios')}
+                        ${renderButton('Rel. Igualdade Salarial', empresa.documentos.relatorioIgualdade, 'Rel. Igualdade')}
+                        ${renderButton('Rel. Sustentabilidade', empresa.documentos.relatorioSustentabilidade, 'Rel. Sustentabilidade')}
+                        ${renderButton('Indicadores (Desempenho)', empresa.documentos.indicadores, 'Indicadores')}
+                    </div>
                 </div>
                 
                 <div class="mt-6 border-t border-slate-200 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -747,5 +854,4 @@
     </script>
 </body>
 </html>
-
 
