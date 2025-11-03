@@ -159,10 +159,14 @@
             border: 1px solid #e8e8e8;
             padding: 10px 12px;
             text-align: left;
+            white-space: nowrap; /* Impede quebra de linha na tabela completa */
         }
         .comparison-table th {
             background-color: #fafafa;
             color: #1890ff;
+            position: sticky; /* Trava o cabeçalho no scroll horizontal */
+            left: 0;
+            z-index: 2;
         }
         .comparison-table tr:nth-child(even) {
             background-color: #fafafa;
@@ -170,8 +174,13 @@
         .comparison-table tr:hover {
             background-color: #f5f5f5;
         }
+        /* Trava a primeira coluna */
         .comparison-table td:first-child {
             font-weight: 600;
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            background-color: inherit; /* Herda a cor da linha (branca ou cinza) */
         }
         .check { color: #4caf50; font-weight: 700; } 
         .partial { color: #ffeb3b; font-weight: 700; }
@@ -197,31 +206,23 @@
         .bloco-premium { border-color: #1890ff; }
         .bloco-standard { border-color: #888; }
         
-        /* Roadmap */
-        .roadmap-list { list-style: none; padding-left: 0; }
-        .roadmap-list li {
-            position: relative;
-            padding: 10px 10px 10px 40px;
-            margin-bottom: 15px;
-            background: #ffffff;
-            border-radius: 6px;
-            border: 1px solid #e8e8e8;
-            border-left: 4px solid #1890ff;
-        }
-        .roadmap-list li strong {
-            color: #333;
+        /* Select Dropdown (para SWOT) */
+        .swot-select {
             display: block;
-            font-size: 1.1rem;
-        }
-        .roadmap-list li::before {
-            content: attr(data-fase);
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: 700;
-            color: #1890ff;
-            font-size: 1.2rem;
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #333;
+            background-color: #fafafa;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 10px;
         }
         
     </style>
@@ -231,7 +232,7 @@
     <nav class="sidebar">
         <div class="sidebar-header">
             <h2>Análise de Virtualização</h2>
-            <p>Assessoria Técnica (ATI)</p>
+            <p>Assessoria de Inovação e Tecnologia (AIT)</p>
         </div>
         <ul class="nav-menu">
             <li><a href="#" class="nav-link active" onclick="showPage('page-sumario', this)">Sumário Executivo</a></li>
@@ -311,7 +312,7 @@
                 </div>
                 <div class="card">
                     <h3>Scorecard de Solução (Radar)</h3>
-                    <p>Comparação de alto nível entre as principais alternativas. Custo é invertido (5 = Baixo Custo).</p>
+                    <p>Comparação de alto nível entre as principais alternativas, incluindo Huawei DCS. Custo é invertido (5 = Baixo Custo).</p>
                     <div class="chart-container" style="height: 250px;">
                         <canvas id="radarChart"></canvas>
                     </div>
@@ -319,7 +320,7 @@
             </div>
 
             <div class="card" style="margin-top: 20px;">
-                <h3>Matriz de Funcionalidades (Dados Reais do CSV)</h3>
+                <h3>Matriz de Funcionalidades (Simplificada)</h3>
                 <div class="table-wrapper">
                     <table class="comparison-table">
                         <thead>
@@ -353,7 +354,7 @@
                                 <td class="partial">Muito Bom</td>
                             </tr>
                             <tr>
-                                <td>Replicação Assíncrona Nativa</td>
+                                Gentileza gera gentileza.</td>
                                 <td class="check">Sim (vSphere Rep)</td>
                                 <td class="check">Sim (via Ceph/ZFS)</td>
                                 <td class="check">Sim (Async DR)</td>
@@ -393,6 +394,47 @@
                 </div>
             </div>
 
+            <div class="card" style="margin-top: 20px;">
+                <h3>Matriz de Funcionalidades (Completa - Rolar para ver)</h3>
+                <div class="table-wrapper">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Funcionalidade</th>
+                                <th>VMware vSphere</th>
+                                <th>Proxmox VE</th>
+                                <th>Nutanix AHV</th>
+                                <th>Scale Computing</th>
+                                <th>Oracle Linux VM</th>
+                                <th>Huawei DCS</th>
+                                <th>Red Hat OpenShift</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Hipervisor Base</td><td>ESXi</td><td>KVM</td><td>KVM</td><td>KVM</td><td>KVM</td><td>KVM (via FusionSphere)</td><td>KVM</td></tr>
+                            <tr><td>Desempenho (Guest Linux)</td><td>Bom</td><td>Excelente</td><td>Excelente</td><td>Excelente</td><td>Excelente</td><td>Muito Bom</td><td>Excelente</td></tr>
+                            <tr><td>Suporte Nativo a Contêineres</td><td>Sim (Tanzu)</td><td>Sim (LXC)</td><td>Sim (Karbon)</td><td>Não</td><td>Não</td><td>Sim</td><td>Sim (Nativo)</td></tr>
+                            <tr><td>Replicação Síncrona Nativa</td><td>Sim (vSAN Stretched)</td><td>Sim (via Ceph)</td><td>Sim (Metro Availability)</td><td>Sim</td><td>Não</td><td>Sim</td><td>Não (Requer 3ºs)</td></tr>
+                            <tr><td>Replicação Assíncrona Nativa</td><td>Sim (vSphere Replication)</td><td>Sim (via Ceph/ZFS)</td><td>Sim (Async DR)</td><td>Sim (RPO 5 min)</td><td>Não (Requer 3ºs)</td><td>Sim (UltraVR)</td><td>Não (Requer 3ºs)</td></tr>
+                            <tr><td>Orquestração de DR Nativa</td><td>Sim (SRM, pago)</td><td>Manual/Scripts</td><td>Sim (Prism Central)</td><td>Sim</td><td>Não</td><td>Sim</td><td>Manual (Baseado em OADP)</td></tr>
+                            <tr><td>Solução de Backup Nativa</td><td>Não</td><td>Sim (Proxmox Backup Server)</td><td>Sim (Snapshots/Replicação)</td><td>Sim (Snapshots)</td><td>Não (Requer 3ºs)</td><td>Sim (eBackup)</td><td>Sim (OADP)</td></tr>
+                            <tr><td>Simplicidade de Gestão</td><td>Moderada</td><td>Moderada</td><td>Excelente</td><td>Excelente</td><td>Moderada</td><td>Moderada-Alta</td><td>Alta (Foco K8s)</td></tr>
+                            <tr><td>Ferramenta de Migração</td><td>VMware N/A</td><td>Sim (Importador Integrado)</td><td>Sim (Nutanix Move)</td><td>Sim (SC//Migrate)</td><td>Sim (virt-v2v)</td><td>Sim (Rainbow)</td><td>Sim (MTC)</td></tr>
+                            <tr><td>Balanceamento de Carga</td><td>DRS (Distribuído)</td><td>Manual / terceiros</td><td>ADS (Nativo)</td><td>Failover automático</td><td>Política de agendamento</td><td>QoS / balanceamento nativo</td><td>Nativo (K8s Scheduler)</td></tr>
+                            <tr><td>Modelo de Licenciamento</td><td>Subscrição por Core</td><td>Gratuito / Suporte Pago</td><td>Subscrição HCI</td><td>Subscrição HCI</td><td>Gratuito / Suporte Pago</td><td>Subscrição por CPU</td><td>Subscrição por Core</td></tr>
+                            <tr><td>Custo de Software de Terceiros</td><td>$$ (SRM, Veeam, etc.)</td><td>$ (PBS nativo/gratuito)</td><td>$ (Funcionalidade Nativa)</td><td>$ (Funcionalidade Nativa)</td><td>$$ (RackWare, etc.)</td><td>$ (Funcionalidade Nativa)</td><td>$ (Funcionalidade Nativa)</td></tr>
+                            <tr><td>Custo Total Estimado (5 anos)</td><td>Muito Alto</td><td>Baixo</td><td>Muito Alto</td><td>Moderado</td><td>Muito Baixo</td><td>Alto</td><td>Alto</td></tr>
+                            <tr><td>RBAC (Controle de Acesso)</td><td>Sim (Avançado)</td><td>Sim (Avançado)</td><td>Sim (Avançado)</td><td>Sim (Foco no Appliance)</td><td>Sim (Integrado)</td><td>Sim (Avançado)</td><td>Sim (Avançado)</td></tr>
+                            <tr><td>Criptografia Nativa</td><td>Sim</td><td>Sim (via ZFS/LUKS)</td><td>Sim</td><td>Sim</td><td>Sim (via LUKS)</td><td>Sim</td><td>Sim</td></tr>
+                            <tr><td>Firewall Integrado</td><td>Não (Requer NSX)</td><td>Sim (Distribuído)</td><td>Sim (Flow)</td><td>Sim</td><td>Sim (firewalld/iptables)</td><td>Sim</td><td>Sim (NetworkPolicies)</td></tr>
+                            <tr><td>Opções de Suporte Comercial</td><td>Premier (SLA corporativo)</td><td>Basic a Enterprise</td><td>Production a Mission Critical</td><td>Suporte 24/7/365 (ScaleCare)</td><td>Oracle Premier Support</td><td>Basic a Premier</td><td>Premium (SLA corporativo)</td></tr>
+                            <tr><td>Comunidade Open-Source</td><td>Fraca</td><td>Muito Forte</td><td>Moderada</td><td>Fraca</td><td>Forte (oVirt)</td><td>Fraca</td><td>Muito Forte (OKD)</td></tr>
+                            <tr><td>Ciclo de Suporte Ativo</td><td>Longo (5+ anos)</td><td>Contínuo</td><td>3-5 anos por versão</td><td>Contínuo com subscrição</td><td>Longo (5+ anos)</td><td>3-5 anos por versão</td><td>Contínuo</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
         <div id="page-custo" class="page">
@@ -408,18 +450,27 @@
                     </div>
                 </div>
                 <div class="card">
-                    <h3>Quadrante de Posicionamento (Gestão vs. Custo)</h3>
-                    <p>O quadrante superior direito representa o ideal: "Simples de Gerir" e "Baixo Custo" (Custo-Benefício).</p>
+                    <h3>Comparativo: Gestão vs. Custo-Benefício</h3>
+                    <p>Comparação direta entre Simplicidade de Gestão (1=Complexo, 5=Simples) e Custo-Benefício (1=Baixo, 5=Alto).</p>
                     <div class="chart-container">
-                        <canvas id="scatterChart"></canvas>
+                        <canvas id="gestaoCustoChart"></canvas>
                     </div>
                 </div>
             </div>
 
             <div class="card" style="margin-top: 20px;">
-                <h3>Análise SWOT: Proxmox VE (Principal Recomendação)</h3>
+                <h3>Análise SWOT Interativa</h3>
+                <select id="swot-select" class="swot-select" onchange="updateSwot(this.value)">
+                    <option value="proxmox">Proxmox VE</option>
+                    <option value="vmware">VMware vSphere</option>
+                    <option value="scale">Scale Computing</option>
+                    <option value="nutanix">Nutanix AHV</option>
+                    <option value="olvm">Oracle Linux VM (OLVM)</option>
+                    <option value="huawei">Huawei DCS</option>
+                    <option value="redhat">Red Hat OpenShift</option>
+                </select>
                 <div class="table-wrapper">
-                    <table class="comparison-table">
+                    <table class="comparison-table" id="swot-table">
                         <thead>
                             <tr>
                                 <th style="width: 50%;">Forças (Strengths)</th>
@@ -428,16 +479,16 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>• Desempenho superior em Linux (KVM/VirtIO).</td>
-                                <td>• Requer proficiência técnica em Linux/Debian.</td>
+                                <td id="swot-s1">• Desempenho superior em Linux (KVM/VirtIO).</td>
+                                <td id="swot-w1">• Requer proficiência técnica em Linux/Debian.</td>
                             </tr>
                             <tr>
-                                <td>• TCO "Baixo" (Licença gratuita, suporte opcional).</td>
-                                <td>• Suporte comercial (opcional) pode não ter o mesmo SLA de incumbents.</td>
+                                <td id="swot-s2">• TCO "Baixo" (Licença gratuita, suporte opcional).</td>
+                                <td id="swot-w2">• Suporte comercial (opcional) pode não ter o mesmo SLA de incumbents.</td>
                             </tr>
                             <tr>
-                                <td>• Ecossistema nativo completo (Backup, Storage, LXC).</td>
-                                <td>• Orquestração de DR nativa é manual (scripts) vs. "SRM".</td>
+                                <td id="swot-s3">• Ecossistema nativo completo (Backup, Storage, LXC).</td>
+                                <td id="swot-w3">• Orquestração de DR nativa é manual (scripts) vs. "SRM".</td>
                             </tr>
                         </tbody>
                         <thead>
@@ -448,12 +499,12 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>• Captura de clientes VMware insatisfeitos com o TCO.</td>
-                                <td>• Forte domínio legado da VMware em contas corporativas.</td>
+                                <td id="swot-o1">• Captura de clientes VMware insatisfeitos com o TCO.</td>
+                                <td id="swot-t1">• Forte domínio legado da VMware em contas corporativas.</td>
                             </tr>
                             <tr>
-                                <td>• Plataforma ideal para DR e Tiers de serviço "Standard".</td>
-                                <td>• Concorrência de outras KVM (OLVM) e HCI (Scale).</td>
+                                <td id="swot-o2">• Plataforma ideal para DR e Tiers de serviço "Standard".</td>
+                                <td id="swot-t2">• Concorrência de outras KVM (OLVM) e HCI (Scale).</td>
                             </tr>
                         </tbody>
                     </table>
@@ -467,7 +518,7 @@
 
             <div class="grid-container grid-col-2">
                 <div class="card">
-                    <h3>Recomendações Estratégicas por Cenário</h3>
+                    <h3>Cenários Recomendados</h3>
                     <ul>
                         <li>
                             <strong>Máximo Custo-Benefício e Desempenho (Ambientes Mistos):</strong>
@@ -487,30 +538,29 @@
                         </li>
                     </ul>
                 </div>
+
                 <div class="card">
-                    <h3>Roadmap Proposto</h3>
-                    <ul class="roadmap-list">
-                        <li data-fase="1">
-                            <strong>Q4/2025: Análise de Mercado (Concluído)</strong>
-                            Levantamento técnico e de TCO (Relatório Anexo).
-                        </li>
-                        <li data-fase="2">
-                            <strong>Q1/2026: Prova de Conceito (PoC)</strong>
-                            Instalação de Proxmox VE e Scale Computing em laboratório. Testes de migração (V2V) e desempenho de I/O Linux.
-                        </li>
-                        <li data-fase="3">
-                            <strong>Q2/2026: Definição de Arquitetura de DR</strong>
-                            Desenho do novo plano de DR usando replicação nativa (Proxmox/ZFS) para o Tier "Standard".
-                        </li>
-                        <li data-fase="4">
-                            <strong>Q3/2026: Decisão Go/No-Go</strong>
-                            Apresentação dos resultados da PoC e decisão final de implementação em produção.
-                        </li>
-                    </ul>
-                     <hr style="border-color: #e8e8e8; margin-top: 20px;">
-                     <p><strong>Documentação de Apoio:</strong> Os dados completos estão disponíveis nos relatórios CSV e de Análise Estratégica fornecidos.</p>
-                     <p><strong>Contato:</strong> Assessoria Técnica de Inovação (ATI)</p>
+                    <h3>Roadmap Proposto (Visualização)</h3>
+                    <p>Sequência e duração estimada das fases do projeto. Fase 1 marcada como "Concluída".</p>
+                    <div class="chart-container" style="height: 200px;">
+                        <canvas id="roadmapChart"></canvas>
+                    </div>
                 </div>
+            </div>
+
+            <div class="card" style="margin-top: 20px;">
+                <h3>Links e Contato</h3>
+                <p>Acesse os documentos originais para análise detalhada:</p>
+                <ul>
+                    <li>
+                        <a href="https://docs.google.com/document/d/18kwg5Nj2cR7oPl4Mvu4BzP6mV2ZZ4-wFdmnm8lXMdrk/edit?tab=t.0" target="_blank" style="color: #1890ff;">Documento de Análise Completa (Google Docs)</a>
+                    </li>
+                    <li>
+                        <a href="https://docs.google.com/spreadsheets/d/1-E_7kOxYGwHOQw14l0N6CPeovV1yOXZt/edit?gid=609538798#gid=609538798" target="_blank" style="color: #1890ff;">Planilha Comparativa (Google Sheets)</a>
+                    </li>
+                </ul>
+                <hr style="border-color: #e8e8e8; margin-top: 20px;">
+                <p><strong>Contato:</strong> Assessoria de Inovação e Tecnologia (AIT)</p>
             </div>
             
         </div>
@@ -544,60 +594,100 @@
                 clickedLink.classList.add('active');
             }
         }
+        
+        // --- SCRIPT PARA SWOT INTERATIVO ---
+        const swotData = {
+            proxmox: {
+                s: ["• Desempenho superior em Linux (KVM/VirtIO).", "• TCO \"Baixo\" (Licença gratuita, suporte opcional).", "• Ecossistema nativo completo (Backup, Storage, LXC)."],
+                w: ["• Requer proficiência técnica em Linux/Debian.", "• Suporte comercial (opcional) pode não ter o mesmo SLA de incumbents.", "• Orquestração de DR nativa é manual (scripts) vs. \"SRM\"."],
+                o: ["• Captura de clientes VMware insatisfeitos com o TCO.", "• Plataforma ideal para DR e Tiers de serviço \"Standard\"."],
+                t: ["• Forte domínio legado da VMware em contas corporativas.", "• Concorrência de outras KVM (OLVM) e HCI (Scale)."]
+            },
+            vmware: {
+                s: ["• Ecossistema de hardware e software mais longo e maduro.", "• Features corporativas robustas (DRS, vMotion, SRM).", "• Ampla base de profissionais certificados."],
+                w: ["• TCO \"Muito Alto\", agravado pelo novo licenciamento por core.", "• Desempenho inferior em I/O para guests Linux (vs. KVM).", "• Alto risco de \"vendor lock-in\"."],
+                o: ["• Manter clientes com cargas críticas Windows e dependência de SRM.", "• Focar em serviços de valor agregado (Tanzu, NSX)."],
+                t: ["• Fuga de clientes para KVM (Proxmox, Nutanix) devido a custo.", "• Incerteza de mercado pós-aquisição pela Broadcom."]
+            },
+            scale: {
+                s: ["• Simplicidade de gestão \"Excelente\" (conceito de appliance).", "• Plataforma HCI nativa com auto-recuperação.", "• Replicação e DR nativos e fáceis de usar."],
+                w: ["• Ecossistema de integração \"Fraco\" (comparado a VMware).", "• Custo de subscrição \"Moderado\".", "• Menos flexibilidade granular para administradores avançados."],
+                o: ["• Ideal para equipes de TI enxutas que precisam de automação.", "• Mercado de SMB/Mid-market e escritórios remotos (ROBO)."],
+                t: ["• Concorrência direta da Nutanix (mais features) e Proxmox (menor custo).", "• Percepção de ser uma solução de \"nicho\"."]
+            },
+            nutanix: {
+                s: ["• Simplicidade de gestão \"Excelente\" (Prism Central).", "• Hipervisor KVM (AHV) com desempenho forte em Linux.", "• Solução HCI líder de mercado com features nativas (Flow, Move)."],
+                w: ["• TCO \"Muito Alto\", similar ao VMware.", "• Ecossistema de hardware (HCL) mais restrito que VMware.", "• Licenciamento complexo baseado em subscrição e features."],
+                o: ["• Capturar clientes VMware que buscam HCI mas querem migrar do ESXi.", "• Liderar o mercado de nuvem privada/híbrida."],
+                t: ["• Concorrência de preço agressiva do Proxmox.", "• Concorrência de simplicidade do Scale Computing."]
+            },
+            olvm: {
+                s: ["• TCO \"Muito Baixo\" (licença gratuita).", "• Desempenho \"Excelente\" em Linux (KVM).", "• Integração total com ecossistema Oracle (DBs, OCI)."],
+                w: ["• Orquestração de DR e Backup nativos \"Inexistentes\" (requer 3ºs).", "• Complexidade de gestão \"Moderada\" (baseado em oVirt).", "• Ferramentas de migração menos robustas que concorrentes."],
+                o: ["• Escolha óbvia para clientes com forte base Oracle.", "• Plataforma de DR de baixo custo para ambientes de desenvolvimento."],
+                t: ["• Forte concorrência do Proxmox (que tem mais features nativas).", "• Percepção de ser focado apenas no ecossistema Oracle."]
+            },
+            huawei: {
+                s: ["• Solução full-stack (Hardware + Software) de um único fornecedor.", "• Fortes capacidades nativas de DR e Backup (UltraVR, eBackup).", "• Desempenho \"Muito Bom\" com hipervisor KVM customizado."],
+                w: ["• Ecossistema de integração \"Fraco\" fora do hardware Huawei.", "• Complexidade de gestão \"Moderada-Alta\".", "• TCO \"Alto\" e dependência de um único fornecedor."],
+                o: ["• Clientes que buscam solução \"turn-key\" de um único vendor.", "• Forte presença em mercados de Telecom e Ásia/Pacífico."],
+                t: ["• Restrições geopolíticas e de mercado.", "• Concorrência de incumbents (VMware, Nutanix) e de custo (Proxmox)."]
+            },
+            redhat: {
+                s: ["• Plataforma líder para contêineres (K8s nativo).", "• Desempenho \"Excelente\" em Linux (KVM).", "• Ecossistema Open Source \"Muito Forte\"."],
+                w: ["• Foco primário em contêineres, não em VMs tradicionais (KubeVirt).", "• TCO \"Alto\" (subscrição por core).", "• Curva de aprendizado íngreme (foco em K8s)."],
+                o: ["• Empresas adotando estratégia \"Cloud-Native\" e \"Containers-first\".", "• Ambientes que precisam unificar gestão de VMs e Contêineres."],
+                t: ["• Concorrência de outras plataformas K8s (Rancher, etc.).", "• Não é ideal para cargas de trabalho legadas (VMs Windows)."]
+            }
+        };
+
+        function updateSwot(vendor) {
+            const data = swotData[vendor];
+            if (!data) return;
+
+            document.getElementById('swot-s1').innerHTML = data.s[0] || "";
+            document.getElementById('swot-s2').innerHTML = data.s[1] || "";
+            document.getElementById('swot-s3').innerHTML = data.s[2] || "";
+            document.getElementById('swot-w1').innerHTML = data.w[0] || "";
+            document.getElementById('swot-w2').innerHTML = data.w[1] || "";
+            document.getElementById('swot-w3').innerHTML = data.w[2] || "";
+            document.getElementById('swot-o1').innerHTML = data.o[0] || "";
+            document.getElementById('swot-o2').innerHTML = data.o[1] || "";
+            document.getElementById('swot-t1').innerHTML = data.t[0] || "";
+            document.getElementById('swot-t2').innerHTML = data.t[1] || "";
+        }
 
         // --- SCRIPT PARA GRÁFICOS (CHART.JS) ---
-        // *** DADOS ATUALIZADOS DOS ARQUIVOS ANEXOS ***
         function initializeCharts() {
             const primaryColor = '#1890ff';
             const secondaryColor = '#ff9800';
             const thirdColor = '#4caf50';
             const fourthColor = '#f44336';
-            const mutedColor = '#d9d9d9';
+            const fifthColor = '#9c27b0'; // Roxo (OLVM)
+            const sixthColor = '#607d8b'; // Cinza (Huawei)
             
             const gridColor = '#e0e0e0';
             const labelColor = '#555';
             const legendColor = '#555';
             
-            // Dicionários para traduzir texto em números (dos arquivos)
+            // Dicionários para traduzir texto em números
             const custoParaNumero = {
-                "Muito Baixo": 1,
-                "Baixo": 2,
-                "Moderado": 3,
-                "Alto": 4,
-                "Muito Alto": 5
+                "Muito Baixo": 1, "Baixo": 2, "Moderado": 3, "Alto": 4, "Muito Alto": 5
             };
             const custoBeneficioParaNumero = { // Invertido (5 = melhor)
-                "Muito Baixo": 5,
-                "Baixo": 4,
-                "Moderado": 3,
-                "Alto": 2,
-                "Muito Alto": 1
+                "Muito Baixo": 5, "Baixo": 4, "Moderado": 3, "Alto": 2, "Muito Alto": 1
             };
             const gestaoParaNumero = {
-                "Excelente": 5,
-                "Moderada": 3,
-                "Moderada-Alta": 2,
-                "Alta": 1
+                "Excelente": 5, "Moderada": 3, "Moderada-Alta": 2, "Alta": 1
             };
             const desempenhoParaNumero = {
-                "Excelente": 5,
-                "Muito Bom": 4,
-                "Bom": 3
+                "Excelente": 5, "Muito Bom": 4, "Bom": 3
             };
-            const continuidadeParaNumero = { // Sim/Nativo=5, Sim/Pago=3, Não=1
-                "VMware": 3, // Rep Assíncrona (Sim) + Backup (Não) + DR (Pago) = Misto
-                "Proxmox": 5, // Rep (Sim) + Backup (Sim) + DR (Manual) = Forte
-                "Nutanix": 5, // Tudo Sim
-                "Scale": 5, // Tudo Sim
-                "OLVM": 1 // Quase tudo Não
+            const continuidadeParaNumero = {
+                "VMware": 3, "Proxmox": 5, "Nutanix": 5, "Scale": 5, "OLVM": 1, "Huawei": 5
             };
             const ecossistemaParaNumero = {
-                "Muito Forte": 5,
-                "Longo": 5, // VMware
-                "Forte": 4,
-                "Moderada": 3,
-                "Contínuo": 3, // Proxmox
-                "Fraca": 1
+                "Muito Forte": 5, "Longo": 5, "Forte": 4, "Moderada": 3, "Contínuo": 3, "Fraca": 1
             };
 
 
@@ -611,54 +701,38 @@
                         datasets: [
                             {
                                 label: 'VMware vSphere',
-                                data: [
-                                    desempenhoParaNumero["Bom"],
-                                    continuidadeParaNumero["VMware"],
-                                    gestaoParaNumero["Moderada"],
-                                    ecossistemaParaNumero["Longo"],
-                                    custoBeneficioParaNumero["Muito Alto"]
-                                ], // [3, 3, 3, 5, 1]
-                                backgroundColor: 'rgba(24, 144, 255, 0.2)', // Azul
+                                data: [3, 3, 3, 5, 1],
+                                backgroundColor: 'rgba(24, 144, 255, 0.2)',
                                 borderColor: primaryColor,
                                 borderWidth: 2
                             },
                             {
                                 label: 'Proxmox VE',
-                                data: [
-                                    desempenhoParaNumero["Excelente"],
-                                    continuidadeParaNumero["Proxmox"],
-                                    gestaoParaNumero["Moderada"],
-                                    ecossistemaParaNumero["Muito Forte"],
-                                    custoBeneficioParaNumero["Baixo"]
-                                ], // [5, 5, 3, 5, 4]
-                                backgroundColor: 'rgba(255, 152, 0, 0.2)', // Laranja
+                                data: [5, 5, 3, 5, 4],
+                                backgroundColor: 'rgba(255, 152, 0, 0.2)',
                                 borderColor: secondaryColor,
                                 borderWidth: 2
                             },
                             {
                                 label: 'Nutanix AHV',
-                                data: [
-                                    desempenhoParaNumero["Excelente"],
-                                    continuidadeParaNumero["Nutanix"],
-                                    gestaoParaNumero["Excelente"],
-                                    ecossistemaParaNumero["Moderada"],
-                                    custoBeneficioParaNumero["Muito Alto"]
-                                ], // [5, 5, 5, 3, 1]
-                                backgroundColor: 'rgba(76, 175, 80, 0.2)', // Verde
+                                data: [5, 5, 5, 3, 1],
+                                backgroundColor: 'rgba(76, 175, 80, 0.2)',
                                 borderColor: thirdColor,
                                 borderWidth: 2
                             },
                             {
                                 label: 'Scale Computing',
-                                data: [
-                                    desempenhoParaNumero["Excelente"],
-                                    continuidadeParaNumero["Scale"],
-                                    gestaoParaNumero["Excelente"],
-                                    ecossistemaParaNumero["Fraca"],
-                                    custoBeneficioParaNumero["Moderado"]
-                                ], // [5, 5, 5, 1, 3]
-                                backgroundColor: 'rgba(244, 67, 54, 0.2)', // Vermelho
+                                data: [5, 5, 5, 1, 3],
+                                backgroundColor: 'rgba(244, 67, 54, 0.2)',
                                 borderColor: fourthColor,
+                                borderWidth: 2
+                            },
+                            // DADO NOVO
+                            {
+                                label: 'Huawei DCS',
+                                data: [4, 5, 2, 1, 2],
+                                backgroundColor: 'rgba(96, 125, 139, 0.2)',
+                                borderColor: sixthColor,
                                 borderWidth: 2
                             }
                         ]
@@ -666,35 +740,13 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        scales: {
-                            r: {
-                                angleLines: { color: gridColor },
-                                grid: { color: gridColor },
-                                pointLabels: { color: labelColor },
-                                ticks: {
-                                    beginAtZero: true,
-                                    max: 5,
-                                    stepSize: 1,
-                                    color: labelColor,
-                                    backdropColor: 'transparent'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: legendColor }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) { label += ': '; }
-                                        label += context.raw + '/5';
-                                        return label;
-                                    }
-                                }
-                            }
-                        }
+                        scales: { r: {
+                            angleLines: { color: gridColor },
+                            grid: { color: gridColor },
+                            pointLabels: { color: labelColor },
+                            ticks: { beginAtZero: true, max: 5, stepSize: 1, color: labelColor, backdropColor: 'transparent'}
+                        }},
+                        plugins: { legend: { labels: { color: legendColor } }}
                     }
                 });
             }
@@ -706,32 +758,21 @@
                     type: 'bar',
                     data: {
                         labels: ['IOPS Médio', 'Redução de Latência', 'Largura de Banda'],
-                        datasets: [
-                            {
-                                label: 'Ganhos do Proxmox (KVM) vs. VMware (ESXi) em %',
-                                data: [48.9, 30, 38], // Fonte: Relatório Anexo
-                                backgroundColor: [primaryColor, thirdColor, secondaryColor],
-                                borderWidth: 1
-                            }
-                        ]
+                        datasets: [{
+                            label: 'Ganhos do Proxmox (KVM) vs. VMware (ESXi) em %',
+                            data: [48.9, 30, 38],
+                            backgroundColor: [primaryColor, thirdColor, secondaryColor],
+                            borderWidth: 1
+                        }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         scales: {
-                            x: {
-                                ticks: { color: labelColor },
-                                grid: { color: gridColor }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                ticks: { color: labelColor, callback: function(value) { return value + '%'; } },
-                                grid: { color: gridColor }
-                            }
+                            x: { ticks: { color: labelColor }, grid: { color: gridColor } },
+                            y: { beginAtZero: true, ticks: { color: labelColor, callback: (v) => v + '%' }, grid: { color: gridColor } }
                         },
-                        plugins: {
-                            legend: { display: false }
-                        }
+                        plugins: { legend: { display: false } }
                     }
                 });
             }
@@ -743,35 +784,122 @@
                     type: 'bar',
                     data: {
                         labels: ['Oracle Linux VM', 'Proxmox VE', 'Scale Computing', 'Huawei DCS', 'Red Hat OpenShift', 'VMware vSphere', 'Nutanix AHV'],
+                        datasets: [{
+                            label: 'Custo Relativo (1=Baixo, 5=Alto)',
+                            data: [1, 2, 3, 4, 4, 5, 5],
+                            backgroundColor: primaryColor,
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                ticks: { color: labelColor, callback: (v) => ['', 'Muito Baixo', 'Baixo', 'Moderado', 'Alto', 'Muito Alto'][v] || '' },
+                                grid: { color: gridColor },
+                                max: 5,
+                                min: 0
+                            },
+                            y: { ticks: { color: labelColor }, grid: { color: 'transparent' } }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            // 4. NOVO GRÁFICO - Gestão vs. Custo-Benefício (Substitui Scatter)
+            const gestaoCustoCtx = document.getElementById('gestaoCustoChart');
+            if (gestaoCustoCtx) {
+                new Chart(gestaoCustoCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['VMware', 'Proxmox', 'Nutanix', 'Scale', 'OLVM', 'Huawei DCS'],
                         datasets: [
                             {
-                                label: 'Custo Relativo (1=Baixo, 5=Alto)',
+                                label: 'Simplicidade de Gestão (1=Complexo, 5=Simples)',
                                 data: [
-                                    custoParaNumero["Muito Baixo"],
-                                    custoParaNumero["Baixo"],
-                                    custoParaNumero["Moderado"],
-                                    custoParaNumero["Alto"],
-                                    custoParaNumero["Alto"], // Red Hat (do CSV)
-                                    custoParaNumero["Muito Alto"],
-                                    custoParaNumero["Muito Alto"]
+                                    gestaoParaNumero["Moderada"], // VMware
+                                    gestaoParaNumero["Moderada"], // Proxmox
+                                    gestaoParaNumero["Excelente"], // Nutanix
+                                    gestaoParaNumero["Excelente"], // Scale
+                                    gestaoParaNumero["Moderada"], // OLVM
+                                    gestaoParaNumero["Moderada-Alta"] // Huawei
                                 ],
                                 backgroundColor: primaryColor,
+                            },
+                            {
+                                label: 'Custo-Benefício (1=Baixo, 5=Alto)',
+                                data: [
+                                    custoBeneficioParaNumero["Muito Alto"], // VMware
+                                    custoBeneficioParaNumero["Baixo"], // Proxmox
+                                    custoBeneficioParaNumero["Muito Alto"], // Nutanix
+                                    custoBeneficioParaNumero["Moderado"], // Scale
+                                    custoBeneficioParaNumero["Muito Baixo"], // OLVM
+                                    custoBeneficioParaNumero["Alto"] // Huawei
+                                ],
+                                backgroundColor: secondaryColor,
                             }
                         ]
                     },
                     options: {
-                        indexAxis: 'y', // Gráfico de barras horizontal
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 5,
+                                ticks: { color: labelColor, stepSize: 1 },
+                                grid: { color: gridColor }
+                            },
+                            y: {
+                                ticks: { color: labelColor },
+                                grid: { color: 'transparent' }
+                            }
+                        },
+                        plugins: {
+                            legend: { labels: { color: legendColor } }
+                        }
+                    }
+                });
+            }
+
+            // 5. NOVO GRÁFICO - Roadmap Gantt
+            const roadmapCtx = document.getElementById('roadmapChart');
+            if (roadmapCtx) {
+                new Chart(roadmapCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Fase 1: Análise', 'Fase 2: PoC', 'Fase 3: Arquitetura', 'Fase 4: Decisão'],
+                        datasets: [
+                            {
+                                label: 'Início (Semanas)',
+                                data: [0, 4, 12, 16], // Início de cada fase
+                                backgroundColor: 'transparent',
+                            },
+                            {
+                                label: 'Duração (Semanas)',
+                                data: [4, 8, 4, 2], // Duração de cada fase
+                                backgroundColor: [
+                                    thirdColor, // Fase 1 (Concluída)
+                                    primaryColor, // Fase 2
+                                    primaryColor, // Fase 3
+                                    primaryColor  // Fase 4
+                                ],
+                            }
+                        ]
+                    },
+                    options: {
+                        indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
                         scales: {
                             x: {
                                 stacked: true,
-                                ticks: { color: labelColor, callback: function(value) {
-                                    const labels = ['', 'Muito Baixo', 'Baixo', 'Moderado', 'Alto', 'Muito Alto'];
-                                    return labels[value] || '';
-                                } },
-                                grid: { color: gridColor },
-                                max: 5
+                                title: { display: true, text: 'Tempo (Semanas)', color: labelColor },
+                                ticks: { color: labelColor },
+                                grid: { color: gridColor }
                             },
                             y: {
                                 stacked: true,
@@ -780,85 +908,15 @@
                             }
                         },
                         plugins: {
-                            legend: { display: false }
-                        }
-                    }
-                });
-            }
-
-            // 4. Posicionamento de Mercado (Scatter Chart)
-            const scatterCtx = document.getElementById('scatterChart');
-            if (scatterCtx) {
-                new Chart(scatterCtx, {
-                    type: 'scatter',
-                    data: {
-                        datasets: [
-                            {
-                                label: 'VMware vSphere',
-                                data: [{ x: gestaoParaNumero["Moderada"], y: custoBeneficioParaNumero["Muito Alto"], r: 15 }], 
-                                backgroundColor: 'rgba(24, 144, 255, 0.7)',
-                            },
-                            {
-                                label: 'Proxmox VE',
-                                data: [{ x: gestaoParaNumero["Moderada"], y: custoBeneficioParaNumero["Baixo"], r: 15 }],
-                                backgroundColor: 'rgba(255, 152, 0, 0.7)',
-                            },
-                            {
-                                label: 'Nutanix AHV',
-                                data: [{ x: gestaoParaNumero["Excelente"], y: custoBeneficioParaNumero["Muito Alto"], r: 15 }],
-                                backgroundColor: 'rgba(76, 175, 80, 0.7)',
-                            },
-                            {
-                                label: 'Scale Computing',
-                                data: [{ x: gestaoParaNumero["Excelente"], y: custoBeneficioParaNumero["Moderado"], r: 15 }],
-                                backgroundColor: 'rgba(244, 67, 54, 0.7)',
-                            },
-                            {
-                                label: 'Oracle Linux VM',
-                                data: [{ x: gestaoParaNumero["Moderada"], y: custoBeneficioParaNumero["Muito Baixo"], r: 15 }],
-                                backgroundColor: 'rgba(156, 39, 176, 0.7)', // Roxo
-                            },
-                             {
-                                label: 'Huawei DCS',
-                                data: [{ x: gestaoParaNumero["Moderada-Alta"], y: custoBeneficioParaNumero["Alto"], r: 15 }],
-                                backgroundColor: 'rgba(100, 100, 100, 0.7)', // Cinza
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Simplicidade de Gestão (1=Complexo, 5=Simples)',
-                                    color: labelColor
-                                },
-                                ticks: { beginAtZero: true, max: 5, stepSize: 1, color: labelColor },
-                                grid: { color: gridColor }
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Custo-Benefício (1=Baixo, 5=Alto)',
-                                    color: labelColor
-                                },
-                                ticks: { beginAtZero: true, max: 5, stepSize: 1, color: labelColor },
-                                grid: { color: gridColor }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: legendColor }
-                            },
+                            legend: { display: false },
                             tooltip: {
                                 callbacks: {
                                     label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) { label += ': '; }
-                                        label += `Gestão: ${context.raw.x}/5, Custo/Benefício: ${context.raw.y}/5`;
-                                        return label;
+                                        if (context.datasetIndex === 1) {
+                                            let label = ' Duração: ' + context.raw + ' semanas';
+                                            return label;
+                                        }
+                                        return null;
                                     }
                                 }
                             }
