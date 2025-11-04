@@ -1,1 +1,1 @@
-# pages
+Repositório de Dashboards - CIASC/AITEste repositório armazena as páginas HTML estáticas para os dashboards de análise e gestão da Assessoria de Inovação e Tecnologia (AIT) do CIASC.Páginas PublicadasAs páginas estão publicadas via GitHub Pages e podem ser acessadas pelos links abaixo:Dashboard Principal (Este arquivo index.html)Dashboard Home OfficeDashboard VMsDashboard Jira (Geral)Dashboard Jira (RD Station)Dashboard Comparativo PRODsTecnologias UtilizadasHTML5Tailwind CSS (via CDN)Chart.js (para os gráficos, via CDN)Fonte Inter (via Google Fonts/rsms.me)
