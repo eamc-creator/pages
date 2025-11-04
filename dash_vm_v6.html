@@ -1,0 +1,749 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Virtualização - AIT</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --text-color-light: #777;
+            --accent-color: #007bff;
+            --accent-color-dark: #0056b3;
+            --border-color: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+       .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+       .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+       .sidebar-header h2 {
+            margin: 0 0 4px 0;
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+       .sidebar-header p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-color-light);
+        }
+
+       .nav-menu {
+            list-style: none;
+            padding: 16px 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+       .nav-menu li a {
+            display: block;
+            padding: 12px 24px;
+            text-decoration: none;
+            color: var(--text-color-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+       .nav-menu li a:hover {
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+       .nav-menu li a.active {
+            color: var(--accent-color-dark);
+            background-color: #e6f2ff;
+            border-right: 3px solid var(--accent-color);
+            font-weight: 600;
+        }
+
+       .content {
+            flex-grow: 1;
+            padding: 24px 32px;
+            overflow-y: auto;
+        }
+
+       .page {
+            display: none;
+        }
+
+       .page.active {
+            display: block;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+       .page>p {
+            font-size: 1.1rem;
+            color: var(--text-color-light);
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+
+       .grid-col-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+       .grid-col-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+       .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px var(--shadow-color);
+            margin-bottom: 24px;
+        }
+
+       .card-kpi {
+            padding: 20px;
+        }
+
+       .card-kpi.kpi-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-color-dark);
+            margin-bottom: 8px;
+        }
+
+       .card-kpi.kpi-subtext {
+            font-size: 0.9rem;
+            color: var(--text-color-light);
+            margin: 0;
+        }
+
+       .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+       .card-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+       .card-content {
+            padding: 20px;
+            overflow-x: auto; /* Adicionado para tabelas responsivas */
+        }
+
+       .card-content p:last-child {
+            margin-bottom: 0;
+        }
+
+       .diagrama-posicionamento {
+            display: flex;
+            justify-content: space-around;
+            padding: 16px 0;
+        }
+
+       .tier {
+            text-align: center;
+            padding: 16px;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            width: 40%;
+        }
+
+       .tier h4 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+       .tier p {
+            margin: 4px 0;
+            font-size: 0.9rem;
+            color: var(--text-color-light);
+        }
+
+       .tier-premium {
+            border-color: var(--accent-color);
+        }
+
+       .tier-premium h4 {
+            color: var(--accent-color-dark);
+        }
+
+        /* Estilos da Tabela (Integrados) */
+       .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0; /* Removida margem para caber no card */
+            font-size: 0.9em;
+            font-family: sans-serif;
+            min-width: 1200px; /* Garante que a tabela tenha largura mínima */
+        }
+
+       .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+       .styled-table th,
+       .styled-table td {
+            padding: 12px 15px;
+            border: 1px solid #dddddd;
+            vertical-align: top; /* Alinha no topo */
+        }
+
+       .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+       .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+       .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+       .styled-table tbody tr.category-header {
+            background-color: #e0e0e0;
+            font-weight: bold;
+            color: #333;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>Análise de Virtualização</h2>
+            <p>Assessoria de Inovação e Tecnologia (AIT)</p>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#sumario" class="active" onclick="showPage('sumario', this)">Sumário Executivo</a></li>
+            <li><a href="#tecnica" onclick="showPage('tecnica', this)">Análise Técnica</a></li>
+            <li><a href="#custo" onclick="showPage('custo', this)">Análise de Custo/Mercado</a></li>
+            <li><a href="#roadmap" onclick="showPage('roadmap', this)">Recomendações</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <div id="page-sumario" class="page active">
+            <h1>Sumário Executivo</h1>
+            <p>Reavaliação das alternativas de virtualização com foco em ambientes mistos (Windows/Linux).</p>
+
+            <div class="grid-col-4">
+                <div class="card card-kpi">
+                    <div class="kpi-value">Broadcom + VMware</div>
+                    <p class="kpi-subtext">Gatilho da Análise: Mudança de licenciamento e TCO</p>
+                </div>
+                <div class="card card-kpi">
+                    <div class="kpi-value">Desempenho Linux</div>
+                    <p class="kpi-subtext">Fator Chave: Plataformas KVM mostram vantagem</p>
+                </div>
+                <div class="card card-kpi">
+                    <div class="kpi-value">7+</div>
+                    <p class="kpi-subtext">Soluções Analisadas: Incluindo Huawei, Scale e OLVM</p>
+                </div>
+                <div class="card card-kpi">
+                    <div class="kpi-value">Proxmox VE</div>
+                    <p class="kpi-subtext">Principal Recomendação: Melhor Custo/Benefício e Desempenho</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Contexto e Conclusão Principal</h3>
+                </div>
+                <div class="card-content">
+                    <p>A reavaliação das plataformas de virtualização foi motivada pelo novo cenário de licenciamento e estratégia da VMware após a aquisição pela Broadcom. A análise, que incluiu 7 plataformas, buscou revalidar a solução padrão (vSphere) contra alternativas, com um foco especial no impacto do desempenho em ambientes mistos.</p>
+                    <p><b>Conclusão Chave:</b> A inclusão de cargas de trabalho Linux (Guests) altera significativamente a análise. Plataformas baseadas em KVM (Proxmox, OLVM, Scale, Nutanix) demonstram vantagens substanciais de desempenho de I/O para VMs Linux, o que impacta diretamente o TCO ao permitir maior densidade de VMs por host.</p>
+                    <p>Se a pergunta for "As indicações seriam as mesmas se o ambiente fosse 100% Windows?", a resposta é: <b>Não, as indicações não seriam as mesmas.</b> A paridade ou vantagem de desempenho do KVM/Linux é um fator decisivo que reposiciona soluções como o Proxmox VE à frente em termos de desempenho bruto e custo-benefício para o nosso ambiente misto.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Proposta de Posicionamento de Serviço</h3>
+                </div>
+                <div class="card-content">
+                    <p>Baseado na análise, sugere-se um modelo de serviço em duas camadas para otimizar custos e desempenho:</p>
+                    <div class="diagrama-posicionamento">
+                        <div class="tier tier-premium">
+                            <h4>Tier "Premium" (Legado)</h4>
+                            <p><b>Plataforma:</b> Atual (VMware)</p>
+                            <p><b>Foco:</b> Cargas críticas Windows ou que exijam ferramentas de ecossistema específicas (ex: SRM).</p>
+                        </div>
+                        <div class="tier">
+                            <h4>Tier "Standard" (KVM)</h4>
+                            <p><b>Plataforma:</b> Alternativa (Proxmox)</p>
+                            <p><b>Foco:</b> Novas cargas Linux, VPS, DR, Dev/Test e migração de VMs de menor criticidade.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="page-tecnica" class="page" style="display:none;">
+            <h1>Análise Técnica Comparativa</h1>
+            <p>O desempenho em Linux é um diferencial chave, superando a simples comparação de features.</p>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Tabela 1: Matriz Comparativa Abrangente de Plataformas</h3>
+                </div>
+                <div class="card-content">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Característica</th>
+                                <th>VMware vSphere</th>
+                                <th>Proxmox VE</th>
+                                <th>Nutanix AHV</th>
+                                <th>Scale Computing</th>
+                                <th>Oracle Linux VM (OLVM)</th>
+                                <th>Huawei DCS</th>
+                                <th>Red Hat OpenShift Virt.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="category-header">
+                                <td rowspan="3">Arquitetura e Desempenho</td>
+                                <td>Hipervisor Base</td>
+                                <td>ESXi</td>
+                                <td>KVM</td>
+                                <td>KVM</td>
+                                <td>KVM</td>
+                                <td>KVM</td>
+                                <td>KVM (via FusionSphere)</td>
+                                <td>KVM (via KubeVirt)</td>
+                            </tr>
+                            <tr>
+                                <td>Desempenho (Guest Linux)</td>
+                                <td>Bom</td>
+                                <td>Excelente</td>
+                                <td>Excelente</td>
+                                <td>Excelente</td>
+                                <td>Excelente</td>
+                                <td>Muito Bom</td>
+                                <td>Excelente</td>
+                            </tr>
+                            <tr>
+                                <td>Suporte Nativo a Contêineres</td>
+                                <td>Sim (Tanzu)</td>
+                                <td>Sim (LXC)</td>
+                                <td>Sim (Karbon)</td>
+                                <td>Não</td>
+                                <td>Não</td>
+                                <td>Sim</td>
+                                <td>Sim (Nativo do OpenShift)</td>
+                            </tr>
+                            <tr class="category-header">
+                                <td rowspan="4">Continuidade de Negócios</td>
+                                <td>Replicação Síncrona Nativa</td>
+                                <td>Sim (vSAN Stretched Cluster)</td>
+                                <td>Sim (via Ceph)</td>
+                                <td>Sim (Metro Availability)</td>
+                                <td>Sim</td>
+                                <td>Não</td>
+                                <td>Sim (RPO=0)</td>
+                                <td>Sim (via ODF)</td>
+                            </tr>
+                            <tr>
+                                <td>Replicação Assíncrona Nativa</td>
+                                <td>Sim (vSphere Replication)</td>
+                                <td>Sim (via Ceph/ZFS)</td>
+                                <td>Sim (Async DR)</td>
+                                <td>Sim (RPO 5 min)</td>
+                                <td>Não (Requer 3ºs)</td>
+                                <td>Sim</td>
+                                <td>Sim (via ODF)</td>
+                            </tr>
+                            <tr>
+                                <td>Orquestração de DR Nativa</td>
+                                <td>Sim (SRM, pago)</td>
+                                <td>Manual/Scripts</td>
+                                <td>Sim (Prism Central)</td>
+                                <td>Sim</td>
+                                <td>Não (Requer 3ºs)</td>
+                                <td>Sim (UltraVR)</td>
+                                <td>Sim (via ACM)</td>
+                            </tr>
+                            <tr>
+                                <td>Solução de Backup Nativa</td>
+                                <td>Não</td>
+                                <td>Sim (Proxmox Backup Server)</td>
+                                <td>Sim (Snapshots/Replicação)</td>
+                                <td>Sim (Snapshots)</td>
+                                <td>Não</td>
+                                <td>Sim (eBackup)</td>
+                                <td>Sim (OADP/Velero)</td>
+                            </tr>
+                            <tr class="category-header">
+                                <td rowspan="3">Operação e Gerenciamento</td>
+                                <td>Simplicidade de Gestão</td>
+                                <td>Moderada</td>
+                                <td>Moderada</td>
+                                <td>Excelente</td>
+                                <td>Excelente</td>
+                                <td>Moderada</td>
+                                <td>Moderada-Alta</td>
+                                <td>Alta (requer expertise Kubernetes)</td>
+                            </tr>
+                            <tr>
+                                <td>Ferramenta de Migração VMware</td>
+                                <td>N/A</td>
+                                <td>Sim (Importador Integrado)</td>
+                                <td>Sim (Nutanix Move)</td>
+                                <td>Sim (SC//Migrate)</td>
+                                <td>Sim (virt-v2v)</td>
+                                <td>Sim (Rainbow)</td>
+                                <td>Sim (MTV)</td>
+                            </tr>
+                            <tr>
+                                <td>Balanceamento de Carga</td>
+                                <td>DRS (Distribuído)</td>
+                                <td>Manual ou via terceiros</td>
+                                <td>ADS (Nativo)</td>
+                                <td>Failover automático</td>
+                                <td>Política de agendamento</td>
+                                <td>QoS e balanceamento nativo</td>
+                                <td>Kubernetes Services / Rebalanceamento</td>
+                            </tr>
+                            <tr class="category-header">
+                                <td rowspan="3">Custo Total de Propriedade</td>
+                                <td>Modelo de Licenciamento</td>
+                                <td>Subscrição por Core</td>
+                                <td>Gratuito / Suporte Pago</td>
+                                <td>Subscrição HCI</td>
+                                <td>Subscrição HCI</td>
+                                <td>Gratuito / Suporte Pago</td>
+                                <td>Subscrição por CPU</td>
+                                <td>Subscrição por Core</td>
+                            </tr>
+                            <tr>
+                                <td>Custo de Software de Terceiros</td>
+                                <td>$$ (SRM, Veeam, etc.)</td>
+                                <td>$ (PBS é nativo/gratuito)</td>
+                                <td>$ (Funcionalidade Nativa)</td>
+                                <td>$ (Funcionalidade Nativa)</td>
+                                <td>$$ (RackWare, etc.)</td>
+                                <td>$ (Funcionalidade Nativa)</td>
+                                <td>$ (OADP/Velero integrados)</td>
+                            </tr>
+                            <tr>
+                                <td>Custo Total Estimado (5 Anos)</td>
+                                <td>Muito Alto</td>
+                                <td>Baixo</td>
+                                <td>Muito Alto</td>
+                                <td>Moderado</td>
+                                <td>Muito Baixo</td>
+                                <td>Alto</td>
+                                <td>Alto</td>
+                            </tr>
+                            <tr class="category-header">
+                                <td rowspan="3">Segurança e Conformidade</td>
+                                <td>RBAC (Controle de Acesso)</td>
+                                <td>Sim (Avançado)</td>
+                                <td>Sim (Integrado)</td>
+                                <td>Sim (Avançado)</td>
+                                <td>Sim (Foco no Appliance)</td>
+                                <td>Sim (Integrado)</td>
+                                <td>Sim (Avançado)</td>
+                                <td>Sim (Avançado)</td>
+                            </tr>
+                            <tr>
+                                <td>Criptografia Nativa</td>
+                                <td>Sim</td>
+                                <td>Sim (via ZFS/LUKS)</td>
+                                <td>Sim</td>
+                                <td>Sim</td>
+                                <td>Sim (via LUKS)</td>
+                                <td>Sim</td>
+                                <td>Sim</td>
+                            </tr>
+                            <tr>
+                                <td>Firewall Integrado</td>
+                                <td>Não (Requer NSX)</td>
+                                <td>Sim</td>
+                                <td>Sim (Flow)</td>
+                                <td>Sim</td>
+                                <td>Sim (firewalld/iptables)</td>
+                                <td>Sim</td>
+                                <td>Sim (Network Policies)</td>
+                            </tr>
+                            <tr class="category-header">
+                                <td rowspan="3">Ecossistema e Suporte</td>
+                                <td>Opções de Suporte Comercial</td>
+                                <td>Premier (SLA corporativo)</td>
+                                <td>Níveis Community a Premium</td>
+                                <td>Production a Mission Critical</td>
+                                <td>Suporte 24/7/365 ("ScaleCare")</td>
+                                <td>Oracle Premier Support</td>
+                                <td>Níveis Basic a Premier</td>
+                                <td>Suporte Red Hat (SLA corporativo)</td>
+                            </tr>
+                            <tr>
+                                <td>Comunidade Open-Source</td>
+                                <td>Fraca</td>
+                                <td>Muito Forte</td>
+                                <td>Moderada</td>
+                                <td>Fraca</td>
+                                <td>Forte (oVirt)</td>
+                                <td>Fraca</td>
+                                <td>Muito Forte (Kubernetes)</td>
+                            </tr>
+                            <tr>
+                                <td>Ciclo de Suporte Ativo</td>
+                                <td>Longo (5+ anos)</td>
+                                <td>Contínuo</td>
+                                <td>3-5 anos por versão</td>
+                                <td>Contínuo com subscrição</td>
+                                <td>Longo (5+ anos)</td>
+                                <td>3-5 anos por versão</td>
+                                <td>Curto (18-36 meses por versão)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-custo" class="page" style="display:none;">
+            <h1>Análise de Custo/Mercado</h1>
+            <p>O Custo Total de Propriedade (TCO) deve considerar não apenas a licença, mas os custos de suporte e de software de terceiros.</p>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>Tabela 2: Modelo Resumido de TCO a 5 Anos (Implementações Pequena, Média, Grande)</h3>
+                </div>
+                <div class="card-content">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Plataforma</th>
+                                <th>Categoria de Custo</th>
+                                <th>TCO a 5 Anos (Pequena: 3 Nós)</th>
+                                <th>TCO a 5 Anos (Média: 8 Nós)</th>
+                                <th>TCO a 5 Anos (Grande: 32 Nós)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>VMware vSphere</strong></td>
+                                <td>Licença + Suporte + 3ºs + Operacional</td>
+                                <td>Alto</td>
+                                <td>Muito Alto</td>
+                                <td>Extremamente Alto</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Proxmox VE</strong></td>
+                                <td>Suporte + Operacional</td>
+                                <td>Muito Baixo</td>
+                                <td>Baixo</td>
+                                <td>Moderado-Alto</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Nutanix AHV</strong></td>
+                                <td>Subscrição HCI + Operacional</td>
+                                <td>Muito Alto</td>
+                                <td>Muito Alto</td>
+                                <td>Muito Alto</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scale Computing</strong></td>
+                                <td>Subscrição HCI + Operacional</td>
+                                <td>Moderado</td>
+                                <td>Moderado-Alto</td>
+                                <td>Alto</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Oracle Linux VM</strong></td>
+                                <td>Suporte + 3ºs + Operacional</td>
+                                <td>Baixo</td>
+                                <td>Moderado</td>
+                                <td>Alto</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Huawei DCS</strong></td>
+                                <td>Subscrição + Operacional</td>
+                                <td>Alto</td>
+                                <td>Alto</td>
+                                <td>Muito Alto</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Red Hat OpenShift</strong></td>
+                                <td>Subscrição + Operacional (Especializado)</td>
+                                <td>Alto</td>
+                                <td>Muito Alto</td>
+                                <td>Muito Alto</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="page-roadmap" class="page" style="display:none;">
+            <h1>Recomendações e Matriz de Decisão</h1>
+            <p>Uma matriz de pontuação para auxiliar na decisão estratégica com base nos fatores de negócio mais relevantes.</p>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Tabela 3: Matriz de Decisão Estratégica (Pontuação 1-Pobre a 5-Excelente)</h3>
+                </div>
+                <div class="card-content">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Fator de Decisão de Negócio</th>
+                                <th>VMware</th>
+                                <th>Proxmox</th>
+                                <th>Nutanix</th>
+                                <th>Scale</th>
+                                <th>OLVM</th>
+                                <th>Huawei</th>
+                                <th>OpenShift</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Menor TCO a 5 Anos</strong></td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: center;">5</td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">4</td>
+                                <td style="text-align: center;">4</td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">2</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Maior Simplicidade Operacional</strong></td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">5</td>
+                                <td style="text-align: center;">5</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">1</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Melhor Integração Nativa da Nuvem</strong></td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">4</td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">5</td>
+                            </tr>
+                            <tr>
+                                <td><strong>BCDR Nativo Mais Abrangente</strong></td>
+                                <td style="text-align: center;">4</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">5</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: center;">5</td>
+                                <td style="text-align: center;">4</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Menor Risco de Adoção</strong></td>
+                                <td style="text-align: center;">5</td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">4</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">1</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Postura de Segurança Mais Forte (Nativa)</strong></td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">4</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">4</td>
+                                <td style="text-align: center;">5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        function showPage(pageId, element) {
+            // Esconde todas as páginas
+            var pages = document.querySelectorAll('.page');
+            pages.forEach(function(page) {
+                page.style.display = 'none';
+                page.classList.remove('active');
+            });
+
+            // Mostra a página clicada
+            var selectedPage = document.getElementById('page-' + pageId);
+            if (selectedPage) {
+                selectedPage.style.display = 'block';
+                selectedPage.classList.add('active');
+            }
+
+            // Atualiza o estado ativo no menu
+            var navLinks = document.querySelectorAll('.nav-menu li a');
+            navLinks.forEach(function(link) {
+                link.classList.remove('active');
+            });
+            if (element) {
+                element.classList.add('active');
+            }
+        }
+
+        // Garante que a página inicial (sumário) seja exibida no carregamento
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('sumario', document.querySelector('.nav-menu li a[href="#sumario"]'));
+        });
+    </script>
+</body>
+</html>
