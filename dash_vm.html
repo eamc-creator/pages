@@ -254,8 +254,11 @@
                 <li><a href="#custos">Análise de TCO</a></li>
                 <li><a href="#risco">Risco e Migração</a></li>
                 <li><a href="#plano">Plano de Migração</a></li>
+                <li><a href="#recomendacoes">Recomendações</a></li>
                 <li><a href="#adicionais">Análises Adicionais</a></li>
-                <li><a href="#tabelas">Tabelas Comparativas</a></li>
+                <li><a href="#swot">Análise SWOT</a></li>
+                <li><a href="#tabelas">Tabelas (Resumo)</a></li>
+                <li><a href="#matriz-completa">Matriz Completa</a></li>
             </ul>
         </nav>
         
@@ -282,6 +285,55 @@
                 <p><strong>Gatilho:</strong> A recente mudança no licenciamento do VMware (Broadcom) tornou o custo da plataforma insustentável, exigindo a avaliação de alternativas para migração e redução de TCO.</p>
                 <p><strong>Análise:</strong> Este dashboard compara as principais alternativas ao vSphere. Proxmox VE e Oracle Linux VM (OLVM) destacam-se pelo TCO mais baixo. Proxmox oferece um ecossistema open-source mais robusto e ferramentas nativas (Backup/Migração), enquanto Nutanix AHV e Scale Computing oferecem maior simplicidade de gestão, mas com custo elevado.</p>
                 <p><strong>Recomendação:</strong> Para ambientes que buscam redução drástica de custo e possuem expertise técnica interna, <strong>Proxmox VE</strong> é a recomendação principal devido ao TCO baixo e ao conjunto de recursos nativos. Para máxima simplicidade (abordagem "appliance"), <strong>Nutanix AHV</strong> ou <strong>Scale Computing</strong> são viáveis, mas o TCO será similar ou superior ao VMware. A migração para OpenShift Virtualization é recomendada apenas se a estratégia principal for a adoção de contêineres e Kubernetes.</p>
+            </div>
+
+            <!-- KPIs ADICIONADOS -->
+            <div class="grid-container grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-5">
+                <div class="card text-center kpi-card">
+                    <h4 class="text-sm font-medium text-gray-500 uppercase dark:text-gray-400">Gatilho da Análise</h4>
+                    <div class="text-2xl font-bold mt-2">Broadcom + VMware</div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Mudança de licenciamento e TCO</p>
+                </div>
+                <div class="card text-center kpi-card">
+                    <h4 class="text-sm font-medium text-gray-500 uppercase dark:text-gray-400">Fator Chave</h4>
+                    <div class="text-2xl font-bold mt-2">Desempenho Linux</div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Plataformas KVM mostram vantagem</p>
+                </div>
+                <div class="card text-center kpi-card">
+                    <h4 class="text-sm font-medium text-gray-500 uppercase dark:text-gray-400">Soluções Analisadas</h4>
+                    <div class="text-2xl font-bold mt-2">7+</div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Incluindo Huawei, Scale e OLVM</p>
+                </div>
+                <div class="card text-center kpi-card">
+                    <h4 class="text-sm font-medium text-gray-500 uppercase dark:text-gray-400">Principal Recomendação</h4>
+                    <div class="text-2xl font-bold mt-2">Proxmox VE</div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Melhor Custo/Benefício e Desempenho</p>
+                </div>
+            </div>
+
+            <!-- CONTEXTO E POSICIONAMENTO ADICIONADOS -->
+            <div class="grid-container grid-cols-1 md:grid-cols-2 mt-5">
+                <div class="card">
+                    <h3>Contexto e Conclusão Principal</h3>
+                    <p class="text-base text-gray-600 dark:text-gray-300">A reavaliação das plataformas de virtualização, motivada pelo cenário pós-aquisição da VMware, revela uma conclusão fundamental: <strong>a inclusão de cargas de trabalho Linux (Guests) altera significativamente a análise.</strong></p>
+                    <p class="text-base text-gray-600 dark:text-gray-300">Plataformas baseadas em KVM (como Proxmox, OLVM, Scale) demonstram vantagens substanciais de desempenho de I/O para VMs Linux, impactando diretamente o TCO ao permitir maior densidade de VMs por host.</p>
+                </div>
+                <div class="card">
+                    <h3>Proposta de Posicionamento de Serviço</h3>
+                    <p class="text-base text-gray-600 dark:text-gray-300">Sugerimos um modelo de oferta em duas camadas para otimizar custos e desempenho:</p>
+                    <div class="flex flex-col md:flex-row gap-4 mt-4">
+                        <div class="flex-1 p-4 border-2 border-blue-500 rounded-lg text-center">
+                            <h4 class="font-bold text-lg">Tier "Premium" (Legado)</h4>
+                            <p>Plataforma atual (VMware)</p>
+                            <p><strong>Foco:</strong> Cargas críticas Windows ou que exijam ferramentas de ecossistema específicas (ex: SRM).</p>
+                        </div>
+                        <div class="flex-1 p-4 border-2 border-gray-400 dark:border-gray-600 rounded-lg text-center">
+                            <h4 class="font-bold text-lg">Tier "Standard" (KVM)</h4>
+                            <p>Plataforma Alternativa (Proxmox)</p>
+                            <p><strong>Foco:</strong> Novas cargas Linux, VPS, DR, Dev/Test e migração de VMs de menor criticidade.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -318,6 +370,48 @@
             </div>
         </section>
 
+        <!-- NOVA SEÇÃO: Recomendações -->
+        <section id="recomendacoes">
+            <h2>Recomendações Estratégicas</h2>
+            <div class="grid-container grid-cols-1 md:grid-cols-2">
+                <div class="card">
+                    <h3>Cenários Recomendados</h3>
+                    <ul class="list-disc pl-5 space-y-3 text-gray-600 dark:text-gray-300">
+                        <li>
+                            <strong>Máximo Custo-Benefício e Desempenho (Ambientes Mistos):</strong>
+                            <p><strong>Proxmox VE</strong>. É a escolha tecnicamente mais forte e financeiramente mais sensata. O retorno em TCO e desempenho Linux é substancial.</p>
+                        </li>
+                        <li>
+                            <strong>Máxima Simplicidade Operacional (HCI):</strong>
+                            <p><strong>Scale Computing Platform</strong>. Proposta convincente para reduzir complexidade. Arquitetura "appliance" que libera a equipe de TI da administração manual.</p>
+                        </li>
+                        <li>
+                            <strong>Ecossistemas Oracle:</strong>
+                            <p><strong>Oracle Linux VM (OLVM)</strong>. Escolha estratégica inegável para clientes Oracle, com TCO "Muito Baixo" (licença zero).</p>
+                        </li>
+                         <li>
+                            <strong>Ecossistema Full-Stack (Hardware + Software):</strong>
+                            <p><strong>Huawei DCS</strong>. Solução empresarial robusta para organizações que buscam integração de um único fornecedor, com fortes capacidades nativas de DR.</p>
+                        </li>
+                    </ul>
+                </div>
+                 <div class="card">
+                    <h3>Links e Contato</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Acesse os documentos originais para análise detalhada:</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-3">
+                        <li>
+                            <a href="https://docs.google.com/document/d/18kwg5Nj2cR7oPl4Mvu4BzP6mV2ZZ4-wFdmnm8lXMdrk/edit?tab=t.0" target="_blank" class="text-blue-500 hover:underline">Documento de Análise Completa (Google Docs)</a>
+                        </li>
+                        <li>
+                            <a href="https://docs.google.com/spreadsheets/d/1-E_7kOxYGwHOQw14l0N6CPeovV1yOXZt/edit?gid=609538798#gid=609538798" target="_blank" class="text-blue-500 hover:underline">Planilha Comparativa (Google Sheets)</a>
+                        </li>
+                    </ul>
+                    <hr class="my-4 border-gray-200 dark:border-gray-700">
+                    <p class="font-medium"><strong>Contato:</strong> Assessoria de Inovação e Tecnologia (AIT)</p>
+                </div>
+            </div>
+        </section>
+
         <!-- Seção: Análises Adicionais -->
         <section id="adicionais">
             <h2>Análises Adicionais</h2>
@@ -337,9 +431,85 @@
             </div>
         </section>
 
+        <!-- NOVA SEÇÃO: SWOT -->
+        <section id="swot">
+            <h2>Análise SWOT Interativa</h2>
+            <div class="card full-width">
+                <select id="swot-select" class="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="proxmox">Proxmox VE</option>
+                    <option value="vmware">VMware vSphere</option>
+                    <option value="scale">Scale Computing</option>
+                    <option value="nutanix">Nutanix AHV</option>
+                    <option value="olvm">Oracle Linux VM (OLVM)</option>
+                    <option value="huawei">Huawei DCS</option>
+                    <option value="redhat">Red Hat OpenShift</option>
+                </select>
+
+                <div class="grid-container grid-cols-1 md:grid-cols-2 mt-4">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200">Forças (Strengths)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td id="swot-s1">• Desempenho superior em Linux (KVM/VirtIO).</td></tr>
+                                <tr><td id="swot-s2">• TCO "Baixo" (Licença gratuita, suporte opcional).</td></tr>
+                                <tr><td id="swot-s3">• Ecossistema nativo completo (Backup, Storage, LXC).</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                             <thead>
+                                <tr>
+                                    <th class="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200">Fraquezas (Weaknesses)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td id="swot-w1">• Requer proficiência técnica em Linux/Debian.</td></tr>
+                                <tr><td id="swot-w2">• Suporte comercial (opcional) pode não ter o mesmo SLA de incumbents.</td></tr>
+                                <tr><td id="swot-w3">• Orquestração de DR nativa é manual (scripts) vs. "SRM".</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                             <thead>
+                                <tr>
+                                    <th class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200">Oportunidades (Opportunities)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td id="swot-o1">• Captura de clientes VMware insatisfeitos com o TCO.</td></tr>
+                                <tr><td id="swot-o2">• Plataforma ideal para DR e Tiers de serviço "Standard".</td></tr>
+                                <tr><td id="swot-o3" class="opacity-0">•</td></tr> <!-- Célula vazia para alinhamento -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200">Ameaças (Threats)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td id="swot-t1">• Forte domínio legado da VMware em contas corporativas.</td></tr>
+                                <tr><td id="swot-t2">• Concorrência de outras KVM (OLVM) e HCI (Scale).</td></tr>
+                                <tr><td id="swot-t3" class="opacity-0">•</td></tr> <!-- Célula vazia para alinhamento -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
         <!-- Seção: Tabelas Comparativas -->
         <section id="tabelas">
-            <h2>Tabelas Comparativas Detalhadas</h2>
+            <h2>Tabelas Comparativas (Resumo)</h2>
 
             <div class="card full-width">
                 <h3>Arquitetura e Desempenho</h3>
@@ -664,6 +834,51 @@
             </div>
         </section>
 
+        <!-- NOVA SEÇÃO: Matriz Completa -->
+        <section id="matriz-completa">
+            <h2>Matriz de Funcionalidades (Completa)</h2>
+            <div class="card full-width">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Funcionalidade</th>
+                                <th>VMware vSphere</th>
+                                <th>Proxmox VE</th>
+                                <th>Nutanix AHV</th>
+                                <th>Scale Computing</th>
+                                <th>Oracle Linux VM</th>
+                                <th>Huawei DCS</th>
+                                <th>Red Hat OpenShift</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Hipervisor Base</td><td>ESXi</td><td>KVM</td><td>KVM</td><td>KVM</td><td>KVM</td><td>KVM (via FusionSphere)</td><td>KVM</td></tr>
+                            <tr><td>Desempenho (Guest Linux)</td><td>Bom</td><td>Excelente</td><td>Excelente</td><td>Excelente</td><td>Excelente</td><td>Muito Bom</td><td>Excelente</td></tr>
+                            <tr><td>Suporte Nativo a Contêineres</td><td>Sim (Tanzu)</td><td>Sim (LXC)</td><td>Sim (Karbon)</td><td>Não</td><td>Não</td><td>Sim</td><td>Sim (Nativo)</td></tr>
+                            <tr><td>Replicação Síncrona Nativa</td><td>Sim (vSAN Stretched)</td><td>Sim (via Ceph)</td><td>Sim (Metro Availability)</td><td>Sim</td><td>Não</td><td>Sim</td><td>Não (Requer 3ºs)</td></tr>
+                            <tr><td>Replicação Assíncrona Nativa</td><td>Sim (vSphere Replication)</td><td>Sim (via Ceph/ZFS)</td><td>Sim (Async DR)</td><td>Sim (RPO 5 min)</td><td>Não (Requer 3ºs)</td><td>Sim (UltraVR)</td><td>Não (Requer 3ºs)</td></tr>
+                            <tr><td>Orquestração de DR Nativa</td><td>Sim (SRM, pago)</td><td>Manual/Scripts</td><td>Sim (Prism Central)</td><td>Sim</td><td>Não</td><td>Sim</td><td>Manual (Baseado em OADP)</td></tr>
+                            <tr><td>Solução de Backup Nativa</td><td>Não</td><td>Sim (Proxmox Backup Server)</td><td>Sim (Snapshots/Replicação)</td><td>Sim (Snapshots)</td><td>Não (Requer 3ºs)</td><td>Sim (eBackup)</td><td>Sim (OADP)</td></tr>
+                            <tr><td>Simplicidade de Gestão</td><td>Moderada</td><td>Moderada</td><td>Excelente</td><td>Excelente</td><td>Moderada</td><td>Moderada-Alta</td><td>Alta (Foco K8s)</td></tr>
+                            <tr><td>Ferramenta de Migração</td><td>VMware N/A</td><td>Sim (Importador Integrado)</td><td>Sim (Nutanix Move)</td><td>Sim (SC//Migrate)</td><td>Sim (virt-v2v)</td><td>Sim (Rainbow)</td><td>Sim (MTC)</td></tr>
+                            <tr><td>Balanceamento de Carga</td><td>DRS (Distribuído)</td><td>Manual / terceiros</td><td>ADS (Nativo)</td><td>Failover automático</td><td>Política de agendamento</td><td>QoS / balanceamento nativo</td><td>Nativo (K8s Scheduler)</td></tr>
+                            <tr><td>Modelo de Licenciamento</td><td>Subscrição por Core</td><td>Gratuito / Suporte Pago</td><td>Subscrição HCI</td><td>Subscrição HCI</td><td>Gratuito / Suporte Pago</td><td>Subscrição por CPU</td><td>Subscrição por Core</td></tr>
+                            <tr><td>Custo de Software de Terceiros</td><td>$$(SRM, Veeam, etc.)</td><td>$ (PBS nativo/gratuito)</td><td>$ (Funcionalidade Nativa)</td><td>$ (Funcionalidade Nativa)</td><td>$$ (RackWare, etc.)</td><td>$ (Funcionalidade Nativa)</td><td>$ (Funcionalidade Nativa)</td></tr>
+                            <tr><td>Custo Total Estimado (5 anos)</td><td>Muito Alto</td><td>Baixo</td><td>Muito Alto</td><td>Moderado</td><td>Muito Baixo</td><td>Alto</td><td>Alto</td></tr>
+                            <tr><td>RBAC (Controle de Acesso)</td><td>Sim (Avançado)</td><td>Sim (Avançado)</td><td>Sim (Avançado)</td><td>Sim (Foco no Appliance)</td><td>Sim (Integrado)</td><td>Sim (Avançado)</td><td>Sim (Avançado)</td></tr>
+                            <tr><td>Criptografia Nativa</td><td>Sim</td><td>Sim (via ZFS/LUKS)</td><td>Sim</td><td>Sim</td><td>Sim (via LUKS)</td><td>Sim</td><td>Sim</td></tr>
+                            <tr><td>Firewall Integrado</td><td>Não (Requer NSX)</td><td>Sim (Distribuído)</td><td>Sim (Flow)</td><td>Sim</td><td>Sim (firewalld/iptables)</td><td>Sim</td><td>Sim (NetworkPolicies)</td></tr>
+                            <tr><td>Opções de Suporte Comercial</td><td>Premier (SLA corporativo)</td><td>Basic a Enterprise</td><td>Production a Mission Critical</td><td>Suporte 24/7/365 (ScaleCare)</td><td>Oracle Premier Support</td><td>Basic a Premier</td><td>Premium (SLA corporativo)</td></tr>
+                            <tr><td>Comunidade Open-Source</td><td>Fraca</td><td>Muito Forte</td><td>Moderada</td><td>Fraca</td><td>Forte (oVirt)</td><td>Fraca</td><td>Muito Forte (OKD)</td></tr>
+                            <tr><td>Ciclo de Suporte Ativo</td><td>Longo (5+ anos)</td><td>Contínuo</td><td>3-5 anos por versão</td><td>Contínuo com subscrição</td><td>Longo (5+ anos)</td><td>3-5 anos por versão</td><td>Contínuo</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
         <!-- Espaçador no final para garantir que o scroll funcione bem -->
         <div style="height: 50px;"></div>
 
@@ -694,6 +909,96 @@
                 { name: 'Huawei DCS', tco: 'Alto', complexity: 4, risk: 5, management: 'Moderada-Alta', community: 'Fraca' },
                 { name: 'Red Hat OpenShift Virt.', tco: 'Alto', complexity: 5, risk: 4, management: 'Alta (requer expertise Kubernetes)', community: 'Muito Forte' }
             ];
+
+            // --- LÓGICA SWOT ---
+            const swotData = {
+                proxmox: {
+                    s: ["• Desempenho superior em Linux (KVM/VirtIO).", "• TCO \"Baixo\" (Licença gratuita, suporte opcional).", "• Ecossistema nativo completo (Backup, Storage, LXC)."],
+                    w: ["• Requer proficiência técnica em Linux/Debian.", "• Suporte comercial (opcional) pode não ter o mesmo SLA de incumbents.", "• Orquestração de DR nativa é manual (scripts) vs. \"SRM\"."],
+                    o: ["• Captura de clientes VMware insatisfeitos com o TCO.", "• Plataforma ideal para DR e Tiers de serviço \"Standard\"."],
+                    t: ["• Forte domínio legado da VMware em contas corporativas.", "• Concorrência de outras KVM (OLVM) e HCI (Scale)."]
+                },
+                vmware: {
+                    s: ["• Ecossistema de hardware e software mais longo e maduro.", "• Features corporativas robustas (DRS, vMotion, SRM).", "• Ampla base de profissionais certificados."],
+                    w: ["• TCO \"Muito Alto\", agravado pelo novo licenciamento por core.", "• Desempenho inferior em I/O para guests Linux (vs. KVM).", "• Alto risco de \"vendor lock-in\"."],
+                    o: ["• Manter clientes com cargas críticas Windows e dependência de SRM.", "• Focar em serviços de valor agregado (Tanzu, NSX)."],
+                    t: ["• Fuga de clientes para KVM (Proxmox, Nutanix) devido a custo.", "• Incerteza de mercado pós-aquisição pela Broadcom."]
+                },
+                scale: {
+                    s: ["• Simplicidade de gestão \"Excelente\" (conceito de appliance).", "• Plataforma HCI nativa com auto-recuperação.", "• Replicação e DR nativos e fáceis de usar."],
+                    w: ["• Ecossistema de integração \"Fraco\" (comparado a VMware).", "• Custo de subscrição \"Moderado\".", "• Menos flexibilidade granular para administradores avançados."],
+                    o: ["• Ideal para equipes de TI enxutas que precisam de automação.", "• Mercado de SMB/Mid-market e escritórios remotos (ROBO)."],
+                    t: ["• Concorrência direta da Nutanix (mais features) e Proxmox (menor custo).", "• Percepção de ser uma solução de \"nicho\"."]
+                },
+                nutanix: {
+                    s: ["• Simplicidade de gestão \"Excelente\" (Prism Central).", "• Hipervisor KVM (AHV) com desempenho forte em Linux.", "• Solução HCI líder de mercado com features nativas (Flow, Move)."],
+                    w: ["• TCO \"Muito Alto\", similar ao VMware.", "• Ecossistema de hardware (HCL) mais restrito que VMware.", "• Licenciamento complexo baseado em subscrição e features."],
+                    o: ["• Capturar clientes VMware que buscam HCI mas querem migrar do ESXi.", "• Liderar o mercado de nuvem privada/híbrida."],
+                    t: ["• Concorrência de preço agressiva do Proxmox.", "• Concorrência de simplicidade do Scale Computing."]
+                },
+                olvm: {
+                    s: ["• TCO \"Muito Baixo\" (licença gratuita).", "• Desempenho \"Excelente\" em Linux (KVM).", "• Integração total com ecossistema Oracle (DBs, OCI)."],
+                    w: ["• Orquestração de DR e Backup nativos \"Inexistentes\" (requer 3ºs).", "• Complexidade de gestão \"Moderada\" (baseado em oVirt).", "• Ferramentas de migração menos robustas que concorrentes."],
+                    o: ["• Escolha óbia para clientes com forte base Oracle.", "• Plataforma de DR de baixo custo para ambientes de desenvolvimento."],
+                    t: ["• Forte concorrência do Proxmox (que tem mais features nativas).", "• Percepção de ser focado apenas no ecossistema Oracle."]
+                },
+                huawei: {
+                    s: ["• Solução full-stack (Hardware + Software) de um único fornecedor.", "• Fortes capacidades nativas de DR e Backup (UltraVR, eBackup).", "• Desempenho \"Muito Bom\" com hipervisor KVM customizado."],
+                    w: ["• Ecossistema de integração \"Fraco\" fora do hardware Huawei.", "• Complexidade de gestão \"Moderada-Alta\".", "• TCO \"Alto\" e dependência de um único fornecedor."],
+                    o: ["• Clientes que buscam solução \"turn-key\" de um único vendor.", "• Forte presença em mercados de Telecom e Ásia/Pacífico."],
+                    t: ["• Restrições geopolíticas e de mercado.", "• Concorrência de incumbents (VMware, Nutanix) e de custo (Proxmox)."]
+                },
+                redhat: {
+                    s: ["• Plataforma líder para contêineres (K8s nativo).", "• Desempenho \"Excelente\" em Linux (KVM).", "• Ecossistema Open Source \"Muito Forte\"."],
+                    w: ["• Foco primário em contêineres, não em VMs tradicionais (KubeVirt).", "• TCO \"Alto\" (subscrição por core).", "• Curva de aprendizado íngreme (foco em K8s)."],
+                    o: ["• Empresas adotando estratégia \"Cloud-Native\" e \"Containers-first\".", "• Ambientes que precisam unificar gestão de VMs e Contêineres."],
+                    t: ["• Concorrência de outras plataformas K8s (Rancher, etc.).", "• Não é ideal para cargas de trabalho legadas (VMs Windows)."]
+                }
+            };
+
+            function updateSwot(vendor) {
+                const data = swotData[vendor];
+                if (!data) return;
+
+                // Seletores para as células da tabela
+                const cells = {
+                    s: [document.getElementById('swot-s1'), document.getElementById('swot-s2'), document.getElementById('swot-s3')],
+                    w: [document.getElementById('swot-w1'), document.getElementById('swot-w2'), document.getElementById('swot-w3')],
+                    o: [document.getElementById('swot-o1'), document.getElementById('swot-o2'), document.getElementById('swot-o3')],
+                    t: [document.getElementById('swot-t1'), document.getElementById('swot-t2'), document.getElementById('swot-t3')]
+                };
+
+                // Função para preencher células
+                const fillCells = (type) => {
+                    for (let i = 0; i < cells[type].length; i++) {
+                        if (cells[type][i]) {
+                            const content = data[type][i];
+                            if (content) {
+                                cells[type][i].innerHTML = content;
+                                cells[type][i].classList.remove('opacity-0');
+                            } else {
+                                // Adiciona um espaço invisível para manter a altura da linha
+                                cells[type][i].innerHTML = '•';
+                                cells[type][i].classList.add('opacity-0');
+                            }
+                        }
+                    }
+                };
+
+                fillCells('s');
+                fillCells('w');
+                fillCells('o');
+                fillCells('t');
+            }
+
+            // Event listener para o select
+            const swotSelect = document.getElementById('swot-select');
+            if (swotSelect) {
+                swotSelect.addEventListener('change', (e) => updateSwot(e.target.value));
+                // Chamar a função uma vez no início para carregar os dados de 'proxmox'
+                updateSwot('proxmox');
+            }
+
 
             // Função para renderizar/atualizar gráficos
             function renderCharts() {
@@ -995,4 +1300,5 @@
 
 </body>
 </html>
+
 
