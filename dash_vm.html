@@ -279,7 +279,9 @@
         <section id="resumo">
             <h1>Resumo Técnico</h1>
             <div class="card summary-text">
-                <p>Este dashboard compara plataformas de virtualização (VMware, Proxmox, Nutanix, etc.) com foco na migração do VMware vSphere. A análise destaca Proxmox VE e Oracle Linux VM (OLVM) como as opções de menor TCO (Custo Total de Propriedade), com Proxmox apresentando um ecossistema open-source mais robusto e ferramentas nativas de backup e migração. Nutanix AHV e Scale Computing oferecem excelente simplicidade de gerenciamento, mas com um TCO mais elevado, similar ao VMware. A decisão de migração deve ponderar o custo de licença, a complexidade da migração e a necessidade de funcionalidades nativas de Continuidade de Negócios (DR/Backup).</p>
+                <p><strong>Gatilho:</strong> A recente mudança no licenciamento do VMware (Broadcom) tornou o custo da plataforma insustentável, exigindo a avaliação de alternativas para migração e redução de TCO.</p>
+                <p><strong>Análise:</strong> Este dashboard compara as principais alternativas ao vSphere. Proxmox VE e Oracle Linux VM (OLVM) destacam-se pelo TCO mais baixo. Proxmox oferece um ecossistema open-source mais robusto e ferramentas nativas (Backup/Migração), enquanto Nutanix AHV e Scale Computing oferecem maior simplicidade de gestão, mas com custo elevado.</p>
+                <p><strong>Recomendação:</strong> Para ambientes que buscam redução drástica de custo e possuem expertise técnica interna, <strong>Proxmox VE</strong> é a recomendação principal devido ao TCO baixo e ao conjunto de recursos nativos. Para máxima simplicidade (abordagem "appliance"), <strong>Nutanix AHV</strong> ou <strong>Scale Computing</strong> são viáveis, mas o TCO será similar ou superior ao VMware. A migração para OpenShift Virtualization é recomendada apenas se a estratégia principal for a adoção de contêineres e Kubernetes.</p>
             </div>
         </section>
 
@@ -699,6 +701,17 @@
                 const labelColor = isDark ? '#e0e0e0' : '#333';
                 const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
+                // Cores distintas para o gráfico de dispersão
+                const distinctColors = [
+                    '#1f77b4', // Azul
+                    '#ff7f0e', // Laranja
+                    '#2ca02c', // Verde
+                    '#d62728', // Vermelho
+                    '#9467bd', // Roxo
+                    '#8c564b', // Marrom
+                    '#e377c2', // Rosa
+                ];
+
                 // Destruir gráficos existentes para redesenhar
                 Object.values(chartInstances).forEach(chart => chart.destroy());
 
@@ -755,10 +768,10 @@
                     chartInstances.migration = new Chart(ctxMigration, {
                         type: 'scatter',
                         data: {
-                            datasets: platforms.map(p => ({
+                            datasets: platforms.map((p, index) => ({
                                 label: p.name,
                                 data: [{ x: p.complexity, y: p.risk }],
-                                backgroundColor: `hsl(${p.complexity * 30 + p.risk * 20}, 70%, 60%)`,
+                                backgroundColor: distinctColors[index % distinctColors.length],
                                 pointRadius: 10,
                                 pointHoverRadius: 15
                             }))
@@ -982,3 +995,4 @@
 
 </body>
 </html>
+
