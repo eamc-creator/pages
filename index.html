@@ -1,37 +1,132 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-br" class="h-full bg-slate-50">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>eamc-creator / pages</title>
-  <style>
-    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; max-width: 900px; margin: 4rem auto; padding: 0 1rem; line-height: 1.6; color: #111 }
-    header { margin-bottom: 2rem }
-    footer { margin-top: 3rem; color: #666; font-size: 0.9rem }
-    nav a { margin-right: 1rem; color: #0366d6; text-decoration: none }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Principal - CIASC | AIT</title>
+    
+    <!-- Favicon do CIASC -->
+    <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" type="image/png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Inter -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
 </head>
-<body>
-  <header>
-    <h1>eamc-creator / pages</h1>
-    <p>Static site served with GitHub Pages.</p>
-    <nav>
-      <a href="/">Home</a>
-    </nav>
-  </header>
+<body class="h-full flex flex-col min-h-screen">
 
-  <main>
-    <h2>Welcome</h2>
-    <p>This is a placeholder index.html. Replace or add more HTML files in this repository — each file will be available under <code>https://eamc-creator.github.io/pages/</code>.</p>
+    <!-- Header (Cabeçalho com logo do CIASC - Estilo copiado de dash_prods.html) -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-20">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
+            <div class="w-full py-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="index.html">
+                        <span class="sr-only">CIASC</span>
+                        <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </a>
+                    <span class="ml-4 text-2xl font-bold text-blue-800">CIASC | AIT</span>
+                </div>
+                <div class="ml-10 space-x-4">
+                     <span class="text-sm font-medium text-slate-600">Dashboard Principal de Navegação</span>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-    <h3>Examples</h3>
-    <ul>
-      <li><a href="/pages/example.html">/pages/example.html</a> (create a file named <code>example.html</code>)</li>
-    </ul>
-  </main>
+    <!-- Conteúdo Principal -->
+    <div class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:px-8">
+        
+        <!-- Título -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900">Dashboards de Análise e Gestão</h1>
+            <p class="mt-2 text-sm text-slate-600">
+                Selecione um dos dashboards abaixo para visualizar os dados.
+            </p>
+        </div>
 
-  <footer>
-    <p>Created by <strong>eamc-creator</strong>. GitHub Pages: <a href="https://eamc-creator.github.io/pages/" target="_blank">eamc-creator.github.io/pages/</a></p>
-  </footer>
+        <!-- Grid de Links (Estilo baseado nos cards de dash_prods.html) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Link 1: Dashboard Home Office -->
+            <a href="https://eamc-creator.github.io/pages/dash_ho.html" 
+               class="block p-6 bg-white rounded-lg shadow-sm border border-slate-200 hover:shadow-lg hover:border-blue-500 transition-all duration-200 transform hover:-translate-y-1">
+                <h3 class="text-lg font-semibold text-blue-700">Dashboard Home Office</h3>
+                <p class="mt-2 text-sm text-slate-600">Análise de dados referentes ao regime de teletrabalho.</p>
+            </a>
+
+            <!-- Link 2: Dashboard VMs -->
+            <a href="https://eamc-creator.github.io/pages/dash_vm.html" 
+               class="block p-6 bg-white rounded-lg shadow-sm border border-slate-200 hover:shadow-lg hover:border-blue-500 transition-all duration-200 transform hover:-translate-y-1">
+                <h3 class="text-lg font-semibold text-blue-700">Dashboard VMs</h3>
+                <p class="mt-2 text-sm text-slate-600">Painel de monitoramento e status de Máquinas Virtuais.</p>
+            </a>
+
+            <!-- Link 3: Dashboard Jira (Geral) -->
+            <a href="https://eamc-creator.github.io/pages/dash_jira.html" 
+               class="block p-6 bg-white rounded-lg shadow-sm border border-slate-200 hover:shadow-lg hover:border-blue-500 transition-all duration-200 transform hover:-translate-y-1">
+                <h3 class="text-lg font-semibold text-blue-700">Dashboard Jira (Geral)</h3>
+                <p class="mt-2 text-sm text-slate-600">Indicadores e métricas gerais extraídos do Jira.</p>
+            </a>
+
+            <!-- Link 4: Dashboard Jira (RD) -->
+            <a href="https://eamc-creator.github.io/pages/dash_jira_RD.html" 
+               class="block p-6 bg-white rounded-lg shadow-sm border border-slate-200 hover:shadow-lg hover:border-blue-500 transition-all duration-200 transform hover:-translate-y-1">
+                <h3 class="text-lg font-semibold text-blue-700">Dashboard Jira (RD Station)</h3>
+                <p class="mt-2 text-sm text-slate-600">Métricas específicas do Jira para integração com RD Station.</p>
+            </a>
+
+            <!-- Link 5: Dashboard PRODs -->
+            <a href="https://eamc-creator.github.io/pages/dash_prods.html" 
+               class="block p-6 bg-white rounded-lg shadow-sm border border-slate-200 hover:shadow-lg hover:border-blue-500 transition-all duration-200 transform hover:-translate-y-1">
+                <h3 class="text-lg font-semibold text-blue-700">Dashboard Comparativo PRODs</h3>
+                <p class="mt-2 text-sm text-slate-600">Análise comparativa de PRODs (ABEP-TIC), dados de 2024.</p>
+            </a>
+            
+        </div> <!-- Fim do Grid -->
+
+    </div> <!-- Fim do Conteúdo Principal -->
+
+    <!-- Footer (Rodapé - Estilo copiado de dash_prods.html) -->
+    <footer class="bg-slate-100 border-t border-slate-200 mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                
+                <div class="flex flex-col justify-center items-center md:items-start space-y-4">
+                    <div class="w-fit">
+                         <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </div>
+                    <p class="text-xs text-center md:text-left text-slate-600">
+                        Todos os Direitos reservados - AIT<br>(Assessoria de Inovação e Tecnologia) - CIASC 2025
+                    </p>
+                </div>
+                
+                <div class="text-center md:text-left text-sm text-slate-700">
+                    <h4 class="font-semibold text-blue-800">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
+                    <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
+                    <p>Florianópolis, SC - CEP 88034-902</p>
+                    <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
+                </div>
+                
+                <div class="text-center md:text-right text-sm">
+                    <p class="font-semibold text-blue-800">Links Úteis</p>
+                    <ul class="mt-2 space-y-1">
+                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="text-slate-700 hover:text-blue-700 hover:underline">Site Oficial CIASC</a></li>
+                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="text-slate-700 hover:text-blue-700 hover:underline">Portal da Transparência</a></li>
+                        <li><a href="https://www.abep-tic.org.br/" target="_blank" class="text-slate-700 hover:text-blue-700 hover:underline">ABEP-TIC</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
