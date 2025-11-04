@@ -1,336 +1,139 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="h-full bg-slate-50 scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Análise de Virtualização</title>
     
+    <!-- Favicon do CIASC -->
+    <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" type="image/png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <!-- Font Inter -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    
     <style>
-        /* --- GERAL --- */
-        :root {
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --text-color: #333;
-            --text-color-light: #555;
-            --bg-color: #f0f2f5;
-            --sidebar-bg: #ffffff;
-            --card-bg: #ffffff;
-            --border-color: #e0e0e0;
-            --accent-color: #007aff;
-            --accent-color-hover: #0056b3;
-            --shadow-color: rgba(0, 0, 0, 0.09);
-            --table-header-bg: #f8f9fa;
-            --table-row-bg: #fdfdfd;
-            --grid-color: rgba(0, 0, 0, 0.1);
-        }
-
-        [data-theme="dark"] {
-            --text-color: #e0e0e0;
-            --text-color-light: #a0a0a0;
-            --bg-color: #1a1a1a;
-            --sidebar-bg: #232323;
-            --card-bg: #2c2c2c;
-            --border-color: #444;
-            --accent-color: #007aff;
-            --accent-color-hover: #2a8fff;
-            --shadow-color: rgba(0, 0, 0, 0.25);
-            --table-header-bg: #343a40;
-            --table-row-bg: #303030;
-            --grid-color: rgba(255, 255, 255, 0.1);
-        }
-
-        body {
-            font-family: var(--font-family);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            background-color: var(--bg-color); 
-            color: var(--text-color);
-            height: 100vh;
-            overflow: hidden;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        /* --- SIDEBAR (NAVEGAÇÃO) --- */
-        .sidebar {
-            width: 240px;
-            background-color: var(--sidebar-bg);
-            padding: 20px;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px var(--shadow-color);
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            transition: background-color 0.3s;
-        }
-        .sidebar-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .sidebar-header h2 {
-            margin: 0;
-            font-size: 1.2rem;
-            color: var(--text-color);
-        }
-        .sidebar nav {
-            flex-grow: 1;
-        }
-        .sidebar nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .sidebar nav ul li {
-            margin-bottom: 10px;
-        }
-        .sidebar nav ul li a {
-            text-decoration: none;
-            color: var(--text-color-light);
-            display: block;
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: background-color 0.2s, color 0.2s;
-        }
-        .sidebar nav ul li a:hover,
-        .sidebar nav ul li a.active {
-            background-color: var(--accent-color);
-            color: #fff;
-        }
-        .theme-switcher {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-            background: var(--bg-color);
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .theme-switcher span {
-            margin: 0 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 40px;
-            height: 20px;
-        }
-        .switch input { 
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 20px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 14px;
-            width: 14px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: var(--accent-color);
-        }
-        input:checked + .slider:before {
-            transform: translateX(20px);
-        }
-
-        /* --- CONTEÚDO PRINCIPAL --- */
-        .main-content {
-            flex-grow: 1;
-            padding: 30px;
-            overflow-y: auto;
-            height: 100vh;
-            box-sizing: border-box;
-        }
-
-        h1, h2, h3 {
-            color: var(--text-color);
-            margin-top: 0;
-        }
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 30px;
-        }
-        h2 {
-            font-size: 1.5rem;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 5px;
-        }
-        h3 {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 4px 12px var(--shadow-color);
-            transition: background-color 0.3s, box-shadow 0.3s;
-        }
-
-        .card.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 350px;
-            width: 100%;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        .summary-text p {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text-color-light);
+        /* Estilo para o link da aba ativa */
+        .nav-link.active {
+            @apply border-blue-600 text-blue-700;
         }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table.data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 0.9rem;
-        }
-        table.data-table th, 
-        table.data-table td {
-            border: 1px solid var(--border-color);
-            padding: 10px 12px;
-            text-align: left;
-            vertical-align: top;
-        }
-        table.data-table th {
-            background-color: var(--table-header-bg);
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        table.data-table tr:nth-child(even) {
-            background-color: var(--table-row-bg);
-        }
-        table.data-table td:first-child {
-            font-weight: 500;
-            white-space: nowrap;
+        .nav-link:not(.active) {
+            @apply border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300;
         }
     </style>
 </head>
-<body>
-    <!-- Barra Lateral -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <h2>Análise de Virtualização</h2>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#resumo" class="active">Resumo Técnico</a></li>
-                <li><a href="#custos">Análise de TCO</a></li>
-                <li><a href="#risco">Risco e Migração</a></li>
-                <li><a href="#plano">Plano de Migração</a></li>
-                <li><a href="#recomendacoes">Recomendações</a></li>
-                <li><a href="#adicionais">Análises Adicionais</a></li>
-                <li><a href="#swot">Análise SWOT</a></li>
-                <li><a href="#tabelas">Tabelas (Resumo)</a></li>
-                <li><a href="#matriz-completa">Matriz Completa</a></li>
-            </ul>
-        </nav>
-        
-        <!-- Seletor de Tema -->
-        <div classs="theme-switcher-wrapper">
-             <div class="theme-switcher" id="theme-toggle">
-                <span>☀️</span>
-                <label class="switch">
-                    <input type="checkbox" id="theme-checkbox">
-                    <span class="slider"></span>
-                </label>
-                <span>🌙</span>
+<body class="h-full flex flex-col min-h-screen text-slate-900">
+
+    <!-- Header (Cabeçalho com logo do CIASC - do dash_prods) -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-20">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
+            <div class="w-full py-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="#">
+                        <span class="sr-only">CIASC</span>
+                        <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </a>
+                    <span class="ml-4 text-2xl font-bold text-blue-800">CIASC | AIT</span>
+                </div>
+                <div class="ml-10 space-x-4">
+                     <span class="text-sm font-medium text-slate-600">Dashboard | Análise de Virtualização</span>
+                </div>
             </div>
-        </div>
-    </aside>
+        </nav>
+    </header>
 
     <!-- Conteúdo Principal -->
-    <main class="main-content">
-        
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- Título e Abas de Navegação -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900">Análise Comparativa de Plataformas de Virtualização</h1>
+            <p class="mt-2 text-sm text-slate-600">
+                Comparativo técnico e de TCO das principais alternativas ao VMware vSphere, focado em migração e redução de custos.
+            </p>
+            
+            <!-- Navegação por Abas/Seções -->
+            <div class="mt-4 border-b border-slate-200">
+                <nav id="section-nav" class="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
+                    <a href="#resumo" class="nav-link active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Resumo Técnico</a>
+                    <a href="#custos" class="nav-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Análise de TCO</a>
+                    <a href="#risco" class="nav-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Risco e Migração</a>
+                    <a href="#plano" class="nav-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Plano de Migração</a>
+                    <a href="#recomendacoes" class="nav-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Recomendações</a>
+                    <a href="#adicionais" class="nav-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Análises Adicionais</a>
+                    <a href="#swot" class="nav-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Análise SWOT</a>
+                    <a href="#tabelas" class="nav-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Tabelas (Resumo)</a>
+                    <a href="#matriz-completa" class="nav-link whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Matriz Completa</a>
+                </nav>
+            </div>
+        </div>
+
         <!-- Seção: Resumo Técnico -->
-        <section id="resumo">
-            <h1>Resumo Técnico</h1>
-            <div class="card summary-text">
-                <p><strong>Gatilho:</strong> A recente mudança no licenciamento do VMware (Broadcom) tornou o custo da plataforma insustentável, exigindo a avaliação de alternativas para migração e redução de TCO.</p>
-                <p><strong>Análise:</strong> Este dashboard compara as principais alternativas ao vSphere. Proxmox VE e Oracle Linux VM (OLVM) destacam-se pelo TCO mais baixo. Proxmox oferece um ecossistema open-source mais robusto e ferramentas nativas (Backup/Migração), enquanto Nutanix AHV e Scale Computing oferecem maior simplicidade de gestão, mas com custo elevado.</p>
-                <p><strong>Recomendação:</strong> Para ambientes que buscam redução drástica de custo e possuem expertise técnica interna, <strong>Proxmox VE</strong> é a recomendação principal devido ao TCO baixo e ao conjunto de recursos nativos. Para máxima simplicidade (abordagem "appliance"), <strong>Nutanix AHV</strong> ou <strong>Scale Computing</strong> são viáveis, mas o TCO será similar ou superior ao VMware. A migração para OpenShift Virtualization é recomendada apenas se a estratégia principal for a adoção de contêineres e Kubernetes.</p>
+        <section id="resumo" class="pt-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                <h2 class="text-2xl font-bold tracking-tight text-slate-800 mb-4">Resumo Técnico</h2>
+                <div class="text-slate-600 space-y-3 text-base leading-relaxed">
+                    <p><strong>Gatilho:</strong> A recente mudança no licenciamento do VMware (Broadcom) tornou o custo da plataforma insustentável, exigindo a avaliação de alternativas para migração e redução de TCO.</p>
+                    <p><strong>Análise:</strong> Este dashboard compara as principais alternativas ao vSphere. Proxmox VE e Oracle Linux VM (OLVM) destacam-se pelo TCO mais baixo. Proxmox oferece um ecossistema open-source mais robusto e ferramentas nativas (Backup/Migração), enquanto Nutanix AHV e Scale Computing oferecem maior simplicidade de gestão, mas com custo elevado.</p>
+                    <p><strong>Recomendação:</strong> Para ambientes que buscam redução drástica de custo e possuem expertise técnica interna, <strong>Proxmox VE</strong> é a recomendação principal devido ao TCO baixo e ao conjunto de recursos nativos. Para máxima simplicidade (abordagem "appliance"), <strong>Nutanix AHV</strong> ou <strong>Scale Computing</strong> são viáveis, mas o TCO será similar ou superior ao VMware. A migração para OpenShift Virtualization é recomendada apenas se a estratégia principal for a adoção de contêineres e Kubernetes.</p>
+                </div>
             </div>
 
             <!-- KPIs ADICIONADOS -->
-            <div class="grid-container grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-5">
-                <div class="card text-center kpi-card">
-                    <h4 class="text-sm font-medium text-gray-500 uppercase dark:text-gray-400">Gatilho da Análise</h4>
-                    <div class="text-2xl font-bold mt-2">Broadcom + VMware</div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Mudança de licenciamento e TCO</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center">
+                    <h4 class="text-sm font-medium text-slate-500 uppercase">Gatilho da Análise</h4>
+                    <div class="text-3xl font-bold text-slate-900 mt-2">Broadcom + VMware</div>
+                    <p class="text-sm text-slate-500 mt-1">Mudança de licenciamento e TCO</p>
                 </div>
-                <div class="card text-center kpi-card">
-                    <h4 class="text-sm font-medium text-gray-500 uppercase dark:text-gray-400">Fator Chave</h4>
-                    <div class="text-2xl font-bold mt-2">Desempenho Linux</div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Plataformas KVM mostram vantagem</p>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center">
+                    <h4 class="text-sm font-medium text-slate-500 uppercase">Fator Chave</h4>
+                    <div class="text-3xl font-bold text-slate-900 mt-2">Desempenho Linux</div>
+                    <p class="text-sm text-slate-500 mt-1">Plataformas KVM mostram vantagem</p>
                 </div>
-                <div class="card text-center kpi-card">
-                    <h4 class="text-sm font-medium text-gray-500 uppercase dark:text-gray-400">Soluções Analisadas</h4>
-                    <div class="text-2xl font-bold mt-2">7+</div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Incluindo Huawei, Scale e OLVM</p>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center">
+                    <h4 class="text-sm font-medium text-slate-500 uppercase">Soluções Analisadas</h4>
+                    <div class="text-3xl font-bold text-slate-900 mt-2">7+</div>
+                    <p class="text-sm text-slate-500 mt-1">Incluindo Huawei, Scale e OLVM</p>
                 </div>
-                <div class="card text-center kpi-card">
-                    <h4 class="text-sm font-medium text-gray-500 uppercase dark:text-gray-400">Principal Recomendação</h4>
-                    <div class="text-2xl font-bold mt-2">Proxmox VE</div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Melhor Custo/Benefício e Desempenho</p>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 text-center">
+                    <h4 class="text-sm font-medium text-slate-500 uppercase">Principal Recomendação</h4>
+                    <div class="text-3xl font-bold text-slate-900 mt-2">Proxmox VE</div>
+                    <p class="text-sm text-slate-500 mt-1">Melhor Custo/Benefício</p>
                 </div>
             </div>
 
             <!-- CONTEXTO E POSICIONAMENTO ADICIONADOS -->
-            <div class="grid-container grid-cols-1 md:grid-cols-2 mt-5">
-                <div class="card">
-                    <h3>Contexto e Conclusão Principal</h3>
-                    <p class="text-base text-gray-600 dark:text-gray-300">A reavaliação das plataformas de virtualização, motivada pelo cenário pós-aquisição da VMware, revela uma conclusão fundamental: <strong>a inclusão de cargas de trabalho Linux (Guests) altera significativamente a análise.</strong></p>
-                    <p class="text-base text-gray-600 dark:text-gray-300">Plataformas baseadas em KVM (como Proxmox, OLVM, Scale) demonstram vantagens substanciais de desempenho de I/O para VMs Linux, impactando diretamente o TCO ao permitir maior densidade de VMs por host.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Contexto e Conclusão Principal</h3>
+                    <p class="text-slate-600 mb-3">A reavaliação das plataformas de virtualização, motivada pelo cenário pós-aquisição da VMware, revela uma conclusão fundamental: <strong>a inclusão de cargas de trabalho Linux (Guests) altera significativamente a análise.</strong></p>
+                    <p class="text-slate-600">Plataformas baseadas em KVM (como Proxmox, OLVM, Scale) demonstram vantagens substanciais de desempenho de I/O para VMs Linux, impactando diretamente o TCO ao permitir maior densidade de VMs por host.</p>
                 </div>
-                <div class="card">
-                    <h3>Proposta de Posicionamento de Serviço</h3>
-                    <p class="text-base text-gray-600 dark:text-gray-300">Sugerimos um modelo de oferta em duas camadas para otimizar custos e desempenho:</p>
-                    <div class="flex flex-col md:flex-row gap-4 mt-4">
-                        <div class="flex-1 p-4 border-2 border-blue-500 rounded-lg text-center">
-                            <h4 class="font-bold text-lg">Tier "Premium" (Legado)</h4>
-                            <p>Plataforma atual (VMware)</p>
-                            <p><strong>Foco:</strong> Cargas críticas Windows ou que exijam ferramentas de ecossistema específicas (ex: SRM).</p>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Proposta de Posicionamento de Serviço</h3>
+                    <p class="text-slate-600 mb-4">Sugerimos um modelo de oferta em duas camadas para otimizar custos e desempenho:</p>
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1 p-4 border-2 border-blue-600 rounded-lg text-center">
+                            <h4 class="font-bold text-lg text-blue-700">Tier "Premium" (Legado)</h4>
+                            <p class="text-sm text-slate-700">Plataforma atual (VMware)</p>
+                            <p class="text-sm text-slate-700"><strong>Foco:</strong> Cargas críticas Windows ou que exijam ferramentas de ecossistema específicas (ex: SRM).</p>
                         </div>
-                        <div class="flex-1 p-4 border-2 border-gray-400 dark:border-gray-600 rounded-lg text-center">
-                            <h4 class="font-bold text-lg">Tier "Standard" (KVM)</h4>
-                            <p>Plataforma Alternativa (Proxmox)</p>
-                            <p><strong>Foco:</strong> Novas cargas Linux, VPS, DR, Dev/Test e migração de VMs de menor criticidade.</p>
+                        <div class="flex-1 p-4 border-2 border-slate-400 rounded-lg text-center">
+                            <h4 class="font-bold text-lg text-slate-800">Tier "Standard" (KVM)</h4>
+                            <p class="text-sm text-slate-700">Plataforma Alternativa (Proxmox)</p>
+                            <p class="text-sm text-slate-700"><strong>Foco:</strong> Novas cargas Linux, VPS, DR, Dev/Test e migração de VMs de menor criticidade.</p>
                         </div>
                     </div>
                 </div>
@@ -338,45 +141,45 @@
         </section>
 
         <!-- Seção: Análise de TCO -->
-        <section id="custos">
-            <h2>Análise de TCO (Custo Total de Propriedade)</h2>
-            <div class="card full-width">
-                <h3>Custo Total Estimado (5 Anos)</h3>
-                <div class="chart-container">
+        <section id="custos" class="pt-12">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-800 mb-6">Análise de TCO (Custo Total de Propriedade)</h2>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4">Custo Total Estimado (5 Anos)</h3>
+                <div class="h-96">
                     <canvas id="tcoChart"></canvas>
                 </div>
             </div>
         </section>
 
         <!-- Seção: Risco e Complexidade -->
-        <section id="risco">
-            <h2>Risco e Complexidade de Migração</h2>
-            <div class="card full-width">
-                <h3>Matriz de Risco vs. Complexidade Técnica</h3>
-                <div class="chart-container">
+        <section id="risco" class="pt-12">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-800 mb-6">Risco e Complexidade de Migração</h2>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4">Matriz de Risco vs. Complexidade Técnica</h3>
+                <div class="h-96">
                     <canvas id="migrationChart"></canvas>
                 </div>
             </div>
         </section>
 
         <!-- Seção: Plano de Migração -->
-        <section id="plano">
-            <h2>Plano de Migração (Gantt)</h2>
-            <div class="card full-width">
-                <h3>Cronograma de Migração (Semanas)</h3>
-                <div class="chart-container" style="height: 300px;">
+        <section id="plano" class="pt-12">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-800 mb-6">Plano de Migração (Gantt)</h2>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4">Cronograma de Migração (Semanas)</h3>
+                <div class="h-80"> <!-- Altura um pouco menor para Gantt -->
                     <canvas id="ganttChart"></canvas>
                 </div>
             </div>
         </section>
 
         <!-- NOVA SEÇÃO: Recomendações -->
-        <section id="recomendacoes">
-            <h2>Recomendações Estratégicas</h2>
-            <div class="grid-container grid-cols-1 md:grid-cols-2">
-                <div class="card">
-                    <h3>Cenários Recomendados</h3>
-                    <ul class="list-disc pl-5 space-y-3 text-gray-600 dark:text-gray-300">
+        <section id="recomendacoes" class="pt-12">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-800 mb-6">Recomendações Estratégicas</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Cenários Recomendados</h3>
+                    <ul class="list-disc pl-5 space-y-4 text-slate-600">
                         <li>
                             <strong>Máximo Custo-Benefício e Desempenho (Ambientes Mistos):</strong>
                             <p><strong>Proxmox VE</strong>. É a escolha tecnicamente mais forte e financeiramente mais sensata. O retorno em TCO e desempenho Linux é substancial.</p>
@@ -395,36 +198,36 @@
                         </li>
                     </ul>
                 </div>
-                 <div class="card">
-                    <h3>Links e Contato</h3>
-                    <p class="text-gray-600 dark:text-gray-300">Acesse os documentos originais para análise detalhada:</p>
+                 <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Links e Contato</h3>
+                    <p class="text-slate-600">Acesse os documentos originais para análise detalhada:</p>
                     <ul class="list-disc pl-5 space-y-2 mt-3">
                         <li>
-                            <a href="https://docs.google.com/document/d/18kwg5Nj2cR7oPl4Mvu4BzP6mV2ZZ4-wFdmnm8lXMdrk/edit?tab=t.0" target="_blank" class="text-blue-500 hover:underline">Documento de Análise Completa (Google Docs)</a>
+                            <a href="https://docs.google.com/document/d/18kwg5Nj2cR7oPl4Mvu4BzP6mV2ZZ4-wFdmnm8lXMdrk/edit?tab=t.0" target="_blank" class="text-blue-600 hover:text-blue-700 hover:underline">Documento de Análise Completa (Google Docs)</a>
                         </li>
                         <li>
-                            <a href="https://docs.google.com/spreadsheets/d/1-E_7kOxYGwHOQw14l0N6CPeovV1yOXZt/edit?gid=609538798#gid=609538798" target="_blank" class="text-blue-500 hover:underline">Planilha Comparativa (Google Sheets)</a>
+                            <a href="https://docs.google.com/spreadsheets/d/1-E_7kOxYGwHOQw14l0N6CPeovV1yOXZt/edit?gid=609538798#gid=609538798" target="_blank" class="text-blue-600 hover:text-blue-700 hover:underline">Planilha Comparativa (Google Sheets)</a>
                         </li>
                     </ul>
-                    <hr class="my-4 border-gray-200 dark:border-gray-700">
-                    <p class="font-medium"><strong>Contato:</strong> Assessoria de Inovação e Tecnologia (AIT)</p>
+                    <hr class="my-4 border-slate-200">
+                    <p class="font-semibold text-slate-800"><strong>Contato:</strong> Assessoria de Inovação e Tecnologia (AIT)</p>
                 </div>
             </div>
         </section>
 
         <!-- Seção: Análises Adicionais -->
-        <section id="adicionais">
-            <h2>Análises Adicionais</h2>
-            <div class="grid-container">
-                <div class="card">
-                    <h3>Simplicidade de Gestão</h3>
-                    <div class="chart-container">
+        <section id="adicionais" class="pt-12">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-800 mb-6">Análises Adicionais</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Simplicidade de Gestão</h3>
+                    <div class="h-96">
                         <canvas id="managementChart"></canvas>
                     </div>
                 </div>
-                <div class="card">
-                    <h3>Força da Comunidade Open-Source</h3>
-                    <div class="chart-container">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Força da Comunidade Open-Source</h3>
+                    <div class="h-96">
                         <canvas id="communityChart"></canvas>
                     </div>
                 </div>
@@ -432,10 +235,10 @@
         </section>
 
         <!-- NOVA SEÇÃO: SWOT -->
-        <section id="swot">
-            <h2>Análise SWOT Interativa</h2>
-            <div class="card full-width">
-                <select id="swot-select" class="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <section id="swot" class="pt-12">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-800 mb-6">Análise SWOT Interativa</h2>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                <select id="swot-select" class="w-full max-w-md p-3 border border-slate-300 rounded-lg bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="proxmox">Proxmox VE</option>
                     <option value="vmware">VMware vSphere</option>
                     <option value="scale">Scale Computing</option>
@@ -445,60 +248,61 @@
                     <option value="redhat">Red Hat OpenShift</option>
                 </select>
 
-                <div class="grid-container grid-cols-1 md:grid-cols-2 mt-4">
-                    <div class="table-container">
-                        <table class="data-table">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <!-- Tabela de SWOT (Estilizada com Tailwind) -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
                             <thead>
                                 <tr>
-                                    <th class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200">Forças (Strengths)</th>
+                                    <th class="border border-slate-200 p-3 text-left font-semibold bg-green-100 text-green-800">Forças (Strengths)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td id="swot-s1">• Desempenho superior em Linux (KVM/VirtIO).</td></tr>
-                                <tr><td id="swot-s2">• TCO "Baixo" (Licença gratuita, suporte opcional).</td></tr>
-                                <tr><td id="swot-s3">• Ecossistema nativo completo (Backup, Storage, LXC).</td></tr>
+                                <tr><td id="swot-s1" class="border border-slate-200 p-3 text-sm text-slate-700">• Desempenho superior em Linux (KVM/VirtIO).</td></tr>
+                                <tr><td id="swot-s2" class="border border-slate-200 p-3 text-sm text-slate-700">• TCO "Baixo" (Licença gratuita, suporte opcional).</td></tr>
+                                <tr><td id="swot-s3" class="border border-slate-200 p-3 text-sm text-slate-700">• Ecossistema nativo completo (Backup, Storage, LXC).</td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="table-container">
-                        <table class="data-table">
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
                              <thead>
                                 <tr>
-                                    <th class="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200">Fraquezas (Weaknesses)</th>
+                                    <th class="border border-slate-200 p-3 text-left font-semibold bg-red-100 text-red-800">Fraquezas (Weaknesses)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td id="swot-w1">• Requer proficiência técnica em Linux/Debian.</td></tr>
-                                <tr><td id="swot-w2">• Suporte comercial (opcional) pode não ter o mesmo SLA de incumbents.</td></tr>
-                                <tr><td id="swot-w3">• Orquestração de DR nativa é manual (scripts) vs. "SRM".</td></tr>
+                                <tr><td id="swot-w1" class="border border-slate-200 p-3 text-sm text-slate-700">• Requer proficiência técnica em Linux/Debian.</td></tr>
+                                <tr><td id="swot-w2" class="border border-slate-200 p-3 text-sm text-slate-700">• Suporte comercial (opcional) pode não ter o mesmo SLA de incumbents.</td></tr>
+                                <tr><td id="swot-w3" class="border border-slate-200 p-3 text-sm text-slate-700">• Orquestração de DR nativa é manual (scripts) vs. "SRM".</td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="table-container">
-                        <table class="data-table">
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
                              <thead>
                                 <tr>
-                                    <th class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200">Oportunidades (Opportunities)</th>
+                                    <th class="border border-slate-200 p-3 text-left font-semibold bg-blue-100 text-blue-800">Oportunidades (Opportunities)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td id="swot-o1">• Captura de clientes VMware insatisfeitos com o TCO.</td></tr>
-                                <tr><td id="swot-o2">• Plataforma ideal para DR e Tiers de serviço "Standard".</td></tr>
-                                <tr><td id="swot-o3" class="opacity-0">•</td></tr> <!-- Célula vazia para alinhamento -->
+                                <tr><td id="swot-o1" class="border border-slate-200 p-3 text-sm text-slate-700">• Captura de clientes VMware insatisfeitos com o TCO.</td></tr>
+                                <tr><td id="swot-o2" class="border border-slate-200 p-3 text-sm text-slate-700">• Plataforma ideal para DR e Tiers de serviço "Standard".</td></tr>
+                                <tr><td id="swot-o3" class="border border-slate-200 p-3 text-sm text-slate-700 opacity-0">•</td></tr> <!-- Célula vazia para alinhamento -->
                             </tbody>
                         </table>
                     </div>
-                    <div class="table-container">
-                        <table class="data-table">
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
                             <thead>
                                 <tr>
-                                    <th class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200">Ameaças (Threats)</th>
+                                    <th class="border border-slate-200 p-3 text-left font-semibold bg-yellow-100 text-yellow-800">Ameaças (Threats)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td id="swot-t1">• Forte domínio legado da VMware em contas corporativas.</td></tr>
-                                <tr><td id="swot-t2">• Concorrência de outras KVM (OLVM) e HCI (Scale).</td></tr>
-                                <tr><td id="swot-t3" class="opacity-0">•</td></tr> <!-- Célula vazia para alinhamento -->
+                                <tr><td id="swot-t1" class="border border-slate-200 p-3 text-sm text-slate-700">• Forte domínio legado da VMware em contas corporativas.</td></tr>
+                                <tr><td id="swot-t2" class="border border-slate-200 p-3 text-sm text-slate-700">• Concorrência de outras KVM (OLVM) e HCI (Scale).</td></tr>
+                                <tr><td id="swot-t3" class="border border-slate-200 p-3 text-sm text-slate-700 opacity-0">•</td></tr> <!-- Célula vazia para alinhamento -->
                             </tbody>
                         </table>
                     </div>
@@ -508,325 +312,332 @@
 
 
         <!-- Seção: Tabelas Comparativas -->
-        <section id="tabelas">
-            <h2>Tabelas Comparativas (Resumo)</h2>
+        <section id="tabelas" class="pt-12">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-800 mb-6">Tabelas Comparativas (Resumo)</h2>
 
-            <div class="card full-width">
-                <h3>Arquitetura e Desempenho</h3>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
+            <!-- Tabela de Arquitetura -->
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4">Arquitetura e Desempenho</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead class="bg-slate-50">
                             <tr>
-                                <th>Característica</th>
-                                <th>VMware vSphere</th>
-                                <th>Proxmox VE</th>
-                                <th>Nutanix AHV</th>
-                                <th>Scale Computing</th>
-                                <th>Oracle Linux VM (OLVM)</th>
-                                <th>Huawei DCS</th>
-                                <th>Red Hat OpenShift Virt.</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Característica</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">VMware vSphere</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Proxmox VE</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Nutanix AHV</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Scale Computing</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Oracle Linux VM (OLVM)</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Huawei DCS</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Red Hat OpenShift Virt.</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Hipervisor Base</td>
-                                <td>ESXi</td>
-                                <td>KVM</td>
-                                <td>KVM</td>
-                                <td>KVM</td>
-                                <td>KVM</td>
-                                <td>KVM (via FusionSphere)</td>
-                                <td>KVM (via KubeVirt)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Hipervisor Base</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">ESXi</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">KVM</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">KVM</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">KVM</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">KVM</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">KVM (via FusionSphere)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">KVM (via KubeVirt)</td>
                             </tr>
-                            <tr>
-                                <td>Desempenho (Guest Linux)</td>
-                                <td>Bom</td>
-                                <td>Excelente</td>
-                                <td>Excelente</td>
-                                <td>Excelente</td>
-                                <td>Excelente</td>
-                                <td>Muito Bom</td>
-                                <td>Excelente</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Desempenho (Guest Linux)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Bom</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Bom</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td>
                             </tr>
-                            <tr>
-                                <td>Suporte Nativo a Contêineres</td>
-                                <td>Sim (Tanzu)</td>
-                                <td>Sim (LXC)</td>
-                                <td>Sim (Karbon)</td>
-                                <td>Não</td>
-                                <td>Não</td>
-                                <td>Sim</td>
-                                <td>Sim (Nativo do OpenShift)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Suporte Nativo a Contêineres</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Tanzu)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (LXC)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Karbon)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Não</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Não</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Nativo do OpenShift)</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="card full-width" style="margin-top: 20px;">
-                <h3>Continuidade de Negócios</h3>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
+            <!-- Demais tabelas... -->
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 mt-6">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4">Continuidade de Negócios</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <!-- Head -->
+                        <thead class="bg-slate-50">
                             <tr>
-                                <th>Característica</th>
-                                <th>VMware vSphere</th>
-                                <th>Proxmox VE</th>
-                                <th>Nutanix AHV</th>
-                                <th>Scale Computing</th>
-                                <th>Oracle Linux VM (OLVM)</th>
-                                <th>Huawei DCS</th>
-                                <th>Red Hat OpenShift Virt.</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Característica</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">VMware vSphere</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Proxmox VE</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Nutanix AHV</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Scale Computing</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Oracle Linux VM (OLVM)</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Huawei DCS</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Red Hat OpenShift Virt.</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Replicação Síncrona Nativa</td>
-                                <td>Sim (vSAN Stretched Cluster)</td>
-                                <td>Sim (via Ceph)</td>
-                                <td>Sim (Metro Availability)</td>
-                                <td>Sim</td>
-                                <td>Não</td>
-                                <td>Sim (RPO=0)</td>
-                                <td>Sim (via ODF)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Replicação Síncrona Nativa</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (vSAN Stretched Cluster)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (via Ceph)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Metro Availability)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Não</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (RPO=0)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (via ODF)</td>
                             </tr>
-                            <tr>
-                                <td>Replicação Assíncrona Nativa</td>
-                                <td>Sim (vSphere Replication)</td>
-                                <td>Sim (via Ceph/ZFS)</td>
-                                <td>Sim (Async DR)</td>
-                                <td>Sim (RPO 5 min)</td>
-                                <td>Não (Requer 3ºs)</td>
-                                <td>Sim</td>
-                                <td>Sim (via ODF)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Replicação Assíncrona Nativa</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (vSphere Replication)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (via Ceph/ZFS)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Async DR)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (RPO 5 min)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Não (Requer 3ºs)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (via ODF)</td>
                             </tr>
-                            <tr>
-                                <td>Orquestração de DR Nativa</td>
-                                <td>Sim (SRM, pago)</td>
-                                <td>Manual/Scripts</td>
-                                <td>Sim (Prism Central)</td>
-                                <td>Sim</td>
-                                <td>Não (Requer 3ºs)</td>
-                                <td>Sim (UltraVR)</td>
-                                <td>Sim (via ACM)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Orquestração de DR Nativa</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (SRM, pago)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Manual/Scripts</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Prism Central)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Não (Requer 3ºs)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (UltraVR)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (via ACM)</td>
                             </tr>
-                            <tr>
-                                <td>Solução de Backup Nativa</td>
-                                <td>Não</td>
-                                <td>Sim (Proxmox Backup Server)</td>
-                                <td>Sim (Snapshots/Replicação)</td>
-                                <td>Sim (Snapshots)</td>
-                                <td>Não</td>
-                                <td>Sim (eBackup)</td>
-                                <td>Sim (OADP/Velero)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Solução de Backup Nativa</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Não</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Proxmox Backup Server)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Snapshots/Replicação)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Snapshots)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Não</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (eBackup)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (OADP/Velero)</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
-            <div class="card full-width" style="margin-top: 20px;">
-                <h3>Operação e Gerenciamento</h3>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
+            
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 mt-6">
+                 <h3 class="text-lg font-semibold text-slate-800 mb-4">Operação e Gerenciamento</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <!-- Head -->
+                        <thead class="bg-slate-50">
                             <tr>
-                                <th>Característica</th>
-                                <th>VMware vSphere</th>
-                                <th>Proxmox VE</th>
-                                <th>Nutanix AHV</th>
-                                <th>Scale Computing</th>
-                                <th>Oracle Linux VM (OLVM)</th>
-                                <th>Huawei DCS</th>
-                                <th>Red Hat OpenShift Virt.</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Característica</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">VMware vSphere</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Proxmox VE</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Nutanix AHV</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Scale Computing</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Oracle Linux VM (OLVM)</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Huawei DCS</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Red Hat OpenShift Virt.</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Simplicidade de Gestão</td>
-                                <td>Moderada</td>
-                                <td>Moderada</td>
-                                <td>Excelente</td>
-                                <td>Excelente</td>
-                                <td>Moderada</td>
-                                <td>Moderada-Alta</td>
-                                <td>Alta (requer expertise Kubernetes)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Simplicidade de Gestão</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Moderada</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Moderada</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Moderada</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Moderada-Alta</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Alta (requer expertise Kubernetes)</td>
                             </tr>
-                            <tr>
-                                <td>Ferramenta de Migração VMware</td>
-                                <td>N/A</td>
-                                <td>Sim (Importador Integrado)</td>
-                                <td>Sim (Nutanix Move)</td>
-                                <td>Sim (SC//Migrate)</td>
-                                <td>Sim (virt-v2v)</td>
-                                <td>Sim (Rainbow)</td>
-                                <td>Sim (MTV)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Ferramenta de Migração VMware</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">N/A</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Importador Integrado)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Nutanix Move)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (SC//Migrate)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (virt-v2v)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Rainbow)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (MTV)</td>
                             </tr>
-                            <tr>
-                                <td>Balanceamento de Carga</td>
-                                <td>DRS (Distribuído)</td>
-                                <td>Manual ou via terceiros</td>
-                                <td>ADS (Nativo)</td>
-                                <td>Failover automático</td>
-                                <td>Política de agendamento</td>
-                                <td>QoS e balanceamento nativo</td>
-                                <td>Kubernetes Services / Rebalanceamento</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Balanceamento de Carga</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">DRS (Distribuído)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Manual ou via terceiros</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">ADS (Nativo)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Failover automático</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Política de agendamento</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">QoS e balanceamento nativo</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Kubernetes Services / Rebalanceamento</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
-            <div class="card full-width" style="margin-top: 20px;">
-                <h3>Custo Total de Propriedade (TCO)</h3>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
+            
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 mt-6">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4">Custo Total de Propriedade (TCO)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <!-- Head -->
+                        <thead class="bg-slate-50">
                             <tr>
-                                <th>Característica</th>
-                                <th>VMware vSphere</th>
-                                <th>Proxmox VE</th>
-                                <th>Nutanix AHV</th>
-                                <th>Scale Computing</th>
-                                <th>Oracle Linux VM (OLVM)</th>
-                                <th>Huawei DCS</th>
-                                <th>Red Hat OpenShift Virt.</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Característica</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">VMware vSphere</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Proxmox VE</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Nutanix AHV</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Scale Computing</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Oracle Linux VM (OLVM)</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Huawei DCS</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Red Hat OpenShift Virt.</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Modelo de Licenciamento</td>
-                                <td>Subscrição por Core</td>
-                                <td>Gratuito / Suporte Pago</td>
-                                <td>Subscrição HCI</td>
-                                <td>Subscrição HCI</td>
-                                <td>Gratuito / Suporte Pago</td>
-                                <td>Subscrição por CPU</td>
-                                <td>Subscrição por Core</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Modelo de Licenciamento</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Subscrição por Core</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Gratuito / Suporte Pago</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Subscrição HCI</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Subscrição HCI</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Gratuito / Suporte Pago</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Subscrição por CPU</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Subscrição por Core</td>
                             </tr>
-                            <tr>
-                                <td>Custo de Software de Terceiros</td>
-                                <td>$$(SRM, Veeam, etc.)</td>
-                                <td>$ (PBS é nativo/gratuito)</td>
-                                <td>$ (Funcionalidade Nativa)</td>
-                                <td>$ (Funcionalidade Nativa)</td>
-                                <td>$$ (RackWare, etc.)</td>
-                                <td>$ (Funcionalidade Nativa)</td>
-                                <td>$ (OADP/Velero integrados)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Custo de Software de Terceiros</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">$$(SRM, Veeam, etc.)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">$ (PBS é nativo/gratuito)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">$ (Funcionalidade Nativa)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">$ (Funcionalidade Nativa)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">$$ (RackWare, etc.)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">$ (Funcionalidade Nativa)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">$ (OADP/Velero integrados)</td>
                             </tr>
-                            <tr>
-                                <td>Custo Total Estimado (5 Anos)</td>
-                                <td>Muito Alto</td>
-                                <td>Baixo</td>
-                                <td>Muito Alto</td>
-                                <td>Moderado</td>
-                                <td>Muito Baixo</td>
-                                <td>Alto</td>
-                                <td>Alto</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Custo Total Estimado (5 Anos)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Alto</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Baixo</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Alto</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Moderado</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Baixo</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Alto</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Alto</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
-            <div class="card full-width" style="margin-top: 20px;">
-                <h3>Segurança e Conformidade</h3>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
+            
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 mt-6">
+                 <h3 class="text-lg font-semibold text-slate-800 mb-4">Segurança e Conformidade</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <!-- Head -->
+                        <thead class="bg-slate-50">
                             <tr>
-                                <th>Característica</th>
-                                <th>VMware vSphere</th>
-                                <th>Proxmox VE</th>
-                                <th>Nutanix AHV</th>
-                                <th>Scale Computing</th>
-                                <th>Oracle Linux VM (OLVM)</th>
-                                <th>Huawei DCS</th>
-                                <th>Red Hat OpenShift Virt.</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Característica</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">VMware vSphere</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Proxmox VE</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Nutanix AHV</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Scale Computing</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Oracle Linux VM (OLVM)</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Huawei DCS</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Red Hat OpenShift Virt.</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>RBAC (Controle de Acesso)</td>
-                                <td>Sim (Avançado)</td>
-                                <td>Sim (Integrado)</td>
-                                <td>Sim (Avançado)</td>
-                                <td>Sim (Foco no Appliance)</td>
-                                <td>Sim (Integrado)</td>
-                                <td>Sim (Avançado)</td>
-                                <td>Sim (Avançado)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">RBAC (Controle de Acesso)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Avançado)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Integrado)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Avançado)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Foco no Appliance)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Integrado)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Avançado)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Avançado)</td>
                             </tr>
-                            <tr>
-                                <td>Criptografia Nativa</td>
-                                <td>Sim</td>
-                                <td>Sim (via ZFS/LUKS)</td>
-                                <td>Sim</td>
-                                <td>Sim</td>
-                                <td>Sim (via LUKS)</td>
-                                <td>Sim</td>
-                                <td>Sim</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Criptografia Nativa</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (via ZFS/LUKS)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (via LUKS)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
                             </tr>
-                            <tr>
-                                <td>Firewall Integrado</td>
-                                <td>Não (Requer NSX)</td>
-                                <td>Sim</td>
-                                <td>Sim (Flow)</td>
-                                <td>Sim</td>
-                                <div>Sim (firewalld/iptables)</div>
-                                <td>Sim</td>
-                                <td>Sim (Network Policies)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Firewall Integrado</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Não (Requer NSX)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Flow)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (firewalld/iptables)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Network Policies)</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
-            <div class="card full-width" style="margin-top: 20px;">
-                <h3>Ecossistema e Suporte</h3>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
+            
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 mt-6">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4">Ecossistema e Suporte</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <!-- Head -->
+                        <thead class="bg-slate-50">
                             <tr>
-                                <th>Característica</th>
-                                <th>VMware vSphere</th>
-                                <th>Proxmox VE</th>
-                                <th>Nutanix AHV</th>
-                                <th>Scale Computing</th>
-                                <th>Oracle Linux VM (OLVM)</th>
-                                <th>Huawei DCS</th>
-                                <th>Red Hat OpenShift Virt.</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Característica</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">VMware vSphere</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Proxmox VE</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Nutanix AHV</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Scale Computing</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Oracle Linux VM (OLVM)</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Huawei DCS</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Red Hat OpenShift Virt.</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Opções de Suporte Comercial</td>
-                                <td>Premier (SLA corporativo)</td>
-                                <td>Níveis Community a Premium</td>
-                                <td>Production a Mission Critical</td>
-                                <td>Suporte 24/7/365 ("ScaleCare")</td>
-                                <td>Oracle Premier Support</td>
-                                <td>Níveis Basic a Premier</td>
-                                <td>Suporte Red Hat (SLA corporativo)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Opções de Suporte Comercial</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Premier (SLA corporativo)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Níveis Community a Premium</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Production a Mission Critical</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Suporte 24/7/365 ("ScaleCare")</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Oracle Premier Support</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Níveis Basic a Premier</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Suporte Red Hat (SLA corporativo)</td>
                             </tr>
-                            <tr>
-                                <td>Comunidade Open-Source</td>
-                                <td>Fraca</td>
-                                <td>Muito Forte</td>
-                                <td>Moderada</td>
-                                <td>Fraca</td>
-                                <td>Forte (oVirt)</td>
-                                <td>Fraca</td>
-                                <td>Muito Forte (Kubernetes)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Comunidade Open-Source</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Fraca</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Forte</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Moderada</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Fraca</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Forte (oVirt)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Fraca</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Forte (Kubernetes)</td>
                             </tr>
-                            <tr>
-                                <td>Ciclo de Suporte Ativo</td>
-                                <td>Longo (5+ anos)</td>
-                                <td>Contínuo</td>
-                                <td>3-5 anos por versão</td>
-                                <td>Contínuo com subscrição</td>
-                                <td>Longo (5+ anos)</td>
-                                <td>3-5 anos por versão</td>
-                                <td>Curto (18-36 meses por versão)</td>
+                            <tr class="even:bg-slate-50">
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Ciclo de Suporte Ativo</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Longo (5+ anos)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Contínuo</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">3-5 anos por versão</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Contínuo com subscrição</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Longo (5+ anos)</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">3-5 anos por versão</td>
+                                <td class="border border-slate-200 p-3 text-sm text-slate-700">Curto (18-36 meses por versão)</td>
                             </tr>
                         </tbody>
                     </table>
@@ -835,54 +646,83 @@
         </section>
 
         <!-- NOVA SEÇÃO: Matriz Completa -->
-        <section id="matriz-completa">
-            <h2>Matriz de Funcionalidades (Completa)</h2>
-            <div class="card full-width">
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
+        <section id="matriz-completa" class="pt-12">
+            <h2 class="text-2xl font-bold tracking-tight text-slate-800 mb-6">Matriz de Funcionalidades (Completa)</h2>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead class="bg-slate-50">
                             <tr>
-                                <th>Funcionalidade</th>
-                                <th>VMware vSphere</th>
-                                <th>Proxmox VE</th>
-                                <th>Nutanix AHV</th>
-                                <th>Scale Computing</th>
-                                <th>Oracle Linux VM</th>
-                                <th>Huawei DCS</th>
-                                <th>Red Hat OpenShift</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Funcionalidade</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">VMware vSphere</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Proxmox VE</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Nutanix AHV</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Scale Computing</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Oracle Linux VM</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Huawei DCS</th>
+                                <th class="border border-slate-200 p-3 text-left text-sm font-semibold text-slate-600 whitespace-nowrap">Red Hat OpenShift</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td>Hipervisor Base</td><td>ESXi</td><td>KVM</td><td>KVM</td><td>KVM</td><td>KVM</td><td>KVM (via FusionSphere)</td><td>KVM</td></tr>
-                            <tr><td>Desempenho (Guest Linux)</td><td>Bom</td><td>Excelente</td><td>Excelente</td><td>Excelente</td><td>Excelente</td><td>Muito Bom</td><td>Excelente</td></tr>
-                            <tr><td>Suporte Nativo a Contêineres</td><td>Sim (Tanzu)</td><td>Sim (LXC)</td><td>Sim (Karbon)</td><td>Não</td><td>Não</td><td>Sim</td><td>Sim (Nativo)</td></tr>
-                            <tr><td>Replicação Síncrona Nativa</td><td>Sim (vSAN Stretched)</td><td>Sim (via Ceph)</td><td>Sim (Metro Availability)</td><td>Sim</td><td>Não</td><td>Sim</td><td>Não (Requer 3ºs)</td></tr>
-                            <tr><td>Replicação Assíncrona Nativa</td><td>Sim (vSphere Replication)</td><td>Sim (via Ceph/ZFS)</td><td>Sim (Async DR)</td><td>Sim (RPO 5 min)</td><td>Não (Requer 3ºs)</td><td>Sim (UltraVR)</td><td>Não (Requer 3ºs)</td></tr>
-                            <tr><td>Orquestração de DR Nativa</td><td>Sim (SRM, pago)</td><td>Manual/Scripts</td><td>Sim (Prism Central)</td><td>Sim</td><td>Não</td><td>Sim</td><td>Manual (Baseado em OADP)</td></tr>
-                            <tr><td>Solução de Backup Nativa</td><td>Não</td><td>Sim (Proxmox Backup Server)</td><td>Sim (Snapshots/Replicação)</td><td>Sim (Snapshots)</td><td>Não (Requer 3ºs)</td><td>Sim (eBackup)</td><td>Sim (OADP)</td></tr>
-                            <tr><td>Simplicidade de Gestão</td><td>Moderada</td><td>Moderada</td><td>Excelente</td><td>Excelente</td><td>Moderada</td><td>Moderada-Alta</td><td>Alta (Foco K8s)</td></tr>
-                            <tr><td>Ferramenta de Migração</td><td>VMware N/A</td><td>Sim (Importador Integrado)</td><td>Sim (Nutanix Move)</td><td>Sim (SC//Migrate)</td><td>Sim (virt-v2v)</td><td>Sim (Rainbow)</td><td>Sim (MTC)</td></tr>
-                            <tr><td>Balanceamento de Carga</td><td>DRS (Distribuído)</td><td>Manual / terceiros</td><td>ADS (Nativo)</td><td>Failover automático</td><td>Política de agendamento</td><td>QoS / balanceamento nativo</td><td>Nativo (K8s Scheduler)</td></tr>
-                            <tr><td>Modelo de Licenciamento</td><td>Subscrição por Core</td><td>Gratuito / Suporte Pago</td><td>Subscrição HCI</td><td>Subscrição HCI</td><td>Gratuito / Suporte Pago</td><td>Subscrição por CPU</td><td>Subscrição por Core</td></tr>
-                            <tr><td>Custo de Software de Terceiros</td><td>$$(SRM, Veeam, etc.)</td><td>$ (PBS nativo/gratuito)</td><td>$ (Funcionalidade Nativa)</td><td>$ (Funcionalidade Nativa)</td><td>$$ (RackWare, etc.)</td><td>$ (Funcionalidade Nativa)</td><td>$ (Funcionalidade Nativa)</td></tr>
-                            <tr><td>Custo Total Estimado (5 anos)</td><td>Muito Alto</td><td>Baixo</td><td>Muito Alto</td><td>Moderado</td><td>Muito Baixo</td><td>Alto</td><td>Alto</td></tr>
-                            <tr><td>RBAC (Controle de Acesso)</td><td>Sim (Avançado)</td><td>Sim (Avançado)</td><td>Sim (Avançado)</td><td>Sim (Foco no Appliance)</td><td>Sim (Integrado)</td><td>Sim (Avançado)</td><td>Sim (Avançado)</td></tr>
-                            <tr><td>Criptografia Nativa</td><td>Sim</td><td>Sim (via ZFS/LUKS)</td><td>Sim</td><td>Sim</td><td>Sim (via LUKS)</td><td>Sim</td><td>Sim</td></tr>
-                            <tr><td>Firewall Integrado</td><td>Não (Requer NSX)</td><td>Sim (Distribuído)</td><td>Sim (Flow)</td><td>Sim</td><td>Sim (firewalld/iptables)</td><td>Sim</td><td>Sim (NetworkPolicies)</td></tr>
-                            <tr><td>Opções de Suporte Comercial</td><td>Premier (SLA corporativo)</td><td>Basic a Enterprise</td><td>Production a Mission Critical</td><td>Suporte 24/7/365 (ScaleCare)</td><td>Oracle Premier Support</td><td>Basic a Premier</td><td>Premium (SLA corporativo)</td></tr>
-                            <tr><td>Comunidade Open-Source</td><td>Fraca</td><td>Muito Forte</td><td>Moderada</td><td>Fraca</td><td>Forte (oVirt)</td><td>Fraca</td><td>Muito Forte (OKD)</td></tr>
-                            <tr><td>Ciclo de Suporte Ativo</td><td>Longo (5+ anos)</td><td>Contínuo</td><td>3-5 anos por versão</td><td>Contínuo com subscrição</td><td>Longo (5+ anos)</td><td>3-5 anos por versão</td><td>Contínuo</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Hipervisor Base</td><td class="border border-slate-200 p-3 text-sm text-slate-700">ESXi</td><td class="border border-slate-200 p-3 text-sm text-slate-700">KVM</td><td class="border border-slate-200 p-3 text-sm text-slate-700">KVM</td><td class="border border-slate-200 p-3 text-sm text-slate-700">KVM</td><td class="border border-slate-200 p-3 text-sm text-slate-700">KVM</td><td class="border border-slate-200 p-3 text-sm text-slate-700">KVM (via FusionSphere)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">KVM</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Desempenho (Guest Linux)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Bom</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Bom</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Suporte Nativo a Contêineres</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Tanzu)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (LXC)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Karbon)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Não</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Não</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Nativo)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Replicação Síncrona Nativa</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (vSAN Stretched)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (via Ceph)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Metro Availability)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Não</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Não (Requer 3ºs)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Replicação Assíncrona Nativa</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (vSphere Replication)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (via Ceph/ZFS)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Async DR)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (RPO 5 min)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Não (Requer 3ºs)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (UltraVR)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Não (Requer 3ºs)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Orquestração de DR Nativa</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (SRM, pago)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Manual/Scripts</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Prism Central)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Não</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Manual (Baseado em OADP)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Solução de Backup Nativa</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Não</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Proxmox Backup Server)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Snapshots/Replicação)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Snapshots)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Não (Requer 3ºs)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (eBackup)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (OADP)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Simplicidade de Gestão</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Moderada</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Moderada</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Excelente</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Moderada</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Moderada-Alta</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Alta (Foco K8s)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Ferramenta de Migração</td><td class="border border-slate-200 p-3 text-sm text-slate-700">VMware N/A</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Importador Integrado)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Nutanix Move)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (SC//Migrate)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (virt-v2v)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Rainbow)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (MTC)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Balanceamento de Carga</td><td class="border border-slate-200 p-3 text-sm text-slate-700">DRS (Distribuído)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Manual / terceiros</td><td class="border border-slate-200 p-3 text-sm text-slate-700">ADS (Nativo)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Failover automático</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Política de agendamento</td><td class="border border-slate-200 p-3 text-sm text-slate-700">QoS / balanceamento nativo</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Nativo (K8s Scheduler)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Modelo de Licenciamento</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Subscrição por Core</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Gratuito / Suporte Pago</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Subscrição HCI</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Subscrição HCI</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Gratuito / Suporte Pago</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Subscrição por CPU</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Subscrição por Core</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Custo de Software de Terceiros</td><td class="border border-slate-200 p-3 text-sm text-slate-700">$$(SRM, Veeam, etc.)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">$ (PBS nativo/gratuito)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">$ (Funcionalidade Nativa)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">$ (Funcionalidade Nativa)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">$$ (RackWare, etc.)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">$ (Funcionalidade Nativa)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">$ (Funcionalidade Nativa)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Custo Total Estimado (5 anos)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Alto</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Baixo</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Alto</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Moderado</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Baixo</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Alto</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Alto</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">RBAC (Controle de Acesso)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Avançado)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Avançado)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Avançado)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Foco no Appliance)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Integrado)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Avançado)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Avançado)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Criptografia Nativa</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (via ZFS/LUKS)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (via LUKS)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Firewall Integrado</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Não (Requer NSX)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Distribuído)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (Flow)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (firewalld/iptables)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Sim (NetworkPolicies)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Opções de Suporte Comercial</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Premier (SLA corporativo)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Basic a Enterprise</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Production a Mission Critical</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Suporte 24/7/365 (ScaleCare)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Oracle Premier Support</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Basic a Premier</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Premium (SLA corporativo)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Comunidade Open-Source</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Fraca</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Forte</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Moderada</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Fraca</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Forte (oVirt)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Fraca</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Muito Forte (OKD)</td></tr>
+                            <tr class="even:bg-slate-50"><td class="border border-slate-200 p-3 text-sm text-slate-700 font-medium whitespace-nowrap">Ciclo de Suporte Ativo</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Longo (5+ anos)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Contínuo</td><td class="border border-slate-200 p-3 text-sm text-slate-700">3-5 anos por versão</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Contínuo com subscrição</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Longo (5+ anos)</td><td class="border border-slate-200 p-3 text-sm text-slate-700">3-5 anos por versão</td><td class="border border-slate-200 p-3 text-sm text-slate-700">Contínuo</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-
-        <!-- Espaçador no final para garantir que o scroll funcione bem -->
-        <div style="height: 50px;"></div>
-
     </main>
+    
+    <!-- Footer (Rodapé do CIASC - do dash_prods) -->
+    <footer class="bg-slate-100 border-t border-slate-200 mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                
+                <div class="flex flex-col justify-center items-center md:items-start space-y-4">
+                    <div class="w-fit">
+                         <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </div>
+                    <p class="text-xs text-center md:text-left text-slate-600">
+                        Todos os Direitos reservados - AIT<br>(Assessoria de Inovação e Tecnologia) - CIASC 2024
+                    </p>
+                </div>
+                
+                <div class="text-center md:text-left text-sm text-slate-700">
+                    <h4 class="font-semibold text-blue-800">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
+                    <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
+                    <p>Florianópolis, SC - CEP 88034-902</p>
+                    <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
+                </div>
+                
+                <div class="text-center md:text-right text-sm">
+                    <p class="font-semibold text-blue-800">Links Úteis</p>
+                    <ul class="mt-2 space-y-1">
+                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="text-slate-700 hover:text-blue-700 hover:underline">Site Oficial CIASC</a></li>
+                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="text-slate-700 hover:text-blue-700 hover:underline">Portal da Transparência</a></li>
+                        <li><a href="https://www.abep-tic.org.br/" target="_blank" class="text-slate-700 hover:text-blue-700 hover:underline">ABEP-TIC</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1002,9 +842,9 @@
 
             // Função para renderizar/atualizar gráficos
             function renderCharts() {
-                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-                const labelColor = isDark ? '#e0e0e0' : '#333';
-                const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                // Cores e labels para o tema (claro)
+                const labelColor = '#333';
+                const gridColor = 'rgba(0, 0, 0, 0.1)';
 
                 // Cores distintas para o gráfico de dispersão
                 const distinctColors = [
@@ -1257,44 +1097,53 @@
                     });
                 }
             }
-
-            // --- Lógica do Seletor de Tema ---
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeCheckbox = document.getElementById('theme-checkbox');
             
-            // Checar preferência do sistema
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                themeCheckbox.checked = true;
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-                themeCheckbox.checked = false;
-            }
+            // --- Lógica de Navegação Ativa ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section[id]');
 
-            // Listener para o clique
-            themeToggle.addEventListener('click', () => {
-                const isChecked = themeCheckbox.checked;
-                if (!isChecked) { // Invertendo a lógica por causa do estado do checkbox
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                } else {
-                    document.documentElement.setAttribute('data-theme', 'light');
-                }
-                themeCheckbox.checked = !isChecked; // Atualizar o estado visual
+            // Função para destacar o link da aba
+            function setActiveLink() {
+                let currentSection = '';
                 
-                // Redesenhar gráficos com as cores do novo tema
-                renderCharts();
-            });
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    // 150px de offset para o header fixo
+                    if (window.scrollY >= sectionTop - 150) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
 
-            // Listener para mudança de preferência do sistema
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-                const newColorScheme = e.matches ? 'dark' : 'light';
-                document.documentElement.setAttribute('data-theme', newColorScheme);
-                themeCheckbox.checked = (newColorScheme === 'dark');
-                renderCharts();
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+                
+                // Garante que o "Resumo" esteja ativo se nada for encontrado (topo da página)
+                if (!currentSection && window.scrollY < 200) {
+                     navLinks[0].classList.add('active');
+                }
+            }
+            
+            // Adiciona listener para o clique nos links
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    // Remove o 'active' de todos
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    // Adiciona 'active' ao clicado
+                    e.currentTarget.classList.add('active');
+                    // Não é necessário e.preventDefault() pois o href="#..." já faz o scroll
+                });
             });
+            
+            // Adiciona listener para o scroll
+            window.addEventListener('scroll', setActiveLink);
 
             // Renderização inicial
             renderCharts();
+            setActiveLink(); // Define o link ativo ao carregar
         });
     </script>
 
