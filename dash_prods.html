@@ -109,7 +109,7 @@
                     <!-- Gráfico 1: Receita Anual -->
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
                         <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Receita Anual (R$ Milhões)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Receita)</p>
                         <div class="h-96">
                             <canvas id="chartReceita"></canvas>
                         </div>
@@ -118,7 +118,7 @@
                     <!-- Gráfico 2: N° de Colaboradores -->
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
                         <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">N° de Colaboradores</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Colaboradores)</p>
                         <div class="h-96">
                             <canvas id="chartColaboradores"></canvas>
                         </div>
@@ -127,7 +127,7 @@
                     <!-- Gráfico 3: Receita por Colaborador (RPC) -->
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
                         <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Receita por Colaborador (R$ Mil)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por RPC)</p>
                         <div class="h-96">
                             <canvas id="chartProdutividade"></canvas>
                         </div>
@@ -136,7 +136,7 @@
                     <!-- Gráfico 4: Custo Médio Mensal por Colaborador -->
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
                         <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Custo Médio Mensal por Colaborador (R$)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Custo)</p>
                         <div class="h-96">
                             <canvas id="chartSalarioMedio"></canvas>
                         </div>
@@ -145,7 +145,7 @@
                     <!-- Gráfico 6: % Impacto da Folha / Receita -->
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
                         <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">% Impacto da Folha / Receita</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Custo Pessoal Anual / Receita Bruta</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Impacto)</p>
                         <div class="h-96">
                             <canvas id="chartImpactoFolha"></canvas>
                         </div>
@@ -227,43 +227,10 @@
     <!-- Script principal da aplicação -->
     <script>
         // --- LÓGICA DO TEMA (LIGHT/DARK) ---
-        const themeToggleBtn = document.getElementById('theme-toggle');
+        // DEVE SER EXECUTADO IMEDIATAMENTE PARA EVITAR "FOUC" (Flash of Unstyled Content)
         const htmlEl = document.documentElement;
-        
-        // Função para atualizar o tema dos gráficos
-        function updateChartTheme(theme) {
-            const isDark = (theme === 'dark');
-            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-            const textColor = isDark ? '#e2e8f0' : '#334155'; // slate-200 / slate-700
-            const tooltipBg = isDark ? '#1e293b' : '#ffffff'; // slate-800 / white
-            const tooltipText = isDark ? '#f1f5f9' : '#1e293b'; // slate-100 / slate-800
-
-            Chart.defaults.color = textColor;
-            Chart.defaults.borderColor = gridColor;
-            Chart.defaults.plugins.tooltip.backgroundColor = tooltipBg;
-            Chart.defaults.plugins.tooltip.titleColor = tooltipText;
-            Chart.defaults.plugins.tooltip.bodyColor = tooltipText;
-            
-            // Re-renderiza os gráficos se já existirem
-            if (Object.keys(charts).length > 0) {
-                updateCharts();
-            }
-        }
-        
-        // Define o tema inicial
         let currentTheme = localStorage.getItem('theme') || 'light';
         htmlEl.classList.add(currentTheme);
-        updateChartTheme(currentTheme);
-
-        // Lógica do botão
-        themeToggleBtn.addEventListener('click', () => {
-            htmlEl.classList.toggle('dark');
-            htmlEl.classList.toggle('light');
-            
-            const newTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
-            localStorage.setItem('theme', newTheme);
-            updateChartTheme(newTheme);
-        });
 
 
         // --- BANCO DE DADOS HÍBRIDO (PDF 2024 + Deep Search 2024/2023) ---
@@ -631,19 +598,26 @@
             return data.map(e => `${e.nome} (${e.estado === 'SP (Mun.)' ? 'SP-Mun' : e.estado}) (${e.ano})`);
         }
 
+        // --- CORREÇÃO: Função helper para mover CIASC para o início de um array
+        function moveCiascToFront(array) {
+            const index = array.findIndex(e => e.id === 'ciasc');
+            if (index > -1) {
+                const item = array.splice(index, 1)[0];
+                array.unshift(item);
+            }
+            return array; // Retorna o array modificado
+        }
+
+
         // Função para atualizar os gráficos
         function updateCharts() {
             Object.values(charts).forEach(chart => chart.destroy());
             
-            // Ordena (CIASC primeiro, depois por Receita Descendente)
-            const dataOrdenada = [...empresasData].sort((a, b) => {
-                if (a.id === 'ciasc') return -1;
-                if (b.id === 'ciasc') return 1;
-                return (b.receitaValor || 0) - (a.receitaValor || 0);
-            });
-
             // --- Gráfico 1: Receita ---
-            const dataReceita = dataOrdenada.filter(e => e.receitaValor);
+            let dataReceita = empresasData.filter(e => e.receitaValor);
+            dataReceita.sort((a, b) => (b.receitaValor || 0) - (a.receitaValor || 0));
+            dataReceita = moveCiascToFront(dataReceita); // CORREÇÃO: CIASC na frente
+            
             charts.receita = new Chart(document.getElementById('chartReceita'), {
                 type: 'bar',
                 data: {
@@ -658,7 +632,10 @@
             });
 
             // --- Gráfico 2: Colaboradores ---
-            const dataColab = dataOrdenada.filter(e => e.colaboradoresValor);
+            let dataColab = empresasData.filter(e => e.colaboradoresValor);
+            dataColab.sort((a, b) => (b.colaboradoresValor || 0) - (a.colaboradoresValor || 0));
+            dataColab = moveCiascToFront(dataColab); // CORREÇÃO: CIASC na frente
+            
             charts.colaboradores = new Chart(document.getElementById('chartColaboradores'), {
                 type: 'bar',
                 data: {
@@ -673,10 +650,11 @@
             });
 
             // --- Gráfico 3: Receita por Colaborador (RPC) ---
-            const dataRPC = dataOrdenada
+            let dataRPC = empresasData
                 .map(e => ({...e, rpc: calcularRPC(e.receitaValor, e.colaboradoresValor)}))
-                .filter(e => e.rpc)
-                .sort((a, b) => (b.rpc || 0) - (a.rpc || 0)); // Re-ordena por RPC
+                .filter(e => e.rpc);
+            dataRPC.sort((a, b) => (b.rpc || 0) - (a.rpc || 0)); // Ordena por RPC
+            dataRPC = moveCiascToFront(dataRPC); // CORREÇÃO: CIASC na frente
                 
             charts.produtividade = new Chart(document.getElementById('chartProdutividade'), {
                 type: 'bar',
@@ -692,9 +670,9 @@
             });
 
             // --- Gráfico 4: Custo Médio Mensal ---
-            const dataSalario = dataOrdenada
-                .filter(e => e.salarioMedioValor)
-                .sort((a, b) => (b.salarioMedioValor || 0) - (a.salarioMedioValor || 0)); // Re-ordena por Salário
+            let dataSalario = empresasData.filter(e => e.salarioMedioValor);
+            dataSalario.sort((a, b) => (b.salarioMedioValor || 0) - (a.salarioMedioValor || 0)); // Ordena por Salário
+            dataSalario = moveCiascToFront(dataSalario); // CORREÇÃO: CIASC na frente
                 
             charts.salarioMedio = new Chart(document.getElementById('chartSalarioMedio'), {
                 type: 'bar',
@@ -710,10 +688,11 @@
             });
             
              // --- Gráfico 6: Impacto da Folha ---
-            const dataImpacto = dataOrdenada
+            let dataImpacto = empresasData
                 .map(e => ({...e, impacto: calcularImpactoFolha(e.salarioMedioValor, e.colaboradoresValor, e.receitaValor)}))
-                .filter(e => e.impacto)
-                .sort((a, b) => (b.impacto || 0) - (a.impacto || 0)); // Re-ordena por Impacto
+                .filter(e => e.impacto);
+            dataImpacto.sort((a, b) => (b.impacto || 0) - (a.impacto || 0)); // Ordena por Impacto
+            dataImpacto = moveCiascToFront(dataImpacto); // CORREÇÃO: CIASC na frente
 
             charts.impactoFolha = new Chart(document.getElementById('chartImpactoFolha'), {
                 type: 'bar',
@@ -729,7 +708,7 @@
             });
 
             // --- Gráfico 5: Gênero (Doughnut) ---
-            const dataGenero = dataOrdenada.filter(e => e.genero);
+            const dataGenero = empresasData.filter(e => e.genero);
             const totalM = dataGenero.reduce((acc, e) => acc + e.genero.m, 0);
             const totalF = dataGenero.reduce((acc, e) => acc + e.genero.f, 0);
             
@@ -903,16 +882,54 @@
                 </div>
             `;
         }
+        
+        // --- FUNÇÃO DE ATUALIZAÇÃO DE TEMA (GRÁFICOS) ---
+        function updateChartTheme(theme) {
+            const isDark = (theme === 'dark');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = isDark ? '#e2e8f0' : '#334155'; // slate-200 / slate-700
+            const tooltipBg = isDark ? '#1e293b' : '#ffffff'; // slate-800 / white
+            const tooltipText = isDark ? '#f1f5f9' : '#1e293b'; // slate-100 / slate-800
 
+            Chart.defaults.color = textColor;
+            Chart.defaults.borderColor = gridColor;
+            Chart.defaults.plugins.tooltip.backgroundColor = tooltipBg;
+            Chart.defaults.plugins.tooltip.titleColor = tooltipText;
+            Chart.defaults.plugins.tooltip.bodyColor = tooltipText;
+            
+            // Re-renderiza os gráficos se já existirem
+            if (Object.keys(charts).length > 0) {
+                updateCharts();
+            }
+        }
+
+
+        // --- EVENT LISTENER PRINCIPAL (DOMContentLoaded) ---
+        // CORREÇÃO: Movido para cá para garantir que o DOM exista
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- LÓGICA DO TEMA (BOTÃO) ---
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            themeToggleBtn.addEventListener('click', () => {
+                htmlEl.classList.toggle('dark');
+                htmlEl.classList.toggle('light');
+                
+                const newTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
+                localStorage.setItem('theme', newTheme);
+                updateChartTheme(newTheme);
+            });
+            
+            // --- INICIALIZAÇÃO DA PÁGINA ---
+            
+            // Ordena a lista de menu lateral (CIASC primeiro)
             const listaEl = document.getElementById('lista-empresas');
-            const dataOrdenada = [...empresasData].sort((a, b) => {
+            const dataOrdenadaMenu = [...empresasData].sort((a, b) => {
                 if (a.id === 'ciasc') return -1;
                 if (b.id === 'ciasc') return 1;
                 return (b.receitaValor || 0) - (a.receitaValor || 0);
             });
             
-            dataOrdenada.forEach(empresa => {
+            dataOrdenadaMenu.forEach(empresa => {
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <button data-id="${empresa.id}" onclick="showEmpresaDetails('${empresa.id}')" class="w-full text-left px-3 py-2 rounded-md text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
@@ -924,9 +941,13 @@
                 listaEl.appendChild(li);
             });
 
-            // Atualiza os gráficos pela primeira vez com o tema correto
+            // Define o tema dos gráficos na primeira carga
+            updateChartTheme(currentTheme); 
+            
+            // Atualiza os gráficos pela primeira vez
             updateCharts(); 
             
+            // Define a aba e a empresa padrão
             changeTab('comparativo');
             showEmpresaDetails('ciasc');
         });
