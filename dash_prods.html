@@ -101,7 +101,10 @@
                         O <span class="font-bold text-blue-700 dark:text-blue-400">CIASC (2024)</span> está destacado como referência.
                     </p>
                     <p class="text-sm text-yellow-800 dark:text-yellow-300">
-                        <span class="font-bold">Observação Metodológica:</span> O indicador "N° de Colaboradores" pode variar em sua composição (CLT, terceirizados, estagiários) entre as empresas. Isso impacta diretamente a precisão dos indicadores calculados (Receita por Colaborador e Média Salarial).
+                        <span class="font-bold">Observação Metodológica:</span> O indicador "N° de Colaboradores" pode variar em sua composição (CLT, terceirizados, estagiários) entre as empresas. Isso impacta diretamente a precisão dos indicadores calculados (Receita por Colaborador e Custo Médio Mensal).
+                    </p>
+                     <p class="text-sm text-yellow-800 dark:text-yellow-300">
+                        <span class="font-bold">Premissa de Custo:</span> O "Custo Total Estimado" utiliza um multiplicador de <b class="font-extrabold">2.3x</b> sobre o "Salário Médio (Base)", conforme validado com dados reais do CIASC (R$ 12.168 base vs. R$ 28.000 custo total).
                     </p>
                 </div>
                 
@@ -133,25 +136,43 @@
                         </div>
                     </div>
 
-                    <!-- Gráfico 4: Salário Médio Mensal por Colaborador sem benefícios, encargos e descontos -->
+                    <!-- Gráfico 4: Salário Médio (Base) -->
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Salário Médio por Colaborador (sem encargos, benefícios e descontos) (R$)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Salário Médio)</p>
+                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Salário Médio (Base) (R$)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Salário Base)</p>
                         <div class="h-96">
                             <canvas id="chartSalarioMedio"></canvas>
                         </div>
                     </div>
                     
-                    <!-- Gráfico 6: % Impacto da Folha / Receita -->
+                    <!-- NOVO Gráfico 5: Custo Total Médio (Estimado) -->
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">% Impacto da Folha / Receita</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Impacto)</p>
+                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Custo Total Médio (Estimado) (R$)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Custo Total)</p>
                         <div class="h-96">
-                            <canvas id="chartImpactoFolha"></canvas>
+                            <canvas id="chartCustoTotalEstimado"></canvas>
                         </div>
                     </div>
 
-                    <!-- Gráfico 5: Distribuição de Gênero (Média) -->
+                    <!-- Gráfico 6: % Impacto da Folha (Base) -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">% Impacto Folha (Base) / Receita</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Impacto Base)</p>
+                        <div class="h-96">
+                            <canvas id="chartImpactoFolhaBase"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- NOVO Gráfico 7: % Impacto da Folha (Estimado) -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">% Impacto Folha (Estimado) / Receita</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Impacto Estimado)</p>
+                        <div class="h-96">
+                            <canvas id="chartImpactoFolhaEstimado"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico 8: Distribuição de Gênero (Média) -->
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
                         <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Distribuição de Gênero (Média Simulado)</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Média das 14 empresas (simulação 75/25)</p>
@@ -232,8 +253,11 @@
         let currentTheme = localStorage.getItem('theme') || 'light';
         htmlEl.classList.add(currentTheme);
 
+        // --- PREMISSA DE CÁLCULO DE CUSTO ---
+        const custoMultiplier = 2.3;
 
-        // --- DADOS HÍBRIDOS (PDF 2024 + Deep Search 2024/2023) ---
+
+        // --- BANCO DE DADOS HÍBRIDO (PDF 2024 + Deep Search 2024/2023) ---
         
         // Função helper para criar o objeto de documentos N/D
         function getEmptyDocs() {
@@ -258,11 +282,11 @@
                 colaboradoresValor: 362,
                 salarioMedioValor: 12168, // R$
                 genero: { m: 279, f: 83 }, // Simulação 77/23
-                regimentoLink: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/a-empresa/regimento-interno/405-ciasc-regimento-interno-vigencia-09-09-2025-1/file',
+                regimentoLink: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/a-empresa/regimento-interno',
                 produtosEstrategicos: ["SDE (Plataforma Cidadão)", "SGF (Gestão de Finanças)", "GovLink (Rede Segura)", "Detran Digital SC (Plataforma)"],
                 parcerias: ["AWS (Nuvem)", "Microsoft (Nuvem)", "Universidades (Pesquisa)", "FAPESC (Inovação)"],
                 documentos: {
-                    estatutoSocial: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/a-empresa/estatuto-social/406-ciasc-estatuto-social-vigencia-09-09-2025-registro-na-jucesc-20255572905/file',
+                    estatutoSocial: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/a-empresa/estatuto-social',
                     relatorioGestao: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/relatorios/relatorio-de-gestao-2024',
                     indicadores: null,
                     contratoGestao: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/contrato-de-gestao',
@@ -533,12 +557,23 @@
             return (receitaM * 1000000) / colab / 1000; // Resultado em Mil R$
         }
         
-        function calcularImpactoFolha(salario, colab, receitaM) {
+        // --- FUNÇÕES DE CÁLCULO DE IMPACTO ---
+        // (Base: Salário Médio)
+        function calcularImpactoFolhaBase(salario, colab, receitaM) {
             if (!salario || !colab || !receitaM) return null;
             const custoAnualFolha = salario * colab * 12;
             const receitaAnual = receitaM * 1000000;
             return (custoAnualFolha / receitaAnual) * 100; // Resultado em %
         }
+        
+        // (Estimado: Salário * 2.3x)
+         function calcularImpactoFolhaEstimado(salario, colab, receitaM) {
+            if (!salario || !colab || !receitaM) return null;
+            const custoAnualFolha = (salario * custoMultiplier) * colab * 12;
+            const receitaAnual = receitaM * 1000000;
+            return (custoAnualFolha / receitaAnual) * 100; // Resultado em %
+        }
+
 
         // --- Opções Comuns para Gráficos Horizontais ---
         const commonHorizontalOptions = {
@@ -556,7 +591,7 @@
                             }
                             if (context.parsed.x !== null) {
                                 // Se for o gráfico de impacto, adiciona %
-                                if (context.chart.canvas.id === 'chartImpactoFolha') {
+                                if (context.chart.canvas.id === 'chartImpactoFolhaBase' || context.chart.canvas.id === 'chartImpactoFolhaEstimado') {
                                     label += context.parsed.x.toFixed(2) + '%';
                                 } else {
                                     label += formatarNumero(context.parsed.x);
@@ -576,7 +611,7 @@
                             if (this.chart.canvas.id === 'chartReceita') {
                                 return value >= 1000 ? (value / 1000).toFixed(1) + 'B' : value + 'M';
                             }
-                            if (this.chart.canvas.id === 'chartImpactoFolha') {
+                            if (this.chart.canvas.id === 'chartImpactoFolhaBase' || this.chart.canvas.id === 'chartImpactoFolhaEstimado') {
                                 return value + '%';
                             }
                             if (value >= 1000000) return (value / 1000000) + 'M';
@@ -598,7 +633,7 @@
             return data.map(e => `${e.nome} (${e.estado === 'SP (Mun.)' ? 'SP-Mun' : e.estado}) (${e.ano})`);
         }
 
-        // --- CORREÇÃO: Função helper para mover CIASC para o início de um array
+        // --- Função helper para mover CIASC para o início de um array
         function moveCiascToFront(array) {
             const index = array.findIndex(e => e.id === 'ciasc');
             if (index > -1) {
@@ -616,7 +651,7 @@
             // --- Gráfico 1: Receita ---
             let dataReceita = empresasData.filter(e => e.receitaValor);
             dataReceita.sort((a, b) => (b.receitaValor || 0) - (a.receitaValor || 0));
-            dataReceita = moveCiascToFront(dataReceita); // CORREÇÃO: CIASC na frente
+            dataReceita = moveCiascToFront(dataReceita); 
             
             charts.receita = new Chart(document.getElementById('chartReceita'), {
                 type: 'bar',
@@ -634,7 +669,7 @@
             // --- Gráfico 2: Colaboradores ---
             let dataColab = empresasData.filter(e => e.colaboradoresValor);
             dataColab.sort((a, b) => (b.colaboradoresValor || 0) - (a.colaboradoresValor || 0));
-            dataColab = moveCiascToFront(dataColab); // CORREÇÃO: CIASC na frente
+            dataColab = moveCiascToFront(dataColab); 
             
             charts.colaboradores = new Chart(document.getElementById('chartColaboradores'), {
                 type: 'bar',
@@ -654,7 +689,7 @@
                 .map(e => ({...e, rpc: calcularRPC(e.receitaValor, e.colaboradoresValor)}))
                 .filter(e => e.rpc);
             dataRPC.sort((a, b) => (b.rpc || 0) - (a.rpc || 0)); // Ordena por RPC
-            dataRPC = moveCiascToFront(dataRPC); // CORREÇÃO: CIASC na frente
+            dataRPC = moveCiascToFront(dataRPC);
                 
             charts.produtividade = new Chart(document.getElementById('chartProdutividade'), {
                 type: 'bar',
@@ -669,10 +704,10 @@
                 options: { ...commonHorizontalOptions }
             });
 
-            // --- Gráfico 4: Custo Médio Mensal ---
+            // --- Gráfico 4: Salário Médio (Base) ---
             let dataSalario = empresasData.filter(e => e.salarioMedioValor);
             dataSalario.sort((a, b) => (b.salarioMedioValor || 0) - (a.salarioMedioValor || 0)); // Ordena por Salário
-            dataSalario = moveCiascToFront(dataSalario); // CORREÇÃO: CIASC na frente
+            dataSalario = moveCiascToFront(dataSalario);
                 
             charts.salarioMedio = new Chart(document.getElementById('chartSalarioMedio'), {
                 type: 'bar',
@@ -687,27 +722,68 @@
                 options: { ...commonHorizontalOptions }
             });
             
-             // --- Gráfico 6: Impacto da Folha ---
+            // --- NOVO Gráfico 5: Custo Total Estimado ---
+            let dataCustoTotal = empresasData
+                .map(e => ({...e, custoTotal: e.salarioMedioValor * custoMultiplier }))
+                .filter(e => e.custoTotal);
+            dataCustoTotal.sort((a, b) => (b.custoTotal || 0) - (a.custoTotal || 0));
+            dataCustoTotal = moveCiascToFront(dataCustoTotal);
+
+            charts.custoTotalEstimado = new Chart(document.getElementById('chartCustoTotalEstimado'), {
+                type: 'bar',
+                data: {
+                    labels: getLabelsComAno(dataCustoTotal),
+                    datasets: [{
+                        label: 'Custo Total Estimado (R$)',
+                        data: dataCustoTotal.map(e => e.custoTotal.toFixed(0)),
+                        backgroundColor: getBarColors(dataCustoTotal),
+                    }]
+                },
+                options: { ...commonHorizontalOptions }
+            });
+            
+             // --- Gráfico 6: Impacto da Folha (Base) ---
             let dataImpacto = empresasData
-                .map(e => ({...e, impacto: calcularImpactoFolha(e.salarioMedioValor, e.colaboradoresValor, e.receitaValor)}))
+                .map(e => ({...e, impacto: calcularImpactoFolhaBase(e.salarioMedioValor, e.colaboradoresValor, e.receitaValor)}))
                 .filter(e => e.impacto);
             dataImpacto.sort((a, b) => (b.impacto || 0) - (a.impacto || 0)); // Ordena por Impacto
-            dataImpacto = moveCiascToFront(dataImpacto); // CORREÇÃO: CIASC na frente
+            dataImpacto = moveCiascToFront(dataImpacto); 
 
-            charts.impactoFolha = new Chart(document.getElementById('chartImpactoFolha'), {
+            charts.impactoFolhaBase = new Chart(document.getElementById('chartImpactoFolhaBase'), {
                 type: 'bar',
                 data: {
                     labels: getLabelsComAno(dataImpacto),
                     datasets: [{
-                        label: '% Impacto da Folha',
+                        label: '% Impacto Folha (Base)',
                         data: dataImpacto.map(e => e.impacto.toFixed(2)),
                         backgroundColor: getBarColors(dataImpacto),
                     }]
                 },
                 options: { ...commonHorizontalOptions }
             });
+            
+            // --- NOVO Gráfico 7: Impacto da Folha (Estimado) ---
+            let dataImpactoEstimado = empresasData
+                .map(e => ({...e, impactoEstimado: calcularImpactoFolhaEstimado(e.salarioMedioValor, e.colaboradoresValor, e.receitaValor)}))
+                .filter(e => e.impactoEstimado);
+            dataImpactoEstimado.sort((a, b) => (b.impactoEstimado || 0) - (a.impactoEstimado || 0));
+            dataImpactoEstimado = moveCiascToFront(dataImpactoEstimado);
 
-            // --- Gráfico 5: Gênero (Doughnut) ---
+            charts.impactoFolhaEstimado = new Chart(document.getElementById('chartImpactoFolhaEstimado'), {
+                type: 'bar',
+                data: {
+                    labels: getLabelsComAno(dataImpactoEstimado),
+                    datasets: [{
+                        label: '% Impacto Folha (Estimado)',
+                        data: dataImpactoEstimado.map(e => e.impactoEstimado.toFixed(2)),
+                        backgroundColor: getBarColors(dataImpactoEstimado),
+                    }]
+                },
+                options: { ...commonHorizontalOptions }
+            });
+
+
+            // --- Gráfico 8: Gênero (Doughnut) ---
             const dataGenero = empresasData.filter(e => e.genero);
             const totalM = dataGenero.reduce((acc, e) => acc + e.genero.m, 0);
             const totalF = dataGenero.reduce((acc, e) => acc + e.genero.f, 0);
@@ -791,11 +867,18 @@
                 btn.classList.toggle('dark:text-slate-300', btn.dataset.id !== empresaId);
             });
             
+            // Cálculos dos novos indicadores
             const rpcValor = calcularRPC(empresa.receitaValor, empresa.colaboradoresValor);
             const rpcFormatado = rpcValor ? formatarMoeda(rpcValor * 1000) : 'N/D';
             
-            const impactoFolhaPercent = calcularImpactoFolha(empresa.salarioMedioValor, empresa.colaboradoresValor, empresa.receitaValor);
+            const impactoFolhaPercent = calcularImpactoFolhaBase(empresa.salarioMedioValor, empresa.colaboradoresValor, empresa.receitaValor);
             const impactoFormatado = impactoFolhaPercent ? impactoFolhaPercent.toFixed(2) + ' %' : 'N/D';
+            
+            const custoTotalEstimado = empresa.salarioMedioValor * custoMultiplier;
+            const custoTotalFormatado = formatarMoeda(custoTotalEstimado);
+            
+            const impactoFolhaEstimadoPercent = calcularImpactoFolhaEstimado(empresa.salarioMedioValor, empresa.colaboradoresValor, empresa.receitaValor);
+            const impactoEstimadoFormatado = impactoFolhaEstimadoPercent ? impactoFolhaEstimadoPercent.toFixed(2) + ' %' : 'N/D';
             
             const anoClasse = empresa.ano === 2023 ? 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400' : 'text-slate-600 dark:text-slate-300';
 
@@ -812,7 +895,8 @@
 
                 <div class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-6">
                     <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Indicadores Chave (Ano ${empresa.ano})</h3>
-                    <dl class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Grid ajustado para 3 colunas para acomodar 9 itens -->
+                    <dl class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-6">
                         <div>
                             <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Receita Anual</dt>
                             <dd class="mt-1 text-2xl font-semibold tracking-tight text-blue-700 dark:text-blue-400">${formatarMoeda(empresa.receitaValor * 1000000)}</dd>
@@ -825,14 +909,28 @@
                             <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Receita por Colaborador</sdt>
                             <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">${rpcFormatado}</dd>
                         </div>
+                        
+                        <!-- Indicadores de Custo Atualizados -->
                         <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Salário Médio Mensal (Colab.)</dt>
+                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Salário Médio (Base)</dt>
                             <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">${formatarMoeda(empresa.salarioMedioValor)}</dd>
                         </div>
                         <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">% Impacto da Folha / Receita</dt>
+                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Custo Total Estimado (x2.3)</dt>
+                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-orange-600 dark:text-orange-400">${custoTotalFormatado}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">% Impacto Folha (Base)</dt>
                             <dd class="mt-1 text-2xl font-semibold tracking-tight text-red-600 dark:text-red-500">${impactoFormatado}</dd>
                         </div>
+                        
+                        <!-- Novo Indicador de Impacto Estimado -->
+                        <div>
+                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">% Impacto Folha (Estimado)</dt>
+                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-red-600 dark:text-red-500">${impactoEstimadoFormatado}</dd>
+                        </div>
+
+                        <!-- Gênero -->
                         <div>
                             <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Pessoal (Masculino)</dt>
                             <dd class="mt-1 text-2xl font-semibold tracking-tight text-blue-600 dark:text-blue-400">${formatarNumero(empresa.genero.m)}</dd>
@@ -844,7 +942,7 @@
                     </dl>
                 </div>
                 
-                <!-- NOVA SEÇÃO DE DOCUMENTOS -->
+                <!-- SEÇÃO DE DOCUMENTOS -->
                 <div class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-6">
                     <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Documentos de Governança e Transparência</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -905,7 +1003,6 @@
 
 
         // --- EVENT LISTENER PRINCIPAL (DOMContentLoaded) ---
-        // CORREÇÃO: Movido para cá para garantir que o DOM exista
         document.addEventListener('DOMContentLoaded', () => {
             
             // --- LÓGICA DO TEMA (BOTÃO) ---
@@ -955,3 +1052,4 @@
     </script>
 </body>
 </html>
+
