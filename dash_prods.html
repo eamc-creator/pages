@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<!-- A classe 'dark' ou 'light' será adicionada aqui pelo JS -->
-<html lang="pt-br" class="h-full">
+<html lang="pt-br" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Comparativo PRODs (Dados 2024)</title>
-    <!-- Favicon do CIASC (conforme solicitado do anexo) -->
-    <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" type="image/png">
+    <!-- Favicon do CIASC -->
+    <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" type="image/png">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,27 +18,16 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* Light scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        /* Dark scrollbar */
-        .dark ::-webkit-scrollbar-track { background: #1e293b; }
-        .dark ::-webkit-scrollbar-thumb { background: #475569; }
-        .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
-
-        /* Oculta os ícones de tema por padrão, o JS irá exibir o correto */
-        #theme-icon-light, #theme-icon-dark { display: none; }
-        .dark #theme-icon-light { display: block; }
-        .light #theme-icon-dark { display: block; }
     </style>
 </head>
-<body class="h-full flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-300">
+<body class="h-full flex flex-col min-h-screen">
 
-    <!-- Header (Cabeçalho com logo do CIASC e Toggle de Tema) -->
-    <header class="bg-white/80 dark:bg-slate-800/50 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-20 backdrop-blur-sm">
+    <!-- Header (Cabeçalho com logo do CIASC) -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-20">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
             <div class="w-full py-4 flex items-center justify-between">
                 <div class="flex items-center">
@@ -47,22 +35,10 @@
                         <span class="sr-only">CIASC</span>
                         <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
                     </a>
-                    <span class="ml-4 text-2xl font-bold text-blue-800 dark:text-blue-400">CIASC | AIT</span>
+                    <span class="ml-4 text-2xl font-bold text-blue-800">CIASC | AIT</span>
                 </div>
-                <div class="ml-10 flex items-center space-x-4">
-                     <span class="text-sm font-medium text-slate-600 dark:text-slate-400 hidden sm:inline">Dashboard Comparativo de PRODs (ABEP-TIC)</span>
-                     <!-- Botão de Tema Light/Dark -->
-                     <button id="theme-toggle" type="button" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none">
-                        <span class="sr-only">Alternar tema</span>
-                        <!-- Ícone de Sol (visível no modo escuro) -->
-                        <svg id="theme-icon-light" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12H.75m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25 2.25 2.25 0 0 0 2.25 2.25 2.25 2.25 0 0 0 2.25-2.25A2.25 2.25 0 0 0 12 12Z" />
-                        </svg>
-                        <!-- Ícone de Lua (visível no modo claro) -->
-                        <svg id="theme-icon-dark" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-                        </svg>
-                    </button>
+                <div class="ml-10 space-x-4">
+                     <span class="text-sm font-medium text-slate-600">Dashboard Comparativo de PRODs (ABEP-TIC)</span>
                 </div>
             </div>
         </nav>
@@ -73,17 +49,17 @@
         
         <!-- Título e Abas -->
         <div class="mb-6">
-            <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Análise Comparativa de PRODs (ABEP-TIC)</h1>
-            <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900">Análise Comparativa de PRODs (ABEP-TIC)</h1>
+            <p class="mt-2 text-sm text-slate-600">
                 Análise de indicadores de desempenho baseada no "Estudo Comparativo PRODS 2024". Dados do PDF (2024) + Deep Search (2024/2023).
-                <span class="font-semibold text-blue-700 dark:text-blue-400">CIASC (Ref.)</span> está destacado.
+                <span class="font-semibold text-blue-700">CIASC (Ref.)</span> está destacado.
             </p>
-            <div class="mt-4 border-b border-slate-200 dark:border-slate-700">
+            <div class="mt-4 border-b border-slate-200">
                 <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                    <button id="tab-comparativo" onclick="changeTab('comparativo')" class="border-blue-600 text-blue-700 dark:border-blue-500 dark:text-blue-400 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <button id="tab-comparativo" onclick="changeTab('comparativo')" class="border-blue-600 text-blue-700 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Dashboard Comparativo
                     </button>
-                    <button id="tab-individual" onclick="changeTab('individual')" class="border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <button id="tab-individual" onclick="changeTab('individual')" class="border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Análise Individual
                     </button>
                 </nav>
@@ -95,66 +71,66 @@
             <!-- Aba 1: Dashboard Comparativo (Gráficos) -->
             <div id="content-comparativo">
                 <!-- Aviso de Dados Híbridos e Metodologia -->
-                <div class="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/30 rounded-md space-y-2">
-                    <p class="text-sm text-yellow-800 dark:text-yellow-300">
+                <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md space-y-2">
+                    <p class="text-sm text-yellow-800">
                         <span class="font-bold">Atenção (Fonte dos Dados):</span> Este dashboard combina dados de 2024 (do PDF e deep search) com dados de 2023 (fallback para ATI e ITEC).
-                        O <span class="font-bold text-blue-700 dark:text-blue-400">CIASC (2024)</span> está destacado como referência.
+                        O <span class="font-bold text-blue-700">CIASC (2024)</span> está destacado como referência.
                     </p>
-                    <p class="text-sm text-yellow-800 dark:text-yellow-300">
+                    <p class="text-sm text-yellow-800">
                         <span class="font-bold">Observação Metodológica:</span> O indicador "N° de Colaboradores" pode variar em sua composição (CLT, terceirizados, estagiários) entre as empresas. Isso impacta diretamente a precisão dos indicadores calculados (Receita por Colaborador e Custo Médio Mensal).
                     </p>
                 </div>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Gráfico 1: Receita Anual -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Receita Anual (R$ Milhões)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Receita)</p>
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                        <h3 class="text-base font-semibold text-slate-800">Receita Anual (R$ Milhões)</h3>
+                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
                         <div class="h-96">
                             <canvas id="chartReceita"></canvas>
                         </div>
                     </div>
                     
                     <!-- Gráfico 2: N° de Colaboradores -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">N° de Colaboradores</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Colaboradores)</p>
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                        <h3 class="text-base font-semibold text-slate-800">N° de Colaboradores</h3>
+                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
                         <div class="h-96">
                             <canvas id="chartColaboradores"></canvas>
                         </div>
                     </div>
 
                     <!-- Gráfico 3: Receita por Colaborador (RPC) -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Receita por Colaborador (R$ Mil)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por RPC)</p>
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                        <h3 class="text-base font-semibold text-slate-800">Receita por Colaborador (R$ Mil)</h3>
+                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
                         <div class="h-96">
                             <canvas id="chartProdutividade"></canvas>
                         </div>
                     </div>
 
                     <!-- Gráfico 4: Custo Médio Mensal por Colaborador -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Custo Médio Mensal por Colaborador (R$)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Custo)</p>
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                        <h3 class="text-base font-semibold text-slate-800">Custo Médio Mensal por Colaborador (R$)</h3>
+                        <p class="text-xs text-slate-500 mb-4">Ano-base: 2024 ou 2023 (indicado)</p>
                         <div class="h-96">
                             <canvas id="chartSalarioMedio"></canvas>
                         </div>
                     </div>
                     
                     <!-- Gráfico 6: % Impacto da Folha / Receita -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">% Impacto da Folha / Receita</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Impacto)</p>
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                        <h3 class="text-base font-semibold text-slate-800">% Impacto da Folha / Receita</h3>
+                        <p class="text-xs text-slate-500 mb-4">Custo Pessoal Anual / Receita Bruta</p>
                         <div class="h-96">
                             <canvas id="chartImpactoFolha"></canvas>
                         </div>
                     </div>
 
                     <!-- Gráfico 5: Distribuição de Gênero (Média) -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Distribuição de Gênero (Média Simulado)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Média das 14 empresas (simulação 75/25)</p>
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                        <h3 class="text-base font-semibold text-slate-800">Composição das Equipes (Média Simulado)</h3>
+                        <p class="text-xs text-slate-500 mb-4">Média das 14 empresas (simulação 75/25)</p>
                         <div class="h-96 flex items-center justify-center">
                             <div class="w-full max-w-xs">
                                 <canvas id="chartGenero"></canvas>
@@ -171,7 +147,7 @@
                     
                     <!-- Menu Lateral de Empresas -->
                     <div class="w-full md:w-1/4 lg:w-1/5">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100 mb-3">Selecionar Empresa</h3>
+                        <h3 class="text-base font-semibold text-slate-800 mb-3">Selecionar Empresa</h3>
                         <ul id="lista-empresas" class="space-y-1">
                             <!-- Lista será preenchida por JS -->
                         </ul>
@@ -179,9 +155,9 @@
                     
                     <!-- Painel de Detalhes da Empresa -->
                     <div class="w-full md:w-3/4 lg:w-4/5">
-                        <div id="detalhes-empresa" class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                        <div id="detalhes-empresa" class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                             <!-- Conteúdo será preenchido por JS -->
-                            <p class="text-slate-500 dark:text-slate-400">Selecione uma empresa na lista ao lado para ver os detalhes.</p>
+                            <p class="text-slate-500">Selecione uma empresa na lista ao lado para ver os detalhes.</p>
                         </div>
                     </div>
                 </div>
@@ -192,7 +168,7 @@
     </div> <!-- Fim do Conteúdo Principal -->
 
     <!-- Footer (Rodapé) -->
-    <footer class="bg-slate-100 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 mt-12">
+    <footer class="bg-slate-100 border-t border-slate-200 mt-12">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                 
@@ -200,24 +176,24 @@
                     <div class="w-fit">
                          <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
                     </div>
-                    <p class="text-xs text-center md:text-left text-slate-600 dark:text-slate-400">
+                    <p class="text-xs text-center md:text-left text-slate-600">
                         Todos os Direitos reservados - AIT<br>(Assessoria de Inovação e Tecnologia) - CIASC 2025
                     </p>
                 </div>
                 
-                <div class="text-center md:text-left text-sm text-slate-700 dark:text-slate-300">
-                    <h4 class="font-semibold text-blue-800 dark:text-blue-400">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
+                <div class="text-center md:text-left text-sm text-slate-700">
+                    <h4 class="font-semibold text-blue-800">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
                     <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
                     <p>Florianópolis, SC - CEP 88034-902</p>
                     <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
                 </div>
                 
                 <div class="text-center md:text-right text-sm">
-                    <p class="font-semibold text-blue-800 dark:text-blue-400">Links Úteis</p>
+                    <p class="font-semibold text-blue-800">Links Úteis</p>
                     <ul class="mt-2 space-y-1">
-                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Site Oficial CIASC</a></li>
-                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Portal da Transparência</a></li>
-                        <li><a href="https://www.abep-tic.org.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">ABEP-TIC</a></li>
+                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="text-slate-700 hover:text-blue-700 hover:underline">Site Oficial CIASC</a></li>
+                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="text-slate-700 hover:text-blue-700 hover:underline">Portal da Transparência</a></li>
+                        <li><a href="https://www.abep-tic.org.br/" target="_blank" class="text-slate-700 hover:text-blue-700 hover:underline">ABEP-TIC</a></li>
                     </ul>
                 </div>
             </div>
@@ -226,13 +202,6 @@
 
     <!-- Script principal da aplicação -->
     <script>
-        // --- LÓGICA DO TEMA (LIGHT/DARK) ---
-        // DEVE SER EXECUTADO IMEDIATAMENTE PARA EVITAR "FOUC" (Flash of Unstyled Content)
-        const htmlEl = document.documentElement;
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        htmlEl.classList.add(currentTheme);
-
-
         // --- BANCO DE DADOS HÍBRIDO (PDF 2024 + Deep Search 2024/2023) ---
         
         // Função helper para criar o objeto de documentos N/D
@@ -598,26 +567,19 @@
             return data.map(e => `${e.nome} (${e.estado === 'SP (Mun.)' ? 'SP-Mun' : e.estado}) (${e.ano})`);
         }
 
-        // --- CORREÇÃO: Função helper para mover CIASC para o início de um array
-        function moveCiascToFront(array) {
-            const index = array.findIndex(e => e.id === 'ciasc');
-            if (index > -1) {
-                const item = array.splice(index, 1)[0];
-                array.unshift(item);
-            }
-            return array; // Retorna o array modificado
-        }
-
-
         // Função para atualizar os gráficos
         function updateCharts() {
             Object.values(charts).forEach(chart => chart.destroy());
             
+            // Ordena (CIASC primeiro, depois por Receita Descendente)
+            const dataOrdenada = [...empresasData].sort((a, b) => {
+                if (a.id === 'ciasc') return -1;
+                if (b.id === 'ciasc') return 1;
+                return (b.receitaValor || 0) - (a.receitaValor || 0);
+            });
+
             // --- Gráfico 1: Receita ---
-            let dataReceita = empresasData.filter(e => e.receitaValor);
-            dataReceita.sort((a, b) => (b.receitaValor || 0) - (a.receitaValor || 0));
-            dataReceita = moveCiascToFront(dataReceita); // CORREÇÃO: CIASC na frente
-            
+            const dataReceita = dataOrdenada.filter(e => e.receitaValor);
             charts.receita = new Chart(document.getElementById('chartReceita'), {
                 type: 'bar',
                 data: {
@@ -632,10 +594,7 @@
             });
 
             // --- Gráfico 2: Colaboradores ---
-            let dataColab = empresasData.filter(e => e.colaboradoresValor);
-            dataColab.sort((a, b) => (b.colaboradoresValor || 0) - (a.colaboradoresValor || 0));
-            dataColab = moveCiascToFront(dataColab); // CORREÇÃO: CIASC na frente
-            
+            const dataColab = dataOrdenada.filter(e => e.colaboradoresValor);
             charts.colaboradores = new Chart(document.getElementById('chartColaboradores'), {
                 type: 'bar',
                 data: {
@@ -650,11 +609,10 @@
             });
 
             // --- Gráfico 3: Receita por Colaborador (RPC) ---
-            let dataRPC = empresasData
+            const dataRPC = dataOrdenada
                 .map(e => ({...e, rpc: calcularRPC(e.receitaValor, e.colaboradoresValor)}))
-                .filter(e => e.rpc);
-            dataRPC.sort((a, b) => (b.rpc || 0) - (a.rpc || 0)); // Ordena por RPC
-            dataRPC = moveCiascToFront(dataRPC); // CORREÇÃO: CIASC na frente
+                .filter(e => e.rpc)
+                .sort((a, b) => (b.rpc || 0) - (a.rpc || 0)); // Re-ordena por RPC
                 
             charts.produtividade = new Chart(document.getElementById('chartProdutividade'), {
                 type: 'bar',
@@ -670,9 +628,9 @@
             });
 
             // --- Gráfico 4: Custo Médio Mensal ---
-            let dataSalario = empresasData.filter(e => e.salarioMedioValor);
-            dataSalario.sort((a, b) => (b.salarioMedioValor || 0) - (a.salarioMedioValor || 0)); // Ordena por Salário
-            dataSalario = moveCiascToFront(dataSalario); // CORREÇÃO: CIASC na frente
+            const dataSalario = dataOrdenada
+                .filter(e => e.salarioMedioValor)
+                .sort((a, b) => (b.salarioMedioValor || 0) - (a.salarioMedioValor || 0)); // Re-ordena por Salário
                 
             charts.salarioMedio = new Chart(document.getElementById('chartSalarioMedio'), {
                 type: 'bar',
@@ -688,11 +646,10 @@
             });
             
              // --- Gráfico 6: Impacto da Folha ---
-            let dataImpacto = empresasData
+            const dataImpacto = dataOrdenada
                 .map(e => ({...e, impacto: calcularImpactoFolha(e.salarioMedioValor, e.colaboradoresValor, e.receitaValor)}))
-                .filter(e => e.impacto);
-            dataImpacto.sort((a, b) => (b.impacto || 0) - (a.impacto || 0)); // Ordena por Impacto
-            dataImpacto = moveCiascToFront(dataImpacto); // CORREÇÃO: CIASC na frente
+                .filter(e => e.impacto)
+                .sort((a, b) => (b.impacto || 0) - (a.impacto || 0)); // Re-ordena por Impacto
 
             charts.impactoFolha = new Chart(document.getElementById('chartImpactoFolha'), {
                 type: 'bar',
@@ -708,7 +665,7 @@
             });
 
             // --- Gráfico 5: Gênero (Doughnut) ---
-            const dataGenero = empresasData.filter(e => e.genero);
+            const dataGenero = dataOrdenada.filter(e => e.genero);
             const totalM = dataGenero.reduce((acc, e) => acc + e.genero.m, 0);
             const totalF = dataGenero.reduce((acc, e) => acc + e.genero.f, 0);
             
@@ -725,14 +682,7 @@
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false, 
-                    plugins: { 
-                        legend: { 
-                            position: 'bottom',
-                            labels: {
-                                color: htmlEl.classList.contains('dark') ? '#e2e8f0' : '#334155'
-                            }
-                        } 
-                    } 
+                    plugins: { legend: { position: 'bottom' } } 
                 }
             });
         }
@@ -743,14 +693,10 @@
             const tabs = ['comparativo', 'individual'];
             tabs.forEach(id => {
                 document.getElementById(`content-${id}`).classList.toggle('hidden', id !== tabId);
-                const tabButton = document.getElementById(`tab-${id}`);
-                tabButton.classList.toggle('border-blue-600', id === tabId);
-                tabButton.classList.toggle('text-blue-700', id === tabId);
-                tabButton.classList.toggle('dark:border-blue-500', id === tabId);
-                tabButton.classList.toggle('dark:text-blue-400', id === tabId);
-                tabButton.classList.toggle('border-transparent', id !== tabId);
-                tabButton.classList.toggle('text-slate-500', id !== tabId);
-                tabButton.classList.toggle('dark:text-slate-400', id !== tabId);
+                document.getElementById(`tab-${id}`).classList.toggle('border-blue-600', id === tabId);
+                document.getElementById(`tab-${id}`).classList.toggle('text-blue-700', id === tabId);
+                document.getElementById(`tab-${id}`).classList.toggle('border-transparent', id !== tabId);
+                document.getElementById(`tab-${id}`).classList.toggle('text-slate-500', id !== tabId);
             });
         }
         
@@ -762,14 +708,14 @@
 
             if (link) {
                 return `
-                    <a href="${link}" target="_blank" class="flex items-center justify-center text-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none" title="${label}">
+                    <a href="${link}" target="_blank" class="flex items-center justify-center text-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none" title="${label}">
                         <span class="hidden sm:inline">${truncatedLabel}</span>
                         <span class="sm:hidden">${truncatedMobileLabel}</span>
                     </a>
                 `;
             } else {
                 return `
-                    <span class="flex items-center justify-center text-center px-3 py-2 border border-slate-200 dark:border-slate-700 text-sm font-medium rounded-md text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-700/50 cursor-not-allowed" title="${label} (N/D)">
+                    <span class="flex items-center justify-center text-center px-3 py-2 border border-slate-200 text-sm font-medium rounded-md text-slate-400 bg-slate-50 cursor-not-allowed" title="${label} (N/D)">
                         <span class="hidden sm:inline">${truncatedLabel}</span>
                         <span class="sm:hidden">${truncatedMobileLabel}</span>
                     </span>
@@ -783,12 +729,9 @@
 
             document.querySelectorAll('#lista-empresas li button').forEach(btn => {
                 btn.classList.toggle('bg-blue-100', btn.dataset.id === empresaId);
-                btn.classList.toggle('dark:bg-blue-900/50', btn.dataset.id === empresaId);
                 btn.classList.toggle('text-blue-700', btn.dataset.id === empresaId);
-                btn.classList.toggle('dark:text-blue-400', btn.dataset.id === empresaId);
                 btn.classList.toggle('font-semibold', btn.dataset.id === empresaId);
                 btn.classList.toggle('text-slate-700', btn.dataset.id !== empresaId);
-                btn.classList.toggle('dark:text-slate-300', btn.dataset.id !== empresaId);
             });
             
             const rpcValor = calcularRPC(empresa.receitaValor, empresa.colaboradoresValor);
@@ -797,56 +740,56 @@
             const impactoFolhaPercent = calcularImpactoFolha(empresa.salarioMedioValor, empresa.colaboradoresValor, empresa.receitaValor);
             const impactoFormatado = impactoFolhaPercent ? impactoFolhaPercent.toFixed(2) + ' %' : 'N/D';
             
-            const anoClasse = empresa.ano === 2023 ? 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400' : 'text-slate-600 dark:text-slate-300';
+            const anoClasse = empresa.ano === 2023 ? 'text-yellow-600 bg-yellow-100' : 'text-slate-600';
 
             const detalhesEl = document.getElementById('detalhes-empresa');
             detalhesEl.innerHTML = `
                 <div class="mb-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400">${empresa.nome} (${empresa.estado.toUpperCase()})</h2>
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Dados Referentes ao Ano: 
+                        <h2 class="text-2xl font-bold text-blue-800">${empresa.nome} (${empresa.estado.toUpperCase()})</h2>
+                        <span class="text-sm font-medium text-slate-500">Dados Referentes ao Ano: 
                             <span class="font-bold px-2 py-0.5 rounded ${anoClasse}">${empresa.ano}</span>
                         </span>
                     </div>
                 </div>
 
-                <div class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-6">
-                    <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Indicadores Chave (Ano ${empresa.ano})</h3>
+                <div class="mt-6 border-t border-slate-200 pt-6">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Indicadores Chave (Ano ${empresa.ano})</h3>
                     <dl class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
                         <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Receita Anual</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-blue-700 dark:text-blue-400">${formatarMoeda(empresa.receitaValor * 1000000)}</dd>
+                            <dt class="text-sm font-medium text-slate-500 truncate">Receita Anual</dt>
+                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-blue-700">${formatarMoeda(empresa.receitaValor * 1000000)}</dd>
                         </div>
                         <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">N° Colaboradores</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">${formatarNumero(empresa.colaboradoresValor)}</dd>
+                            <dt class="text-sm font-medium text-slate-500 truncate">N° Colaboradores</dt>
+                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900">${formatarNumero(empresa.colaboradoresValor)}</dd>
                         </div>
                         <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Receita por Colaborador</sdt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">${rpcFormatado}</dd>
+                            <dt class="text-sm font-medium text-slate-500 truncate">Receita por Colaborador</sdt>
+                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900">${rpcFormatado}</dd>
                         </div>
                         <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Custo Médio Mensal (Colab.)</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">${formatarMoeda(empresa.salarioMedioValor)}</dd>
+                            <dt class="text-sm font-medium text-slate-500 truncate">Custo Médio Mensal (Colab.)</dt>
+                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900">${formatarMoeda(empresa.salarioMedioValor)}</dd>
                         </div>
                         <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">% Impacto da Folha / Receita</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-red-600 dark:text-red-500">${impactoFormatado}</dd>
+                            <dt class="text-sm font-medium text-slate-500 truncate">% Impacto da Folha / Receita</dt>
+                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-red-600">${impactoFormatado}</dd>
                         </div>
                         <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Pessoal (Masculino)</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-blue-600 dark:text-blue-400">${formatarNumero(empresa.genero.m)}</dd>
+                            <dt class="text-sm font-medium text-slate-500 truncate">Pessoal (Masculino)</dt>
+                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-blue-600">${formatarNumero(empresa.genero.m)}</dd>
                         </div>
                         <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Pessoal (Feminino)</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-pink-600 dark:text-pink-400">${formatarNumero(empresa.genero.f)}</dd>
+                            <dt class="text-sm font-medium text-slate-500 truncate">Pessoal (Feminino)</dt>
+                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-pink-600">${formatarNumero(empresa.genero.f)}</dd>
                         </div>
                     </dl>
                 </div>
                 
                 <!-- NOVA SEÇÃO DE DOCUMENTOS -->
-                <div class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-6">
-                    <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Documentos de Governança e Transparência</h3>
+                <div class="mt-6 border-t border-slate-200 pt-6">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Documentos de Governança e Transparência</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                         ${renderButton('Regimento Interno', empresa.regimentoLink)}
                         ${renderButton('Estatuto Social', empresa.documentos.estatutoSocial)}
@@ -859,10 +802,10 @@
                     </div>
                 </div>
                 
-                <div class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="mt-6 border-t border-slate-200 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Produtos Estratégicos (Ref. PDF/Busca)</h3>
-                        <ul class="list-disc list-inside space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4">Produtos Estratégicos (Ref. PDF/Busca)</h3>
+                        <ul class="list-disc list-inside space-y-2 text-sm text-slate-700">
                             ${empresa.produtosEstrategicos.length ? 
                                 empresa.produtosEstrategicos.map(p => `<li>${p}</li>`).join('') : 
                                 '<li>Nenhum produto estratégico listado.</li>'
@@ -871,8 +814,8 @@
                     </div>
                     
                     <div>
-                        <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Principais Parcerias (Exemplos)</h3>
-                        <ul class="list-disc list-inside space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4">Principais Parcerias (Exemplos)</h3>
+                        <ul class="list-disc list-inside space-y-2 text-sm text-slate-700">
                              ${empresa.parcerias.length ? 
                                 empresa.parcerias.map(p => `<li>${p}</li>`).join('') : 
                                 '<li>Nenhuma parceria listada.</li>'
@@ -882,72 +825,28 @@
                 </div>
             `;
         }
-        
-        // --- FUNÇÃO DE ATUALIZAÇÃO DE TEMA (GRÁFICOS) ---
-        function updateChartTheme(theme) {
-            const isDark = (theme === 'dark');
-            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-            const textColor = isDark ? '#e2e8f0' : '#334155'; // slate-200 / slate-700
-            const tooltipBg = isDark ? '#1e293b' : '#ffffff'; // slate-800 / white
-            const tooltipText = isDark ? '#f1f5f9' : '#1e293b'; // slate-100 / slate-800
 
-            Chart.defaults.color = textColor;
-            Chart.defaults.borderColor = gridColor;
-            Chart.defaults.plugins.tooltip.backgroundColor = tooltipBg;
-            Chart.defaults.plugins.tooltip.titleColor = tooltipText;
-            Chart.defaults.plugins.tooltip.bodyColor = tooltipText;
-            
-            // Re-renderiza os gráficos se já existirem
-            if (Object.keys(charts).length > 0) {
-                updateCharts();
-            }
-        }
-
-
-        // --- EVENT LISTENER PRINCIPAL (DOMContentLoaded) ---
-        // CORREÇÃO: Movido para cá para garantir que o DOM exista
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- LÓGICA DO TEMA (BOTÃO) ---
-            const themeToggleBtn = document.getElementById('theme-toggle');
-            themeToggleBtn.addEventListener('click', () => {
-                htmlEl.classList.toggle('dark');
-                htmlEl.classList.toggle('light');
-                
-                const newTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
-                localStorage.setItem('theme', newTheme);
-                updateChartTheme(newTheme);
-            });
-            
-            // --- INICIALIZAÇÃO DA PÁGINA ---
-            
-            // Ordena a lista de menu lateral (CIASC primeiro)
             const listaEl = document.getElementById('lista-empresas');
-            const dataOrdenadaMenu = [...empresasData].sort((a, b) => {
+            const dataOrdenada = [...empresasData].sort((a, b) => {
                 if (a.id === 'ciasc') return -1;
                 if (b.id === 'ciasc') return 1;
                 return (b.receitaValor || 0) - (a.receitaValor || 0);
             });
             
-            dataOrdenadaMenu.forEach(empresa => {
+            dataOrdenada.forEach(empresa => {
                 const li = document.createElement('li');
                 li.innerHTML = `
-                    <button data-id="${empresa.id}" onclick="showEmpresaDetails('${empresa.id}')" class="w-full text-left px-3 py-2 rounded-md text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+                    <button data-id="${empresa.id}" onclick="showEmpresaDetails('${empresa.id}')" class="w-full text-left px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100">
                         ${empresa.nome} (${empresa.estado})
-                        ${empresa.id === 'ciasc' ? '<span class="text-xs font-bold text-blue-600 dark:text-blue-400"> (Ref.)</span>' : ''}
-                        ${empresa.ano === 2023 ? '<span class="text-xs font-bold text-yellow-600 dark:text-yellow-500"> (2023)</span>' : ''}
+                        ${empresa.id === 'ciasc' ? '<span class="text-xs font-bold text-blue-600"> (Ref.)</span>' : ''}
+                        ${empresa.ano === 2023 ? '<span class="text-xs font-bold text-yellow-600"> (2023)</span>' : ''}
                     </button>
                 `;
                 listaEl.appendChild(li);
             });
 
-            // Define o tema dos gráficos na primeira carga
-            updateChartTheme(currentTheme); 
-            
-            // Atualiza os gráficos pela primeira vez
-            updateCharts(); 
-            
-            // Define a aba e a empresa padrão
+            updateCharts();
             changeTab('comparativo');
             showEmpresaDetails('ciasc');
         });
