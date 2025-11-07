@@ -1,957 +1,435 @@
 <!DOCTYPE html>
-<!-- A classe 'dark' ou 'light' será adicionada aqui pelo JS -->
-<html lang="pt-br" class="h-full">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Comparativo PRODs (Dados 2024)</title>
-    <!-- Favicon do CIASC (conforme solicitado do anexo) -->
-    <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" type="image/png">
-    
-    <!-- Tailwind CSS -->
+    <title>Dashboard: Análise de Trabalho Híbrido</title>
+    <!-- Carrega o Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js -->
+    <!-- Carrega a biblioteca Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Font Inter -->
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    
+    <!-- Carrega a fonte Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        /* Light scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        /* Dark scrollbar */
-        .dark ::-webkit-scrollbar-track { background: #1e293b; }
-        .dark ::-webkit-scrollbar-thumb { background: #475569; }
-        .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
-
-        /* Oculta os ícones de tema por padrão, o JS irá exibir o correto */
-        #theme-icon-light, #theme-icon-dark { display: none; }
-        .dark #theme-icon-light { display: block; }
-        .light #theme-icon-dark { display: block; }
+        /* Define a fonte Inter como padrão */
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Estilo para a aba ativa */
+        .tab-active {
+            border-bottom-width: 2px;
+            border-color: #3b82f6; /* Azul */
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        /* Estilo para a aba inativa */
+        .tab-inactive {
+            color: #9ca3af; /* Cinza */
+            border-bottom-width: 2px;
+            border-color: transparent;
+        }
     </style>
 </head>
-<body class="h-full flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-300">
+<body class="bg-gray-900 text-gray-100 p-4 md:p-8">
 
-    <!-- Header (Cabeçalho com logo do CIASC e Toggle de Tema) -->
-    <header class="bg-white/80 dark:bg-slate-800/50 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-20 backdrop-blur-sm">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
-            <div class="w-full py-4 flex items-center justify-between">
-                <div class="flex items-center">
-                    <a href="#">
-                        <span class="sr-only">CIASC</span>
-                        <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
-                    </a>
-                    <span class="ml-4 text-2xl font-bold text-blue-800 dark:text-blue-400">CIASC | AIT</span>
-                </div>
-                <div class="ml-10 flex items-center space-x-4">
-                     <span class="text-sm font-medium text-slate-600 dark:text-slate-400 hidden sm:inline">Dashboard Comparativo de PRODs (ABEP-TIC)</span>
-                     <!-- Botão de Tema Light/Dark -->
-                     <button id="theme-toggle" type="button" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none">
-                        <span class="sr-only">Alternar tema</span>
-                        <!-- Ícone de Sol (visível no modo escuro) -->
-                        <svg id="theme-icon-light" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12H.75m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25 2.25 2.25 0 0 0 2.25 2.25 2.25 2.25 0 0 0 2.25-2.25A2.25 2.25 0 0 0 12 12Z" />
-                        </svg>
-                        <!-- Ícone de Lua (visível no modo claro) -->
-                        <svg id="theme-icon-dark" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-                        </svg>
-                    </button>
-                </div>
+    <div class="max-w-7xl mx-auto">
+        <!-- Título do Dashboard -->
+        <header class="mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-white text-center">Dashboard: Análise do Trabalho Híbrido no Setor Público de TI</h1>
+            <p class="text-center text-lg text-gray-400 mt-2">Análise comparativa (ABEP-TIC), riscos operacionais e recomendações para o CIASC</p>
+        </header>
+
+        <!-- Navegação por Abas -->
+        <nav class="flex justify-center border-b border-gray-700 mb-8">
+            <div class="flex space-x-4 md:space-x-8">
+                <button onclick="changeTab('resumo')" id="tab-resumo" class="tab-active py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+                    Resumo Executivo
+                </button>
+                <button onclick="changeTab('comparativo')" id="tab-comparativo" class="tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+                    Comparativo ABEP-TIC
+                </button>
+                <button onclick="changeTab('estudos')" id="tab-estudos" class="tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+                    Estudos Acadêmicos
+                </button>
+                <button onclick="changeTab('riscos')" id="tab-riscos" class="tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+                    Riscos & Recomendações
+                </button>
             </div>
         </nav>
-    </header>
 
-    <!-- Conteúdo Principal -->
-    <div class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-        
-        <!-- Título e Abas -->
-        <div class="mb-6">
-            <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Análise Comparativa de PRODs (ABEP-TIC)</h1>
-            <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
-                Análise de indicadores de desempenho baseada no "Estudo Comparativo PRODS 2024". Dados do PDF (2024) + Deep Search (2024/2023).
-                <span class="font-semibold text-blue-700 dark:text-blue-400">CIASC (Ref.)</span> está destacado.
-            </p>
-            <div class="mt-4 border-b border-slate-200 dark:border-slate-700">
-                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                    <button id="tab-comparativo" onclick="changeTab('comparativo')" class="border-blue-600 text-blue-700 dark:border-blue-500 dark:text-blue-400 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-                        Dashboard Comparativo
-                    </button>
-                    <button id="tab-individual" onclick="changeTab('individual')" class="border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-                        Análise Individual
-                    </button>
-                </nav>
-            </div>
-        </div>
-
-        <!-- Container das Abas -->
-        <div>
-            <!-- Aba 1: Dashboard Comparativo (Gráficos) -->
-            <div id="content-comparativo">
-                <!-- Aviso de Dados Híbridos e Metodologia -->
-                <div class="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/30 rounded-md space-y-2">
-                    <p class="text-sm text-yellow-800 dark:text-yellow-300">
-                        <span class="font-bold">Atenção (Fonte dos Dados):</span> Este dashboard combina dados de 2024 (do PDF e deep search) com dados de 2023 (fallback para ATI e ITEC).
-                        O <span class="font-bold text-blue-700 dark:text-blue-400">CIASC (2024)</span> está destacado como referência.
-                    </p>
-                    <p class="text-sm text-yellow-800 dark:text-yellow-300">
-                        <span class="font-bold">Observação Metodológica:</span> O indicador "N° de Colaboradores" pode variar em sua composição (CLT, terceirizados, estagiários) entre as empresas. Isso impacta diretamente a precisão dos indicadores calculados (Receita por Colaborador e Média Salarial).
-                    </p>
+        <!-- Conteúdo das Abas -->
+        <main>
+            <!-- ======================= -->
+            <!-- ABA: Resumo Executivo -->
+            <!-- ======================= -->
+            <div id="content-resumo" class="space-y-8">
+                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Resumo Executivo</h2>
+                
+                <!-- KPIs Principais -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-300">Modelo CIASC (Atual)</h3>
+                        <p class="text-3xl font-bold text-green-400 mt-2">Híbrido (1x4)</p>
+                        <p class="text-gray-400 mt-1">1 dia presencial e 4 dias remotos.</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-300">Tendência ABEP-TIC</h3>
+                        <p class="text-3xl font-bold text-green-400 mt-2">Híbrido Flexível</p>
+                        <p class="text-gray-400 mt-1">Maioria adota 2 a 4 dias remotos.</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-300">Risco Principal (RTO*)</h3>
+                        <p class="text-3xl font-bold text-red-400 mt-2">Apagão Tecnológico</p>
+                        <p class="text-gray-400 mt-1">*Retorno Obrigatório ao Presencial.</p>
+                    </div>
                 </div>
+
+                <!-- Gráfico e Análise de Riscos -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold text-white mb-4">Modelos de Trabalho nas Prods (Amostra ABEP)</h3>
+                        <div class="relative h-64 md:h-80">
+                            <canvas id="modelosChart"></canvas>
+                        </div>
+                        <p class="text-center text-gray-400 mt-4">A maioria das empresas públicas de TI adota o modelo híbrido, reconhecendo a flexibilidade como essencial.</p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
+                        <h3 class="text-xl font-semibold text-white mb-4">Contexto Crítico do CIASC</h3>
+                        <div>
+                            <h4 class="text-lg font-semibold text-yellow-400">1. PDVI em Andamento</h4>
+                            <p class="text-gray-300">Saída de profissionais experientes, resultando em perda de conhecimento crítico e sobrecarga das equipes remanescentes.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-red-400">2. Risco de Evasão de Talentos</h4>
+                            <p class="text-gray-300">Profissionais de TI (especialmente os mais novos e qualificados) são altamente assediados pela iniciativa privada, que oferece flexibilidade total (remoto) e salários maiores.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-orange-400">3. Restrições de Reposição</h4>
+                            <p class="text-gray-300">A morosidade de concursos públicos e as restrições legais em SC para terceirização de atividade-fim impedem a reposição ágil da força de trabalho.</p>
+                        </div>
+                        <div class="bg-red-900/50 p-4 rounded-md border border-red-700">
+                            <p class="font-semibold text-red-300">Conclusão: Um RTO forçado agravaria a evasão de talentos, criando um risco operacional severo para os serviços essenciais do Estado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================== -->
+            <!-- ABA: Comparativo ABEP-TIC -->
+            <!-- ========================== -->
+            <div id="content-comparativo" class="hidden">
+                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Comparativo de Modelos de Trabalho (ABEP-TIC)</h2>
+                <div class="bg-gray-800 p-4 md:p-6 rounded-lg shadow-lg overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="bg-gray-700/50">
+                            <tr>
+                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Empresa (Estado)</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Modelo Adotado</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Detalhes do Regime</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Flexibilidade</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-gray-800 divide-y divide-gray-700">
+                            <!-- CIASC (SC) - Destaque -->
+                            <tr class="bg-blue-900/30">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">CIASC (SC)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-green-400">Híbrido (1x4)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-200">1 presencial, 4 remotos (jornada 6h, escolha do dia).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Muito Alta</td>
+                            </tr>
+                            
+                            <!-- PRODEST (ES) - Adicionado -->
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODEST (ES)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido (3x2)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">3 dias remotos, 2 dias presenciais (mín. 16h semanais).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Alta</td>
+                            </tr>
+                            
+                            <!-- PRODESP (SP) - Adicionado -->
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODESP (SP)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Presencial</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">100% Presencial (Conforme dados ABEP).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Nenhuma</td>
+                            </tr>
+
+                            <!-- CELEPAR (PR) - Adicionado -->
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">CELEPAR (PR)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Presencial</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Retorno ao presencial desde Jan/2025 (Info. Diretor).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Nenhuma</td>
+                            </tr>
+
+                            <!-- Outras Prods -->
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODEMGE (MG)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido Flexível</td>
+                                <!-- ATUALIZADO AQUI -->
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Regime de teletrabalho (PGD) prorrogado até Set/2026.</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Muito Alta</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODAM (AM)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido (4x1)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">4 dias remotos, 1 presencial (foco em Desenvolvimento).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Muito Alta</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PROCERGS (RS)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Híbrido (Variável)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Modelo definido por área/gestor (sem política universal).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Média (por área)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODERJ (RJ)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Modelo regulamentado por PGD (Portaria 793/2020 e outras).</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Alta (com gestão)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">MTI (MT)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Híbrido (Dinâmico)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">1 a 5 dias remotos (acordo com gestor). Tendência de retorno.</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Variável</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">ETICE (CE)</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Modelo híbrido sem tendência de retorno total.</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Alta</td>
+                            </tr>
+                             <tr>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">ATI-PE / PRODEPA (PA) / etc.</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Presencial</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Algumas Prods menores ou com gestão mais tradicional retornaram 100%.</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Nenhuma</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ======================= -->
+            <!-- ABA: Estudos Acadêmicos -->
+            <!-- ======================= -->
+            <div id="content-estudos" class="hidden">
+                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Evidências e Estudos Científicos</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Card Stanford (ATUALIZADO E CLARIFICADO) -->
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col">
+                        <h3 class="text-xl font-semibold text-white">Universidade de Stanford (N. Bloom)</h3>
+                        <div class="flex items-center my-3">
+                            <span class="text-green-400 text-2xl mr-2">
+                                <!-- Ícone de Check (Pró) -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            </span>
+                            <span class="text-lg font-semibold text-green-300">Posição Clara: Pró-Híbrido/Remoto</span>
+                        </div>
+                        <p class="text-gray-300 flex-grow">
+                            A pesquisa de Stanford demonstra que o trabalho híbrido/remoto <strong>AUMENTA a produtividade</strong> (13%), <strong>REDUZ drasticamente a rotatividade</strong> (50%) e melhora a satisfação. O estudo conclui que um modelo híbrido bem gerenciado é um "ganha-ganha-ganha" para empresas, funcionários e sociedade.
+                        </p>
+                        <a href="https://news.stanford.edu/stories/2024/06/hybrid-work-is-a-win-win-win-for-companies-workers/" target="_blank" class="mt-4 text-blue-400 hover:text-blue-300 text-sm font-medium">Ver fonte (Stanford News) &rarr;</a>
+                    </div>
+
+                    <!-- Card FGV / FIA (ATUALIZADO COM FONTES) -->
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col">
+                        <h3 class="text-xl font-semibold text-white">FGV / FIA (Brasil)</h3>
+                        <div class="flex items-center my-3">
+                             <span class="text-green-400 text-2xl mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            </span>
+                            <span class="text-lg font-semibold text-green-300">Posição: Pró-Flexibilidade</span>
+                        </div>
+                        <p class="text-gray-300 flex-grow">
+                            Estudos no Brasil (FIA e FGV) confirmam: <strong>91%</strong> dos profissionais percebem a produtividade igual ou maior no remoto. A flexibilidade é o <strong>segundo maior atrativo</strong> para profissionais de TI no país, atrás apenas do salário.
+                        </p>
+                        <!-- Links Adicionados -->
+                        <a href="https://progep.fia.com.br/wp-content/uploads/2025/01/Sumario-pesquisa-2024_vfinal.pdf" target="_blank" class="mt-4 text-blue-400 hover:text-blue-300 text-sm font-medium">Ver fonte (Pesquisa FIA 2024) &rarr;</a>
+                        <a href="https://portal.fgv.br/artigos/consequencias-surpreendentes-aumento-trabalho-remoto" target="_blank" class="mt-2 text-blue-400 hover:text-blue-300 text-sm font-medium">Ver fonte (Artigo FGV) &rarr;</a>
+                    </div>
+
+                    <!-- Card Mandatos RTO -->
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col">
+                        <h3 class="text-xl font-semibold text-white">Análises de RTO (Gartner / Univ. Pittsburgh)</h3>
+                        <div class="flex items-center my-3">
+                             <span class="text-red-400 text-2xl mr-2">
+                                <!-- Ícone de Alerta (Contra) -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 102 0v-2a1 1 0 10-2 0v2zM9 7a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
+                            </span>
+                            <span class="text-lg font-semibold text-red-300">Posição: Contra RTO Forçado</span>
+                        </div>
+                        <p class="text-gray-300 flex-grow">
+                            Estudos sobre mandatos de Retorno ao Escritório (RTO) forçados mostram que eles <strong>NÃO aumentam a produtividade</strong> nem o desempenho financeiro da empresa. Em vez disso, geram queda no moral e <strong>aumento significativo na rotatividade</strong>, especialmente entre os profissionais de melhor desempenho.
+                        </p>
+                        <a href="https://www.businessinsider.com/return-to-office-mandates-no-impact-company-performance-study-2024-5" target="_blank" class="mt-4 text-blue-400 hover:text-blue-300 text-sm font-medium">Ver fonte (Business Insider) &rarr;</a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ============================ -->
+            <!-- ABA: Riscos & Recomendações -->
+            <!-- ============================ -->
+            <div id="content-riscos" class="hidden">
+                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Riscos Operacionais e Recomendações (CIASC)</h2>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Gráfico 1: Receita Anual -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Receita Anual (R$ Milhões)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Receita)</p>
-                        <div class="h-96">
-                            <canvas id="chartReceita"></canvas>
+                    <!-- Coluna de Riscos -->
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
+                        <h3 class="text-xl font-semibold text-red-400 mb-4">Análise de Risco: A "Tempestade Perfeita"</h3>
+                        <div class="flex items-start">
+                            <span class="text-red-500 text-3xl mr-3 mt-1">1</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Saída de Experientes (PDVI)</h4>
+                                <p class="text-gray-300">O PDVI drena o conhecimento sênior da empresa, essencial para sistemas legados e críticos.</p>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Gráfico 2: N° de Colaboradores -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">N° de Colaboradores</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Colaboradores)</p>
-                        <div class="h-96">
-                            <canvas id="chartColaboradores"></canvas>
+                        <div class="flex items-start">
+                            <span class="text-red-500 text-3xl mr-3 mt-1">2</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Evasão de Talentos (Se RTO Forçado)</h4>
+                                <p class="text-gray-300">Um RTO (ex: volta para 3x2 ou pior) expulsaria talentos para o mercado privado, que oferece 100% remoto.</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- Gráfico 3: Receita por Colaborador (RPC) -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Receita por Colaborador (R$ Mil)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por RPC)</p>
-                        <div class="h-96">
-                            <canvas id="chartProdutividade"></canvas>
+                        <div class="flex items-start">
+                            <span class="text-red-500 text-3xl mr-3 mt-1">3</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Impossibilidade de Reposição</h4>
+                                <p class="text-gray-300">A combinação de concursos (lentos) e restrições à terceirização (legais) impede cobrir as vagas abertas.</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- Gráfico 4: Salário Médio Mensal por Colaborador sem benefícios, encargos e descontos -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Salário Médio por Colaborador (sem encargos, benefícios e descontos) (R$)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Salário Médio)</p>
-                        <div class="h-96">
-                            <canvas id="chartSalarioMedio"></canvas>
-                        </div>
-                    </div>
-                    
-                    <!-- Gráfico 6: % Impacto da Folha / Receita -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">% Impacto da Folha / Receita</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">CIASC (Ref.) vs. Demais (Ordenado por Impacto)</p>
-                        <div class="h-96">
-                            <canvas id="chartImpactoFolha"></canvas>
+                        <div class="bg-red-900/50 p-4 mt-4 rounded-md border border-red-700">
+                            <h4 class="text-xl font-bold text-red-300 text-center">Risco Iminente (Se RTO): APAGÃO TECNOLÓGICO</h4>
+                            <p class="text-center text-red-200">Paralisação de serviços essenciais ao cidadão e ao governo (Defesa Civil, Saúde, Educação, Segurança) por falta de pessoal técnico qualificado.</p>
                         </div>
                     </div>
 
-                    <!-- Gráfico 5: Distribuição de Gênero (Média) -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100">Distribuição de Gênero (Média Simulado)</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Média das 14 empresas (simulação 75/25)</p>
-                        <div class="h-96 flex items-center justify-center">
-                            <div class="w-full max-w-xs">
-                                <canvas id="chartGenero"></canvas>
+                    <!-- Coluna de Recomendações -->
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
+                        <h3 class="text-xl font-semibold text-green-400 mb-4">Recomendações para Evolução da Norma CIASC</h3>
+                        <div class="flex items-start">
+                            <span class="text-green-500 text-3xl mr-3 mt-1">1</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Manter e Valorizar o 1x4</h4>
+                                <p class="text-gray-300">Sustentar o modelo atual (1 presencial, 4 remotos), que posiciona o CIASC como competitivo na atração e retenção.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-green-500 text-3xl mr-3 mt-1">2</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Foco em Gestão, não em Presença</h4>
+                                <p class="text-gray-300">Migrar de um controle de frequência (ponto) para um controle de produtividade (entregas), inspirado no PGD do Gov. Federal.</p>
+
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+            
+                            <span class="text-green-500 text-3xl mr-3 mt-1">3</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Implementar OKRs e KPIs Claros</h4>
+                                <p class="text-gray-300">Definir "Objectives and Key Results" (OKRs) trimestrais e KPIs (Key Performance Indicators) claros para empregados, setores e empresa, como critério objetivo de adesão e permanência no modelo.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-green-500 text-3xl mr-3 mt-1">4</span>
+                            <div>
+                                <h4 class="text-lg font-semibold">Segmentação (Opcional)</h4>
+                                <p class="text-gray-300">Considerar segmentar a flexibilidade por área apenas se houver forte justificativa operacional para áreas específicas exigirem mais dias presenciais (ex: suporte técnico local).</p>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
+        </main>
+    </div>
 
-            <!-- Aba 2: Análise Individual -->
-            <div id="content-individual" class="hidden">
-                <div class="flex flex-col md:flex-row gap-6">
-                    
-                    <!-- Menu Lateral de Empresas -->
-                    <div class="w-full md:w-1/4 lg:w-1/5">
-                        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-100 mb-3">Selecionar Empresa</h3>
-                        <ul id="lista-empresas" class="space-y-1">
-                            <!-- Lista será preenchida por JS -->
-                        </ul>
-                    </div>
-                    
-                    <!-- Painel de Detalhes da Empresa -->
-                    <div class="w-full md:w-3/4 lg:w-4/5">
-                        <div id="detalhes-empresa" class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6">
-                            <!-- Conteúdo será preenchido por JS -->
-                            <p class="text-slate-500 dark:text-slate-400">Selecione uma empresa na lista ao lado para ver os detalhes.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div> <!-- Fim do container das abas -->
-
-    </div> <!-- Fim do Conteúdo Principal -->
-
-    <!-- Footer (Rodapé) -->
-    <footer class="bg-slate-100 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 mt-12">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-                
-                <div class="flex flex-col justify-center items-center md:items-start space-y-4">
-                    <div class="w-fit">
-                         <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
-                    </div>
-                    <p class="text-xs text-center md:text-left text-slate-600 dark:text-slate-400">
-                        Todos os Direitos reservados - AIT<br>(Assessoria de Inovação e Tecnologia) - CIASC 2025
-                    </p>
-                </div>
-                
-                <div class="text-center md:text-left text-sm text-slate-700 dark:text-slate-300">
-                    <h4 class="font-semibold text-blue-800 dark:text-blue-400">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
-                    <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
-                    <p>Florianópolis, SC - CEP 88034-902</p>
-                    <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
-                </div>
-                
-                <div class="text-center md:text-right text-sm">
-                    <p class="font-semibold text-blue-800 dark:text-blue-400">Links Úteis</p>
-                    <ul class="mt-2 space-y-1">
-                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Site Oficial CIASC</a></li>
-                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Portal da Transparência</a></li>
-                        <li><a href="https://www.abep-tic.org.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">ABEP-TIC</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Script principal da aplicação -->
     <script>
-        // --- LÓGICA DO TEMA (LIGHT/DARK) ---
-        // DEVE SER EXECUTADO IMEDIATAMENTE PARA EVITAR "FOUC" (Flash of Unstyled Content)
-        const htmlEl = document.documentElement;
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        htmlEl.classList.add(currentTheme);
+        // --- Script para Gráfico (Chart.js) ---
+        // Dados para o gráfico de pizza (amostra ABEP-TIC atualizada)
+        const chartData = {
+            // Contagem atualizada: 10 Híbrido, 7 Presencial (Celepar movida para Presencial)
+            labels: ['Híbrido', 'Presencial'],
+            datasets: [{
+                label: 'Modelos de Trabalho',
+                data: [10, 7], // 10 Híbrido, 7 Presencial
+                backgroundColor: [
+                    'rgba(59, 130, 246, 0.7)', // Azul (Híbrido)
+                    'rgba(239, 68, 68, 0.7)', // Vermelho (Presencial)
+                ],
+                borderColor: [
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(239, 68, 68, 1)',
+                ],
+                borderWidth: 1
+            }]
+        };
 
-
-        // --- DADOS HÍBRIDOS (PDF 2024 + Deep Search 2024/2023) ---
-        
-        // Função helper para criar o objeto de documentos N/D
-        function getEmptyDocs() {
-            return {
-                estatutoSocial: null,
-                relatorioGestao: null,
-                indicadores: null,
-                contratoGestao: null,
-                planoNegocios: null,
-                relatorioSustentabilidade: null,
-                relatorioIgualdade: null
-            };
-        }
-
-        const empresasData = [
-            {
-                id: 'ciasc',
-                nome: 'CIASC',
-                estado: 'SC',
-                ano: 2024,
-                receitaValor: 215.8, // R$ Milhões
-                colaboradoresValor: 362,
-                salarioMedioValor: 12168, // R$
-                genero: { m: 279, f: 83 }, // Simulação 77/23
-                regimentoLink: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/a-empresa/regimento-interno/405-ciasc-regimento-interno-vigencia-09-09-2025-1/file',
-                produtosEstrategicos: ["SDE (Plataforma Cidadão)", "SGF (Gestão de Finanças)", "GovLink (Rede Segura)", "Detran Digital SC (Plataforma)"],
-                parcerias: ["AWS (Nuvem)", "Microsoft (Nuvem)", "Universidades (Pesquisa)", "FAPESC (Inovação)"],
-                documentos: {
-                    estatutoSocial: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/a-empresa/estatuto-social/406-ciasc-estatuto-social-vigencia-09-09-2025-registro-na-jucesc-20255572905/file',
-                    relatorioGestao: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/relatorios/relatorio-de-gestao-2024',
-                    indicadores: null,
-                    contratoGestao: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/contrato-de-gestao',
-                    planoNegocios: 'https://transparencia.ciasc.sc.gov.br/ciasc/planejamento/plano-de-negocios-2024-2028',
-                    relatorioSustentabilidade: null,
-                    relatorioIgualdade: 'https://transparencia.ciasc.sc.gov.br/ciasc/gestao/relatorio-de-igualdade-salarial-2024'
-                }
-            },
-            {
-                id: 'celepar',
-                nome: 'CELEPAR',
-                estado: 'PR',
-                ano: 2024,
-                receitaValor: 575.9,
-                colaboradoresValor: 868,
-                salarioMedioValor: 11231,
-                genero: { m: 668, f: 200 },
-                regimentoLink: null,
-                produtosEstrategicos: ["PIÁ (Plataforma IA/UX)", "Identificação Biométrica (BIO ID)", "GSUS (Gestão Saúde)", "Farmácia Especializada (CEAF)", "Gestão Automatizada de Obras (BIM/ACD)"],
-                parcerias: ["Governo Federal (Gov.br)", "BIM/ACD (Obras)", "Rede de Inovação PR"],
-                documentos: {
-                    estatutoSocial: 'https://www.celepar.pr.gov.br/transparencia/estatuto_social.pdf',
-                    relatorioGestao: 'https://www.celepar.pr.gov.br/transparencia/relatorio_gestao_2024.pdf',
-                    indicadores: null,
-                    contratoGestao: null,
-                    planoNegocios: null,
-                    relatorioSustentabilidade: null,
-                    relatorioIgualdade: 'https://www.celepar.pr.gov.br/transparencia/relatorio_igualdade_salarial_2024.pdf'
-                }
-            },
-            {
-                id: 'prodesp',
-                nome: 'PRODESP',
-                estado: 'SP',
-                ano: 2024,
-                receitaValor: 3532.0,
-                colaboradoresValor: 2169,
-                salarioMedioValor: 13978,
-                genero: { m: 1670, f: 499 },
-                regimentoLink: null,
-                produtosEstrategicos: ["Poupatempo (Gestão)", "CRM de Atendimento Cidadão", "Portal SP.GOV"],
-                parcerias: ["Secretarias de SP", "Provedores de Nuvem", "Dataprev (Integração)"],
-                documentos: {
-                    estatutoSocial: 'https://www.prodesp.sp.gov.br/transparencia/estatuto_social.pdf',
-                    relatorioGestao: 'https://www.prodesp.sp.gov.br/transparencia/relatorio_administracao_2024.pdf',
-                    indicadores: null,
-                    contratoGestao: null,
-                    planoNegocios: null,
-                    relatorioSustentabilidade: 'https://www.prodesp.sp.gov.br/transparencia/relatorio_sustentabilidade_2024.pdf',
-                    relatorioIgualdade: 'https://www.prodesp.sp.gov.br/transparencia/relatorio_igualdade_salarial_2024.pdf'
-                }
-            },
-            {
-                id: 'mti',
-                nome: 'MTI',
-                estado: 'MT',
-                ano: 2024,
-                receitaValor: 200.6,
-                colaboradoresValor: 420,
-                salarioMedioValor: 11132,
-                genero: { m: 323, f: 97 },
-                regimentoLink: null,
-                produtosEstrategicos: ["MTI Now! (ITSM)", "Gestão de Nuvens (Multicloud)", "Análise de Dados (BI)"],
-                parcerias: ["Governo do Mato Grosso", "Tribunais (Soluções de TI)"],
-                documentos: {
-                    ...getEmptyDocs(),
-                    estatutoSocial: 'https://www.mti.mt.gov.br/transparencia/estatuto_social.pdf',
-                    relatorioGestao: 'https://www.mti.mt.gov.br/transparencia/relatorio_gestao_2024.pdf',
-                }
-            },
-            {
-                id: 'prodemge',
-                nome: 'PRODEMGE',
-                estado: 'MG',
-                ano: 2024,
-                receitaValor: 684.2,
-                colaboradoresValor: 1077,
-                salarioMedioValor: 10956,
-                genero: { m: 829, f: 248 },
-                regimentoLink: null,
-                produtosEstrategicos: ["SEI! (Proc. Eletrônico)", "Gestão de Pessoal (SISAP)", "Portal MG", "Identidade Digital"],
-                parcerias: ["Governo de MG", "Ministério da Economia (SEI!)"],
-                documentos: {
-                    ...getEmptyDocs(),
-                    estatutoSocial: 'https://www.prodemge.gov.br/transparencia/estatuto.pdf',
-                    relatorioGestao: 'https://www.prodemge.gov.br/transparencia/relatorio-de-atividades-2024.pdf',
-                }
-            },
-            {
-                id: 'prodeb',
-                nome: 'PRODEB',
-                estado: 'BA',
-                ano: 2024,
-                receitaValor: 180.3,
-                colaboradoresValor: 401,
-                salarioMedioValor: 10054,
-                genero: { m: 309, f: 92 },
-                regimentoLink: null,
-                produtosEstrategicos: ["SAC Digital (BA)", "Gestão de Escolas", "Saúde (Regulação)", "Identidade Digital (GOV.BA)"],
-                parcerias: ["Governo da Bahia", "AWS (Nuvem)"],
-                documentos: {
-                    ...getEmptyDocs(),
-                    relatorioGestao: 'https://www.prodeb.ba.gov.br/transparencia/relatorio_gestao_2024.pdf',
-                    relatorioIgualdade: 'https://www.prodeb.ba.gov.br/transparencia/relatorio_igualdade_salarial_2024.pdf'
-                }
-            },
-            
-            // --- DADOS DA "DEEP SEARCH" (SIMULADOS 2024 / FALLBACK 2023) ---
-            {
-                id: 'prodam-am',
-                nome: 'PRODAM',
-                estado: 'AM',
-                ano: 2024,
-                receitaValor: 150.0, // Simulado 2024
-                colaboradoresValor: 350, // Simulado 2024
-                salarioMedioValor: 9800, // Simulado 2024
-                genero: { m: 269, f: 81 },
-                regimentoLink: null,
-                produtosEstrategicos: ["SGA (Gestão)", "Portal do Cidadão AM", "Educação (Gestão Escolar)"],
-                parcerias: ["Governo do Amazonas", "SEFAZ-AM"],
-                documentos: getEmptyDocs()
-            },
-            {
-                id: 'ati-to',
-                nome: 'ATI',
-                estado: 'TO',
-                ano: 2023, // Fallback 2023
-                receitaValor: 85.0, // Simulado 2023
-                colaboradoresValor: 180, // Simulado 2023
-                salarioMedioValor: 8500, // Simulado 2023
-                genero: { m: 139, f: 41 },
-                regimentoLink: null,
-                produtosEstrategicos: ["Portal de Serviços TO", "Infraestrutura de Rede (Governo)"],
-                parcerias: ["Governo do Tocantins", "Bancos (Caixa)"],
-                documentos: getEmptyDocs()
-            },
-            {
-                id: 'itec-pe',
-                nome: 'ITEC',
-                estado: 'PE',
-                ano: 2023, // Fallback 2023
-                receitaValor: 110.0, // Simulado 2023
-                colaboradoresValor: 250, // Simulado 2023
-                salarioMedioValor: 9200, // Simulado 2023
-                genero: { m: 192, f: 58 },
-                regimentoLink: null,
-                produtosEstrategicos: ["Gestão de Saúde (PE)", "Educação (Matrícula Online)"],
-                parcerias: ["Governo de Pernambuco", "Porto Digital"],
-                documentos: {
-                    ...getEmptyDocs(),
-                    relatorioGestao: 'https://www.itec.pe.gov.br/transparencia/relatorio_gestao_2023.pdf',
-                }
-            },
-            {
-                id: 'codata-pb',
-                nome: 'CODATA',
-                estado: 'PB',
-                ano: 2024,
-                receitaValor: 95.0, // Simulado 2024
-                colaboradoresValor: 210, // Simulado 2024
-                salarioMedioValor: 8900, // Simulado 2024
-                genero: { m: 162, f: 48 },
-                regimentoLink: null,
-                produtosEstrategicos: ["Portal da Cidadania PB", "Rede de Dados do Estado"],
-                parcerias: ["Governo da Paraíba", "Universidades Federais"],
-                documentos: getEmptyDocs()
-            },
-            {
-                id: 'etice-ce',
-                nome: 'ETICE',
-                estado: 'CE',
-                ano: 2024,
-                receitaValor: 250.0, // Simulado 2024
-                colaboradoresValor: 500, // Simulado 2024
-                salarioMedioValor: 10500, // Simulado 2024
-                genero: { m: 385, f: 115 },
-                regimentoLink: null,
-                produtosEstrategicos: ["Cinturão Digital (Fibra)", "Data Center do Estado", "GovCE (Plataforma)"],
-                parcerias: ["Ministério das Comunicações", "Provedores de Internet"],
-                documentos: {
-                    ...getEmptyDocs(),
-                    estatutoSocial: 'https://www.etice.ce.gov.br/transparencia/estatuto.pdf',
-                    relatorioGestao: 'https://www.etice.ce.gov.br/transparencia/relatorio-gestao-2024.pdf',
-                }
-            },
-            {
-                id: 'prodam-pa',
-                nome: 'PRODAM',
-                estado: 'PA',
-                ano: 2024,
-                receitaValor: 190.0, // Simulado 2024
-                colaboradoresValor: 450, // Simulado 2024
-                salarioMedioValor: 9100, // Simulado 2024
-                genero: { m: 346, f: 104 },
-                regimentoLink: null,
-                produtosEstrategicos: ["Portal de Serviços PA", "Gestão da Folha (Estado)", "Saúde (Regulação)"],
-                parcerias: ["Governo do Pará", "SEPLAD"],
-                documentos: getEmptyDocs()
-            },
-            {
-                id: 'prodest-es',
-                nome: 'PRODEST',
-                estado: 'ES',
-                ano: 2024,
-                receitaValor: 160.0, // Simulado 2024
-                colaboradoresValor: 300, // Simulado 2024
-                salarioMedioValor: 10300, // Simulado 2024
-                genero: { m: 231, f: 69 },
-                regimentoLink: null,
-                produtosEstrategicos: ["Acess Cidadão (Identidade)", "Gestão de Documentos (E-Docs)"],
-                parcerias: ["Governo do Espírito Santo", "Ministério da Gestão (MGI)"],
-                documentos: {
-                    ...getEmptyDocs(),
-                    relatorioGestao: 'https://prodest.es.gov.br/transparencia/relatorio-gestao-2024.pdf',
-                }
-            },
-            {
-                id: 'prodam-sp',
-                nome: 'PRODAM',
-                estado: 'SP (Mun.)',
-                ano: 2024,
-                receitaValor: 1100.0, // Simulado 2024
-                colaboradoresValor: 1500, // Simulado 2024
-                salarioMedioValor: 13500, // Simulado 2024
-                genero: { m: 1155, f: 345 },
-                regimentoLink: null,
-                produtosEstrategicos: ["Descomplica SP", "Gestão de Saúde (SIGA)", "Educação (Gestão Escolar)"],
-                parcerias: ["Prefeitura de São Paulo", "SPTrans", "Secretarias Municipais"],
-                documentos: {
-                    ...getEmptyDocs(),
-                    estatutoSocial: 'https://www.prodam.sp.gov.br/transparencia/estatuto.pdf',
-                    relatorioGestao: 'https://www.prodam.sp.gov.br/transparencia/relatorio-gestao-2024.pdf',
-                    relatorioSustentabilidade: 'https://www.prodam.sp.gov.br/transparencia/relatorio-sustentabilidade-2024.pdf',
-                }
-            }
-        ];
-        
-        // --- CONFIGURAÇÃO DOS GRÁFICOS ---
-        
-        const corDestaque = '#1d4ed8'; // blue-700 (CIASC)
-        const corBase = '#94a3b8';     // slate-400
-        const corGeneroM = '#3b82f6';  // blue-500
-        const corGeneroF = '#ec4899';  // pink-500
-        const corFallback = '#f59e0b'; // amber-500 (Para dados 2023)
-
-        let charts = {};
-
-        function getBarColors(data) {
-            return data.map(empresa => {
-                if (empresa.id === 'ciasc') return corDestaque;
-                if (empresa.ano === 2023) return corFallback;
-                return corBase;
-            });
-        }
-        
-        function formatarNumero(valor) {
-            if (valor === null || valor === undefined) return 'N/D';
-            return valor.toLocaleString('pt-BR');
-        }
-
-        function formatarMoeda(valor) {
-            if (valor === null || valor === undefined) return 'N/D';
-            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        }
-        
-        function calcularRPC(receitaM, colab) {
-            if (!receitaM || !colab) return null;
-            return (receitaM * 1000000) / colab / 1000; // Resultado em Mil R$
-        }
-        
-        function calcularImpactoFolha(salario, colab, receitaM) {
-            if (!salario || !colab || !receitaM) return null;
-            const custoAnualFolha = salario * colab * 12;
-            const receitaAnual = receitaM * 1000000;
-            return (custoAnualFolha / receitaAnual) * 100; // Resultado em %
-        }
-
-        // --- Opções Comuns para Gráficos Horizontais ---
-        const commonHorizontalOptions = {
-            indexAxis: 'y', // Define o gráfico como horizontal
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
+        // Configuração do gráfico
+        const chartConfig = {
+            type: 'doughnut', // Tipo de gráfico: rosca
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#e5e7eb', // Cor do texto da legenda
+                            font: {
+                                size: 14,
+                                family: 'Inter'
                             }
-                            if (context.parsed.x !== null) {
-                                // Se for o gráfico de impacto, adiciona %
-                                if (context.chart.canvas.id === 'chartImpactoFolha') {
-                                    label += context.parsed.x.toFixed(2) + '%';
-                                } else {
-                                    label += formatarNumero(context.parsed.x);
-                                }
-                            }
-                            return label;
                         }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            // Adiciona 'B' para Bilhões ou 'M' para Milhões
-                            if (this.chart.canvas.id === 'chartReceita') {
-                                return value >= 1000 ? (value / 1000).toFixed(1) + 'B' : value + 'M';
-                            }
-                            if (this.chart.canvas.id === 'chartImpactoFolha') {
-                                return value + '%';
-                            }
-                            if (value >= 1000000) return (value / 1000000) + 'M';
-                            if (value >= 1000) return (value / 1000) + 'k';
-                            return value;
+                    },
+                    tooltip: {
+                        titleFont: {
+                            family: 'Inter'
+                        },
+                        bodyFont: {
+                            family: 'Inter'
                         }
-                    }
-                },
-                y: {
-                    ticks: {
-                        autoSkip: false // Garante que todos os 14 labels apareçam
                     }
                 }
             }
         };
 
-        // Função para criar labels com o ano
-        function getLabelsComAno(data) {
-            return data.map(e => `${e.nome} (${e.estado === 'SP (Mun.)' ? 'SP-Mun' : e.estado}) (${e.ano})`);
-        }
-
-        // --- CORREÇÃO: Função helper para mover CIASC para o início de um array
-        function moveCiascToFront(array) {
-            const index = array.findIndex(e => e.id === 'ciasc');
-            if (index > -1) {
-                const item = array.splice(index, 1)[0];
-                array.unshift(item);
-            }
-            return array; // Retorna o array modificado
-        }
+        // Renderiza o gráfico
+        const ctx = document.getElementById('modelosChart').getContext('2d');
+        new Chart(ctx, chartConfig);
 
 
-        // Função para atualizar os gráficos
-        function updateCharts() {
-            Object.values(charts).forEach(chart => chart.destroy());
-            
-            // --- Gráfico 1: Receita ---
-            let dataReceita = empresasData.filter(e => e.receitaValor);
-            dataReceita.sort((a, b) => (b.receitaValor || 0) - (a.receitaValor || 0));
-            dataReceita = moveCiascToFront(dataReceita); // CORREÇÃO: CIASC na frente
-            
-            charts.receita = new Chart(document.getElementById('chartReceita'), {
-                type: 'bar',
-                data: {
-                    labels: getLabelsComAno(dataReceita),
-                    datasets: [{
-                        label: 'Receita (R$ Milhões)',
-                        data: dataReceita.map(e => e.receitaValor),
-                        backgroundColor: getBarColors(dataReceita),
-                    }]
-                },
-                options: { ...commonHorizontalOptions }
-            });
-
-            // --- Gráfico 2: Colaboradores ---
-            let dataColab = empresasData.filter(e => e.colaboradoresValor);
-            dataColab.sort((a, b) => (b.colaboradoresValor || 0) - (a.colaboradoresValor || 0));
-            dataColab = moveCiascToFront(dataColab); // CORREÇÃO: CIASC na frente
-            
-            charts.colaboradores = new Chart(document.getElementById('chartColaboradores'), {
-                type: 'bar',
-                data: {
-                    labels: getLabelsComAno(dataColab),
-                    datasets: [{
-                        label: 'N° Colaboradores',
-                        data: dataColab.map(e => e.colaboradoresValor),
-                        backgroundColor: getBarColors(dataColab),
-                    }]
-                },
-                options: { ...commonHorizontalOptions }
-            });
-
-            // --- Gráfico 3: Receita por Colaborador (RPC) ---
-            let dataRPC = empresasData
-                .map(e => ({...e, rpc: calcularRPC(e.receitaValor, e.colaboradoresValor)}))
-                .filter(e => e.rpc);
-            dataRPC.sort((a, b) => (b.rpc || 0) - (a.rpc || 0)); // Ordena por RPC
-            dataRPC = moveCiascToFront(dataRPC); // CORREÇÃO: CIASC na frente
-                
-            charts.produtividade = new Chart(document.getElementById('chartProdutividade'), {
-                type: 'bar',
-                data: {
-                    labels: getLabelsComAno(dataRPC),
-                    datasets: [{
-                        label: 'Receita por Colaborador (R$ Mil)',
-                        data: dataRPC.map(e => e.rpc.toFixed(0)),
-                        backgroundColor: getBarColors(dataRPC),
-                    }]
-                },
-                options: { ...commonHorizontalOptions }
-            });
-
-            // --- Gráfico 4: Custo Médio Mensal ---
-            let dataSalario = empresasData.filter(e => e.salarioMedioValor);
-            dataSalario.sort((a, b) => (b.salarioMedioValor || 0) - (a.salarioMedioValor || 0)); // Ordena por Salário
-            dataSalario = moveCiascToFront(dataSalario); // CORREÇÃO: CIASC na frente
-                
-            charts.salarioMedio = new Chart(document.getElementById('chartSalarioMedio'), {
-                type: 'bar',
-                data: {
-                    labels: getLabelsComAno(dataSalario),
-                    datasets: [{
-                        label: 'Salário Médio (R$)',
-                        data: dataSalario.map(e => e.salarioMedioValor),
-                        backgroundColor: getBarColors(dataSalario),
-                    }]
-                },
-                options: { ...commonHorizontalOptions }
-            });
-            
-             // --- Gráfico 6: Impacto da Folha ---
-            let dataImpacto = empresasData
-                .map(e => ({...e, impacto: calcularImpactoFolha(e.salarioMedioValor, e.colaboradoresValor, e.receitaValor)}))
-                .filter(e => e.impacto);
-            dataImpacto.sort((a, b) => (b.impacto || 0) - (a.impacto || 0)); // Ordena por Impacto
-            dataImpacto = moveCiascToFront(dataImpacto); // CORREÇÃO: CIASC na frente
-
-            charts.impactoFolha = new Chart(document.getElementById('chartImpactoFolha'), {
-                type: 'bar',
-                data: {
-                    labels: getLabelsComAno(dataImpacto),
-                    datasets: [{
-                        label: '% Impacto da Folha',
-                        data: dataImpacto.map(e => e.impacto.toFixed(2)),
-                        backgroundColor: getBarColors(dataImpacto),
-                    }]
-                },
-                options: { ...commonHorizontalOptions }
-            });
-
-            // --- Gráfico 5: Gênero (Doughnut) ---
-            const dataGenero = empresasData.filter(e => e.genero);
-            const totalM = dataGenero.reduce((acc, e) => acc + e.genero.m, 0);
-            const totalF = dataGenero.reduce((acc, e) => acc + e.genero.f, 0);
-            
-            charts.genero = new Chart(document.getElementById('chartGenero'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Masculino (Simulado)', 'Feminino (Simulado)'],
-                    datasets: [{
-                        data: [totalM, totalF],
-                        backgroundColor: [corGeneroM, corGeneroF],
-                        hoverOffset: 4
-                    }]
-                },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    plugins: { 
-                        legend: { 
-                            position: 'bottom',
-                            labels: {
-                                color: htmlEl.classList.contains('dark') ? '#e2e8f0' : '#334155'
-                            }
-                        } 
-                    } 
-                }
-            });
-        }
-
-        // --- NAVEGAÇÃO E EXIBIÇÃO ---
+        // --- Script para Navegação por Abas ---
+        let activeTab = 'resumo';
 
         function changeTab(tabId) {
-            const tabs = ['comparativo', 'individual'];
-            tabs.forEach(id => {
-                document.getElementById(`content-${id}`).classList.toggle('hidden', id !== tabId);
-                const tabButton = document.getElementById(`tab-${id}`);
-                tabButton.classList.toggle('border-blue-600', id === tabId);
-                tabButton.classList.toggle('text-blue-700', id === tabId);
-                tabButton.classList.toggle('dark:border-blue-500', id === tabId);
-                tabButton.classList.toggle('dark:text-blue-400', id === tabId);
-                tabButton.classList.toggle('border-transparent', id !== tabId);
-                tabButton.classList.toggle('text-slate-500', id !== tabId);
-                tabButton.classList.toggle('dark:text-slate-400', id !== tabId);
-            });
+            // Se a aba clicada já é a ativa, não faz nada
+            if (tabId === activeTab) return;
+
+            // Esconde o conteúdo da aba antiga
+            document.getElementById('content-' + activeTab).classList.add('hidden');
+            // Remove a classe 'ativa' da aba antiga
+            document.getElementById('tab-' + activeTab).classList.remove('tab-active');
+            document.getElementById('tab-' + activeTab).classList.add('tab-inactive');
+
+
+            // Mostra o conteúdo da nova aba
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            // Adiciona a classe 'ativa' à nova aba
+            document.getElementById('tab-' + tabId).classList.add('tab-active');
+            document.getElementById('tab-' + tabId).classList.remove('tab-inactive');
+
+            // Atualiza a aba ativa
+            activeTab = tabId;
         }
-        
-        // Helper para renderizar botões de documentos (ativos ou desabilitados)
-        function renderButton(label, link, shortLabel = null) {
-            const mobileLabel = shortLabel || label;
-            const truncatedLabel = label.length > 25 ? label.substring(0, 22) + '...' : label;
-            const truncatedMobileLabel = mobileLabel.length > 15 ? mobileLabel.substring(0, 12) + '...' : mobileLabel;
-
-            if (link) {
-                return `
-                    <a href="${link}" target="_blank" class="flex items-center justify-center text-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none" title="${label}">
-                        <span class="hidden sm:inline">${truncatedLabel}</span>
-                        <span class="sm:hidden">${truncatedMobileLabel}</span>
-                    </a>
-                `;
-            } else {
-                return `
-                    <span class="flex items-center justify-center text-center px-3 py-2 border border-slate-200 dark:border-slate-700 text-sm font-medium rounded-md text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-700/50 cursor-not-allowed" title="${label} (N/D)">
-                        <span class="hidden sm:inline">${truncatedLabel}</span>
-                        <span class="sm:hidden">${truncatedMobileLabel}</span>
-                    </span>
-                `;
-            }
-        }
-
-        function showEmpresaDetails(empresaId) {
-            const empresa = empresasData.find(e => e.id === empresaId);
-            if (!empresa) return;
-
-            document.querySelectorAll('#lista-empresas li button').forEach(btn => {
-                btn.classList.toggle('bg-blue-100', btn.dataset.id === empresaId);
-                btn.classList.toggle('dark:bg-blue-900/50', btn.dataset.id === empresaId);
-                btn.classList.toggle('text-blue-700', btn.dataset.id === empresaId);
-                btn.classList.toggle('dark:text-blue-400', btn.dataset.id === empresaId);
-                btn.classList.toggle('font-semibold', btn.dataset.id === empresaId);
-                btn.classList.toggle('text-slate-700', btn.dataset.id !== empresaId);
-                btn.classList.toggle('dark:text-slate-300', btn.dataset.id !== empresaId);
-            });
-            
-            const rpcValor = calcularRPC(empresa.receitaValor, empresa.colaboradoresValor);
-            const rpcFormatado = rpcValor ? formatarMoeda(rpcValor * 1000) : 'N/D';
-            
-            const impactoFolhaPercent = calcularImpactoFolha(empresa.salarioMedioValor, empresa.colaboradoresValor, empresa.receitaValor);
-            const impactoFormatado = impactoFolhaPercent ? impactoFolhaPercent.toFixed(2) + ' %' : 'N/D';
-            
-            const anoClasse = empresa.ano === 2023 ? 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400' : 'text-slate-600 dark:text-slate-300';
-
-            const detalhesEl = document.getElementById('detalhes-empresa');
-            detalhesEl.innerHTML = `
-                <div class="mb-4">
-                    <div>
-                        <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400">${empresa.nome} (${empresa.estado.toUpperCase()})</h2>
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Dados Referentes ao Ano: 
-                            <span class="font-bold px-2 py-0.5 rounded ${anoClasse}">${empresa.ano}</span>
-                        </span>
-                    </div>
-                </div>
-
-                <div class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-6">
-                    <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Indicadores Chave (Ano ${empresa.ano})</h3>
-                    <dl class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Receita Anual</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-blue-700 dark:text-blue-400">${formatarMoeda(empresa.receitaValor * 1000000)}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">N° Colaboradores</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">${formatarNumero(empresa.colaboradoresValor)}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Receita por Colaborador</sdt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">${rpcFormatado}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Salário Médio Mensal (Colab.)</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">${formatarMoeda(empresa.salarioMedioValor)}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">% Impacto da Folha / Receita</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-red-600 dark:text-red-500">${impactoFormatado}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Pessoal (Masculino)</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-blue-600 dark:text-blue-400">${formatarNumero(empresa.genero.m)}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Pessoal (Feminino)</dt>
-                            <dd class="mt-1 text-2xl font-semibold tracking-tight text-pink-600 dark:text-pink-400">${formatarNumero(empresa.genero.f)}</dd>
-                        </div>
-                    </dl>
-                </div>
-                
-                <!-- NOVA SEÇÃO DE DOCUMENTOS -->
-                <div class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-6">
-                    <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Documentos de Governança e Transparência</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                        ${renderButton('Regimento Interno', empresa.regimentoLink)}
-                        ${renderButton('Estatuto Social', empresa.documentos.estatutoSocial)}
-                        ${renderButton(`Relatório de Gestão (${empresa.ano})`, empresa.documentos.relatorioGestao, 'Rel. Gestão')}
-                        ${renderButton('Contrato de Gestão', empresa.documentos.contratoGestao)}
-                        ${renderButton('Plano de Negócios (PNE)', empresa.documentos.planoNegocios, 'Plano Negócios')}
-                        ${renderButton('Rel. Igualdade Salarial', empresa.documentos.relatorioIgualdade, 'Rel. Igualdade')}
-                        ${renderButton('Rel. Sustentabilidade', empresa.documentos.relatorioSustentabilidade, 'Rel. Sustentabilidade')}
-                        ${renderButton('Indicadores (Desempenho)', empresa.documentos.indicadores, 'Indicadores')}
-                    </div>
-                </div>
-                
-                <div class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Produtos Estratégicos (Ref. PDF/Busca)</h3>
-                        <ul class="list-disc list-inside space-y-2 text-sm text-slate-700 dark:text-slate-300">
-                            ${empresa.produtosEstrategicos.length ? 
-                                empresa.produtosEstrategicos.map(p => `<li>${p}</li>`).join('') : 
-                                '<li>Nenhum produto estratégico listado.</li>'
-                            }
-                        </ul>
-                    </div>
-                    
-                    <div>
-                        <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Principais Parcerias (Exemplos)</h3>
-                        <ul class="list-disc list-inside space-y-2 text-sm text-slate-700 dark:text-slate-300">
-                             ${empresa.parcerias.length ? 
-                                empresa.parcerias.map(p => `<li>${p}</li>`).join('') : 
-                                '<li>Nenhuma parceria listada.</li>'
-                            }
-                        </ul>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // --- FUNÇÃO DE ATUALIZAÇÃO DE TEMA (GRÁFICOS) ---
-        function updateChartTheme(theme) {
-            const isDark = (theme === 'dark');
-            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-            const textColor = isDark ? '#e2e8f0' : '#334155'; // slate-200 / slate-700
-            const tooltipBg = isDark ? '#1e293b' : '#ffffff'; // slate-800 / white
-            const tooltipText = isDark ? '#f1f5f9' : '#1e293b'; // slate-100 / slate-800
-
-            Chart.defaults.color = textColor;
-            Chart.defaults.borderColor = gridColor;
-            Chart.defaults.plugins.tooltip.backgroundColor = tooltipBg;
-            Chart.defaults.plugins.tooltip.titleColor = tooltipText;
-            Chart.defaults.plugins.tooltip.bodyColor = tooltipText;
-            
-            // Re-renderiza os gráficos se já existirem
-            if (Object.keys(charts).length > 0) {
-                updateCharts();
-            }
-        }
-
-
-        // --- EVENT LISTENER PRINCIPAL (DOMContentLoaded) ---
-        // CORREÇÃO: Movido para cá para garantir que o DOM exista
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- LÓGICA DO TEMA (BOTÃO) ---
-            const themeToggleBtn = document.getElementById('theme-toggle');
-            themeToggleBtn.addEventListener('click', () => {
-                htmlEl.classList.toggle('dark');
-                htmlEl.classList.toggle('light');
-                
-                const newTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
-                localStorage.setItem('theme', newTheme);
-                updateChartTheme(newTheme);
-            });
-            
-            // --- INICIALIZAÇÃO DA PÁGINA ---
-            
-            // Ordena a lista de menu lateral (CIASC primeiro)
-            const listaEl = document.getElementById('lista-empresas');
-            const dataOrdenadaMenu = [...empresasData].sort((a, b) => {
-                if (a.id === 'ciasc') return -1;
-                if (b.id === 'ciasc') return 1;
-                return (b.receitaValor || 0) - (a.receitaValor || 0);
-            });
-            
-            dataOrdenadaMenu.forEach(empresa => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <button data-id="${empresa.id}" onclick="showEmpresaDetails('${empresa.id}')" class="w-full text-left px-3 py-2 rounded-md text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
-                        ${empresa.nome} (${empresa.estado})
-                        ${empresa.id === 'ciasc' ? '<span class="text-xs font-bold text-blue-600 dark:text-blue-400"> (Ref.)</span>' : ''}
-                        ${empresa.ano === 2023 ? '<span class="text-xs font-bold text-yellow-600 dark:text-yellow-500"> (2023)</span>' : ''}
-                    </button>
-                `;
-                listaEl.appendChild(li);
-            });
-
-            // Define o tema dos gráficos na primeira carga
-            updateChartTheme(currentTheme); 
-            
-            // Atualiza os gráficos pela primeira vez
-            updateCharts(); 
-            
-            // Define a aba e a empresa padrão
-            changeTab('comparativo');
-            showEmpresaDetails('ciasc');
-        });
-
     </script>
 </body>
 </html>
+
