@@ -1,0 +1,1439 @@
+{
+  "evolution": {
+    "2016": 0.56,
+    "2017": 0.57,
+    "2018": 0.55,
+    "2019": 0.55,
+    "2020": 0.5461,
+    "2021": 0.5636,
+    "2022": 0.3915
+  },
+  "data_2023": {
+    "exercicio": "2022",
+    "ano_base": "2022",
+    "ano_publicacao": "2023",
+    "total_municipios": 282,
+    "igov_ti_mean": 0.3915,
+    "igov_ti_min": 0.05,
+    "igov_ti_max": 0.99,
+    "classifications": {
+      "C": 215,
+      "C+": 27,
+      "B": 26,
+      "B+": 12,
+      "A": 2
+    },
+    "municipalities": [
+      {
+        "nome": "ABDON BATISTA",
+        "igov_ti": 0.31,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ABELARDO LUZ",
+        "igov_ti": 0.05,
+        "classificacao": "C"
+      },
+      {
+        "nome": "AGROLÂNDIA",
+        "igov_ti": 0.59,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "AGRONÔMICA",
+        "igov_ti": 0.24,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ÁGUA DOCE",
+        "igov_ti": 0.42,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ÁGUAS DE CHAPECÓ",
+        "igov_ti": 0.33,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ÁGUAS FRIAS",
+        "igov_ti": 0.19,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ÁGUAS MORNAS",
+        "igov_ti": 0.41,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ALFREDO WAGNER",
+        "igov_ti": 0.11,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ALTO BELA VISTA",
+        "igov_ti": 0.47,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ANCHIETA",
+        "igov_ti": 0.31,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ANGELINA",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ANITA GARIBALDI",
+        "igov_ti": 0.32,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ANITÁPOLIS",
+        "igov_ti": 0.17,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ANTÔNIO CARLOS",
+        "igov_ti": 0.18,
+        "classificacao": "C"
+      },
+      {
+        "nome": "APIÚNA",
+        "igov_ti": 0.34,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ARABUTÃ",
+        "igov_ti": 0.26,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ARAQUARI",
+        "igov_ti": 0.36,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ARARANGUÁ",
+        "igov_ti": 0.51,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "ARMAZÉM",
+        "igov_ti": 0.14,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ARROIO TRINTA",
+        "igov_ti": 0.17,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ARVOREDO",
+        "igov_ti": 0.44,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ASCURRA",
+        "igov_ti": 0.31,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ATALANTA",
+        "igov_ti": 0.12,
+        "classificacao": "C"
+      },
+      {
+        "nome": "AURORA",
+        "igov_ti": 0.27,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BALNEÁRIO ARROIO DO SILVA",
+        "igov_ti": 0.3,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BALNEÁRIO CAMBORIÚ",
+        "igov_ti": 0.33,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BALNEÁRIO BARRA DO SUL",
+        "igov_ti": 0.46,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BALNEÁRIO GAIVOTA",
+        "igov_ti": 0.31,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BARRA BONITA",
+        "igov_ti": 0.46,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BARRA VELHA",
+        "igov_ti": 0.22,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BELA VISTA DO TOLDO",
+        "igov_ti": 0.31,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BELMONTE",
+        "igov_ti": 0.1,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BIGUAÇU",
+        "igov_ti": 0.64,
+        "classificacao": "B"
+      },
+      {
+        "nome": "BLUMENAU",
+        "igov_ti": 0.49,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BOCAINA DO SUL",
+        "igov_ti": 0.41,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BOMBINHAS",
+        "igov_ti": 0.47,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BOM JARDIM DA SERRA",
+        "igov_ti": 0.22,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BOM JESUS",
+        "igov_ti": 0.22,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BOM JESUS DO OESTE",
+        "igov_ti": 0.37,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BOM RETIRO",
+        "igov_ti": 0.33,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BOTUVERÁ",
+        "igov_ti": 0.47,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BRAÇO DO NORTE",
+        "igov_ti": 0.44,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BRAÇO DO TROMBUDO",
+        "igov_ti": 0.36,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BRUNÓPOLIS",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BRUSQUE",
+        "igov_ti": 0.54,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "CAÇADOR",
+        "igov_ti": 0.65,
+        "classificacao": "B"
+      },
+      {
+        "nome": "CAIBI",
+        "igov_ti": 0.3,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CALMON",
+        "igov_ti": 0.21,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CAMBORIÚ",
+        "igov_ti": 0.48,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CAPÃO ALTO",
+        "igov_ti": 0.2,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CAMPO ALEGRE",
+        "igov_ti": 0.46,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CAMPO BELO DO SUL",
+        "igov_ti": 0.19,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CAMPO ERÊ",
+        "igov_ti": 0.22,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CAMPOS NOVOS",
+        "igov_ti": 0.3,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CANELINHA",
+        "igov_ti": 0.21,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CANOINHAS",
+        "igov_ti": 0.48,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CAPINZAL",
+        "igov_ti": 0.56,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "CAPIVARI DE BAIXO",
+        "igov_ti": 0.58,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "CATANDUVAS",
+        "igov_ti": 0.72,
+        "classificacao": "B"
+      },
+      {
+        "nome": "CAXAMBU DO SUL",
+        "igov_ti": 0.39,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CELSO RAMOS",
+        "igov_ti": 0.16,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CERRO NEGRO",
+        "igov_ti": 0.17,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CHAPADÃO DO LAGEADO",
+        "igov_ti": 0.46,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CHAPECÓ",
+        "igov_ti": 0.78,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "COCAL DO SUL",
+        "igov_ti": 0.45,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CONCÓRDIA",
+        "igov_ti": 0.63,
+        "classificacao": "B"
+      },
+      {
+        "nome": "CORDILHEIRA ALTA",
+        "igov_ti": 0.18,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CORONEL FREITAS",
+        "igov_ti": 0.36,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CORONEL MARTINS",
+        "igov_ti": 0.19,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CORUPÁ",
+        "igov_ti": 0.23,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CORREIA PINTO",
+        "igov_ti": 0.64,
+        "classificacao": "B"
+      },
+      {
+        "nome": "CRICIÚMA",
+        "igov_ti": 0.81,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "CUNHA PORÃ",
+        "igov_ti": 0.41,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CUNHATAÍ",
+        "igov_ti": 0.25,
+        "classificacao": "C"
+      },
+      {
+        "nome": "CURITIBANOS",
+        "igov_ti": 0.63,
+        "classificacao": "B"
+      },
+      {
+        "nome": "DESCANSO",
+        "igov_ti": 0.45,
+        "classificacao": "C"
+      },
+      {
+        "nome": "DIONÍSIO CERQUEIRA",
+        "igov_ti": 0.38,
+        "classificacao": "C"
+      },
+      {
+        "nome": "DONA EMMA",
+        "igov_ti": 0.29,
+        "classificacao": "C"
+      },
+      {
+        "nome": "DOUTOR PEDRINHO",
+        "igov_ti": 0.25,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ERMO",
+        "igov_ti": 0.11,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ERVAL VELHO",
+        "igov_ti": 0.57,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "FAXINAL DOS GUEDES",
+        "igov_ti": 0.6,
+        "classificacao": "B"
+      },
+      {
+        "nome": "FLOR DO SERTÃO",
+        "igov_ti": 0.19,
+        "classificacao": "C"
+      },
+      {
+        "nome": "FLORIANÓPOLIS",
+        "igov_ti": 0.68,
+        "classificacao": "B"
+      },
+      {
+        "nome": "FORMOSA DO SUL",
+        "igov_ti": 0.33,
+        "classificacao": "C"
+      },
+      {
+        "nome": "FORQUILHINHA",
+        "igov_ti": 0.49,
+        "classificacao": "C"
+      },
+      {
+        "nome": "FRAIBURGO",
+        "igov_ti": 0.58,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "FREI ROGÉRIO",
+        "igov_ti": 0.27,
+        "classificacao": "C"
+      },
+      {
+        "nome": "GALVÃO",
+        "igov_ti": 0.24,
+        "classificacao": "C"
+      },
+      {
+        "nome": "GAROPABA",
+        "igov_ti": 0.62,
+        "classificacao": "B"
+      },
+      {
+        "nome": "GARUVA",
+        "igov_ti": 0.78,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "GASPAR",
+        "igov_ti": 0.59,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "GOVERNADOR CELSO RAMOS",
+        "igov_ti": 0.34,
+        "classificacao": "C"
+      },
+      {
+        "nome": "GRÃO-PARÁ",
+        "igov_ti": 0.25,
+        "classificacao": "C"
+      },
+      {
+        "nome": "GRAVATAL",
+        "igov_ti": 0.42,
+        "classificacao": "C"
+      },
+      {
+        "nome": "GUABIRUBA",
+        "igov_ti": 0.28,
+        "classificacao": "C"
+      },
+      {
+        "nome": "GUARACIABA",
+        "igov_ti": 0.29,
+        "classificacao": "C"
+      },
+      {
+        "nome": "GUARAMIRIM",
+        "igov_ti": 0.67,
+        "classificacao": "B"
+      },
+      {
+        "nome": "GUATAMBÚ",
+        "igov_ti": 0.11,
+        "classificacao": "C"
+      },
+      {
+        "nome": "HERVAL D'OESTE",
+        "igov_ti": 0.21,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IBIAM",
+        "igov_ti": 0.12,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IBICARÉ",
+        "igov_ti": 0.25,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IBIRAMA",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IÇARA",
+        "igov_ti": 0.92,
+        "classificacao": "A"
+      },
+      {
+        "nome": "ILHOTA",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IMARUÍ",
+        "igov_ti": 0.32,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IMBITUBA",
+        "igov_ti": 0.44,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IMBUIA",
+        "igov_ti": 0.33,
+        "classificacao": "C"
+      },
+      {
+        "nome": "INDAIAL",
+        "igov_ti": 0.73,
+        "classificacao": "B"
+      },
+      {
+        "nome": "IOMERÊ",
+        "igov_ti": 0.44,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IPIRA",
+        "igov_ti": 0.17,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IPORÃ DO OESTE",
+        "igov_ti": 0.4,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IPUAÇU",
+        "igov_ti": 0.45,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IPUMIRIM",
+        "igov_ti": 0.5,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "IRACEMINHA",
+        "igov_ti": 0.31,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IRANI",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IRATI",
+        "igov_ti": 0.21,
+        "classificacao": "C"
+      },
+      {
+        "nome": "IRINEÓPOLIS",
+        "igov_ti": 0.52,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "ITÁ",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ITAIÓPOLIS",
+        "igov_ti": 0.32,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ITAJAÍ",
+        "igov_ti": 0.45,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ITAPEMA",
+        "igov_ti": 0.61,
+        "classificacao": "B"
+      },
+      {
+        "nome": "ITAPIRANGA",
+        "igov_ti": 0.53,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "ITAPOÁ",
+        "igov_ti": 0.49,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ITUPORANGA",
+        "igov_ti": 0.68,
+        "classificacao": "B"
+      },
+      {
+        "nome": "JACINTO MACHADO",
+        "igov_ti": 0.49,
+        "classificacao": "C"
+      },
+      {
+        "nome": "JARAGUÁ DO SUL",
+        "igov_ti": 0.88,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "JARDINÓPOLIS",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "JOAÇABA",
+        "igov_ti": 0.45,
+        "classificacao": "C"
+      },
+      {
+        "nome": "JOINVILLE",
+        "igov_ti": 0.48,
+        "classificacao": "C"
+      },
+      {
+        "nome": "JOSÉ BOITEUX",
+        "igov_ti": 0.33,
+        "classificacao": "C"
+      },
+      {
+        "nome": "JUPIÁ",
+        "igov_ti": 0.49,
+        "classificacao": "C"
+      },
+      {
+        "nome": "LACERDÓPOLIS",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "LAGES",
+        "igov_ti": 0.5,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "LAJEADO GRANDE",
+        "igov_ti": 0.4,
+        "classificacao": "C"
+      },
+      {
+        "nome": "LAURENTINO",
+        "igov_ti": 0.31,
+        "classificacao": "C"
+      },
+      {
+        "nome": "LAURO MÜLLER",
+        "igov_ti": 0.2,
+        "classificacao": "C"
+      },
+      {
+        "nome": "LEBON RÉGIS",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "LINDÓIA DO SUL",
+        "igov_ti": 0.41,
+        "classificacao": "C"
+      },
+      {
+        "nome": "LONTRAS",
+        "igov_ti": 0.2,
+        "classificacao": "C"
+      },
+      {
+        "nome": "LUIZ ALVES",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "LUZERNA",
+        "igov_ti": 0.81,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "MACIEIRA",
+        "igov_ti": 0.28,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MAFRA",
+        "igov_ti": 0.36,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MAJOR GERCINO",
+        "igov_ti": 0.3,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MAJOR VIEIRA",
+        "igov_ti": 0.36,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MARACAJÁ",
+        "igov_ti": 0.31,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MARAVILHA",
+        "igov_ti": 0.64,
+        "classificacao": "B"
+      },
+      {
+        "nome": "MAREMA",
+        "igov_ti": 0.3,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MASSARANDUBA",
+        "igov_ti": 0.27,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MATOS COSTA",
+        "igov_ti": 0.12,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MELEIRO",
+        "igov_ti": 0.11,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MIRIM DOCE",
+        "igov_ti": 0.28,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MODELO",
+        "igov_ti": 0.27,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MONDAÍ",
+        "igov_ti": 0.39,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MONTE CARLO",
+        "igov_ti": 0.18,
+        "classificacao": "C"
+      },
+      {
+        "nome": "MORRO DA FUMAÇA",
+        "igov_ti": 0.82,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "MORRO GRANDE",
+        "igov_ti": 0.19,
+        "classificacao": "C"
+      },
+      {
+        "nome": "NAVEGANTES",
+        "igov_ti": 0.49,
+        "classificacao": "C"
+      },
+      {
+        "nome": "NOVA ERECHIM",
+        "igov_ti": 0.37,
+        "classificacao": "C"
+      },
+      {
+        "nome": "NOVA ITABERABA",
+        "igov_ti": 0.33,
+        "classificacao": "C"
+      },
+      {
+        "nome": "NOVA TRENTO",
+        "igov_ti": 0.44,
+        "classificacao": "C"
+      },
+      {
+        "nome": "NOVA VENEZA",
+        "igov_ti": 0.13,
+        "classificacao": "C"
+      },
+      {
+        "nome": "NOVO HORIZONTE",
+        "igov_ti": 0.38,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ORLEANS",
+        "igov_ti": 0.71,
+        "classificacao": "B"
+      },
+      {
+        "nome": "OTACÍLIO COSTA",
+        "igov_ti": 0.88,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "OURO",
+        "igov_ti": 0.28,
+        "classificacao": "C"
+      },
+      {
+        "nome": "OURO VERDE",
+        "igov_ti": 0.36,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PAIAL",
+        "igov_ti": 0.37,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PAINEL",
+        "igov_ti": 0.15,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PALHOÇA",
+        "igov_ti": 0.66,
+        "classificacao": "B"
+      },
+      {
+        "nome": "PALMA SOLA",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PALMEIRA",
+        "igov_ti": 0.13,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PALMITOS",
+        "igov_ti": 0.21,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PAPANDUVA",
+        "igov_ti": 0.42,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PARAÍSO",
+        "igov_ti": 0.35,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PASSO DE TORRES",
+        "igov_ti": 0.26,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PASSOS MAIA",
+        "igov_ti": 0.21,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PAULO LOPES",
+        "igov_ti": 0.29,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PEDRAS GRANDES",
+        "igov_ti": 0.16,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PENHA",
+        "igov_ti": 0.48,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PERITIBA",
+        "igov_ti": 0.51,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "PESCARIA BRAVA",
+        "igov_ti": 0.71,
+        "classificacao": "B"
+      },
+      {
+        "nome": "PETROLÂNDIA",
+        "igov_ti": 0.23,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PINHALZINHO",
+        "igov_ti": 0.63,
+        "classificacao": "B"
+      },
+      {
+        "nome": "PINHEIRO PRETO",
+        "igov_ti": 0.54,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "PIRATUBA",
+        "igov_ti": 0.38,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PLANALTO ALEGRE",
+        "igov_ti": 0.61,
+        "classificacao": "B"
+      },
+      {
+        "nome": "POMERODE",
+        "igov_ti": 0.8,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "PONTE ALTA",
+        "igov_ti": 0.16,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PONTE ALTA DO NORTE",
+        "igov_ti": 0.5,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "PONTE SERRADA",
+        "igov_ti": 0.49,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PORTO BELO",
+        "igov_ti": 0.57,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "PORTO UNIÃO",
+        "igov_ti": 0.72,
+        "classificacao": "B"
+      },
+      {
+        "nome": "POUSO REDONDO",
+        "igov_ti": 0.64,
+        "classificacao": "B"
+      },
+      {
+        "nome": "PRAIA GRANDE",
+        "igov_ti": 0.15,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PRESIDENTE CASTELLO BRANCO",
+        "igov_ti": 0.15,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PRESIDENTE GETÚLIO",
+        "igov_ti": 0.37,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PRESIDENTE NEREU",
+        "igov_ti": 0.44,
+        "classificacao": "C"
+      },
+      {
+        "nome": "PRINCESA",
+        "igov_ti": 0.41,
+        "classificacao": "C"
+      },
+      {
+        "nome": "QUILOMBO",
+        "igov_ti": 0.39,
+        "classificacao": "C"
+      },
+      {
+        "nome": "RIO DAS ANTAS",
+        "igov_ti": 0.41,
+        "classificacao": "C"
+      },
+      {
+        "nome": "RIO DO CAMPO",
+        "igov_ti": 0.17,
+        "classificacao": "C"
+      },
+      {
+        "nome": "RIO DO OESTE",
+        "igov_ti": 0.26,
+        "classificacao": "C"
+      },
+      {
+        "nome": "RIO DOS CEDROS",
+        "igov_ti": 0.77,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "RIO DO SUL",
+        "igov_ti": 0.51,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "RIO FORTUNA",
+        "igov_ti": 0.51,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "RIO NEGRINHO",
+        "igov_ti": 0.84,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "RIO RUFINO",
+        "igov_ti": 0.28,
+        "classificacao": "C"
+      },
+      {
+        "nome": "RIQUEZA",
+        "igov_ti": 0.3,
+        "classificacao": "C"
+      },
+      {
+        "nome": "RODEIO",
+        "igov_ti": 0.39,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ROMELÂNDIA",
+        "igov_ti": 0.22,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SALETE",
+        "igov_ti": 0.28,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SALTINHO",
+        "igov_ti": 0.11,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SALTO VELOSO",
+        "igov_ti": 0.24,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SANGÃO",
+        "igov_ti": 0.43,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SANTA CECÍLIA",
+        "igov_ti": 0.16,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SANTA HELENA",
+        "igov_ti": 0.34,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SANTA ROSA DE LIMA",
+        "igov_ti": 0.42,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SANTA ROSA DO SUL",
+        "igov_ti": 0.33,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SANTA TEREZINHA",
+        "igov_ti": 0.39,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SANTA TEREZINHA DO PROGRESSO",
+        "igov_ti": 0.22,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SANTIAGO DO SUL",
+        "igov_ti": 0.3,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SANTO AMARO DA IMPERATRIZ",
+        "igov_ti": 0.43,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO BERNARDINO",
+        "igov_ti": 0.22,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO BENTO DO SUL",
+        "igov_ti": 0.56,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "SÃO BONIFÁCIO",
+        "igov_ti": 0.23,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO CARLOS",
+        "igov_ti": 0.28,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO CRISTÓVÃO DO SUL",
+        "igov_ti": 0.74,
+        "classificacao": "B"
+      },
+      {
+        "nome": "SÃO DOMINGOS",
+        "igov_ti": 0.44,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO FRANCISCO DO SUL",
+        "igov_ti": 0.46,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO JOÃO DO OESTE",
+        "igov_ti": 0.58,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "SÃO JOÃO BATISTA",
+        "igov_ti": 0.23,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO JOÃO DO ITAPERIÚ",
+        "igov_ti": 0.74,
+        "classificacao": "B"
+      },
+      {
+        "nome": "SÃO JOÃO DO SUL",
+        "igov_ti": 0.56,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "SÃO JOAQUIM",
+        "igov_ti": 0.45,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO JOSÉ",
+        "igov_ti": 0.78,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "SÃO JOSÉ DO CEDRO",
+        "igov_ti": 0.37,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO JOSÉ DO CERRITO",
+        "igov_ti": 0.08,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO LOURENÇO DO OESTE",
+        "igov_ti": 0.43,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO LUDGERO",
+        "igov_ti": 0.59,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "SÃO MARTINHO",
+        "igov_ti": 0.34,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SÃO MIGUEL DA BOA VISTA",
+        "igov_ti": 0.51,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "SÃO MIGUEL DO OESTE",
+        "igov_ti": 0.72,
+        "classificacao": "B"
+      },
+      {
+        "nome": "SÃO PEDRO DE ALCÂNTARA",
+        "igov_ti": 0.17,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SAUDADES",
+        "igov_ti": 0.53,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "SCHROEDER",
+        "igov_ti": 0.69,
+        "classificacao": "B"
+      },
+      {
+        "nome": "SEARA",
+        "igov_ti": 0.13,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SERRA ALTA",
+        "igov_ti": 0.28,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SIDERÓPOLIS",
+        "igov_ti": 0.44,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SOMBRIO",
+        "igov_ti": 0.38,
+        "classificacao": "C"
+      },
+      {
+        "nome": "SUL BRASIL",
+        "igov_ti": 0.23,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TAIÓ",
+        "igov_ti": 0.42,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TANGARÁ",
+        "igov_ti": 0.47,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TIGRINHOS",
+        "igov_ti": 0.4,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TIJUCAS",
+        "igov_ti": 0.56,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "TIMBÉ DO SUL",
+        "igov_ti": 0.33,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TIMBÓ",
+        "igov_ti": 0.52,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "TIMBÓ GRANDE",
+        "igov_ti": 0.33,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TRÊS BARRAS",
+        "igov_ti": 0.25,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TREVISO",
+        "igov_ti": 0.17,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TREZE DE MAIO",
+        "igov_ti": 0.25,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TREZE TÍLIAS",
+        "igov_ti": 0.47,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TROMBUDO CENTRAL",
+        "igov_ti": 0.28,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TUNÁPOLIS",
+        "igov_ti": 0.47,
+        "classificacao": "C"
+      },
+      {
+        "nome": "TURVO",
+        "igov_ti": 0.6,
+        "classificacao": "B"
+      },
+      {
+        "nome": "UNIÃO DO OESTE",
+        "igov_ti": 0.24,
+        "classificacao": "C"
+      },
+      {
+        "nome": "URUBICI",
+        "igov_ti": 0.29,
+        "classificacao": "C"
+      },
+      {
+        "nome": "URUPEMA",
+        "igov_ti": 0.3,
+        "classificacao": "C"
+      },
+      {
+        "nome": "URUSSANGA",
+        "igov_ti": 0.99,
+        "classificacao": "A"
+      },
+      {
+        "nome": "VARGEÃO",
+        "igov_ti": 0.45,
+        "classificacao": "C"
+      },
+      {
+        "nome": "VARGEM",
+        "igov_ti": 0.23,
+        "classificacao": "C"
+      },
+      {
+        "nome": "VARGEM BONITA",
+        "igov_ti": 0.2,
+        "classificacao": "C"
+      },
+      {
+        "nome": "VIDAL RAMOS",
+        "igov_ti": 0.31,
+        "classificacao": "C"
+      },
+      {
+        "nome": "VIDEIRA",
+        "igov_ti": 0.8,
+        "classificacao": "B+"
+      },
+      {
+        "nome": "WITMARSUM",
+        "igov_ti": 0.39,
+        "classificacao": "C"
+      },
+      {
+        "nome": "XANXERÊ",
+        "igov_ti": 0.54,
+        "classificacao": "C+"
+      },
+      {
+        "nome": "XAVANTINA",
+        "igov_ti": 0.29,
+        "classificacao": "C"
+      },
+      {
+        "nome": "XAXIM",
+        "igov_ti": 0.39,
+        "classificacao": "C"
+      },
+      {
+        "nome": "ZORTÉA",
+        "igov_ti": 0.41,
+        "classificacao": "C"
+      },
+      {
+        "nome": "BALNEÁRIO RINCÃO",
+        "igov_ti": 0.19,
+        "classificacao": "C"
+      }
+    ]
+  }
+}
