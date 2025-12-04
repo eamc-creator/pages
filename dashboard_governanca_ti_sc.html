@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Governança em TI Municipal - SC</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-bottom: 2px solid #e0e0e0;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a73e8;
+        }
+
+        .logo-text {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .header-title {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            border-bottom: 1px solid #ddd;
+            background: #f8f9fa;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 1rem 1.5rem;
+            background: #e8eef7;
+            border: 1px dashed #b0c4de;
+            border-bottom: none;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            background: #d4dff0;
+        }
+
+        .nav-tab.active {
+            background: white;
+            border-color: #1a73e8;
+            color: #1a73e8;
+            border-bottom: 2px solid white;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 900px;
+        }
+
+        /* Alert Box */
+        .alert {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .alert h3 {
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert p {
+            color: #856404;
+            font-size: 0.95rem;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #1a73e8;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .metric-card.blue { border-left-color: #1a73e8; }
+        .metric-card.red { border-left-color: #d32f2f; }
+        .metric-card.purple { border-left-color: #7b1fa2; }
+        .metric-card.orange { border-left-color: #f57c00; }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-description {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            height: 400px;
+        }
+
+        .chart-container h3 {
+            margin-bottom: 1.5rem;
+            color: #1a1a1a;
+            font-size: 1.3rem;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Classification Cards */
+        .classification-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .classification-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .classification-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .classification-card.a { border-color: #4caf50; background: #f1f8f4; }
+        .classification-card.b-plus { border-color: #2196f3; background: #f3f7ff; }
+        .classification-card.b { border-color: #00bcd4; background: #f0f9fb; }
+        .classification-card.c-plus { border-color: #ffc107; background: #fffef0; }
+        .classification-card.c { border-color: #f44336; background: #ffe5e5; }
+
+        .classification-letter {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .classification-count {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .classification-label {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .content-card h3 {
+            color: #1a73e8;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .content-card h4 {
+            color: #333;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-card p {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .content-card ul {
+            margin-left: 1.5rem;
+            color: #666;
+        }
+
+        .content-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Solution Cards */
+        .solution-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .solution-card {
+            padding: 1.5rem;
+            border-radius: 8px;
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        .solution-card.blue { background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%); }
+        .solution-card.green { background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); }
+        .solution-card.purple { background: linear-gradient(135deg, #7b1fa2 0%, #6a1b9a 100%); }
+
+        .solution-card h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .solution-card p {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .solution-card a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-bottom: 2px solid rgba(255,255,255,0.5);
+            transition: border-color 0.3s ease;
+        }
+
+        .solution-card a:hover {
+            border-bottom-color: white;
+        }
+
+        /* Municipality List */
+        .municipality-list {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .municipality-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .municipality-item:hover {
+            background: #f8f9fa;
+        }
+
+        .municipality-item:last-child {
+            border-bottom: none;
+        }
+
+        .municipality-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .municipality-rank {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: bold;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .municipality-value {
+            font-weight: bold;
+            color: #1a73e8;
+            font-size: 1.1rem;
+        }
+
+        .municipality-classification {
+            font-size: 0.85rem;
+            color: #999;
+            margin-left: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: #999;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .metric-value {
+                font-size: 1.8rem;
+            }
+
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+
+            .nav-tab {
+                padding: 0.75rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th {
+            background: #f0f0f0;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+        }
+
+        td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo">CIASC</div>
+                <div class="logo-text">Governança em TI Municipal</div>
+            </div>
+            <div class="header-title">
+                <div>Dashboard | Governança em TI</div>
+                <div style="font-size: 0.8rem;">Exercício 2020-2022 (Publicado em 2021-2023)</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="switchTab('resumo')">Resumo Executivo</button>
+        <button class="nav-tab" onclick="switchTab('evolucao')">Evolução Histórica</button>
+        <button class="nav-tab" onclick="switchTab('distribuicao')">Distribuição 2022</button>
+        <button class="nav-tab" onclick="switchTab('desafios')">Desafios</button>
+        <button class="nav-tab" onclick="switchTab('solucoes')">Soluções CIASC</button>
+        <button class="nav-tab" onclick="switchTab('municipios')">Municípios Destaque</button>
+        <button class="nav-tab" onclick="switchTab('recomendacoes')">Recomendações</button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Resumo Executivo -->
+        <div id="resumo" class="content-section active">
+            <div class="hero">
+                <h1>Situação da Governança em TI nos Municípios de Santa Catarina</h1>
+                <p>Uma análise abrangente dos desafios e oportunidades estratégicas para a modernização da gestão de Tecnologia da Informação nos municípios catarinenses, baseada nos dados do IEGM (Exercícios 2020-2022).</p>
+            </div>
+
+            <div class="alert">
+                <div class="alert-icon">⚠️</div>
+                <div>
+                    <h3>Mudança Metodológica em 2022</h3>
+                    <p>A partir do Exercício 2022 (publicado em 2023), o IEGM adotou uma nova metodologia de cálculo do índice i-Gov TI. Isso resultou em uma mudança de escala de avaliação, não representando um retrocesso real na Governança de TI, mas sim uma revisão dos critérios de pontuação. Para análises comparativas, recomenda-se considerar a distribuição de municípios por classificação (A, B+, B, C+, C).</p>
+                </div>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card blue">
+                    <div class="metric-label">📊 Índice Médio (2022)</div>
+                    <div class="metric-value">0.3915</div>
+                    <div class="metric-description">Escala IEGM 2023 (Nova Metodologia)</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-label">⚠️ Mudança Metodológica</div>
+                    <div class="metric-value">-30.5%</div>
+                    <div class="metric-description">Nova escala (não representa retrocesso)</div>
+                </div>
+                <div class="metric-card purple">
+                    <div class="metric-label">🏛️ Municípios Respondentes</div>
+                    <div class="metric-value">282</div>
+                    <div class="metric-description">De 295 municípios catarinenses</div>
+                </div>
+                <div class="metric-card orange">
+                    <div class="metric-label">⭐ Melhor Desempenho</div>
+                    <div class="metric-value">0.99</div>
+                    <div class="metric-description">Urussanga (Classificação A)</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>Contexto e Conclusão Principal</h3>
+                <p>A análise de sete anos (2016-2022) revela uma trajetória positiva na Governança em TI dos municípios de Santa Catarina, com destaque para:</p>
+                <ul>
+                    <li><strong>Estabilidade Pré-Pandemia (2016-2019):</strong> O índice manteve-se consistente em torno de 0.55-0.57, demonstrando que os municípios cumpriam requisitos mínimos de governança.</li>
+                    <li><strong>Resiliência Pandêmica (2020-2021):</strong> Embora 2020 tenha apresentado uma leve queda (-0.7%), a recuperação em 2021 foi significativa (+3.2%), indicando capacidade de adaptação.</li>
+                    <li><strong>Mudança Metodológica (2022):</strong> A adoção de uma nova metodologia pelo IEGM reflete uma evolução na compreensão e avaliação da Governança em TI, com critérios mais rigorosos e alinhados com boas práticas internacionais.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Evolução Histórica -->
+        <div id="evolucao" class="content-section">
+            <div class="hero">
+                <h1>Evolução do Índice i-Gov TI (2016-2022)</h1>
+                <p>Série histórica completa mostrando a trajetória da Governança em TI em Santa Catarina ao longo de sete anos.</p>
+            </div>
+
+            <div class="chart-container">
+                <h3>Índice i-Gov TI - Série Histórica</h3>
+                <div class="chart-wrapper">
+                    <canvas id="evolutionChart"></canvas>
+                </div>
+                <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">
+                    A série histórica mostra estabilidade no período pré-pandemia (2016-2019), uma leve queda em 2020 durante a pandemia, seguida de recuperação em 2021. Em 2022, a mudança metodológica do IEGM resultou em uma nova escala de avaliação.
+                </p>
+            </div>
+
+            <div class="content-card">
+                <h3>Análise por Período</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Período</th>
+                            <th>Anos</th>
+                            <th>Índice Médio</th>
+                            <th>Variação</th>
+                            <th>Características</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Pré-Pandemia</strong></td>
+                            <td>2016-2019</td>
+                            <td>0.5575</td>
+                            <td>Estável</td>
+                            <td>Estabilidade consistente, cumprimento de requisitos mínimos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pandemia</strong></td>
+                            <td>2020</td>
+                            <td>0.5461</td>
+                            <td>-0.7%</td>
+                            <td>Leve queda, adaptação acelerada a soluções remotas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pós-Pandemia</strong></td>
+                            <td>2021</td>
+                            <td>0.5636</td>
+                            <td>+3.2%</td>
+                            <td>Recuperação significativa, formalização de processos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nova Metodologia</strong></td>
+                            <td>2022</td>
+                            <td>0.3915</td>
+                            <td>-30.5%*</td>
+                            <td>Mudança de escala, critérios mais rigorosos</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin-top: 1rem; font-size: 0.85rem; color: #999;">* Redução de 30.5% reflete mudança metodológica, não retrocesso real</p>
+            </div>
+        </div>
+
+        <!-- Distribuição 2022 -->
+        <div id="distribuicao" class="content-section">
+            <div class="hero">
+                <h1>Distribuição de Municípios por Classificação (2022)</h1>
+                <p>Análise da distribuição dos 282 municípios respondentes por classificação de Governança em TI.</p>
+            </div>
+
+            <div class="classification-grid">
+                <div class="classification-card a">
+                    <div class="classification-letter">A</div>
+                    <div class="classification-count">2</div>
+                    <div class="classification-label">Excelente (0.7%)</div>
+                </div>
+                <div class="classification-card b-plus">
+                    <div class="classification-letter">B+</div>
+                    <div class="classification-count">12</div>
+                    <div class="classification-label">Muito Bom (4.3%)</div>
+                </div>
+                <div class="classification-card b">
+                    <div class="classification-letter">B</div>
+                    <div class="classification-count">26</div>
+                    <div class="classification-label">Bom (9.2%)</div>
+                </div>
+                <div class="classification-card c-plus">
+                    <div class="classification-letter">C+</div>
+                    <div class="classification-count">27</div>
+                    <div class="classification-label">Em Adequação (9.6%)</div>
+                </div>
+                <div class="classification-card c">
+                    <div class="classification-letter">C</div>
+                    <div class="classification-count">215</div>
+                    <div class="classification-label">Baixo Nível (76.2%)</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>Interpretação da Distribuição</h3>
+                <p>A distribuição de 2022 revela um cenário em que:</p>
+                <ul>
+                    <li><strong>14.2% dos municípios</strong> (40) estão em nível B ou superior, demonstrando uma governança mais madura.</li>
+                    <li><strong>85.8% dos municípios</strong> (242) estão em nível C ou C+, indicando que a maioria ainda enfrenta desafios estruturais significativos.</li>
+                    <li><strong>Apenas 2 municípios</strong> alcançaram a classificação A (Urussanga com 0.99 e Içara com 0.92).</li>
+                </ul>
+                <p style="margin-top: 1rem;">Esta distribuição, embora pareça mais desafiadora que a de 2021, reflete a nova metodologia do IEGM, que adotou critérios mais rigorosos de avaliação alinhados com boas práticas internacionais.</p>
+            </div>
+        </div>
+
+        <!-- Desafios -->
+        <div id="desafios" class="content-section">
+            <div class="hero">
+                <h1>Principais Desafios Identificados</h1>
+                <p>Análise dos obstáculos estruturais que impedem o avanço da Governança em TI nos municípios.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>⚡ Planejamento Estratégico Deficiente</h3>
+                <p>A ausência de um Plano Diretor de Tecnologia da Informação (PDTI) formalizado impede o alinhamento da TI com os objetivos de governo e a correta priorização de investimentos. Muitos municípios operam com TI reativa, respondendo apenas a demandas imediatas.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🔒 Segurança da Informação e LGPD</h3>
+                <p>Políticas de Segurança da Informação inadequadas e falta de conformidade plena com a Lei Geral de Proteção de Dados (LGPD) expõem dados públicos e do cidadão a riscos. A ausência de processos formalizados de gestão de incidentes compromete a continuidade operacional.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>📈 Gestão de Serviços e Infraestrutura</h3>
+                <p>Infraestrutura de TI insuficiente ou desatualizadas, com gestão de serviços informal, comprometendo a qualidade e continuidade dos serviços digitais. A falta de processos ITIL (Incident, Problem, Change Management) impacta a eficiência operacional.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>⚠️ Impacto Pós-Pandemia</h3>
+                <p>A urgência na implementação de soluções remotas e digitais ocorreu sem o devido planejamento e formalização de processos de governança críticos. Muitos municípios adotaram soluções ad-hoc que agora precisam ser consolidadas e formalizadas.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🏛️ Ausência de Estrutura Formal de Governança</h3>
+                <p>85.8% dos municípios ainda estão em nível C ou C+, indicando que muitos não possuem um Comitê de Governança de TI (CGTI) formalizado ou um Plano Diretor de Tecnologia da Informação (PDTI) atualizado e aprovado. Isso impede a tomada de decisões estratégicas e a gestão de riscos adequada.</p>
+            </div>
+        </div>
+
+        <!-- Soluções CIASC -->
+        <div id="solucoes" class="content-section">
+            <div class="hero">
+                <h1>Soluções Estratégicas do CIASC</h1>
+                <p>O CIASC oferece soluções competitivas e legalmente acessíveis (Lei 14.403) para endereçar os desafios identificados.</p>
+            </div>
+
+            <div class="solution-cards">
+                <div class="solution-card blue">
+                    <h3>Conectividade Integrada</h3>
+                    <p>Infraestrutura de TI robusta e segura que oferece aos municípios acesso a serviços de classe empresarial, com redundância, segurança e conformidade regulatória.</p>
+                    <p><strong>Benefícios:</strong></p>
+                    <ul style="margin-left: 1rem; margin-top: 0.5rem;">
+                        <li>✓ Redução de custos operacionais</li>
+                        <li>✓ Segurança de dados garantida</li>
+                        <li>✓ Continuidade de negócios</li>
+                        <li>✓ Conformidade LGPD</li>
+                    </ul>
+                    <a href="https://www.ciasc.sc.gov.br/conectividade-integrada/" target="_blank" style="display: inline-block; margin-top: 1rem;">Saiba mais →</a>
+                </div>
+
+                <div class="solution-card green">
+                    <h3>Dívida Ativa de Infrações de Trânsito</h3>
+                    <p>Sistema especializado para gestão de infrações de trânsito e dívida ativa, permitindo aos municípios modernizar a arrecadação e melhorar a eficiência operacional.</p>
+                    <p><strong>Benefícios:</strong></p>
+                    <ul style="margin-left: 1rem; margin-top: 0.5rem;">
+                        <li>✓ Digitalização de processos</li>
+                        <li>✓ Aumento de arrecadação</li>
+                        <li>✓ Redução de custos operacionais</li>
+                        <li>✓ Transparência e conformidade</li>
+                    </ul>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;"><strong>Disponível com dispensa de licitação (Lei 14.403)</strong></p>
+                </div>
+
+                <div class="solution-card purple">
+                    <h3>Módulo JARI</h3>
+                    <p>Plataforma para julgamento de recursos de infrações de trânsito, agilizando processos e garantindo transparência e conformidade regulatória.</p>
+                    <p><strong>Benefícios:</strong></p>
+                    <ul style="margin-left: 1rem; margin-top: 0.5rem;">
+                        <li>✓ Agilidade no julgamento</li>
+                        <li>✓ Transparência processual</li>
+                        <li>✓ Integração com Dívida Ativa</li>
+                        <li>✓ Conformidade regulatória</li>
+                    </ul>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;"><strong>Integrado com o sistema de Dívida Ativa</strong></p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>Por que escolher o CIASC?</h3>
+                <ul>
+                    <li><strong>Empresa Pública:</strong> Alinhamento com objetivos de governo e responsabilidade pública.</li>
+                    <li><strong>Dispensa de Licitação:</strong> Conforme Lei 14.403, facilitando a adoção pelos municípios.</li>
+                    <li><strong>Expertise em TI Municipal:</strong> Conhecimento profundo das necessidades e desafios específicos dos municípios catarinenses.</li>
+                    <li><strong>Suporte Especializado:</strong> Equipe dedicada ao sucesso da implementação e operação das soluções.</li>
+                    <li><strong>Integração com Ecossistema Estadual:</strong> Sinergia com outras iniciativas de governo digital do Estado.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Municípios Destaque -->
+        <div id="municipios" class="content-section">
+            <div class="hero">
+                <h1>Municípios Destaque (2022)</h1>
+                <p>Análise dos municípios com melhor e pior desempenho no índice i-Gov TI.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🏆 Top 10 - Melhor Desempenho</h3>
+                <div class="municipality-list">
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">1</span><span class="municipality-name">Urussanga</span><span class="municipality-classification">Classificação: A</span></div>
+                        <div class="municipality-value">0.99</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">2</span><span class="municipality-name">Içara</span><span class="municipality-classification">Classificação: A</span></div>
+                        <div class="municipality-value">0.92</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">3</span><span class="municipality-name">Jaraguá do Sul</span><span class="municipality-classification">Classificação: B+</span></div>
+                        <div class="municipality-value">0.88</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">4</span><span class="municipality-name">Otacílio Costa</span><span class="municipality-classification">Classificação: B+</span></div>
+                        <div class="municipality-value">0.88</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">5</span><span class="municipality-name">Rio Negrinho</span><span class="municipality-classification">Classificação: B+</span></div>
+                        <div class="municipality-value">0.84</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">6</span><span class="municipality-name">Morro da Fumaça</span><span class="municipality-classification">Classificação: B+</span></div>
+                        <div class="municipality-value">0.82</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">7</span><span class="municipality-name">Criciúma</span><span class="municipality-classification">Classificação: B+</span></div>
+                        <div class="municipality-value">0.81</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">8</span><span class="municipality-name">Luzerna</span><span class="municipality-classification">Classificação: B+</span></div>
+                        <div class="municipality-value">0.81</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">9</span><span class="municipality-name">Pomerode</span><span class="municipality-classification">Classificação: B+</span></div>
+                        <div class="municipality-value">0.80</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">10</span><span class="municipality-name">Videira</span><span class="municipality-classification">Classificação: B+</span></div>
+                        <div class="municipality-value">0.80</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>⚠️ Municípios que Necessitam de Atenção</h3>
+                <div class="municipality-list">
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">282</span><span class="municipality-name">Abelardo Luz</span><span class="municipality-classification">Classificação: C</span></div>
+                        <div class="municipality-value">0.05</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">281</span><span class="municipality-name">São José do Cerrito</span><span class="municipality-classification">Classificação: C</span></div>
+                        <div class="municipality-value">0.08</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">280</span><span class="municipality-name">Belmonte</span><span class="municipality-classification">Classificação: C</span></div>
+                        <div class="municipality-value">0.10</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">279</span><span class="municipality-name">Alfredo Wagner</span><span class="municipality-classification">Classificação: C</span></div>
+                        <div class="municipality-value">0.11</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">278</span><span class="municipality-name">Ermo</span><span class="municipality-classification">Classificação: C</span></div>
+                        <div class="municipality-value">0.11</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">277</span><span class="municipality-name">Guatambú</span><span class="municipality-classification">Classificação: C</span></div>
+                        <div class="municipality-value">0.11</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">276</span><span class="municipality-name">Meleiro</span><span class="municipality-classification">Classificação: C</span></div>
+                        <div class="municipality-value">0.11</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">275</span><span class="municipality-name">Saltinho</span><span class="municipality-classification">Classificação: C</span></div>
+                        <div class="municipality-value">0.11</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">274</span><span class="municipality-name">Ibiam</span><span class="municipality-classification">Classificação: C</span></div>
+                        <div class="municipality-value">0.12</div>
+                    </div>
+                    <div class="municipality-item">
+                        <div><span class="municipality-rank">273</span><span class="municipality-name">Matos Costa</span><span class="municipality-classification">Classificação: C</span></div>
+                        <div class="municipality-value">0.12</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recomendações -->
+        <div id="recomendacoes" class="content-section">
+            <div class="hero">
+                <h1>Recomendações Estratégicas</h1>
+                <p>Propostas de ação para o CIASC e os municípios elevarem a maturidade em Governança de TI.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>Para o CIASC</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Área de Foco</th>
+                            <th>Ação Estratégica Sugerida</th>
+                            <th>Objetivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Planejamento</strong></td>
+                            <td>Programa de Apoio à Elaboração de PDTI/PETI</td>
+                            <td>Oferecer modelos, capacitação e consultoria para que todos os municípios formalizem seus planos estratégicos de TI.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Governança</strong></td>
+                            <td>Framework de Governança de TI Municipal</td>
+                            <td>Desenvolver um modelo simplificado de CGTI e políticas de governança adaptadas à realidade de pequenos e médios municípios.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Segurança e LGPD</strong></td>
+                            <td>Plataforma de Compartilhamento de Políticas</td>
+                            <td>Criar um repositório de modelos de políticas de segurança e LGPD, além de oferecer treinamentos focados em conscientização.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Digitalização</strong></td>
+                            <td>Incentivo à Adoção de Soluções Compartilhadas</td>
+                            <td>Promover a adoção de sistemas e infraestrutura de TI compartilhados (nuvem, sistemas de gestão), reduzindo custos.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Benchmarking</strong></td>
+                            <td>Programa de Benchmarking Regional</td>
+                            <td>Facilitar a troca de experiências entre municípios de melhor desempenho e aqueles que necessitam de atenção.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-card">
+                <h3>Para os Municípios (Roadmap de Melhoria)</h3>
+                <p><strong>Fase 1 - Fundação (Meses 1-3):</strong></p>
+                <ul>
+                    <li>Formar o Comitê de Governança de TI (CGTI) com representantes de áreas-chave</li>
+                    <li>Realizar diagnóstico da situação atual de TI</li>
+                    <li>Iniciar elaboração do Plano Diretor de Tecnologia da Informação (PDTI)</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Fase 2 - Estruturação (Meses 4-6):</strong></p>
+                <ul>
+                    <li>Formalizar políticas de Segurança da Informação</li>
+                    <li>Implementar conformidade com LGPD</li>
+                    <li>Estabelecer processos de gestão de incidentes e mudanças</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Fase 3 - Implementação (Meses 7-12):</strong></p>
+                <ul>
+                    <li>Adotar soluções compartilhadas do CIASC (Conectividade, Dívida Ativa, JARI)</li>
+                    <li>Formalizar processos de gestão de serviços (ITSM)</li>
+                    <li>Implementar monitoramento contínuo de indicadores de governança</li>
+                </ul>
+            </div>
+
+            <div class="content-card">
+                <h3>Conclusão</h3>
+                <p>A Governança em TI nos municípios de Santa Catarina apresenta uma trajetória positiva (2016-2021), mas ainda enfrenta desafios estruturais significativos. Com 85.8% dos municípios em nível C ou C+, há uma oportunidade clara para o CIASC liderar um movimento coordenado de elevação da maturidade em Governança de TI.</p>
+                <p style="margin-top: 1rem;">O CIASC, por sua posição estratégica como empresa pública de TIC do Estado, possui as ferramentas, expertise e legitimidade para oferecer soluções competitivas e legalmente acessíveis (Lei 14.403) que transformem o cenário de TI municipal em Santa Catarina. A jornada para uma Governança de TI robusta passa pela adoção de soluções que garantam <strong>Planejamento, Segurança e Eficiência</strong> na gestão de TI.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 CIASC - Centro de Informática e Automação do Estado de Santa Catarina</p>
+        <p>Estudo de Governança em TI Municipal - Exercícios 2020-2022</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Dashboard HTML/CSS - Pode ser hospedado em qualquer servidor web</p>
+    </footer>
+
+    <script>
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Initialize evolution chart
+        function initEvolutionChart() {
+            const ctx = document.getElementById('evolutionChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2016', '2017', '2018', '2019', '2020', '2021', '2022'],
+                    datasets: [{
+                        label: 'Índice i-Gov TI (Metodologia Anterior)',
+                        data: [0.56, 0.57, 0.55, 0.55, 0.5461, 0.5636, null],
+                        borderColor: '#ff9800',
+                        backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#ff9800',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        segment: {
+                            borderDash: [5, 5]
+                        }
+                    }, {
+                        label: 'Índice i-Gov TI (Nova Metodologia)',
+                        data: [null, null, null, null, null, 0.5636, 0.3915],
+                        borderColor: '#d32f2f',
+                        backgroundColor: 'rgba(211, 47, 47, 0.1)',
+                        borderWidth: 3,
+                        borderDash: [5, 5],
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#d32f2f',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: { size: 12 },
+                                padding: 15
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 0.3,
+                            max: 0.65,
+                            ticks: {
+                                font: { size: 11 }
+                            },
+                            grid: {
+                                drawBorder: false,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 11 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize chart when page loads
+        document.addEventListener('DOMContentLoaded', initEvolutionChart);
+    </script>
+</body>
+</html>
