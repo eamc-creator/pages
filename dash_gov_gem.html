@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Governança de TI - SC</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- VARIÁVEIS DE COR E TEMA (Dark Neon) --- */
+        :root {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --bg-sidebar: #020617;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --neon-blue: #3b82f6;
+            --neon-purple: #8b5cf6;
+            --neon-green: #10b981;
+            --neon-red: #f43f5e;
+            --neon-yellow: #f59e0b;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.05);
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+       .sidebar {
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            border-right: var(--glass-border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 10;
+        }
+
+       .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+       .logo span {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+       .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+       .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+       .nav-item:hover,.nav-item.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
+            color: var(--neon-blue);
+            border-left: 3px solid var(--neon-blue);
+        }
+
+       .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* --- MAIN CONTENT --- */
+       .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+       .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+       .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+       .date-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--neon-blue);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* --- KPI CARDS GRID --- */
+       .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+       .card {
+            background-color: var(--bg-card);
+            border: var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+       .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+       .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            opacity: 0.8;
+        }
+
+       .card.danger::before { background: var(--neon-red); }
+       .card.success::before { background: var(--neon-green); }
+       .card.warning::before { background: var(--neon-yellow); }
+
+       .card-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+       .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+       .card-trend {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+       .trend-down { color: var(--neon-red); }
+       .trend-up { color: var(--neon-green); }
+
+        /* --- CHARTS SECTION --- */
+       .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+       .chart-card {
+            background-color: var(--bg-card);
+            border: var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            min-height: 400px;
+        }
+
+       .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+       .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* --- DATA TABLE --- */
+       .table-container {
+            background-color: var(--bg-card);
+            border: var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+       .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+       .badge-b { background: rgba(16, 185, 129, 0.2); color: var(--neon-green); border: 1px solid var(--neon-green); }
+       .badge-c-plus { background: rgba(245, 158, 11, 0.2); color: var(--neon-yellow); border: 1px solid var(--neon-yellow); }
+       .badge-c { background: rgba(244, 63, 94, 0.2); color: var(--neon-red); border: 1px solid var(--neon-red); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+           .charts-container { grid-template-columns: 1fr; }
+           .sidebar { width: 80px; padding: 2rem 0.5rem; }
+           .logo span,.nav-item span { display: none; }
+           .main-content { margin-left: 80px; }
+           .nav-item { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-network-wired" style="color: var(--neon-blue);"></i>
+            <span>i-GovTI SC</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Visão Geral</span>
+            </li>
+            <li class="nav-item">
+                <i class="fa-solid fa-table-list"></i>
+                <span>Dados Municipais</span>
+            </li>
+            <li class="nav-item">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Matriz de Risco</span>
+            </li>
+            <li class="nav-item">
+                <i class="fa-solid fa-file-contract"></i>
+                <span>Contratos & Custos</span>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1>Monitoramento de Governança de TI</h1>
+                <p style="color: var(--text-secondary); margin-top: 5px;">Análise situacional baseada no IEGM 2023 (Ano Base 2022)</p>
+            </div>
+            <div class="date-badge">
+                <i class="fa-regular fa-calendar"></i> Atualizado: Dez 2025
+            </div>
+        </header>
+
+        <div class="kpi-grid">
+            <div class="card danger">
+                <div class="card-title">Índice Médio i-Gov TI (2023)</div>
+                <div class="card-value">0.39</div>
+                <div class="card-trend trend-down">
+                    <i class="fa-solid fa-arrow-trend-down"></i>
+                    <span>Queda de 0.55 (2019)</span>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">Classificação: Baixo Nível (C)</p>
+            </div>
+
+            <div class="card warning">
+                <div class="card-title">Dispêndio Total em Sistemas</div>
+                <div class="card-value">R$ 66.7M</div>
+                <div class="card-trend trend-up" style="color: var(--neon-yellow);">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    <span>+760% desde 2005</span>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">Crescimento Exponencial de Custos</p>
+            </div>
+
+            <div class="card success">
+                <div class="card-title">Município Referência</div>
+                <div class="card-value">Caçador</div>
+                <div class="card-trend trend-up">
+                    <i class="fa-solid fa-trophy"></i>
+                    <span>Nota: 0.65 (Faixa B)</span>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">Melhor desempenho do estado</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Concentração de Mercado</div>
+                <div class="card-value">80%</div>
+                <div class="card-trend" style="color: var(--neon-purple);">
+                    <i class="fa-solid fa-handshake"></i>
+                    <span>Oligopólio (2 Fornecedores)</span>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">Risco de Vendor Lock-in</p>
+            </div>
+        </div>
+
+        <div class="charts-container">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Evolução Histórica do Índice i-Gov TI (2016-2023)</div>
+                </div>
+                <canvas id="evolutionChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Distribuição por Faixa de Notas (2023)</div>
+                </div>
+                <div style="height: 300px; display: flex; justify-content: center;">
+                    <canvas id="gradeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="chart-header">
+                <div class="chart-title">Ranking Municipal Detalhado (Amostra)</div>
+            </div>
+            <table id="municipalTable">
+                <thead>
+                    <tr>
+                        <th>Ranking</th>
+                        <th>Município</th>
+                        <th>Nota Final</th>
+                        <th>Faixa</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // --- DADOS REAIS EXTRAÍDOS DO ARQUIVO CSV UPLOADED  ---
+        // Top 10 e Bottom 5 extraídos da análise 
+        const municipalData =;
+
+        // Configuração Global do Chart.js para Tema Escuro
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.05)';
+
+        // 1. GRÁFICO DE EVOLUÇÃO (LINHA)
+        // Dados extraídos de 
+        const ctxEvolution = document.getElementById('evolutionChart').getContext('2d');
+        new Chart(ctxEvolution, {
+            type: 'line',
+            data: {
+                labels: ['2016', '2017', '2018', '2019', '2023'],
+                datasets:,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#0f172a',
+                    pointBorderColor: '#3b82f6',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    tension: 0.3,
+                    fill: true,
+                    segment: {
+                        // Estilo pontilhado para indicar mudança metodológica entre 2019 e 2023
+                        borderDash: ctx => ctx.p0.parsed.x === 3?  : undefined,
+                        borderColor: ctx => ctx.p0.parsed.x === 3? '#f43f5e' : '#3b82f6'
+                    }
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#cbd5e1',
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 1
+                    },
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                xMin: 3.5,
+                                xMax: 3.5,
+                                borderColor: '#94a3b8',
+                                borderWidth: 1,
+                                borderDash: [2, 2],
+                                label: {
+                                    content: 'Mudança Metodológica',
+                                    enabled: true,
+                                    position: 'top'
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 1.0,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // 2. GRÁFICO DE DISTRIBUIÇÃO (DOUGHNUT)
+        // Dados extraídos de 
+        const ctxGrade = document.getElementById('gradeChart').getContext('2d');
+        new Chart(ctxGrade, {
+            type: 'doughnut',
+            data: {
+                labels:,
+                datasets: [{
+                    data: , // 2 municípios B, 3 C+, 50 C 
+                    backgroundColor:,
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { usePointStyle: true, padding: 20 }
+                    }
+                }
+            }
+        });
+
+        // 3. POPULAÇÃO DA TABELA DINÂMICA
+        const tableBody = document.querySelector('#municipalTable tbody');
+        
+        municipalData.forEach(city => {
+            const row = document.createElement('tr');
+            
+            // Definição da classe da badge baseada na faixa
+            let badgeClass = 'badge-c';
+            let statusText = 'Crítico';
+            if (city.grade === 'B') { badgeClass = 'badge-b'; statusText = 'Bom'; }
+            else if (city.grade === 'C+') { badgeClass = 'badge-c-plus'; statusText = 'Atenção'; }
+
+            row.innerHTML = `
+                <td>#${city.rank}</td>
+                <td style="font-weight: 500; color: #fff;">${city.name}</td>
+                <td>${city.score.toFixed(2)}</td>
+                <td><span class="badge ${badgeClass}">${city.grade}</span></td>
+                <td>${statusText}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    </script>
+</body>
+</html>
