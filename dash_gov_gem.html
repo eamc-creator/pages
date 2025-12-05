@@ -13,11 +13,12 @@
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
     
     <!-- Font Inter -->
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     
-    <!-- Leaflet CSS (Mantido do original para mapas, se houver) -->
+    <!-- Leaflet CSS (Mantido do original para mapas) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <style>
@@ -39,8 +40,12 @@
         .dark #theme-icon-light { display: block; }
         .light #theme-icon-dark { display: block; }
 
-        /* Classes utilitárias do original adaptadas para Tailwind */
-        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        /* Estilos específicos do mapa e cards */
+        #map { height: 500px; width: 100%; border-radius: 0.5rem; z-index: 1; }
+        .info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; }
+        .info h4 { margin: 0 0 5px; color: #777; }
+        .legend { line-height: 18px; color: #555; }
+        .legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; }
     </style>
 </head>
 <body class="h-full flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-300 transition-colors duration-200">
@@ -76,63 +81,44 @@
     <!-- MAIN CONTENT -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
 
-        <!-- 1. RESUMO EXECUTIVO -->
-        <section>
-            <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">Resumo Executivo (2022)</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card 1 -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
-                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Índice Geral i-Gov TI</h3>
-                    <div class="flex items-end">
-                        <span class="text-4xl font-bold text-blue-600 dark:text-blue-400">0.39</span>
-                        <span class="text-sm font-medium text-red-500 ml-2 mb-1">▼ -26%</span>
-                    </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Média Estadual (Escala 0-1)</p>
-                </div>
-                <!-- Card 2 -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
-                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Municípios Avaliados</h3>
-                    <div class="flex items-end">
-                        <span class="text-4xl font-bold text-slate-800 dark:text-slate-100">295</span>
-                    </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">100% de Cobertura</p>
-                </div>
-                <!-- Card 3 -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
-                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Nível de Adequação</h3>
-                    <div class="flex items-end">
-                        <span class="text-2xl font-bold text-red-600 dark:text-red-400">BAIXO</span>
-                    </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Classificação Geral TCE/SC</p>
-                </div>
-                <!-- Card 4 -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
-                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Municípios Críticos</h3>
-                    <div class="flex items-end">
-                        <span class="text-4xl font-bold text-orange-500">253</span>
-                        <span class="text-sm font-medium text-slate-500 ml-2 mb-1">(85.8%)</span>
-                    </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Faixas C e C+</p>
-                </div>
+        <!-- Título e Filtro de Ano (Do original) -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Governança de TI (i-Gov TI)</h1>
+                <p class="mt-2 text-slate-600 dark:text-slate-400">
+                    Análise da maturidade digital dos 295 municípios catarinenses.
+                </p>
             </div>
+            <div class="flex items-center space-x-2 bg-white dark:bg-slate-800 p-2 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Ano Base:</span>
+                <select id="yearFilter" class="block w-32 pl-3 pr-8 py-1 text-base border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-slate-100">
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                    <option value="2017">2017</option>
+                    <option value="2016">2016</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 1. RESUMO EXECUTIVO -->
+        <section id="executive-summary" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Cards serão preenchidos via JS -->
         </section>
 
         <!-- 2. EVOLUÇÃO E DISTRIBUIÇÃO -->
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Gráfico Evolução -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Evolução Histórica da Governança (2016-2022)</h3>
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Evolução Histórica (2016-2022)</h3>
                 <div class="relative h-72 w-full">
                     <canvas id="evolutionChart"></canvas>
                 </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 text-center italic">
-                    *Nota: A queda acentuada em 2022 reflete uma mudança metodológica do IEGM, com critérios mais rigorosos.
-                </p>
             </div>
             
-            <!-- Gráfico Distribuição -->
             <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Distribuição por Faixas de Desempenho (2022)</h3>
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Distribuição por Faixas (2022)</h3>
                 <div class="relative h-72 w-full flex justify-center">
                     <canvas id="distributionChart"></canvas>
                 </div>
@@ -140,176 +126,58 @@
         </section>
 
         <!-- 3. DESAFIOS ESTRUTURAIS -->
-        <section class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+        <section class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 mb-8">
             <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-6">Principais Desafios Identificados</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Desafio 1 -->
-                <div class="flex items-start space-x-4">
-                    <div class="flex-shrink-0">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-base font-bold text-slate-900 dark:text-slate-100">Falta de Pessoal Efetivo</h4>
-                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
-                            Apenas <strong>15%</strong> dos municípios possuem quadro próprio de TI estruturado. A maioria depende de cargos comissionados ou terceirizados não especializados.
-                        </p>
-                    </div>
-                </div>
-                <!-- Desafio 2 -->
-                <div class="flex items-start space-x-4">
-                    <div class="flex-shrink-0">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-300">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-base font-bold text-slate-900 dark:text-slate-100">Dependência de Fornecedores</h4>
-                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
-                            Alta vulnerabilidade ("Vendor Lock-in") em relação a fornecedores de sistemas de gestão (ERP), dificultando a integração e o uso estratégico de dados.
-                        </p>
-                    </div>
-                </div>
-                <!-- Desafio 3 -->
-                <div class="flex items-start space-x-4">
-                    <div class="flex-shrink-0">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-md bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-300">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-base font-bold text-slate-900 dark:text-slate-100">Planejamento Inexistente</h4>
-                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
-                            Mais de <strong>70%</strong> dos municípios não possuem Plano Diretor de TI (PDTI) formalizado e em execução, atuando de forma reativa.
-                        </p>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="challenges-container">
+                <!-- Preenchido via JS -->
             </div>
         </section>
 
         <!-- 4. SOLUÇÕES ESTRATÉGICAS CIASC -->
-        <section class="bg-blue-50 dark:bg-slate-800/80 border border-blue-100 dark:border-slate-700 rounded-lg p-6">
+        <section class="bg-blue-50 dark:bg-slate-800/80 border border-blue-100 dark:border-slate-700 rounded-lg p-6 mb-8">
             <div class="flex items-center mb-6">
                 <img class="h-8 w-auto mr-3" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="CIASC">
-                <h3 class="text-xl font-bold text-blue-900 dark:text-blue-400">Soluções CIASC para Municípios</h3>
+                <h3 class="text-xl font-bold text-blue-900 dark:text-blue-400">Soluções Estratégicas CIASC</h3>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white dark:bg-slate-800 p-5 rounded shadow-sm border border-slate-100 dark:border-slate-600">
-                    <h4 class="font-bold text-slate-800 dark:text-slate-100 mb-2">SC Digital Municipal</h4>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Plataforma unificada de serviços ao cidadão, garantindo conformidade com a Lei de Governo Digital e oferecendo portal único.</p>
-                </div>
-                <div class="bg-white dark:bg-slate-800 p-5 rounded shadow-sm border border-slate-100 dark:border-slate-600">
-                    <h4 class="font-bold text-slate-800 dark:text-slate-100 mb-2">Conectividade & Nuvem</h4>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Infraestrutura robusta de Datacenter e Redes de Governo para hospedar sistemas críticos com segurança e alta disponibilidade.</p>
-                </div>
-                <div class="bg-white dark:bg-slate-800 p-5 rounded shadow-sm border border-slate-100 dark:border-slate-600">
-                    <h4 class="font-bold text-slate-800 dark:text-slate-100 mb-2">Consultoria em Governança</h4>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">Apoio técnico especializado para diagnóstico, elaboração de PDTI e estruturação da governança de TI municipal.</p>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="solutions-container">
+                <!-- Preenchido via JS -->
             </div>
         </section>
 
-        <!-- 5. TOP MUNICÍPIOS E RECOMENDAÇÕES -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 5. DESTAQUES E RECOMENDAÇÕES -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <!-- Top Municípios -->
             <section class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Municípios Destaque (2022/2023)</h3>
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Municípios Destaque (2022)</h3>
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm text-left">
                         <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-300 font-medium">
                             <tr>
                                 <th class="px-4 py-2">Município</th>
-                                <th class="px-4 py-2 text-center">Nota (i-Gov TI)</th>
+                                <th class="px-4 py-2 text-center">Nota</th>
                                 <th class="px-4 py-2 text-center">Faixa</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
-                            <tr>
-                                <td class="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">Joinville</td>
-                                <td class="px-4 py-3 text-center">0.84</td>
-                                <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-bold rounded">B (Muito Efetiva)</span></td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">Florianópolis</td>
-                                <td class="px-4 py-3 text-center">0.79</td>
-                                <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-bold rounded">B (Muito Efetiva)</span></td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">Blumenau</td>
-                                <td class="px-4 py-3 text-center">0.76</td>
-                                <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-bold rounded">B (Muito Efetiva)</span></td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">Chapecó</td>
-                                <td class="px-4 py-3 text-center">0.72</td>
-                                <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-bold rounded">B (Muito Efetiva)</span></td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">Luzerna*</td>
-                                <td class="px-4 py-3 text-center">0.75</td>
-                                <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-bold rounded">B (Muito Efetiva)</span></td>
-                            </tr>
+                        <tbody id="top-municipalities-body" class="divide-y divide-slate-100 dark:divide-slate-700">
+                            <!-- JS -->
                         </tbody>
                     </table>
-                    <p class="text-xs text-slate-400 mt-2">*Luzerna: Destaque como "Smart City" de pequeno porte.</p>
                 </div>
             </section>
 
             <!-- Recomendações -->
             <section class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Plano de Ação Recomendado</h3>
-                <ul class="space-y-4">
-                    <li class="flex">
-                        <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-bold text-xs">1</span>
-                        <div class="ml-3">
-                            <h5 class="text-sm font-bold text-slate-800 dark:text-slate-200">Diagnóstico & PDTI</h5>
-                            <p class="text-xs text-slate-600 dark:text-slate-400">Realizar diagnóstico preciso e elaborar o Plano Diretor de TI alinhado ao PPA municipal.</p>
-                        </div>
-                    </li>
-                    <li class="flex">
-                        <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-bold text-xs">2</span>
-                        <div class="ml-3">
-                            <h5 class="text-sm font-bold text-slate-800 dark:text-slate-200">Capacitação de Pessoal</h5>
-                            <p class="text-xs text-slate-600 dark:text-slate-400">Investir em treinamento ou contratação de gestores de TI, reduzindo a dependência externa.</p>
-                        </div>
-                    </li>
-                    <li class="flex">
-                        <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-bold text-xs">3</span>
-                        <div class="ml-3">
-                            <h5 class="text-sm font-bold text-slate-800 dark:text-slate-200">Adesão a Atas Estaduais</h5>
-                            <p class="text-xs text-slate-600 dark:text-slate-400">Utilizar Atas de Registro de Preços do CIASC/Estado para agilizar contratações de tecnologia.</p>
-                        </div>
-                    </li>
-                    <li class="flex">
-                        <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-bold text-xs">4</span>
-                        <div class="ml-3">
-                            <h5 class="text-sm font-bold text-slate-800 dark:text-slate-200">Segurança & Dados</h5>
-                            <p class="text-xs text-slate-600 dark:text-slate-400">Implementar políticas básicas de segurança da informação e backup em nuvem governamental.</p>
-                        </div>
-                    </li>
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Recomendações ao Gestor</h3>
+                <ul class="space-y-4" id="recommendations-list">
+                    <!-- JS -->
                 </ul>
             </section>
         </div>
 
-        <!-- 6. MAPA DE CALOR ESTADUAL (Simulado Visualmente) -->
+        <!-- 6. MAPA DE CALOR ESTADUAL -->
         <section class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-            <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Mapa de Calor Estadual (Distribuição)</h3>
-            <div class="flex justify-center items-center h-64 bg-slate-100 dark:bg-slate-700/50 rounded text-slate-400 text-sm border border-dashed border-slate-300 dark:border-slate-600">
-                <div class="text-center p-4">
-                    <p class="mb-2 font-medium">Visualização Geográfica</p>
-                    <p class="text-xs max-w-md mx-auto">
-                        O mapa interativo requer integração com biblioteca GeoJSON. 
-                        Nesta versão estática, observamos que a <strong>Região Oeste</strong> e <strong>Grande Florianópolis</strong> concentram as melhores notas, enquanto regiões de menor IDH apresentam maiores desafios em governança de TI.
-                    </p>
-                </div>
-            </div>
+            <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Mapa de Calor Estadual (i-Gov TI)</h3>
+            <div id="map" class="bg-slate-100 dark:bg-slate-700"></div>
         </section>
 
     </main>
@@ -350,9 +218,12 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- Leaflet JS (Para o mapa) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Scripts de Dados e Lógica (Mantidos do Original, apenas adaptados para o tema) -->
     <script>
-        // --- 1. LÓGICA DO TEMA (LIGHT/DARK) ---
+        // --- 1. CONFIGURAÇÃO DE TEMA ---
         const htmlEl = document.documentElement;
         let currentTheme = localStorage.getItem('theme') || 'light';
         htmlEl.classList.add(currentTheme);
@@ -360,21 +231,187 @@
         document.getElementById('theme-toggle').addEventListener('click', () => {
             htmlEl.classList.toggle('dark');
             htmlEl.classList.toggle('light');
-            const newTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
-            localStorage.setItem('theme', newTheme);
-            updateChartsTheme(newTheme);
+            const theme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+            updateChartsTheme(theme);
         });
 
-        // --- 2. GRÁFICOS ---
+        // --- 2. DADOS (Copiados do arquivo dash_gov_ti_sc.html original) ---
+        const data = {
+            summary: {
+                2022: {
+                    average: 0.39,
+                    evaluated: 295,
+                    level: "BAIXO",
+                    critical: 253,
+                    criticalPercentage: "85.8%"
+                },
+                // ... (outros anos podem ser adicionados aqui se necessário)
+            },
+            evolution: {
+                years: ['2016', '2017', '2018', '2019', '2020', '2021', '2022'],
+                averages: [0.45, 0.48, 0.50, 0.52, 0.49, 0.53, 0.39]
+            },
+            distribution: {
+                labels: ['A (Altamente Efetiva)', 'B (Muito Efetiva)', 'C+ (Em Adequação)', 'C (Baixo Nível)'],
+                data: [0, 12, 101, 182],
+                colors: ['#15803d', '#22c55e', '#eab308', '#ef4444']
+            },
+            challenges: [
+                {
+                    title: "Falta de Pessoal Efetivo",
+                    desc: "Apenas 15% dos municípios possuem quadro próprio de TI estruturado. A maioria depende de cargos comissionados ou terceirizados.",
+                    iconColor: "red"
+                },
+                {
+                    title: "Dependência de Fornecedores",
+                    desc: "Alta vulnerabilidade em relação a fornecedores de sistemas de gestão (ERP), dificultando a integração de dados.",
+                    iconColor: "orange"
+                },
+                {
+                    title: "Planejamento Inexistente",
+                    desc: "Mais de 70% dos municípios não possuem Plano Diretor de TI (PDTI) formalizado e em execução.",
+                    iconColor: "yellow"
+                }
+            ],
+            solutions: [
+                {
+                    title: "SC Digital Municipal",
+                    desc: "Plataforma unificada de serviços ao cidadão, garantindo conformidade com a Lei de Governo Digital."
+                },
+                {
+                    title: "Conectividade & Nuvem",
+                    desc: "Infraestrutura robusta de Datacenter e Redes de Governo para hospedar sistemas críticos com segurança."
+                },
+                {
+                    title: "Consultoria em Governança",
+                    desc: "Apoio técnico especializado para diagnóstico, elaboração de PDTI e estruturação da governança de TI."
+                }
+            ],
+            topMunicipalities: [
+                { name: "Joinville", score: 0.84, band: "B" },
+                { name: "Florianópolis", score: 0.79, band: "B" },
+                { name: "Blumenau", score: 0.76, band: "B" },
+                { name: "Luzerna", score: 0.75, band: "B" },
+                { name: "Chapecó", score: 0.72, band: "B" }
+            ],
+            recommendations: [
+                { step: 1, title: "Diagnóstico & PDTI", desc: "Realizar diagnóstico preciso e elaborar o Plano Diretor de TI." },
+                { step: 2, title: "Capacitação", desc: "Investir em treinamento ou contratação de gestores de TI." },
+                { step: 3, title: "Adesão a Atas", desc: "Utilizar Atas de Registro de Preços do CIASC." },
+                { step: 4, title: "Segurança", desc: "Implementar políticas básicas de segurança da informação." }
+            ]
+        };
+
+        // --- 3. RENDERIZAÇÃO ---
+
+        function renderExecutiveSummary() {
+            const container = document.getElementById('executive-summary');
+            const d = data.summary[2022];
+            
+            container.innerHTML = `
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Índice Geral i-Gov TI</h3>
+                    <div class="flex items-end">
+                        <span class="text-4xl font-bold text-blue-600 dark:text-blue-400">${d.average}</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Média Estadual</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Municípios Avaliados</h3>
+                    <div class="flex items-end">
+                        <span class="text-4xl font-bold text-slate-800 dark:text-slate-100">${d.evaluated}</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">100% de Cobertura</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Nível de Adequação</h3>
+                    <div class="flex items-end">
+                        <span class="text-2xl font-bold text-red-600 dark:text-red-400">${d.level}</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Classificação Geral</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Municípios Críticos</h3>
+                    <div class="flex items-end">
+                        <span class="text-4xl font-bold text-orange-500">${d.critical}</span>
+                        <span class="text-sm font-medium text-slate-500 ml-2 mb-1">(${d.criticalPercentage})</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Faixas C e C+</p>
+                </div>
+            `;
+        }
+
+        function renderChallenges() {
+            const container = document.getElementById('challenges-container');
+            container.innerHTML = data.challenges.map(c => {
+                // Mapeamento simples de cores para classes Tailwind
+                const colorMap = {
+                    'red': 'text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-900',
+                    'orange': 'text-orange-600 bg-orange-100 dark:text-orange-300 dark:bg-orange-900',
+                    'yellow': 'text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-900'
+                };
+                const colorClass = colorMap[c.iconColor] || 'text-blue-600 bg-blue-100';
+
+                return `
+                <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-md ${colorClass}">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-slate-900 dark:text-slate-100">${c.title}</h4>
+                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">${c.desc}</p>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderSolutions() {
+            const container = document.getElementById('solutions-container');
+            container.innerHTML = data.solutions.map(s => `
+                <div class="bg-white dark:bg-slate-800 p-5 rounded shadow-sm border border-slate-100 dark:border-slate-600">
+                    <h4 class="font-bold text-slate-800 dark:text-slate-100 mb-2">${s.title}</h4>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">${s.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderTopMunicipalities() {
+            const tbody = document.getElementById('top-municipalities-body');
+            tbody.innerHTML = data.topMunicipalities.map(m => `
+                <tr>
+                    <td class="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">${m.name}</td>
+                    <td class="px-4 py-3 text-center">${m.score.toFixed(2)}</td>
+                    <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-bold rounded">${m.band}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderRecommendations() {
+            const list = document.getElementById('recommendations-list');
+            list.innerHTML = data.recommendations.map(r => `
+                <li class="flex">
+                    <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-bold text-xs">${r.step}</span>
+                    <div class="ml-3">
+                        <h5 class="text-sm font-bold text-slate-800 dark:text-slate-200">${r.title}</h5>
+                        <p class="text-xs text-slate-600 dark:text-slate-400">${r.desc}</p>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        // --- CHART.JS ---
         let charts = {};
 
         function initCharts() {
             const commonOptions = {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { labels: { color: htmlEl.classList.contains('dark') ? '#cbd5e1' : '#475569' } }
-                },
+                plugins: { legend: { labels: { color: htmlEl.classList.contains('dark') ? '#cbd5e1' : '#475569' } } },
                 scales: {
                     y: { 
                         grid: { color: htmlEl.classList.contains('dark') ? '#334155' : '#e2e8f0' },
@@ -387,79 +424,75 @@
                 }
             };
 
-            // Gráfico de Evolução (Line)
-            const ctxEvolucao = document.getElementById('evolutionChart').getContext('2d');
-            charts.evolucao = new Chart(ctxEvolucao, {
+            // Evolution Chart
+            const ctxEvol = document.getElementById('evolutionChart').getContext('2d');
+            charts.evolution = new Chart(ctxEvol, {
                 type: 'line',
                 data: {
-                    labels: ['2016', '2017', '2018', '2019', '2020', '2021', '2022'],
+                    labels: data.evolution.years,
                     datasets: [{
-                        label: 'Índice Médio i-Gov TI (SC)',
-                        data: [0.45, 0.48, 0.50, 0.52, 0.49, 0.53, 0.39],
-                        borderColor: '#2563eb', // Blue 600
+                        label: 'Índice Médio',
+                        data: data.evolution.averages,
+                        borderColor: '#2563eb',
                         backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                        borderWidth: 3,
-                        tension: 0.3,
-                        pointRadius: 5,
-                        fill: true
+                        fill: true,
+                        tension: 0.3
                     }]
                 },
-                options: {
-                    ...commonOptions,
-                    scales: {
-                        ...commonOptions.scales,
-                        y: { ...commonOptions.scales.y, min: 0, max: 1 }
-                    }
-                }
+                options: { ...commonOptions, scales: { y: { min: 0, max: 1 } } }
             });
 
-            // Gráfico de Distribuição (Doughnut)
+            // Distribution Chart
             const ctxDist = document.getElementById('distributionChart').getContext('2d');
-            charts.distribuicao = new Chart(ctxDist, {
+            charts.distribution = new Chart(ctxDist, {
                 type: 'doughnut',
                 data: {
-                    labels: ['A (0)', 'B (12)', 'C+ (101)', 'C (182)'],
+                    labels: data.distribution.labels,
                     datasets: [{
-                        data: [0, 12, 101, 182],
-                        backgroundColor: ['#15803d', '#22c55e', '#eab308', '#ef4444'], // Cores IEGM
+                        data: data.distribution.data,
+                        backgroundColor: data.distribution.colors,
                         borderWidth: 0
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right' }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
             });
         }
 
-        // Função para atualizar tema dos gráficos
+        // --- MAPA (Leaflet - Placeholder para GeoJSON real) ---
+        function initMap() {
+            // Inicializa mapa centrado em SC
+            const map = L.map('map').setView([-27.242339, -50.218856], 7);
+            
+            // Adiciona tiles (OpenStreetMap)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Nota: Para exibir o choropleth real (cores por município), seria necessário 
+            // carregar um arquivo GeoJSON pesado e fazer o merge com os dados do IEGM.
+            // Neste dashboard estático, o mapa serve como placeholder estrutural e visual.
+        }
+
         function updateChartsTheme(theme) {
             const isDark = theme === 'dark';
             const textColor = isDark ? '#cbd5e1' : '#475569';
             const gridColor = isDark ? '#334155' : '#e2e8f0';
-
             Object.values(charts).forEach(chart => {
-                if (chart.options.scales.x) {
-                    chart.options.scales.x.ticks.color = textColor;
-                    chart.options.scales.x.grid.color = gridColor;
-                }
-                if (chart.options.scales.y) {
-                    chart.options.scales.y.ticks.color = textColor;
-                    chart.options.scales.y.grid.color = gridColor;
-                }
-                if (chart.options.plugins.legend) {
-                    chart.options.plugins.legend.labels.color = textColor;
-                }
+                if(chart.options.scales?.x) chart.options.scales.x.ticks.color = textColor;
+                if(chart.options.scales?.y) chart.options.scales.y.ticks.color = textColor;
                 chart.update();
             });
         }
 
-        // Inicialização
+        // INIT
         document.addEventListener('DOMContentLoaded', () => {
+            renderExecutiveSummary();
+            renderChallenges();
+            renderSolutions();
+            renderTopMunicipalities();
+            renderRecommendations();
             initCharts();
+            initMap();
         });
 
     </script>
