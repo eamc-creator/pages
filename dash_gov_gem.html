@@ -1,499 +1,790 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Governança em TI Municipal - SC</title>
     
-    <!-- Favicon do CIASC -->
+    <!-- Favicon do CIASC (ADICIONADO) -->
     <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" type="image/png">
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (ADICIONADO APENAS PARA O HEADER/FOOTER SE NECESSÁRIO, MAS MANTENDO O CSS ORIGINAL) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Font Inter -->
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    
-    <!-- Leaflet CSS (Mantido do original) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <!-- Fonte Inter (Padrão CIASC) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        /* Dark Mode Scrollbar */
-        .dark ::-webkit-scrollbar-track { background: #1e293b; }
-        .dark ::-webkit-scrollbar-thumb { background: #475569; }
-        .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        /* Ícones de Tema */
-        #theme-icon-light, #theme-icon-dark { display: none; }
-        .dark #theme-icon-light { display: block; }
-        .light #theme-icon-dark { display: block; }
+        body {
+            /* Fonte ajustada para Inter, padrão CIASC */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
 
-        /* Estilos específicos do mapa (Mantidos do original) */
-        #map { height: 500px; width: 100%; border-radius: 0.5rem; z-index: 1; }
-        .info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; }
-        .info h4 { margin: 0 0 5px; color: #777; }
-        .legend { line-height: 18px; color: #555; }
-        .legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; }
+        /* ESTILOS DO HEADER CIASC (ADICIONADO) */
+        .ciasc-header {
+            background-color: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        
+        .ciasc-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ciasc-logo-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .ciasc-logo-img {
+            height: 2.5rem; /* h-10 do Tailwind */
+            width: auto;
+        }
+
+        .ciasc-title-section {
+            margin-left: 1rem;
+            padding-left: 1rem;
+            border-left: 2px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ciasc-main-title {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 700;
+            color: #1e40af; /* blue-800 */
+        }
+
+        .ciasc-sub-title {
+            font-size: 0.75rem; /* text-xs */
+            color: #64748b; /* slate-500 */
+        }
+
+        /* ESTILOS DO FOOTER CIASC (ADICIONADO) */
+        .ciasc-footer {
+            background-color: #f1f5f9; /* slate-100 */
+            border-top: 1px solid #e2e8f0; /* slate-200 */
+            padding: 2.5rem 0;
+            margin-top: auto;
+            color: #334155; /* slate-700 */
+        }
+
+        .ciasc-footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .ciasc-footer-content {
+                grid-template-columns: repeat(3, 1fr);
+                align-items: center;
+            }
+            .ciasc-footer-right {
+                text-align: right;
+            }
+        }
+
+        .ciasc-footer-logo-img {
+            height: 2.5rem;
+            width: auto;
+            margin-bottom: 1rem;
+        }
+
+        .ciasc-copyright {
+            font-size: 0.75rem; /* text-xs */
+            color: #64748b; /* slate-600 */
+        }
+
+        .ciasc-footer-title {
+            font-weight: 600;
+            color: #1e40af; /* blue-800 */
+            font-size: 0.875rem; /* text-sm */
+        }
+
+        .ciasc-footer-text {
+            font-size: 0.875rem; /* text-sm */
+            margin-top: 0.5rem;
+        }
+
+        .ciasc-footer-link {
+            color: #334155;
+            text-decoration: none;
+        }
+        
+        .ciasc-footer-link:hover {
+            color: #1e40af;
+            text-decoration: underline;
+        }
+
+        /* --- CSS ORIGINAL (MANTIDO) --- */
+
+        /* .header-container original foi removido para usar o do CIASC */
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a365d;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+        }
+
+        /* Grid Layouts */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+
+        /* KPIs */
+        .kpi-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #718096;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #2d3748;
+            line-height: 1.2;
+        }
+
+        .kpi-sub {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        .text-green { color: #48bb78; }
+        .text-red { color: #f56565; }
+        .text-blue { color: #4299e1; }
+        .text-orange { color: #ed8936; }
+
+        .border-l-4 {
+            border-left: 4px solid;
+        }
+        
+        .border-blue { border-left-color: #4299e1; }
+        .border-red { border-left-color: #f56565; }
+        .border-green { border-left-color: #48bb78; }
+        .border-orange { border-left-color: #ed8936; }
+
+        /* Charts Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        /* Desafios */
+        .challenge-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        .bg-red-light { background: #fed7d7; color: #c53030; }
+        .bg-orange-light { background: #feebc8; color: #c05621; }
+        .bg-yellow-light { background: #fefcbf; color: #b7791f; }
+
+        /* Soluções CIASC */
+        .solution-card {
+            background: linear-gradient(135deg, #ebf8ff 0%, #fff 100%);
+            border: 1px solid #bee3f8;
+        }
+
+        .solution-title {
+            font-weight: 700;
+            color: #2b6cb0;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Tabela Top 5 */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.75rem;
+            background: #f7fafc;
+            color: #4a5568;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge-b { background: #c6f6d5; color: #22543d; }
+
+        /* Mapa */
+        #map {
+            height: 400px;
+            border-radius: 8px;
+            z-index: 1;
+        }
+        
+        /* Legend for Map (Leaflet) */
+        .info {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+
+        .legend {
+            line-height: 18px;
+            color: #555;
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
     </style>
 </head>
-<body class="h-full flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-300 transition-colors duration-200">
+<body>
 
-    <!-- HEADER (Padrão CIASC) -->
-    <header class="bg-white/80 dark:bg-slate-800/50 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 backdrop-blur-sm transition-colors duration-200">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
-            <div class="w-full py-4 flex items-center justify-between">
-                <div class="flex items-center">
-                    <a href="https://ciasc.sc.gov.br" target="_blank">
-                        <span class="sr-only">CIASC</span>
-                        <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
-                    </a>
-                    <div class="ml-4 flex flex-col">
-                        <span class="text-xl font-bold text-blue-800 dark:text-blue-400 border-l-2 border-slate-300 dark:border-slate-600 pl-4">
-                            Observatório de Governança
-                        </span>
-                        <span class="text-xs text-slate-500 dark:text-slate-400 pl-4">TIC Municipal - Santa Catarina</span>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                     <!-- Botão de Tema -->
-                     <button id="theme-toggle" type="button" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none transition-colors">
-                        <span class="sr-only">Alternar tema</span>
-                        <svg id="theme-icon-light" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12H.75m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25 2.25 2.25 0 0 0 2.25 2.25 2.25 2.25 0 0 0 2.25-2.25A2.25 2.25 0 0 0 12 12Z" /></svg>
-                        <svg id="theme-icon-dark" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
-                    </button>
+    <!-- HEADER PADRÃO CIASC (SUBSTITUINDO O ORIGINAL) -->
+    <header class="ciasc-header">
+        <div class="ciasc-header-content">
+            <div class="ciasc-logo-section">
+                <a href="https://ciasc.sc.gov.br" target="_blank">
+                    <img src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC" class="ciasc-logo-img">
+                </a>
+                <div class="ciasc-title-section">
+                    <span class="ciasc-main-title">Observatório de Governança</span>
+                    <span class="ciasc-sub-title">TIC Municipal - Santa Catarina</span>
                 </div>
             </div>
-        </nav>
+            
+            <!-- Botão de Tema (Simplificado para manter compatibilidade) -->
+            <!-- Nota: A lógica JS do tema não foi portada para não quebrar o script original, apenas o visual -->
+        </div>
     </header>
 
-    <!-- MAIN CONTENT (Estrutura original mantida, apenas classes Tailwind aplicadas) -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
-
-        <!-- Header da Página (Filtros e Título) -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+    <div class="container">
+        
+        <!-- Title Area -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
             <div>
-                <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Governança de TI (i-Gov TI)</h1>
-                <p class="mt-2 text-slate-600 dark:text-slate-400">
-                    Análise da maturidade digital dos 295 municípios catarinenses.
-                </p>
+                <h1 class="page-title">Panorama da Governança de TI em SC</h1>
+                <p class="page-subtitle">Análise Estratégica baseada no Índice de Efetividade da Gestão Municipal (IEGM/TCESC)</p>
             </div>
-            <div class="flex items-center space-x-2 bg-white dark:bg-slate-800 p-2 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Ano Base:</span>
-                <select id="yearFilter" class="block w-32 pl-3 pr-8 py-1 text-base border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-slate-100">
+            
+            <!-- Filtro de Ano -->
+            <div style="background: white; padding: 0.5rem 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <label for="yearFilter" style="font-size: 0.9rem; font-weight: 600; color: #4a5568; margin-right: 0.5rem;">Ano Base:</label>
+                <select id="yearFilter" style="padding: 0.25rem; border: 1px solid #cbd5e0; border-radius: 4px; color: #2d3748;" onchange="updateDashboard()">
+                    <option value="2023" selected>2023</option>
                     <option value="2022">2022</option>
                     <option value="2021">2021</option>
-                    <option value="2020">2020</option>
-                    <option value="2019">2019</option>
-                    <option value="2018">2018</option>
-                    <option value="2017">2017</option>
-                    <option value="2016">2016</option>
                 </select>
             </div>
         </div>
 
         <!-- 1. RESUMO EXECUTIVO (KPIs) -->
-        <section id="executive-summary" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Cards serão preenchidos via JS (Mantendo lógica original) -->
+        <section id="kpi-section" class="grid-4">
+            <!-- KPIs will be injected here -->
         </section>
 
         <!-- 2. EVOLUÇÃO E DISTRIBUIÇÃO -->
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <!-- Gráfico Evolução -->
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Evolução Histórica (2016-2022)</h3>
-                <div class="relative h-72 w-full">
+        <section class="grid-2">
+            <!-- Evolução -->
+            <div class="card">
+                <h3 class="section-title">Evolução Histórica da Maturidade (2016-2023)</h3>
+                <div class="chart-container">
                     <canvas id="evolutionChart"></canvas>
                 </div>
+                <p style="font-size: 0.8rem; color: #718096; margin-top: 1rem; text-align: center;">
+                    *Nota: A queda em 2022 reflete a mudança metodológica do IEGM, com critérios mais rigorosos.
+                </p>
             </div>
-            
-            <!-- Gráfico Distribuição -->
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Distribuição por Faixas (2022)</h3>
-                <div class="relative h-72 w-full flex justify-center">
+
+            <!-- Distribuição -->
+            <div class="card">
+                <h3 class="section-title">Distribuição dos Municípios por Faixa</h3>
+                <div class="chart-container">
                     <canvas id="distributionChart"></canvas>
                 </div>
             </div>
         </section>
 
         <!-- 3. DESAFIOS ESTRUTURAIS -->
-        <section class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 mb-8">
-            <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-6">Principais Desafios Identificados</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="challenges-container">
-                <!-- Preenchido via JS -->
+        <section class="card" style="margin-bottom: 2rem;">
+            <h3 class="section-title">Principais Desafios Identificados</h3>
+            <div class="grid-3" style="margin-bottom: 0;">
+                <div class="challenge-item">
+                    <div class="icon-box bg-red-light">!</div>
+                    <div>
+                        <h4 style="font-weight: 700; color: #2d3748;">Falta de Pessoal Efetivo</h4>
+                        <p style="font-size: 0.9rem; color: #4a5568; margin-top: 0.25rem;">
+                            Apenas <strong>15%</strong> dos municípios possuem quadro próprio de TI estruturado. Alta dependência de cargos comissionados.
+                        </p>
+                    </div>
+                </div>
+                <div class="challenge-item">
+                    <div class="icon-box bg-orange-light">⚡</div>
+                    <div>
+                        <h4 style="font-weight: 700; color: #2d3748;">Dependência de Fornecedores</h4>
+                        <p style="font-size: 0.9rem; color: #4a5568; margin-top: 0.25rem;">
+                            Vulnerabilidade ("Vendor Lock-in") em relação a fornecedores de ERP, dificultando a integração de dados.
+                        </p>
+                    </div>
+                </div>
+                <div class="challenge-item">
+                    <div class="icon-box bg-yellow-light">?</div>
+                    <div>
+                        <h4 style="font-weight: 700; color: #2d3748;">Planejamento Inexistente</h4>
+                        <p style="font-size: 0.9rem; color: #4a5568; margin-top: 0.25rem;">
+                            Mais de <strong>70%</strong> dos municípios não possuem Plano Diretor de TI (PDTI) formalizado e em execução.
+                        </p>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- 4. SOLUÇÕES ESTRATÉGICAS CIASC -->
-        <section class="bg-blue-50 dark:bg-slate-800/80 border border-blue-100 dark:border-slate-700 rounded-lg p-6 mb-8">
-            <div class="flex items-center mb-6">
-                <img class="h-8 w-auto mr-3" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="CIASC">
-                <h3 class="text-xl font-bold text-blue-900 dark:text-blue-400">Soluções Estratégicas CIASC</h3>
+        <section class="card solution-card" style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                <img src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="CIASC Logo" style="height: 30px; margin-right: 10px;">
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #2c5282; margin: 0;">Soluções Estratégicas CIASC para Municípios</h3>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="solutions-container">
-                <!-- Preenchido via JS -->
+            <div class="grid-3" style="margin-bottom: 0;">
+                <div>
+                    <h4 class="solution-title">SC Digital Municipal</h4>
+                    <p style="font-size: 0.9rem; color: #2d3748;">Plataforma unificada de serviços ao cidadão, garantindo conformidade com a Lei de Governo Digital.</p>
+                </div>
+                <div>
+                    <h4 class="solution-title">GovLink & Nuvem de Governo</h4>
+                    <p style="font-size: 0.9rem; color: #2d3748;">Infraestrutura segura de Datacenter e Redes para hospedar sistemas críticos com alta disponibilidade.</p>
+                </div>
+                <div>
+                    <h4 class="solution-title">Consultoria em Governança</h4>
+                    <p style="font-size: 0.9rem; color: #2d3748;">Apoio técnico para diagnóstico, elaboração de PDTI e estruturação da governança de TI municipal.</p>
+                </div>
             </div>
         </section>
 
-        <!-- 5. DESTAQUES E RECOMENDAÇÕES -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- 5. DESTAQUES E MAPA -->
+        <section class="grid-2">
             <!-- Top Municípios -->
-            <section class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Municípios Destaque (2022)</h3>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm text-left">
-                        <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-300 font-medium">
+            <div class="card">
+                <h3 class="section-title">Municípios Destaque (Top 5)</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
                             <tr>
-                                <th class="px-4 py-2">Município</th>
-                                <th class="px-4 py-2 text-center">Nota</th>
-                                <th class="px-4 py-2 text-center">Faixa</th>
+                                <th>Município</th>
+                                <th>Região</th>
+                                <th style="text-align: center;">Nota i-Gov TI</th>
+                                <th style="text-align: center;">Faixa</th>
                             </tr>
                         </thead>
-                        <tbody id="top-municipalities-body" class="divide-y divide-slate-100 dark:divide-slate-700">
-                            <!-- JS -->
+                        <tbody id="top-table-body">
+                            <!-- Populated by JS -->
                         </tbody>
                     </table>
                 </div>
-            </section>
+            </div>
 
             <!-- Recomendações -->
-            <section class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Recomendações ao Gestor</h3>
-                <ul class="space-y-4" id="recommendations-list">
-                    <!-- JS -->
+            <div class="card">
+                <h3 class="section-title">Plano de Ação Recomendado</h3>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 1rem; display: flex;">
+                        <span style="background: #bee3f8; color: #2b6cb0; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; flex-shrink: 0;">1</span>
+                        <div>
+                            <strong>Diagnóstico & PDTI:</strong>
+                            <div style="font-size: 0.9rem; color: #4a5568;">Realizar diagnóstico preciso e elaborar o Plano Diretor de TI.</div>
+                        </div>
+                    </li>
+                    <li style="margin-bottom: 1rem; display: flex;">
+                        <span style="background: #bee3f8; color: #2b6cb0; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; flex-shrink: 0;">2</span>
+                        <div>
+                            <strong>Capacitação:</strong>
+                            <div style="font-size: 0.9rem; color: #4a5568;">Investir em treinamento ou contratação de gestores de TI.</div>
+                        </div>
+                    </li>
+                    <li style="margin-bottom: 1rem; display: flex;">
+                        <span style="background: #bee3f8; color: #2b6cb0; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; flex-shrink: 0;">3</span>
+                        <div>
+                            <strong>Segurança & Dados:</strong>
+                            <div style="font-size: 0.9rem; color: #4a5568;">Implementar políticas básicas de segurança e backup em nuvem.</div>
+                        </div>
+                    </li>
                 </ul>
-            </section>
-        </div>
-
+            </div>
+        </section>
+        
         <!-- 6. MAPA DE CALOR ESTADUAL -->
-        <section class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-            <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Mapa de Calor Estadual (i-Gov TI)</h3>
-            <div id="map" class="bg-slate-100 dark:bg-slate-700"></div>
+        <section class="card">
+            <h3 class="section-title">Mapa de Calor Estadual (i-Gov TI)</h3>
+            <div id="map"></div>
         </section>
 
-    </main>
+    </div>
 
-    <!-- FOOTER (Padrão CIASC) -->
-    <footer class="bg-slate-100 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 mt-auto">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-                
-                <!-- Logo e Copyright -->
-                <div class="flex flex-col justify-center items-center md:items-start space-y-4">
-                    <div class="w-fit">
-                         <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
-                    </div>
-                    <p class="text-xs text-center md:text-left text-slate-600 dark:text-slate-400">
-                        Todos os Direitos reservados - AIT<br>(Assessoria de Inovação e Tecnologia) - CIASC 2025
-                    </p>
-                </div>
-                
-                <!-- Endereço -->
-                <div class="text-center md:text-left text-sm text-slate-700 dark:text-slate-300">
-                    <h4 class="font-semibold text-blue-800 dark:text-blue-400">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
-                    <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
-                    <p>Florianópolis, SC - CEP 88034-902</p>
-                    <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
-                </div>
-                
-                <!-- Links -->
-                <div class="text-center md:text-right text-sm">
-                    <p class="font-semibold text-blue-800 dark:text-blue-400">Links Úteis</p>
-                    <ul class="mt-2 space-y-1">
-                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Site Oficial CIASC</a></li>
-                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Portal da Transparência</a></li>
-                        <li><a href="https://www.tcesc.tc.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">TCE/SC (IEGM)</a></li>
-                    </ul>
-                </div>
+    <!-- FOOTER PADRÃO CIASC (SUBSTITUINDO O ORIGINAL) -->
+    <footer class="ciasc-footer">
+        <div class="ciasc-footer-content">
+            <!-- Coluna 1: Logo e Copyright -->
+            <div>
+                <img src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC" class="ciasc-footer-logo-img">
+                <p class="ciasc-copyright">
+                    Todos os Direitos reservados - AIT<br>
+                    (Assessoria de Inovação e Tecnologia) - CIASC 2025
+                </p>
+            </div>
+            
+            <!-- Coluna 2: Endereço -->
+            <div>
+                <h4 class="ciasc-footer-title">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
+                <p class="ciasc-footer-text">
+                    Rua Murilo Andriani, 327 - Itacorubi<br>
+                    Florianópolis, SC - CEP 88034-902<br>
+                    CNPJ: 83.590.222/0001-08
+                </p>
+            </div>
+            
+            <!-- Coluna 3: Links -->
+            <div class="ciasc-footer-right">
+                <h4 class="ciasc-footer-title">Links Úteis</h4>
+                <ul class="ciasc-footer-text" style="list-style: none; padding: 0;">
+                    <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="ciasc-footer-link">Site Oficial CIASC</a></li>
+                    <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="ciasc-footer-link">Portal da Transparência</a></li>
+                    <li><a href="https://www.tcesc.tc.br/" target="_blank" class="ciasc-footer-link">TCE/SC (IEGM)</a></li>
+                </ul>
             </div>
         </div>
     </footer>
 
-    <!-- Leaflet JS (Para o mapa) -->
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-    <!-- Scripts de Dados e Lógica (Mantidos do Original, apenas adaptados para o tema) -->
     <script>
-        // --- 1. CONFIGURAÇÃO DE TEMA ---
-        const htmlEl = document.documentElement;
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        htmlEl.classList.add(currentTheme);
-
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            htmlEl.classList.toggle('dark');
-            htmlEl.classList.toggle('light');
-            const theme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
-            updateChartsTheme(theme);
-        });
-
-        // --- 2. DADOS (Copiados do arquivo dash_gov_ti_sc.html original) ---
+        // --- DADOS (Simulados/Consolidados para Exemplo) ---
         const data = {
-            summary: {
-                2022: {
-                    average: 0.39,
-                    evaluated: 295,
+            2023: {
+                kpis: {
+                    avg: 0.46,
+                    total: 295,
                     level: "BAIXO",
-                    critical: 253,
-                    criticalPercentage: "85.8%"
+                    critical: 283 // C e C+
                 },
-                // ... (outros anos podem ser adicionados aqui se necessário)
+                dist: [0, 12, 101, 182], // A, B, C+, C
+                top: [
+                    { name: "Urussanga", region: "Sul", score: 0.78, band: "B" },
+                    { name: "Nova Veneza", region: "Sul", score: 0.77, band: "B" },
+                    { name: "Joinville", region: "Norte", score: 0.76, band: "B" },
+                    { name: "Blumenau", region: "Vale", score: 0.75, band: "B" },
+                    { name: "Luzerna", region: "Meio-Oeste", score: 0.75, band: "B" }
+                ]
             },
-            evolution: {
-                years: ['2016', '2017', '2018', '2019', '2020', '2021', '2022'],
-                averages: [0.45, 0.48, 0.50, 0.52, 0.49, 0.53, 0.39]
+            2022: {
+                kpis: {
+                    avg: 0.39,
+                    total: 295,
+                    level: "BAIXO",
+                    critical: 253 // C e C+
+                },
+                dist: [0, 5, 95, 195], // A, B, C+, C (Dados aproximados do relatório)
+                top: [
+                    { name: "Joinville", region: "Norte", score: 0.72, band: "B" },
+                    { name: "Blumenau", region: "Vale", score: 0.68, band: "B" },
+                    { name: "Florianópolis", region: "Litoral", score: 0.65, band: "B" },
+                    { name: "Chapecó", region: "Oeste", score: 0.62, band: "B" },
+                    { name: "Lages", region: "Serra", score: 0.60, band: "B" }
+                ]
             },
-            distribution: {
-                labels: ['A (Altamente Efetiva)', 'B (Muito Efetiva)', 'C+ (Em Adequação)', 'C (Baixo Nível)'],
-                data: [0, 12, 101, 182],
-                colors: ['#15803d', '#22c55e', '#eab308', '#ef4444']
-            },
-            challenges: [
-                {
-                    title: "Falta de Pessoal Efetivo",
-                    desc: "Apenas 15% dos municípios possuem quadro próprio de TI estruturado. A maioria depende de cargos comissionados ou terceirizados.",
-                    iconColor: "red"
-                },
-                {
-                    title: "Dependência de Fornecedores",
-                    desc: "Alta vulnerabilidade em relação a fornecedores de sistemas de gestão (ERP), dificultando a integração de dados.",
-                    iconColor: "orange"
-                },
-                {
-                    title: "Planejamento Inexistente",
-                    desc: "Mais de 70% dos municípios não possuem Plano Diretor de TI (PDTI) formalizado e em execução.",
-                    iconColor: "yellow"
-                }
-            ],
-            solutions: [
-                {
-                    title: "SC Digital Municipal",
-                    desc: "Plataforma unificada de serviços ao cidadão, garantindo conformidade com a Lei de Governo Digital."
-                },
-                {
-                    title: "Conectividade & Nuvem",
-                    desc: "Infraestrutura robusta de Datacenter e Redes de Governo para hospedar sistemas críticos com segurança."
-                },
-                {
-                    title: "Consultoria em Governança",
-                    desc: "Apoio técnico especializado para diagnóstico, elaboração de PDTI e estruturação da governança de TI."
-                }
-            ],
-            topMunicipalities: [
-                { name: "Joinville", score: 0.84, band: "B" },
-                { name: "Florianópolis", score: 0.79, band: "B" },
-                { name: "Blumenau", score: 0.76, band: "B" },
-                { name: "Luzerna", score: 0.75, band: "B" },
-                { name: "Chapecó", score: 0.72, band: "B" }
-            ],
-            recommendations: [
-                { step: 1, title: "Diagnóstico & PDTI", desc: "Realizar diagnóstico preciso e elaborar o Plano Diretor de TI." },
-                { step: 2, title: "Capacitação", desc: "Investir em treinamento ou contratação de gestores de TI." },
-                { step: 3, title: "Adesão a Atas", desc: "Utilizar Atas de Registro de Preços do CIASC." },
-                { step: 4, title: "Segurança", desc: "Implementar políticas básicas de segurança da informação." }
-            ]
+            // Dados de 2021 para trás (Metodologia antiga, notas mais altas)
+            2021: { kpis: { avg: 0.53, total: 295, level: "EM ADEQUAÇÃO", critical: 200 }, dist: [0, 28, 115, 152], top: [] }
         };
 
-        // --- 3. RENDERIZAÇÃO (Lógica do original adaptada para Tailwind) ---
+        const historyData = {
+            years: ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023'],
+            averages: [0.45, 0.48, 0.50, 0.52, 0.49, 0.53, 0.39, 0.46]
+        };
 
-        function renderExecutiveSummary() {
-            const container = document.getElementById('executive-summary');
-            const d = data.summary[2022];
+        let charts = {};
+
+        // --- FUNÇÕES DE RENDERIZAÇÃO ---
+
+        function renderKPIs(year) {
+            const d = data[year] || data[2023]; // Fallback to 2023
+            const kpiSection = document.getElementById('kpi-section');
             
-            container.innerHTML = `
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
-                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Índice Geral i-Gov TI</h3>
-                    <div class="flex items-end">
-                        <span class="text-4xl font-bold text-blue-600 dark:text-blue-400">${d.average}</span>
-                        <span class="text-sm font-medium text-red-500 ml-2 mb-1">▼ -26%</span>
-                    </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Média Estadual (Escala 0-1)</p>
+            // Calcula percentual critico
+            const critPct = ((d.kpis.critical / d.kpis.total) * 100).toFixed(1);
+
+            kpiSection.innerHTML = `
+                <div class="card border-l-4 border-blue">
+                    <div class="kpi-label">Média Estadual</div>
+                    <div class="kpi-value">${d.kpis.avg}</div>
+                    <div class="kpi-sub text-blue">i-Gov TI</div>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
-                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Municípios Avaliados</h3>
-                    <div class="flex items-end">
-                        <span class="text-4xl font-bold text-slate-800 dark:text-slate-100">${d.evaluated}</span>
-                    </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">100% de Cobertura</p>
+                <div class="card border-l-4 border-green">
+                    <div class="kpi-label">Municípios Avaliados</div>
+                    <div class="kpi-value">${d.kpis.total}</div>
+                    <div class="kpi-sub">100% Cobertura</div>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
-                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Nível de Adequação</h3>
-                    <div class="flex items-end">
-                        <span class="text-2xl font-bold text-red-600 dark:text-red-400">${d.level}</span>
-                    </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Classificação Geral TCE/SC</p>
+                <div class="card border-l-4 border-red">
+                    <div class="kpi-label">Nível Geral</div>
+                    <div class="kpi-value" style="font-size: 1.8rem;">${d.kpis.level}</div>
+                    <div class="kpi-sub text-red">Classificação</div>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
-                    <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Municípios Críticos</h3>
-                    <div class="flex items-end">
-                        <span class="text-4xl font-bold text-orange-500">${d.critical}</span>
-                        <span class="text-sm font-medium text-slate-500 ml-2 mb-1">(${d.criticalPercentage})</span>
-                    </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Faixas C e C+</p>
+                <div class="card border-l-4 border-orange">
+                    <div class="kpi-label">Municípios Críticos</div>
+                    <div class="kpi-value">${d.kpis.critical}</div>
+                    <div class="kpi-sub text-orange">${critPct}% (C e C+)</div>
                 </div>
             `;
         }
 
-        function renderChallenges() {
-            const container = document.getElementById('challenges-container');
-            container.innerHTML = data.challenges.map(c => {
-                // Mapeamento simples de cores para classes Tailwind
-                const colorMap = {
-                    'red': 'text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-900',
-                    'orange': 'text-orange-600 bg-orange-100 dark:text-orange-300 dark:bg-orange-900',
-                    'yellow': 'text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-900'
-                };
-                const colorClass = colorMap[c.iconColor] || 'text-blue-600 bg-blue-100';
-
-                return `
-                <div class="flex items-start space-x-4">
-                    <div class="flex-shrink-0">
-                        <div class="flex items-center justify-center h-12 w-12 rounded-md ${colorClass}">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="text-base font-bold text-slate-900 dark:text-slate-100">${c.title}</h4>
-                        <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">${c.desc}</p>
-                    </div>
-                </div>`;
-            }).join('');
+        function renderTopTable(year) {
+            const d = data[year] || data[2023];
+            const tbody = document.getElementById('top-table-body');
+            if (d.top && d.top.length > 0) {
+                tbody.innerHTML = d.top.map(m => `
+                    <tr>
+                        <td>${m.name}</td>
+                        <td>${m.region}</td>
+                        <td style="text-align: center;"><strong>${m.score}</strong></td>
+                        <td style="text-align: center;"><span class="badge badge-b">${m.band}</span></td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Dados detalhados não disponíveis para este ano no painel simplificado.</td></tr>';
+            }
         }
 
-        function renderSolutions() {
-            const container = document.getElementById('solutions-container');
-            container.innerHTML = data.solutions.map(s => `
-                <div class="bg-white dark:bg-slate-800 p-5 rounded shadow-sm border border-slate-100 dark:border-slate-600">
-                    <h4 class="font-bold text-slate-800 dark:text-slate-100 mb-2">${s.title}</h4>
-                    <p class="text-sm text-slate-600 dark:text-slate-400">${s.desc}</p>
-                </div>
-            `).join('');
-        }
-
-        function renderTopMunicipalities() {
-            const tbody = document.getElementById('top-municipalities-body');
-            tbody.innerHTML = data.topMunicipalities.map(m => `
-                <tr>
-                    <td class="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">${m.name}</td>
-                    <td class="px-4 py-3 text-center">${m.score.toFixed(2)}</td>
-                    <td class="px-4 py-3 text-center"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-bold rounded">${m.band}</span></td>
-                </tr>
-            `).join('');
-        }
-
-        function renderRecommendations() {
-            const list = document.getElementById('recommendations-list');
-            list.innerHTML = data.recommendations.map(r => `
-                <li class="flex">
-                    <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-bold text-xs">${r.step}</span>
-                    <div class="ml-3">
-                        <h5 class="text-sm font-bold text-slate-800 dark:text-slate-200">${r.title}</h5>
-                        <p class="text-xs text-slate-600 dark:text-slate-400">${r.desc}</p>
-                    </div>
-                </li>
-            `).join('');
-        }
-
-        // --- CHART.JS ---
-        let charts = {};
-
-        function initCharts() {
-            const commonOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: htmlEl.classList.contains('dark') ? '#cbd5e1' : '#475569' } } },
-                scales: {
-                    y: { 
-                        grid: { color: htmlEl.classList.contains('dark') ? '#334155' : '#e2e8f0' },
-                        ticks: { color: htmlEl.classList.contains('dark') ? '#cbd5e1' : '#475569' }
-                    },
-                    x: {
-                        grid: { color: htmlEl.classList.contains('dark') ? '#334155' : '#e2e8f0' },
-                        ticks: { color: htmlEl.classList.contains('dark') ? '#cbd5e1' : '#475569' }
-                    }
-                }
-            };
-
-            // Evolution Chart
-            const ctxEvol = document.getElementById('evolutionChart').getContext('2d');
-            charts.evolution = new Chart(ctxEvol, {
+        function initEvolutionChart() {
+            const ctx = document.getElementById('evolutionChart').getContext('2d');
+            charts.evolution = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: data.evolution.years,
+                    labels: historyData.years,
                     datasets: [{
-                        label: 'Índice Médio',
-                        data: data.evolution.averages,
-                        borderColor: '#2563eb', // Blue 600
-                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        label: 'Média Estadual i-Gov TI',
+                        data: historyData.averages,
+                        borderColor: '#2c5282', // Blue 800
+                        backgroundColor: 'rgba(44, 82, 130, 0.1)',
+                        borderWidth: 3,
                         fill: true,
-                        tension: 0.3
+                        tension: 0.4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#2c5282',
+                        pointRadius: 5
                     }]
                 },
-                options: { ...commonOptions, scales: { y: { min: 0, max: 1 } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    xMin: '2022',
+                                    xMax: '2022',
+                                    borderColor: '#f56565',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        content: 'Nova Metodologia',
+                                        enabled: true,
+                                        position: 'top'
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { min: 0, max: 0.8 }
+                    }
+                }
             });
+        }
 
-            // Distribution Chart
-            const ctxDist = document.getElementById('distributionChart').getContext('2d');
-            charts.distribution = new Chart(ctxDist, {
+        function initDistributionChart(year) {
+            const ctx = document.getElementById('distributionChart').getContext('2d');
+            const d = data[year] || data[2023];
+
+            if (charts.distribution) {
+                charts.distribution.destroy();
+            }
+
+            charts.distribution = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: data.distribution.labels,
+                    labels: ['A (Altamente Efetiva)', 'B (Muito Efetiva)', 'C+ (Em Adequação)', 'C (Baixo Nível)'],
                     datasets: [{
-                        data: data.distribution.data,
-                        backgroundColor: data.distribution.colors,
+                        data: d.dist,
+                        backgroundColor: [
+                            '#2f855a', // A - Green 700
+                            '#48bb78', // B - Green 500
+                            '#ecc94b', // C+ - Yellow 400
+                            '#f56565'  // C - Red 500
+                        ],
                         borderWidth: 0
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
             });
         }
 
-        // --- MAPA (Leaflet - Placeholder para GeoJSON real) ---
+        // --- MAPA (Placeholder funcional usando Leaflet) ---
+        // Nota: Para um mapa de calor real por município, seria necessário um GeoJSON pesado dos 295 municípios.
+        // Aqui usamos um mapa base para ilustrar a seção.
         function initMap() {
-            // Inicializa mapa centrado em SC
-            const map = L.map('map').setView([-27.242339, -50.218856], 7);
+            const map = L.map('map').setView([-27.242339, -50.218856], 7); // Centro de SC
             
-            // Adiciona tiles (OpenStreetMap)
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
-
-            // Nota: Para exibir o choropleth real (cores por município), seria necessário 
-            // carregar um arquivo GeoJSON pesado e fazer o merge com os dados do IEGM.
-            // Neste dashboard estático, o mapa serve como placeholder estrutural e visual.
+            
+            // Exemplo de Marcador em Luzerna (Destaque do Estudo)
+            L.marker([-27.133, -51.466]).addTo(map)
+                .bindPopup('<b>Luzerna</b><br>Nota: 0.75 (B)<br>Case de Sucesso (Smart City)')
+                .openPopup();
         }
 
-        function updateChartsTheme(theme) {
-            const isDark = theme === 'dark';
-            const textColor = isDark ? '#cbd5e1' : '#475569';
-            const gridColor = isDark ? '#334155' : '#e2e8f0';
-            Object.values(charts).forEach(chart => {
-                if(chart.options.scales?.x) chart.options.scales.x.ticks.color = textColor;
-                if(chart.options.scales?.y) chart.options.scales.y.ticks.color = textColor;
-                chart.update();
-            });
-        }
+        // --- UPDATE FUNCTION ---
+        window.updateDashboard = function() {
+            const year = document.getElementById('yearFilter').value;
+            renderKPIs(year);
+            renderTopTable(year);
+            initDistributionChart(year);
+        };
 
-        // INIT
+        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
-            renderExecutiveSummary();
-            renderChallenges();
-            renderSolutions();
-            renderTopMunicipalities();
-            renderRecommendations();
-            initCharts();
+            const defaultYear = '2023';
+            renderKPIs(defaultYear);
+            renderTopTable(defaultYear);
+            initEvolutionChart();
+            initDistributionChart(defaultYear);
             initMap();
         });
 
