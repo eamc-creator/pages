@@ -13,12 +13,11 @@
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
     
     <!-- Font Inter -->
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     
-    <!-- Leaflet CSS (Mantido do original para mapas) -->
+    <!-- Leaflet CSS (Mantido do original) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <style>
@@ -40,7 +39,7 @@
         .dark #theme-icon-light { display: block; }
         .light #theme-icon-dark { display: block; }
 
-        /* Estilos específicos do mapa e cards */
+        /* Estilos específicos do mapa (Mantidos do original) */
         #map { height: 500px; width: 100%; border-radius: 0.5rem; z-index: 1; }
         .info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; }
         .info h4 { margin: 0 0 5px; color: #777; }
@@ -78,10 +77,10 @@
         </nav>
     </header>
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN CONTENT (Estrutura original mantida, apenas classes Tailwind aplicadas) -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
 
-        <!-- Título e Filtro de Ano (Do original) -->
+        <!-- Header da Página (Filtros e Título) -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Governança de TI (i-Gov TI)</h1>
@@ -103,13 +102,14 @@
             </div>
         </div>
 
-        <!-- 1. RESUMO EXECUTIVO -->
+        <!-- 1. RESUMO EXECUTIVO (KPIs) -->
         <section id="executive-summary" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Cards serão preenchidos via JS -->
+            <!-- Cards serão preenchidos via JS (Mantendo lógica original) -->
         </section>
 
         <!-- 2. EVOLUÇÃO E DISTRIBUIÇÃO -->
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Gráfico Evolução -->
             <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
                 <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Evolução Histórica (2016-2022)</h3>
                 <div class="relative h-72 w-full">
@@ -117,6 +117,7 @@
                 </div>
             </div>
             
+            <!-- Gráfico Distribuição -->
             <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
                 <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Distribuição por Faixas (2022)</h3>
                 <div class="relative h-72 w-full flex justify-center">
@@ -303,35 +304,36 @@
             ]
         };
 
-        // --- 3. RENDERIZAÇÃO ---
+        // --- 3. RENDERIZAÇÃO (Lógica do original adaptada para Tailwind) ---
 
         function renderExecutiveSummary() {
             const container = document.getElementById('executive-summary');
             const d = data.summary[2022];
             
             container.innerHTML = `
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
                     <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Índice Geral i-Gov TI</h3>
                     <div class="flex items-end">
                         <span class="text-4xl font-bold text-blue-600 dark:text-blue-400">${d.average}</span>
+                        <span class="text-sm font-medium text-red-500 ml-2 mb-1">▼ -26%</span>
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Média Estadual</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Média Estadual (Escala 0-1)</p>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
                     <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Municípios Avaliados</h3>
                     <div class="flex items-end">
                         <span class="text-4xl font-bold text-slate-800 dark:text-slate-100">${d.evaluated}</span>
                     </div>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">100% de Cobertura</p>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
                     <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Nível de Adequação</h3>
                     <div class="flex items-end">
                         <span class="text-2xl font-bold text-red-600 dark:text-red-400">${d.level}</span>
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Classificação Geral</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Classificação Geral TCE/SC</p>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 card-hover transition-all duration-200">
                     <h3 class="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400 mb-1">Municípios Críticos</h3>
                     <div class="flex items-end">
                         <span class="text-4xl font-bold text-orange-500">${d.critical}</span>
@@ -433,7 +435,7 @@
                     datasets: [{
                         label: 'Índice Médio',
                         data: data.evolution.averages,
-                        borderColor: '#2563eb',
+                        borderColor: '#2563eb', // Blue 600
                         backgroundColor: 'rgba(37, 99, 235, 0.1)',
                         fill: true,
                         tension: 0.3
