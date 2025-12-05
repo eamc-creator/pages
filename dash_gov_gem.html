@@ -13,27 +13,19 @@
     
     <style>
         /* Configurações Globais e Fonte */
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa; /* Fundo original */
+        }
         
-        /* Ícones do tema (Sol/Lua) */
-        #theme-icon-light, #theme-icon-dark { display: none; }
-        .dark #theme-icon-light { display: block; }
-        .light #theme-icon-dark { display: block; }
-
-        /* --- CORREÇÃO E ESTILIZAÇÃO DAS ABAS (NAV-TABS) --- */
+        /* --- ESTILIZAÇÃO DAS ABAS (NAV-TABS) --- */
         .nav-tabs-container {
             width: 100%;
-            border-bottom: 1px solid #e2e8f0; /* slate-200 */
+            border-bottom: 1px solid #e2e8f0;
             background-color: white;
             padding-top: 1rem;
             position: relative;
-            z-index: 10; /* Garante que fique acima de outros elementos */
-        }
-        
-        /* Suporte Dark Mode para o container das abas */
-        .dark .nav-tabs-container {
-            background-color: #1e293b; /* slate-800 */
-            border-color: #334155; /* slate-700 */
+            z-index: 10;
         }
 
         .nav-tabs {
@@ -43,7 +35,7 @@
             display: flex;
             gap: 0.5rem;
             overflow-x: auto;
-            flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+            flex-wrap: wrap;
         }
 
         .nav-tab {
@@ -54,53 +46,37 @@
             cursor: pointer;
             transition: all 0.2s ease;
             white-space: nowrap;
-            
-            /* Estilo Inativo (Light Mode) */
-            background-color: #f1f5f9; /* slate-100 */
-            color: #64748b; /* slate-500 */
-            border: 1px solid #e2e8f0; /* slate-200 */
+            background-color: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
             border-bottom: none;
-            margin-bottom: -1px; /* Conecta visualmente com a borda inferior */
+            margin-bottom: -1px;
         }
 
-        /* Hover nas abas */
         .nav-tab:hover {
-            background-color: #e2e8f0; /* slate-200 */
-            color: #1e293b; /* slate-800 */
+            background-color: #e2e8f0;
+            color: #1e293b;
         }
 
-        /* Aba Ativa (Light Mode) */
         .nav-tab.active {
             background-color: white;
-            color: #1d4ed8; /* blue-700 */
-            border-color: #e2e8f0; /* slate-200 */
-            border-bottom: 1px solid white; /* "Apaga" a linha abaixo */
+            color: #1d4ed8;
+            border-color: #e2e8f0;
+            border-bottom: 1px solid white;
             font-weight: 600;
-            box-shadow: 0 -2px 0 0 #1d4ed8 inset; /* Linha azul no topo */
+            box-shadow: 0 -2px 0 0 #1d4ed8 inset;
         }
 
-        /* --- ESTILOS DAS ABAS PARA DARK MODE --- */
-        .dark .nav-tab {
-            background-color: #0f172a; /* slate-900 */
-            color: #94a3b8; /* slate-400 */
-            border-color: #334155; /* slate-700 */
-        }
-
-        .dark .nav-tab:hover {
-            background-color: #1e293b; /* slate-800 */
-            color: #f8fafc; /* slate-50 */
-        }
-
-        .dark .nav-tab.active {
-            background-color: #1e293b; /* slate-800 (Fundo do conteúdo) */
-            color: #60a5fa; /* blue-400 */
-            border-color: #334155; /* slate-700 */
-            border-bottom: 1px solid #1e293b; /* "Apaga" a linha abaixo */
-            box-shadow: 0 -2px 0 0 #60a5fa inset;
-        }
-
-        /* --- CLASSES DO CONTEÚDO ORIGINAL --- */
+        /* --- LAYOUT E GRID (Restaurando fidelidade ao original) --- */
         
+        .container-custom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+            width: 100%;
+        }
+
         .content-section {
             display: none;
             animation: fadeIn 0.3s ease-in-out;
@@ -115,83 +91,108 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .container-custom {
-            max-width: 1400px;
-            margin: 0 auto;
+        /* --- CARDS DE MÉTRICAS (Ajuste preciso de tamanho) --- */
+        
+        .metrics-grid {
+            display: grid;
+            /* Grid exato do original: auto-fit com minmax de 250px */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1.5rem; /* Padding original exato */
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Sombra original */
+            border-left: 4px solid #1a73e8;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%; /* Garante altura consistente */
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .metric-label {
+            font-size: 0.85rem; /* Tamanho original exato */
+            color: #666;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 2.5rem; /* Tamanho original exato (Tailwind text-4xl é 2.25rem) */
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .metric-description {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        /* Cores das bordas */
+        .metric-card.blue { border-left-color: #1a73e8; }
+        .metric-card.red { border-left-color: #d32f2f; }
+        .metric-card.purple { border-left-color: #7b1fa2; }
+        .metric-card.orange { border-left-color: #f57c00; }
+
+        /* --- OUTROS ELEMENTOS DO DASHBOARD --- */
+        
+        .hero {
+            background: white;
             padding: 2rem;
-            flex: 1;
-            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* Cards e Elementos */
-        .hero, .metric-card, .chart-container, .content-card, .classification-card, .municipality-list {
-            border: 1px solid #e2e8f0;
+        .classification-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
         
-        /* Adaptação Dark Mode para elementos internos */
-        .dark .hero, .dark .metric-card, .dark .chart-container, .dark .content-card, .dark .classification-card, .dark .municipality-list {
-            background-color: #1e293b; /* slate-800 */
-            border-color: #334155; /* slate-700 */
-            color: #e2e8f0;
-        }
-        
-        .dark .hero h1, .dark .chart-container h3, .dark .content-card h3, .dark .municipality-name {
-            color: #f1f5f9; /* slate-100 */
-        }
-        
-        .dark .hero p, .dark .content-card p, .dark .content-card ul {
-            color: #cbd5e1; /* slate-300 */
+        .classification-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
         }
 
-        /* Mantendo estilos específicos das classes originais */
-        .metric-card.blue { border-left: 4px solid #1d4ed8; }
-        .metric-card.red { border-left: 4px solid #dc2626; }
-        .metric-card.purple { border-left: 4px solid #7e22ce; }
-        .metric-card.orange { border-left: 4px solid #ea580c; }
-        
-        /* Ajuste de tabelas para Dark Mode */
-        .dark th { background-color: #0f172a; color: #e2e8f0; border-bottom-color: #334155; }
-        .dark td { border-bottom-color: #334155; color: #cbd5e1; }
-        .dark tr:hover { background-color: #334155; }
-        
-        /* Ajuste lista municípios Dark Mode */
-        .dark .municipality-item { border-bottom-color: #334155; }
-        .dark .municipality-item:hover { background-color: #334155; }
-        .dark .municipality-rank { background-color: #0f172a; color: #e2e8f0; }
+        .solution-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
 
-        /* Estilos originais que não precisam de alteração drástica */
-        .metric-value { font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .classification-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .classification-card { padding: 1.5rem; border-radius: 8px; text-align: center; }
+        /* Cores específicas de classificação para manter identidade visual */
+        .classification-card.a { border-color: #4caf50; background: #f1f8f4; }
+        .classification-card.b-plus { border-color: #2196f3; background: #f3f7ff; }
+        .classification-card.b { border-color: #00bcd4; background: #f0f9fb; }
+        .classification-card.c-plus { border-color: #ffc107; background: #fffef0; }
+        .classification-card.c { border-color: #f44336; background: #ffe5e5; }
+        
+        /* Tipografia de classificação */
         .classification-letter { font-size: 2.5rem; font-weight: bold; margin-bottom: 0.5rem; }
         .classification-count { font-size: 1.8rem; font-weight: bold; margin-bottom: 0.5rem; }
-        .solution-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .solution-card { padding: 1.5rem; border-radius: 8px; color: white; transition: transform 0.3s ease; }
-        .solution-card:hover { transform: translateY(-4px); }
-        .solution-card.blue { background: linear-gradient(135deg, #1d4ed8, #1e3a8a); }
-        .solution-card.green { background: linear-gradient(135deg, #15803d, #14532d); }
-        .solution-card.purple { background: linear-gradient(135deg, #7e22ce, #581c87); }
-        
-        /* Cores específicas de classificação para manter identidade visual */
-        .classification-card.a { background: #f0fdf4; border-color: #22c55e; color: #14532d; }
-        .classification-card.b-plus { background: #eff6ff; border-color: #3b82f6; color: #1e3a8a; }
-        .classification-card.b { background: #ecfeff; border-color: #06b6d4; color: #164e63; }
-        .classification-card.c-plus { background: #fefce8; border-color: #eab308; color: #713f12; }
-        .classification-card.c { background: #fef2f2; border-color: #ef4444; color: #7f1d1d; }
-        
-        /* Override Dark Mode para Classificações (para não ficar muito brilhante) */
-        .dark .classification-card.a { background: #14532d; border-color: #22c55e; color: #f0fdf4; }
-        .dark .classification-card.b-plus { background: #1e3a8a; border-color: #3b82f6; color: #eff6ff; }
-        .dark .classification-card.b { background: #155e75; border-color: #06b6d4; color: #ecfeff; }
-        .dark .classification-card.c-plus { background: #713f12; border-color: #eab308; color: #fefce8; }
-        .dark .classification-card.c { background: #7f1d1d; border-color: #ef4444; color: #fef2f2; }
+        .classification-label { font-size: 0.85rem; color: #666; }
 
     </style>
 </head>
-<body class="h-full flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-300 transition-colors duration-200">
+<body class="h-full flex flex-col min-h-screen text-slate-800">
 
-    <!-- HEADER -->
-    <header class="bg-white/80 dark:bg-slate-800/50 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 backdrop-blur-sm transition-colors duration-200">
+    <!-- HEADER (Sem Toggle) -->
+    <header class="bg-white/95 shadow-sm border-b border-slate-200 sticky top-0 z-50 backdrop-blur-sm">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
             <div class="w-full py-4 flex items-center justify-between">
                 <div class="flex items-center">
@@ -199,22 +200,17 @@
                         <span class="sr-only">CIASC</span>
                         <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
                     </a>
-                    <span class="ml-4 text-2xl font-bold text-blue-800 dark:text-blue-400">CIASC | AIT</span>
+                    <span class="ml-4 text-2xl font-bold text-blue-800">CIASC | AIT</span>
                 </div>
                 <div class="ml-10 flex items-center space-x-4">
-                     <span class="text-sm font-medium text-slate-600 dark:text-slate-400 hidden sm:inline">Dashboard | Governança em TI Municipal</span>
-                     <button id="theme-toggle" type="button" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none transition-colors">
-                        <span class="sr-only">Alternar tema</span>
-                        <svg id="theme-icon-light" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12H.75m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25 2.25 2.25 0 0 0 2.25 2.25 2.25 2.25 0 0 0 2.25-2.25A2.25 2.25 0 0 0 12 12Z" /></svg>
-                        <svg id="theme-icon-dark" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>
-                    </button>
+                     <span class="text-sm font-medium text-slate-600 hidden sm:inline">Dashboard | Governança em TI Municipal</span>
                 </div>
             </div>
         </nav>
     </header>
 
     <!-- AREA DAS ABAS (NAV TABS) -->
-    <div class="nav-tabs-container transition-colors duration-200">
+    <div class="nav-tabs-container">
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('resumo')">Resumo Executivo</button>
             <button class="nav-tab" onclick="switchTab('evolucao')">Evolução Histórica</button>
@@ -230,12 +226,12 @@
     <div class="container-custom">
         <!-- Resumo Executivo -->
         <div id="resumo" class="content-section active">
-            <div class="hero p-8 rounded-lg mb-8 bg-white shadow-sm">
-                <h1 class="text-3xl font-bold mb-4">Situação da Governança em TI nos Municípios de Santa Catarina</h1>
-                <p class="text-lg">Uma análise abrangente dos desafios e oportunidades estratégicas para a modernização da gestão de Tecnologia da Informação nos municípios catarinenses, baseada nos dados do IEGM (Exercícios 2020-2022).</p>
+            <div class="hero">
+                <h1 class="text-3xl font-bold mb-4 text-[#1a1a1a]">Situação da Governança em TI nos Municípios de Santa Catarina</h1>
+                <p class="text-lg text-[#666]">Uma análise abrangente dos desafios e oportunidades estratégicas para a modernização da gestão de Tecnologia da Informação nos municípios catarinenses, baseada nos dados do IEGM (Exercícios 2020-2022).</p>
             </div>
 
-            <div class="alert p-6 rounded-lg mb-8 bg-amber-50 border-l-4 border-amber-500 flex gap-4 text-amber-900">
+            <div class="alert p-6 rounded-lg mb-8 bg-[#fff3cd] border-l-4 border-[#ffc107] flex gap-4 text-[#856404]">
                 <div class="text-2xl">⚠️</div>
                 <div>
                     <h3 class="font-bold mb-1">Mudança Metodológica em 2022</h3>
@@ -243,79 +239,80 @@
                 </div>
             </div>
 
+            <!-- GRID DE MÉTRICAS (Tamanhos Corrigidos) -->
             <div class="metrics-grid">
-                <div class="metric-card blue p-6 rounded-lg shadow-sm bg-white">
+                <div class="metric-card blue">
                     <div class="metric-label">📊 Índice Médio (2022)</div>
                     <div class="metric-value">0.3915</div>
-                    <div class="metric-description">Escala IEGM 2023</div>
+                    <div class="metric-description">Escala IEGM 2023 (Nova Metodologia)</div>
                 </div>
-                <div class="metric-card red p-6 rounded-lg shadow-sm bg-white">
+                <div class="metric-card red">
                     <div class="metric-label">⚠️ Mudança Metodológica</div>
                     <div class="metric-value">-30.5%</div>
-                    <div class="metric-description">Nova escala</div>
+                    <div class="metric-description">Nova escala (não representa retrocesso)</div>
                 </div>
-                <div class="metric-card purple p-6 rounded-lg shadow-sm bg-white">
+                <div class="metric-card purple">
                     <div class="metric-label">🏛️ Municípios Respondentes</div>
                     <div class="metric-value">282</div>
-                    <div class="metric-description">De 295 municípios</div>
+                    <div class="metric-description">De 295 municípios catarinenses</div>
                 </div>
-                <div class="metric-card orange p-6 rounded-lg shadow-sm bg-white">
+                <div class="metric-card orange">
                     <div class="metric-label">⭐ Melhor Desempenho</div>
                     <div class="metric-value">0.99</div>
-                    <div class="metric-description">Urussanga (A)</div>
+                    <div class="metric-description">Urussanga (Classificação A)</div>
                 </div>
             </div>
             
-             <div class="content-card p-6 rounded-lg bg-white shadow-sm mb-6">
-                <h3 class="text-xl font-bold mb-4">Contexto e Conclusão Principal</h3>
-                <p>A análise de sete anos (2016-2022) revela uma trajetória positiva na Governança em TI dos municípios de Santa Catarina. O índice manteve-se consistente em torno de 0.55-0.57 no período pré-pandemia, com uma leve queda em 2020 e recuperação em 2021.</p>
+             <div class="content-card bg-white p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.1)] mb-6">
+                <h3 class="text-xl font-bold mb-4 text-[#1a73e8]">Contexto e Conclusão Principal</h3>
+                <p class="text-[#666] mb-4 leading-relaxed">A análise de sete anos (2016-2022) revela uma trajetória positiva na Governança em TI dos municípios de Santa Catarina. O índice manteve-se consistente em torno de 0.55-0.57 no período pré-pandemia, com uma leve queda em 2020 e recuperação em 2021.</p>
             </div>
         </div>
 
         <!-- Evolução Histórica -->
         <div id="evolucao" class="content-section">
-            <div class="hero p-8 rounded-lg mb-8 bg-white shadow-sm">
-                <h1 class="text-3xl font-bold mb-4">Evolução do Índice i-Gov TI (2016-2022)</h1>
-                <p>Série histórica completa mostrando a trajetória da Governança em TI em Santa Catarina ao longo de sete anos.</p>
+            <div class="hero">
+                <h1 class="text-3xl font-bold mb-4 text-[#1a1a1a]">Evolução do Índice i-Gov TI (2016-2022)</h1>
+                <p class="text-lg text-[#666]">Série histórica completa mostrando a trajetória da Governança em TI em Santa Catarina ao longo de sete anos.</p>
             </div>
 
-            <div class="chart-container p-8 rounded-lg bg-white shadow-sm mb-8" style="height: 400px; position: relative;">
-                <h3 class="text-xl font-bold mb-6">Índice i-Gov TI - Série Histórica</h3>
+            <div class="chart-container bg-white p-8 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.1)] mb-8" style="height: 400px; position: relative;">
+                <h3 class="text-xl font-bold mb-6 text-[#1a1a1a]">Índice i-Gov TI - Série Histórica</h3>
                 <div class="chart-wrapper" style="height: 300px; width: 100%;">
                     <canvas id="evolutionChart"></canvas>
                 </div>
             </div>
             
-            <div class="content-card p-6 rounded-lg bg-white shadow-sm">
-                <h3 class="text-xl font-bold mb-4">Análise por Período</h3>
-                <table>
+            <div class="content-card bg-white p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+                <h3 class="text-xl font-bold mb-4 text-[#1a73e8]">Análise por Período</h3>
+                <table class="w-full">
                     <thead>
                         <tr>
-                            <th class="p-3 text-left">Período</th>
-                            <th class="p-3 text-left">Anos</th>
-                            <th class="p-3 text-left">Índice Médio</th>
+                            <th class="p-3 text-left bg-[#f0f0f0] border-b-2 border-[#ddd] text-[#333]">Período</th>
+                            <th class="p-3 text-left bg-[#f0f0f0] border-b-2 border-[#ddd] text-[#333]">Anos</th>
+                            <th class="p-3 text-left bg-[#f0f0f0] border-b-2 border-[#ddd] text-[#333]">Índice Médio</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="border-b">
-                            <td class="p-3 font-bold">Pré-Pandemia</td>
-                            <td class="p-3">2016-2019</td>
-                            <td class="p-3">0.5575</td>
+                        <tr class="border-b hover:bg-[#f9f9f9]">
+                            <td class="p-3 font-bold text-[#475569]">Pré-Pandemia</td>
+                            <td class="p-3 text-[#475569]">2016-2019</td>
+                            <td class="p-3 text-[#475569]">0.5575</td>
                         </tr>
-                        <tr class="border-b">
-                            <td class="p-3 font-bold">Pandemia</td>
-                            <td class="p-3">2020</td>
-                            <td class="p-3">0.5461</td>
+                        <tr class="border-b hover:bg-[#f9f9f9]">
+                            <td class="p-3 font-bold text-[#475569]">Pandemia</td>
+                            <td class="p-3 text-[#475569]">2020</td>
+                            <td class="p-3 text-[#475569]">0.5461</td>
                         </tr>
-                        <tr class="border-b">
-                            <td class="p-3 font-bold">Pós-Pandemia</td>
-                            <td class="p-3">2021</td>
-                            <td class="p-3">0.5636</td>
+                        <tr class="border-b hover:bg-[#f9f9f9]">
+                            <td class="p-3 font-bold text-[#475569]">Pós-Pandemia</td>
+                            <td class="p-3 text-[#475569]">2021</td>
+                            <td class="p-3 text-[#475569]">0.5636</td>
                         </tr>
-                        <tr>
-                            <td class="p-3 font-bold">Nova Metodologia</td>
-                            <td class="p-3">2022</td>
-                            <td class="p-3">0.3915</td>
+                        <tr class="hover:bg-[#f9f9f9]">
+                            <td class="p-3 font-bold text-[#475569]">Nova Metodologia</td>
+                            <td class="p-3 text-[#475569]">2022</td>
+                            <td class="p-3 text-[#475569]">0.3915</td>
                         </tr>
                     </tbody>
                 </table>
@@ -324,9 +321,9 @@
 
         <!-- Distribuição 2022 -->
         <div id="distribuicao" class="content-section">
-             <div class="hero p-8 rounded-lg mb-8 bg-white shadow-sm">
-                <h1 class="text-3xl font-bold mb-4">Distribuição de Municípios por Classificação (2022)</h1>
-                <p>Análise da distribuição dos 282 municípios respondentes por classificação de Governança em TI.</p>
+             <div class="hero">
+                <h1 class="text-3xl font-bold mb-4 text-[#1a1a1a]">Distribuição de Municípios por Classificação (2022)</h1>
+                <p class="text-lg text-[#666]">Análise da distribuição dos 282 municípios respondentes por classificação de Governança em TI.</p>
             </div>
 
             <div class="classification-grid">
@@ -357,58 +354,58 @@
                 </div>
             </div>
             
-            <div class="content-card p-6 rounded-lg bg-white shadow-sm">
-                <h3 class="text-xl font-bold mb-4">Interpretação</h3>
-                <p>85.8% dos municípios (242) estão em nível C ou C+, indicando desafios estruturais. Apenas 2 municípios (Urussanga e Içara) alcançaram a classificação A.</p>
+            <div class="content-card bg-white p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+                <h3 class="text-xl font-bold mb-4 text-[#1a73e8]">Interpretação</h3>
+                <p class="text-[#666]">85.8% dos municípios (242) estão em nível C ou C+, indicando desafios estruturais. Apenas 2 municípios (Urussanga e Içara) alcançaram a classificação A.</p>
             </div>
         </div>
 
         <!-- Desafios -->
         <div id="desafios" class="content-section">
-            <div class="hero p-8 rounded-lg mb-8 bg-white shadow-sm">
-                <h1 class="text-3xl font-bold mb-4">Principais Desafios Identificados</h1>
+            <div class="hero">
+                <h1 class="text-3xl font-bold mb-4 text-[#1a1a1a]">Principais Desafios Identificados</h1>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="content-card p-6 rounded-lg bg-white shadow-sm">
-                    <h3 class="text-xl font-bold mb-2">⚡ Planejamento Deficiente</h3>
-                    <p>Ausência de PDTI formalizado e atuação reativa em TI.</p>
+                <div class="content-card bg-white p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+                    <h3 class="text-xl font-bold mb-2 text-[#1a73e8]">⚡ Planejamento Deficiente</h3>
+                    <p class="text-[#666]">Ausência de PDTI formalizado e atuação reativa em TI.</p>
                 </div>
-                <div class="content-card p-6 rounded-lg bg-white shadow-sm">
-                    <h3 class="text-xl font-bold mb-2">🔒 Segurança e LGPD</h3>
-                    <p>Falta de conformidade plena com LGPD e políticas de segurança.</p>
+                <div class="content-card bg-white p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+                    <h3 class="text-xl font-bold mb-2 text-[#1a73e8]">🔒 Segurança e LGPD</h3>
+                    <p class="text-[#666]">Falta de conformidade plena com LGPD e políticas de segurança.</p>
                 </div>
-                <div class="content-card p-6 rounded-lg bg-white shadow-sm">
-                    <h3 class="text-xl font-bold mb-2">📈 Gestão de Serviços</h3>
-                    <p>Processos ITIL (Incidentes, Mudanças) inexistentes ou informais.</p>
+                <div class="content-card bg-white p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+                    <h3 class="text-xl font-bold mb-2 text-[#1a73e8]">📈 Gestão de Serviços</h3>
+                    <p class="text-[#666]">Processos ITIL (Incidentes, Mudanças) inexistentes ou informais.</p>
                 </div>
-                <div class="content-card p-6 rounded-lg bg-white shadow-sm">
-                    <h3 class="text-xl font-bold mb-2">🏛️ Estrutura de Governança</h3>
-                    <p>Falta de Comitê de Governança de TI (CGTI) atuante.</p>
+                <div class="content-card bg-white p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+                    <h3 class="text-xl font-bold mb-2 text-[#1a73e8]">🏛️ Estrutura de Governança</h3>
+                    <p class="text-[#666]">Falta de Comitê de Governança de TI (CGTI) atuante.</p>
                 </div>
             </div>
         </div>
 
         <!-- Soluções CIASC -->
         <div id="solucoes" class="content-section">
-             <div class="hero p-8 rounded-lg mb-8 bg-white shadow-sm">
-                <h1 class="text-3xl font-bold mb-4">Soluções Estratégicas do CIASC</h1>
+             <div class="hero">
+                <h1 class="text-3xl font-bold mb-4 text-[#1a1a1a]">Soluções Estratégicas do CIASC</h1>
             </div>
 
             <div class="solution-cards">
-                <div class="solution-card blue">
+                <div class="solution-card" style="background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);">
                     <h3 class="text-xl font-bold mb-2">Conectividade Integrada</h3>
                     <p class="text-sm opacity-90 mb-4">Infraestrutura de TI robusta e segura para municípios.</p>
-                    <a href="https://www.ciasc.sc.gov.br/conectividade-integrada/" target="_blank">Saiba mais →</a>
+                    <a href="https://www.ciasc.sc.gov.br/conectividade-integrada/" target="_blank" class="border-b-2 border-white/50 hover:border-white font-bold text-white no-underline">Saiba mais →</a>
                 </div>
 
-                <div class="solution-card green">
+                <div class="solution-card" style="background: linear-gradient(135deg, #15803d 0%, #14532d 100%);">
                     <h3 class="text-xl font-bold mb-2">Dívida Ativa</h3>
                     <p class="text-sm opacity-90 mb-4">Modernização da arrecadação e gestão de infrações.</p>
-                    <p class="text-xs font-bold mt-2">Lei 14.403 (Dispensa Licitação)</p>
+                    <p class="text-xs font-bold mt-2 text-white/90">Lei 14.403 (Dispensa Licitação)</p>
                 </div>
 
-                <div class="solution-card purple">
+                <div class="solution-card" style="background: linear-gradient(135deg, #7e22ce 0%, #581c87 100%);">
                     <h3 class="text-xl font-bold mb-2">Módulo JARI</h3>
                     <p class="text-sm opacity-90 mb-4">Plataforma para julgamento de recursos de infrações.</p>
                 </div>
@@ -417,46 +414,46 @@
 
         <!-- Municípios Destaque -->
         <div id="municipios" class="content-section">
-            <div class="hero p-8 rounded-lg mb-8 bg-white shadow-sm">
-                <h1 class="text-3xl font-bold mb-4">Municípios Destaque (2022)</h1>
+            <div class="hero">
+                <h1 class="text-3xl font-bold mb-4 text-[#1a1a1a]">Municípios Destaque (2022)</h1>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="municipality-list rounded-lg overflow-hidden bg-white shadow-sm">
-                    <div class="p-4 bg-gray-50 dark:bg-slate-700 border-b dark:border-slate-600 font-bold">🏆 Top 5 - Melhor Desempenho</div>
-                    <div class="municipality-item p-4 flex justify-between items-center border-b">
-                        <div><span class="municipality-rank w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 inline-flex items-center justify-center mr-3 text-sm font-bold">1</span>Urussanga</div>
-                        <div class="font-bold text-blue-600 dark:text-blue-400">0.99</div>
+                <div class="bg-white rounded-lg overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+                    <div class="p-4 bg-gray-50 border-b font-bold text-[#333]">🏆 Top 5 - Melhor Desempenho</div>
+                    <div class="p-4 flex justify-between items-center border-b border-[#eee] hover:bg-[#f8f9fa]">
+                        <div><span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#e0e0e0] mr-3 text-sm font-bold text-[#333]">1</span>Urussanga</div>
+                        <div class="font-bold text-[#1a73e8]">0.99</div>
                     </div>
-                    <div class="municipality-item p-4 flex justify-between items-center border-b">
-                        <div><span class="municipality-rank w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 inline-flex items-center justify-center mr-3 text-sm font-bold">2</span>Içara</div>
-                        <div class="font-bold text-blue-600 dark:text-blue-400">0.92</div>
+                    <div class="p-4 flex justify-between items-center border-b border-[#eee] hover:bg-[#f8f9fa]">
+                        <div><span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#e0e0e0] mr-3 text-sm font-bold text-[#333]">2</span>Içara</div>
+                        <div class="font-bold text-[#1a73e8]">0.92</div>
                     </div>
-                    <div class="municipality-item p-4 flex justify-between items-center border-b">
-                        <div><span class="municipality-rank w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 inline-flex items-center justify-center mr-3 text-sm font-bold">3</span>Jaraguá do Sul</div>
-                        <div class="font-bold text-blue-600 dark:text-blue-400">0.88</div>
+                    <div class="p-4 flex justify-between items-center border-b border-[#eee] hover:bg-[#f8f9fa]">
+                        <div><span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#e0e0e0] mr-3 text-sm font-bold text-[#333]">3</span>Jaraguá do Sul</div>
+                        <div class="font-bold text-[#1a73e8]">0.88</div>
                     </div>
-                    <div class="municipality-item p-4 flex justify-between items-center border-b">
-                        <div><span class="municipality-rank w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 inline-flex items-center justify-center mr-3 text-sm font-bold">4</span>Otacílio Costa</div>
-                        <div class="font-bold text-blue-600 dark:text-blue-400">0.88</div>
+                    <div class="p-4 flex justify-between items-center border-b border-[#eee] hover:bg-[#f8f9fa]">
+                        <div><span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#e0e0e0] mr-3 text-sm font-bold text-[#333]">4</span>Otacílio Costa</div>
+                        <div class="font-bold text-[#1a73e8]">0.88</div>
                     </div>
-                     <div class="municipality-item p-4 flex justify-between items-center border-b">
-                        <div><span class="municipality-rank w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 inline-flex items-center justify-center mr-3 text-sm font-bold">5</span>Rio Negrinho</div>
-                        <div class="font-bold text-blue-600 dark:text-blue-400">0.84</div>
+                     <div class="p-4 flex justify-between items-center border-b border-[#eee] hover:bg-[#f8f9fa]">
+                        <div><span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#e0e0e0] mr-3 text-sm font-bold text-[#333]">5</span>Rio Negrinho</div>
+                        <div class="font-bold text-[#1a73e8]">0.84</div>
                     </div>
                 </div>
 
-                 <div class="municipality-list rounded-lg overflow-hidden bg-white shadow-sm">
-                    <div class="p-4 bg-gray-50 dark:bg-slate-700 border-b dark:border-slate-600 font-bold">⚠️ Necessitam Atenção (Exemplos)</div>
-                     <div class="municipality-item p-4 flex justify-between items-center border-b">
+                 <div class="bg-white rounded-lg overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+                    <div class="p-4 bg-gray-50 border-b font-bold text-[#333]">⚠️ Necessitam Atenção (Exemplos)</div>
+                     <div class="p-4 flex justify-between items-center border-b border-[#eee] hover:bg-[#f8f9fa]">
                         <div>Abelardo Luz</div>
                         <div class="font-bold text-red-500">0.05</div>
                     </div>
-                    <div class="municipality-item p-4 flex justify-between items-center border-b">
+                    <div class="p-4 flex justify-between items-center border-b border-[#eee] hover:bg-[#f8f9fa]">
                         <div>São José do Cerrito</div>
                         <div class="font-bold text-red-500">0.08</div>
                     </div>
-                    <div class="municipality-item p-4 flex justify-between items-center border-b">
+                    <div class="p-4 flex justify-between items-center border-b border-[#eee] hover:bg-[#f8f9fa]">
                         <div>Belmonte</div>
                         <div class="font-bold text-red-500">0.10</div>
                     </div>
@@ -466,32 +463,32 @@
 
         <!-- Recomendações -->
         <div id="recomendacoes" class="content-section">
-            <div class="hero p-8 rounded-lg mb-8 bg-white shadow-sm">
-                <h1 class="text-3xl font-bold mb-4">Recomendações Estratégicas</h1>
+            <div class="hero">
+                <h1 class="text-3xl font-bold mb-4 text-[#1a1a1a]">Recomendações Estratégicas</h1>
             </div>
 
-            <div class="content-card p-6 rounded-lg bg-white shadow-sm mb-8">
-                <h3 class="text-xl font-bold mb-4">Roadmap para Municípios</h3>
+            <div class="content-card bg-white p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.1)] mb-8">
+                <h3 class="text-xl font-bold mb-4 text-[#1a73e8]">Roadmap para Municípios</h3>
                 <div class="space-y-4">
                     <div class="flex">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">1</div>
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">1</div>
                         <div class="ml-4">
-                            <h4 class="font-bold">Fase 1: Fundação (Mês 1-3)</h4>
-                            <p class="text-sm">Formar CGTI e iniciar PDTI.</p>
+                            <h4 class="font-bold text-[#333]">Fase 1: Fundação (Mês 1-3)</h4>
+                            <p class="text-sm text-[#666]">Formar CGTI e iniciar PDTI.</p>
                         </div>
                     </div>
                     <div class="flex">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">2</div>
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">2</div>
                         <div class="ml-4">
-                            <h4 class="font-bold">Fase 2: Estruturação (Mês 4-6)</h4>
-                            <p class="text-sm">Políticas de Segurança e conformidade LGPD.</p>
+                            <h4 class="font-bold text-[#333]">Fase 2: Estruturação (Mês 4-6)</h4>
+                            <p class="text-sm text-[#666]">Políticas de Segurança e conformidade LGPD.</p>
                         </div>
                     </div>
                     <div class="flex">
-                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">3</div>
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">3</div>
                         <div class="ml-4">
-                            <h4 class="font-bold">Fase 3: Implementação (Mês 7-12)</h4>
-                            <p class="text-sm">Adoção de soluções compartilhadas do CIASC.</p>
+                            <h4 class="font-bold text-[#333]">Fase 3: Implementação (Mês 7-12)</h4>
+                            <p class="text-sm text-[#666]">Adoção de soluções compartilhadas do CIASC.</p>
                         </div>
                     </div>
                 </div>
@@ -500,27 +497,27 @@
     </div>
 
     <!-- FOOTER -->
-    <footer class="bg-slate-100 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 mt-12 transition-colors duration-200">
+    <footer class="bg-slate-100 border-t border-slate-200 mt-12">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                 <div class="flex flex-col justify-center items-center md:items-start space-y-4">
                     <div class="w-fit">
                          <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
                     </div>
-                    <p class="text-xs text-center md:text-left text-slate-600 dark:text-slate-400">
+                    <p class="text-xs text-center md:text-left text-slate-600">
                         Todos os Direitos reservados - AIT<br>CIASC 2025
                     </p>
                 </div>
-                <div class="text-center md:text-left text-sm text-slate-700 dark:text-slate-300">
-                    <h4 class="font-semibold text-blue-800 dark:text-blue-400">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
+                <div class="text-center md:text-left text-sm text-slate-700">
+                    <h4 class="font-semibold text-blue-800">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
                     <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
                     <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
                 </div>
                 <div class="text-center md:text-right text-sm">
-                    <p class="font-semibold text-blue-800 dark:text-blue-400">Links Úteis</p>
+                    <p class="font-semibold text-blue-800">Links Úteis</p>
                     <ul class="mt-2 space-y-1">
-                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Site Oficial</a></li>
-                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Transparência</a></li>
+                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="hover:text-blue-700 hover:underline text-slate-600">Site Oficial</a></li>
+                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="hover:text-blue-700 hover:underline text-slate-600">Transparência</a></li>
                     </ul>
                 </div>
             </div>
@@ -528,21 +525,6 @@
     </footer>
 
     <script>
-        const htmlEl = document.documentElement;
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        htmlEl.classList.add(currentTheme);
-        
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        if (themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', () => {
-                htmlEl.classList.toggle('dark');
-                htmlEl.classList.toggle('light');
-                const newTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
-                localStorage.setItem('theme', newTheme);
-                if (typeof updateChartTheme === 'function') updateChartTheme(newTheme);
-            });
-        }
-
         function switchTab(tabName) {
             const sections = document.querySelectorAll('.content-section');
             sections.forEach(section => {
@@ -564,11 +546,6 @@
         function initEvolutionChart() {
             const ctx = document.getElementById('evolutionChart');
             if (!ctx) return;
-
-            // Detecta tema inicial para o gráfico
-            const isDark = htmlEl.classList.contains('dark');
-            const textColor = isDark ? '#e2e8f0' : '#334155';
-            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
 
             new Chart(ctx, {
                 type: 'line',
@@ -603,17 +580,17 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            labels: { color: textColor, font: { size: 12 } }
+                            labels: { color: '#333', font: { size: 12 } }
                         }
                     },
                     scales: {
                         y: {
                             min: 0.3, max: 0.65,
-                            ticks: { color: textColor },
-                            grid: { color: gridColor }
+                            ticks: { color: '#666' },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
                         },
                         x: {
-                            ticks: { color: textColor },
+                            ticks: { color: '#666' },
                             grid: { display: false }
                         }
                     }
