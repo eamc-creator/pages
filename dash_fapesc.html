@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Gestão de Bolsas 2025 - CIASC</title>
     
-   <!-- Favicon do CIASC (conforme solicitado do anexo) -->
+    <!-- Favicon CIASC Oficial -->
     <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" type="image/png">
     
     <!-- Tailwind CSS -->
@@ -21,7 +21,7 @@
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         ciasc: {
-                            blue: '#004a80',    // Azul Institucional aproximado
+                            blue: '#004a80',    // Azul Institucional
                             light: '#007dc5',   // Azul Claro
                             green: '#00965e',   // Verde SC
                             dark: '#1e293b'
@@ -35,8 +35,8 @@
     <style>
         /* Gráficos CSS Puro */
         .chart-bar-track {
-            background-color: #e2e8f0;
-            border-radius: 9999px;
+            background-color: #f1f5f9;
+            border-radius: 4px;
             height: 24px;
             width: 100%;
             overflow: hidden;
@@ -44,7 +44,7 @@
         }
         .chart-bar-fill {
             height: 100%;
-            border-radius: 9999px;
+            border-radius: 4px;
             transition: width 1s ease-out;
             display: flex;
             align-items: center;
@@ -53,12 +53,11 @@
             color: white;
             font-size: 0.75rem;
             font-weight: 700;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .pie-chart {
-            width: 220px;
-            height: 220px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             position: relative;
             margin: 0 auto;
@@ -68,7 +67,7 @@
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 140px; height: 140px;
+            width: 130px; height: 130px;
             background-color: white;
             border-radius: 50%;
             display: flex;
@@ -78,10 +77,6 @@
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
             z-index: 10;
         }
-
-        /* Animações sutis */
-        tr { transition: background-color 0.2s; }
-        tr:hover td { background-color: #f8fafc; }
     </style>
 </head>
 <body class="flex flex-col min-h-full text-slate-800">
@@ -90,24 +85,16 @@
     <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <!-- Logo CIASC (Placeholder Institucional) -->
-                <img src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="CIASC Logo" class="h-10 w-auto">
-               <!-- <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC"> -->
-                
+                <img src="https://www.ciasc.sc.gov.br/wp-content/uploads/2020/07/logo-ciasc-horizontal.png" alt="CIASC Logo" class="h-10 w-auto">
                 <div class="hidden md:block w-px h-8 bg-slate-300 mx-2"></div>
-                
                 <div class="flex flex-col">
                     <h1 class="text-xl font-bold text-ciasc-blue tracking-tight leading-none">Painel de Gestão de Bolsas</h1>
                     <span class="text-xs text-slate-500 font-medium mt-1">Programa de Pesquisa, Desenvolvimento e Inovação 2025</span>
                 </div>
             </div>
-            
             <div class="flex items-center gap-3">
                 <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                    Para Aprovação (Rev. 2)
-                </span>
-                <span class="text-sm text-slate-400 font-medium hidden sm:block">
-                    Atualizado: Dez/2025
+                    Aprovado (Rev. 2)
                 </span>
             </div>
         </div>
@@ -119,88 +106,57 @@
             
             <!-- KPI CARDS -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Total Investimento -->
-                <div class="bg-white overflow-hidden rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow duration-300">
-                    <div class="p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 bg-blue-50 rounded-lg p-3">
-                                <svg class="h-6 w-6 text-ciasc-blue" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                </svg>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-slate-500 truncate">Investimento Mensal</dt>
-                                    <dd class="flex items-baseline">
-                                        <div class="text-2xl font-bold text-slate-900" id="kpi-total">R$ 0,00</div>
-                                    </dd>
-                                </dl>
-                            </div>
+                <!-- Investimento -->
+                <div class="bg-white overflow-hidden rounded-xl shadow-sm border border-slate-200">
+                    <div class="p-6 flex items-center">
+                        <div class="flex-shrink-0 bg-blue-50 rounded-lg p-3">
+                            <svg class="h-6 w-6 text-ciasc-blue" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
                         </div>
-                    </div>
-                    <div class="bg-slate-50 px-6 py-3 border-t border-slate-100">
-                        <div class="text-xs font-medium text-ciasc-blue">Total consolidado das 15 vagas</div>
+                        <div class="ml-5">
+                            <p class="text-sm font-medium text-slate-500">Investimento Mensal</p>
+                            <p class="text-2xl font-bold text-slate-900" id="kpi-total">R$ 0,00</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Total Vagas -->
-                <div class="bg-white overflow-hidden rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow duration-300">
-                    <div class="p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 bg-green-50 rounded-lg p-3">
-                                <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-                                </svg>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-slate-500 truncate">Vagas Solicitadas</dt>
-                                    <dd class="flex items-baseline">
-                                        <div class="text-2xl font-bold text-slate-900" id="kpi-vagas">0</div>
-                                    </dd>
-                                </dl>
-                            </div>
+                <!-- Vagas -->
+                <div class="bg-white overflow-hidden rounded-xl shadow-sm border border-slate-200">
+                    <div class="p-6 flex items-center">
+                        <div class="flex-shrink-0 bg-green-50 rounded-lg p-3">
+                            <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                            </svg>
                         </div>
-                    </div>
-                    <div class="bg-slate-50 px-6 py-3 border-t border-slate-100">
-                        <div class="text-xs font-medium text-green-600">Prioritárias para o Edital</div>
+                        <div class="ml-5">
+                            <p class="text-sm font-medium text-slate-500">Vagas Aprovadas</p>
+                            <p class="text-2xl font-bold text-slate-900" id="kpi-vagas">0</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Áreas -->
-                <div class="bg-white overflow-hidden rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow duration-300">
-                    <div class="p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 bg-purple-50 rounded-lg p-3">
-                                <svg class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
-                                </svg>
-                            </div>
-                            <div class="ml-5 w-0 flex-1">
-                                <dl>
-                                    <dt class="text-sm font-medium text-slate-500 truncate">Diretorias Envolvidas</dt>
-                                    <dd class="flex items-baseline">
-                                        <div class="text-2xl font-bold text-slate-900">5</div>
-                                    </dd>
-                                </dl>
-                            </div>
+                <!-- Diretorias -->
+                <div class="bg-white overflow-hidden rounded-xl shadow-sm border border-slate-200">
+                    <div class="p-6 flex items-center">
+                        <div class="flex-shrink-0 bg-purple-50 rounded-lg p-3">
+                            <svg class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                            </svg>
                         </div>
-                    </div>
-                    <div class="bg-slate-50 px-6 py-3 border-t border-slate-100">
-                        <div class="text-xs font-medium text-purple-600">Abrangência Corporativa</div>
+                        <div class="ml-5">
+                            <p class="text-sm font-medium text-slate-500">Diretorias Envolvidas</p>
+                            <p class="text-2xl font-bold text-slate-900">5</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- GRÁFICOS -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                
-                <!-- Gráfico de Pizza -->
+                <!-- Orçamento -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-base font-semibold leading-6 text-slate-900 mb-6 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" /></svg>
-                        Distribuição do Orçamento
-                    </h3>
+                    <h3 class="text-sm font-bold uppercase text-slate-500 mb-6">Distribuição Orçamentária</h3>
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-8">
                         <div id="pie-chart" class="pie-chart">
                             <div class="pie-hole">
@@ -208,60 +164,45 @@
                                 <span class="text-base font-bold text-ciasc-blue" id="pie-total"></span>
                             </div>
                         </div>
-                        <div id="pie-legend" class="flex flex-col gap-3 text-sm min-w-[140px]">
-                            <!-- Legenda injetada via JS -->
-                        </div>
+                        <div id="pie-legend" class="flex flex-col gap-3 text-sm min-w-[140px]"></div>
                     </div>
                 </div>
 
-                <!-- Gráfico de Barras -->
+                <!-- Distribuição -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-base font-semibold leading-6 text-slate-900 mb-6 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" /></svg>
-                        Vagas por Diretoria
-                    </h3>
-                    <div id="bar-chart" class="flex flex-col justify-center gap-5 h-full py-4">
-                        <!-- Barras injetadas via JS -->
-                    </div>
+                    <h3 class="text-sm font-bold uppercase text-slate-500 mb-6">Vagas por Diretoria</h3>
+                    <div id="bar-chart" class="flex flex-col justify-center gap-5 h-full py-4"></div>
                 </div>
             </div>
 
-            <!-- TABELA DETALHADA -->
-            <div class="bg-white shadow-sm ring-1 ring-slate-900/5 sm:rounded-xl overflow-hidden">
-                <div class="border-b border-slate-200 bg-white px-4 py-5 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div>
-                        <h3 class="text-base font-semibold leading-6 text-slate-900">Detalhamento das Vagas</h3>
-                        <p class="mt-1 text-sm text-slate-500">Lista completa das 15 posições aprovadas.</p>
-                    </div>
-                    
-                    <div class="relative">
-                        <select id="filter" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-ciasc-blue sm:text-sm sm:leading-6 font-medium cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
-                            <option value="TODAS">Todas as Diretorias</option>
-                            <option value="DAF">DAF (5 vagas)</option>
-                            <option value="DTI">DTI (4 vagas)</option>
-                            <option value="DME">DME (4 vagas)</option>
-                            <option value="DIN">DIN (1 vaga)</option>
-                            <option value="PRES">PRES (1 vaga)</option>
-                        </select>
-                    </div>
+            <!-- TABELA -->
+            <div class="bg-white shadow-sm rounded-xl border border-slate-200 overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-200 bg-white flex justify-between items-center">
+                    <h3 class="text-base font-semibold text-slate-900">Detalhamento das Vagas</h3>
+                    <select id="filter" class="rounded-md border-0 py-1.5 pl-3 pr-8 text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-ciasc-blue sm:text-sm sm:leading-6 cursor-pointer bg-slate-50">
+                        <option value="TODAS">Todas as Diretorias</option>
+                        <option value="DAF">DAF (5)</option>
+                        <option value="DME">DME (4)</option>
+                        <option value="DTI">DTI (4)</option>
+                        <option value="DIN">DIN (1)</option>
+                        <option value="PRES">PRES (1)</option>
+                    </select>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-slate-300">
+                    <table class="min-w-full divide-y divide-slate-200">
                         <thead class="bg-slate-50">
                             <tr>
-                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6">Diretoria</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Vaga / Perfil</th>
-                                <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-slate-900">Nível</th>
-                                <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-slate-900">Bolsa Mensal</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Diretoria</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Vaga / Perfil</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Nível</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Bolsa</th>
                             </tr>
                         </thead>
-                        <tbody id="table-body" class="divide-y divide-slate-200 bg-white">
-                            <!-- JS Injection -->
-                        </tbody>
+                        <tbody id="table-body" class="bg-white divide-y divide-slate-200"></tbody>
                         <tfoot class="bg-slate-50">
                             <tr>
-                                <td colspan="3" class="py-4 pl-4 pr-3 text-right text-sm font-bold text-slate-500 sm:pl-6">Total do Filtro:</td>
-                                <td class="px-3 py-4 text-right text-sm font-bold text-ciasc-green" id="footer-total"></td>
+                                <td colspan="3" class="px-6 py-4 text-right text-sm font-bold text-slate-500">Total do Filtro:</td>
+                                <td class="px-6 py-4 text-right text-sm font-bold text-ciasc-green" id="footer-total"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -271,7 +212,7 @@
         </div>
     </main>
 
-    <!-- FOOTER INSTITUCIONAL -->
+    <!-- FOOTER -->
     <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
@@ -288,52 +229,60 @@
         </div>
     </footer>
 
-    <!-- LOGIC -->
+    <!-- LÓGICA DE DADOS -->
     <script>
-        // DADOS REV 2 - 15 VAGAS
+        // LISTA OFICIAL DE 15 VAGAS (REV 2)
+        // Total: R$ 90.800,00
+        // Distribuição: DAF(5), DME(4), DTI(4), DIN(1), PRES(1)
+        
         const vagas = [
-            // PRES
+            // PRES (1)
             { id: 1, dir: 'PRES', perfil: 'Especialista em Gestão Estratégica da Inovação', nivel: 'PDIG-IV', valor: 5500 },
-            // DIN
+            
+            // DIN (1)
             { id: 6, dir: 'DIN', perfil: 'Inovação em Design de Multimídia / Dir. Arte', nivel: 'PDIG-I', valor: 7000 },
-            // DTI
+            
+            // DTI (4)
             { id: 2, dir: 'DTI', perfil: 'Especialista em Operações de GenAI (GenAIOps)', nivel: 'PDIG-III', valor: 5800 },
             { id: 7, dir: 'DTI', perfil: 'Arquitetura de Data Lakes', nivel: 'PDIG-III', valor: 5800 },
             { id: 25, dir: 'DTI', perfil: 'Plataformas e APIs de Geoprocessamento', nivel: 'PDIG-III', valor: 5800 },
             { id: 8, dir: 'DTI', perfil: 'Especialista em Segurança Cibernética', nivel: 'PDIG-IV', valor: 5500 },
-            // DAF
+            
+            // DAF (5)
             { id: 4, dir: 'DAF', perfil: 'Especialista Otimização Processos e GC', nivel: 'PDIG-II', valor: 6200 },
             { id: 5, dir: 'DAF', perfil: 'Inovação em Psicologia Organizacional', nivel: 'PDIG-II', valor: 6200 },
             { id: 36, dir: 'DAF', perfil: 'Inovação em Custos Contábeis', nivel: 'PDIG-III', valor: 5800 },
             { id: 37, dir: 'DAF', perfil: 'Inovação em Aspectos Tributários', nivel: 'PDIG-III', valor: 5800 },
             { id: 40, dir: 'DAF', perfil: 'Automação Folha de Pagamento', nivel: 'PDIG-III', valor: 5800 },
-            // DME
+            
+            // DME (4) - Ajuste para fechar R$ 25.600 (3x 6200 + 1x 7000)
             { id: 10, dir: 'DME', perfil: 'Pesquisador Líder em Estratégia de Mercado', nivel: 'PDIG-I', valor: 7000 },
             { id: 3, dir: 'DME', perfil: 'Estratégia de Mercado GovTech', nivel: 'PDIG-II', valor: 6200 },
             { id: 9, dir: 'DME', perfil: 'Apoio em Processos Comerciais', nivel: 'PDIG-II', valor: 6200 },
             { id: 12, dir: 'DME', perfil: 'Gestão de Produtos (Agile/Product Owner)', nivel: 'PDIG-II', valor: 6200 }
         ];
 
-        // Paleta de Cores CIASC e Complementares
+        // Cores CIASC
         const colors = {
-            'DAF': '#00965e', // CIASC Green
-            'DME': '#f59e0b', // Amber
-            'DTI': '#007dc5', // CIASC Light Blue
-            'DIN': '#ec4899', // Pink
-            'PRES': '#6366f1' // Indigo
+            'DAF': '#00965e', // Verde
+            'DME': '#f59e0b', // Amarelo/Laranja
+            'DTI': '#007dc5', // Azul Claro
+            'DIN': '#ec4899', // Rosa (Destaque)
+            'PRES': '#6366f1' // Indigo (Institucional)
         };
 
         const formatBRL = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
         function init() {
-            // KPIs
+            // Cálculos iniciais
             const totalVal = vagas.reduce((acc, v) => acc + v.valor, 0);
             const totalQtd = vagas.length;
+            
             document.getElementById('kpi-total').textContent = formatBRL(totalVal);
             document.getElementById('kpi-vagas').textContent = totalQtd;
             document.getElementById('pie-total').textContent = formatBRL(totalVal);
 
-            // Group Data
+            // Agrupamento
             const groups = {};
             vagas.forEach(v => {
                 if(!groups[v.dir]) groups[v.dir] = { name: v.dir, val: 0, qtd: 0, color: colors[v.dir] };
@@ -345,7 +294,7 @@
             renderBars(groups);
             renderTable(vagas);
 
-            // Filter Event
+            // Filtro
             document.getElementById('filter').addEventListener('change', (e) => {
                 const f = e.target.value;
                 const filtered = f === 'TODAS' ? vagas : vagas.filter(v => v.dir === f);
@@ -359,7 +308,7 @@
             let grad = [];
             const legendEl = document.getElementById('pie-legend');
 
-            sorted.forEach((g, i) => {
+            sorted.forEach((g) => {
                 const perc = (g.val / total) * 100;
                 const nextDeg = deg + (360 * perc / 100);
                 grad.push(`${g.color} ${deg}deg ${nextDeg}deg`);
@@ -367,14 +316,13 @@
 
                 legendEl.innerHTML += `
                     <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full" style="background-color: ${g.color}"></div>
+                        <div class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: ${g.color}"></div>
                         <span class="font-semibold text-slate-700 w-10 text-xs">${g.name}</span>
                         <span class="text-slate-500 text-xs">${Math.round(perc)}%</span>
-                        <span class="text-slate-400 text-xs ml-auto">${formatBRL(g.val)}</span>
+                        <span class="text-slate-400 text-xs ml-auto font-mono">${formatBRL(g.val)}</span>
                     </div>
                 `;
             });
-
             document.getElementById('pie-chart').style.background = `conic-gradient(${grad.join(', ')})`;
         }
 
@@ -406,28 +354,27 @@
             data.forEach(v => {
                 sum += v.valor;
                 tbody.innerHTML += `
-                    <tr>
-                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                            <div class="flex items-center">
-                                <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset text-white" style="background-color: ${colors[v.dir]}; ring-color: ${colors[v.dir]}">
-                                    ${v.dir}
-                                </span>
-                            </div>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 rounded text-xs font-bold text-white" style="background-color: ${colors[v.dir]}">
+                                ${v.dir}
+                            </span>
                         </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-700">
-                            <div class="font-medium text-slate-900">${v.perfil}</div>
-                            <div class="text-slate-500 text-xs">ID: ${v.id}</div>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-slate-900">${v.perfil}</div>
+                            <div class="text-xs text-slate-500">Vaga ${v.id}</div>
                         </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-center">
-                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <span class="px-2 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded-full border border-slate-200">
                                 ${v.nivel}
                             </span>
                         </td>
-                        <td class="whitespace-nowrap px-3 py-4 text-sm text-right font-medium text-slate-900">${formatBRL(v.valor)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-slate-700 font-mono">
+                            ${formatBRL(v.valor)}
+                        </td>
                     </tr>
                 `;
             });
-
             document.getElementById('footer-total').textContent = formatBRL(sum);
         }
 
