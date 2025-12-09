@@ -1,18 +1,39 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full antialiased bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Bolsas CIASC 2025 - Rev 2 (Final)</title>
-    <!-- Tailwind CSS (Estilo) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fonte Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Painel de Gestão de Bolsas 2025 - CIASC</title>
     
+    <!-- Favicon CIASC Oficial -->
+    <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" type="image/png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonte Inter (Padrão CIASC) -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        ciasc: {
+                            blue: '#004a80',    // Azul Institucional aproximado
+                            light: '#007dc5',   // Azul Claro
+                            green: '#00965e',   // Verde SC
+                            dark: '#1e293b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        
-        /* Utilitários para Gráficos CSS Puro */
+        /* Gráficos CSS Puro */
         .chart-bar-track {
             background-color: #e2e8f0;
             border-radius: 9999px;
@@ -28,24 +49,26 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding-right: 8px;
+            padding-right: 12px;
             color: white;
             font-size: 0.75rem;
-            font-weight: bold;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .pie-chart {
-            width: 200px;
-            height: 200px;
+            width: 220px;
+            height: 220px;
             border-radius: 50%;
             position: relative;
             margin: 0 auto;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         .pie-hole {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 120px; height: 120px;
+            width: 140px; height: 140px;
             background-color: white;
             border-radius: 50%;
             display: flex;
@@ -53,184 +76,250 @@
             align-items: center;
             justify-content: center;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 10;
         }
 
-        tr:nth-child(even) { background-color: #f8fafc; }
-        tr:hover { background-color: #f1f5f9; }
+        /* Animações sutis */
+        tr { transition: background-color 0.2s; }
+        tr:hover td { background-color: #f8fafc; }
     </style>
 </head>
-<body class="p-6">
+<body class="flex flex-col min-h-full text-slate-800">
 
-    <div class="max-w-6xl mx-auto">
-        
-        <!-- HEADER -->
-        <header class="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+    <!-- HEADER INSTITUCIONAL -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <div class="bg-blue-700 p-3 rounded-xl text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-slate-900">Gestão de Bolsas Rev. 2</h1>
-                    <p class="text-slate-500 text-sm">Cenário Ajustado: 15 Vagas Prioritárias</p>
-                </div>
-            </div>
-            <div class="flex gap-3 mt-4 md:mt-0">
-                <div class="px-4 py-1.5 bg-green-100 text-green-800 rounded-full text-xs font-bold uppercase tracking-wide border border-green-200">
-                    Aprovado
+                <!-- Logo CIASC (Placeholder Institucional) -->
+                <img src="https://www.ciasc.sc.gov.br/wp-content/uploads/2020/07/logo-ciasc-horizontal.png" alt="CIASC Logo" class="h-10 w-auto">
+                
+                <div class="hidden md:block w-px h-8 bg-slate-300 mx-2"></div>
+                
+                <div class="flex flex-col">
+                    <h1 class="text-xl font-bold text-ciasc-blue tracking-tight leading-none">Painel de Gestão de Bolsas</h1>
+                    <span class="text-xs text-slate-500 font-medium mt-1">Programa de Pesquisa, Desenvolvimento e Inovação 2025</span>
                 </div>
             </div>
-        </header>
-
-        <!-- KPI CARDS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <!-- Total Investimento -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center">
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Investimento Mensal</p>
-                    <h2 class="text-3xl font-bold text-slate-800" id="kpi-total">R$ 0,00</h2>
-                </div>
-                <div class="p-3 bg-blue-50 rounded-full text-blue-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                </div>
-            </div>
-
-            <!-- Total Vagas -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center">
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total de Vagas</p>
-                    <h2 class="text-3xl font-bold text-slate-800" id="kpi-vagas">0</h2>
-                </div>
-                <div class="p-3 bg-emerald-50 rounded-full text-emerald-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                </div>
-            </div>
-
-            <!-- Diretorias -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center">
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Áreas Contempladas</p>
-                    <h2 class="text-3xl font-bold text-slate-800">5</h2>
-                </div>
-                <div class="p-3 bg-purple-50 rounded-full text-purple-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                </div>
+            
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                    Aprovado (Rev. 2)
+                </span>
+                <span class="text-sm text-slate-400 font-medium hidden sm:block">
+                    Atualizado: Out/2025
+                </span>
             </div>
         </div>
+    </header>
 
-        <!-- GRÁFICOS -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow bg-slate-50 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <!-- Gráfico de Pizza (Financeiro) -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center justify-center">
-                <h3 class="w-full text-left text-sm font-bold text-slate-700 uppercase mb-6 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
-                    Distribuição Orçamentária
-                </h3>
-                <div class="flex items-center gap-8">
-                    <div id="pie-chart" class="pie-chart">
-                        <div class="pie-hole">
-                            <span class="text-xs text-slate-400 font-bold uppercase">Total</span>
-                            <span class="text-sm font-bold text-slate-800" id="pie-total"></span>
+            <!-- KPI CARDS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total Investimento -->
+                <div class="bg-white overflow-hidden rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow duration-300">
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-blue-50 rounded-lg p-3">
+                                <svg class="h-6 w-6 text-ciasc-blue" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-slate-500 truncate">Investimento Mensal</dt>
+                                    <dd class="flex items-baseline">
+                                        <div class="text-2xl font-bold text-slate-900" id="kpi-total">R$ 0,00</div>
+                                    </dd>
+                                </dl>
+                            </div>
                         </div>
                     </div>
-                    <div id="pie-legend" class="flex flex-col gap-2 text-sm">
-                        <!-- Legenda via JS -->
+                    <div class="bg-slate-50 px-6 py-3 border-t border-slate-100">
+                        <div class="text-xs font-medium text-ciasc-blue">Total consolidado das 15 vagas</div>
+                    </div>
+                </div>
+
+                <!-- Total Vagas -->
+                <div class="bg-white overflow-hidden rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow duration-300">
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-green-50 rounded-lg p-3">
+                                <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-slate-500 truncate">Vagas Aprovadas</dt>
+                                    <dd class="flex items-baseline">
+                                        <div class="text-2xl font-bold text-slate-900" id="kpi-vagas">0</div>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 px-6 py-3 border-t border-slate-100">
+                        <div class="text-xs font-medium text-green-600">Prioritárias para o Edital</div>
+                    </div>
+                </div>
+
+                <!-- Áreas -->
+                <div class="bg-white overflow-hidden rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow duration-300">
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-purple-50 rounded-lg p-3">
+                                <svg class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-slate-500 truncate">Diretorias Envolvidas</dt>
+                                    <dd class="flex items-baseline">
+                                        <div class="text-2xl font-bold text-slate-900">5</div>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 px-6 py-3 border-t border-slate-100">
+                        <div class="text-xs font-medium text-purple-600">Abrangência Corporativa</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Gráfico de Barras (Vagas) -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h3 class="text-sm font-bold text-slate-700 uppercase mb-6 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    Vagas por Diretoria
-                </h3>
-                <div id="bar-chart" class="flex flex-col justify-center gap-4">
-                    <!-- Barras via JS -->
+            <!-- GRÁFICOS -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                
+                <!-- Gráfico de Pizza -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-base font-semibold leading-6 text-slate-900 mb-6 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" /></svg>
+                        Distribuição do Orçamento
+                    </h3>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-8">
+                        <div id="pie-chart" class="pie-chart">
+                            <div class="pie-hole">
+                                <span class="text-xs text-slate-400 font-bold uppercase tracking-wide">Total</span>
+                                <span class="text-base font-bold text-ciasc-blue" id="pie-total"></span>
+                            </div>
+                        </div>
+                        <div id="pie-legend" class="flex flex-col gap-3 text-sm min-w-[140px]">
+                            <!-- Legenda injetada via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Barras -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-base font-semibold leading-6 text-slate-900 mb-6 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" /></svg>
+                        Vagas por Diretoria
+                    </h3>
+                    <div id="bar-chart" class="flex flex-col justify-center gap-5 h-full py-4">
+                        <!-- Barras injetadas via JS -->
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- TABELA -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 class="text-sm font-bold text-slate-700 uppercase">Detalhamento das 15 Vagas</h3>
-                <select id="filter" class="bg-white border border-slate-300 text-slate-700 text-xs font-bold rounded-lg px-3 py-2 focus:outline-none">
-                    <option value="TODAS">TODAS AS DIRETORIAS</option>
-                    <option value="DAF">DAF (5)</option>
-                    <option value="DTI">DTI (4)</option>
-                    <option value="DME">DME (4)</option>
-                    <option value="DIN">DIN (1)</option>
-                    <option value="PRES">PRES (1)</option>
-                </select>
+            <!-- TABELA DETALHADA -->
+            <div class="bg-white shadow-sm ring-1 ring-slate-900/5 sm:rounded-xl overflow-hidden">
+                <div class="border-b border-slate-200 bg-white px-4 py-5 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div>
+                        <h3 class="text-base font-semibold leading-6 text-slate-900">Detalhamento das Vagas</h3>
+                        <p class="mt-1 text-sm text-slate-500">Lista completa das 15 posições aprovadas.</p>
+                    </div>
+                    
+                    <div class="relative">
+                        <select id="filter" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-ciasc-blue sm:text-sm sm:leading-6 font-medium cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+                            <option value="TODAS">Todas as Diretorias</option>
+                            <option value="DAF">DAF (5 vagas)</option>
+                            <option value="DTI">DTI (4 vagas)</option>
+                            <option value="DME">DME (4 vagas)</option>
+                            <option value="DIN">DIN (1 vaga)</option>
+                            <option value="PRES">PRES (1 vaga)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-300">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6">Diretoria</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Vaga / Perfil</th>
+                                <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-slate-900">Nível</th>
+                                <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-slate-900">Bolsa Mensal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="divide-y divide-slate-200 bg-white">
+                            <!-- JS Injection -->
+                        </tbody>
+                        <tfoot class="bg-slate-50">
+                            <tr>
+                                <td colspan="3" class="py-4 pl-4 pr-3 text-right text-sm font-bold text-slate-500 sm:pl-6">Total do Filtro:</td>
+                                <td class="px-3 py-4 text-right text-sm font-bold text-ciasc-green" id="footer-total"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-slate-600">
-                    <thead class="text-xs text-slate-500 uppercase bg-slate-100 border-b border-slate-200">
-                        <tr>
-                            <th class="px-6 py-3 font-bold">Diretoria</th>
-                            <th class="px-6 py-3 font-bold">Vaga / Perfil</th>
-                            <th class="px-6 py-3 font-bold text-center">Nível</th>
-                            <th class="px-6 py-3 font-bold text-right">Bolsa Mensal</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body">
-                        <!-- Linhas via JS -->
-                    </tbody>
-                    <tfoot class="bg-slate-50 text-slate-800 font-bold border-t border-slate-200">
-                        <tr>
-                            <td colspan="3" class="px-6 py-4 text-right uppercase text-xs">Total do Filtro:</td>
-                            <td class="px-6 py-4 text-right text-emerald-600" id="footer-total"></td>
-                        </tr>
-                    </tfoot>
-                </table>
+
+        </div>
+    </main>
+
+    <!-- FOOTER INSTITUCIONAL -->
+    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <img src="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" alt="CIASC" class="h-8 w-8 grayscale opacity-50">
+                <div class="text-sm text-slate-500">
+                    <p class="font-semibold text-slate-700">CIASC - Centro de Informática e Automação de SC</p>
+                    <p>Rodovia Admar Gonzaga, 2765 - Itacorubi - Florianópolis/SC</p>
+                </div>
+            </div>
+            <div class="text-xs text-slate-400 text-center md:text-right">
+                <p>&copy; 2025 CIASC. Todos os direitos reservados.</p>
+                <p class="mt-1">Desenvolvido pela Assessoria de Inovação e Transformação (AIT)</p>
             </div>
         </div>
-        
-        <div class="text-center mt-8 text-slate-400 text-xs">
-            Fonte: Planilhas Rev 2 - Gráfico 1 e Custo Total • CIASC 2025
-        </div>
+    </footer>
 
-    </div>
-
+    <!-- LOGIC -->
     <script>
-        // --- DADOS RECONSTRUÍDOS (15 VAGAS | R$ 90.800) ---
-        // Baseado nos arquivos CSV de Custo Total e Gráfico 1
+        // DADOS REV 2 - 15 VAGAS
         const vagas = [
-            // PRES (1 Vaga - 5.500)
+            // PRES
             { id: 1, dir: 'PRES', perfil: 'Especialista em Gestão Estratégica da Inovação', nivel: 'PDIG-IV', valor: 5500 },
-            
-            // DIN (1 Vaga - 7.000)
+            // DIN
             { id: 6, dir: 'DIN', perfil: 'Inovação em Design de Multimídia / Dir. Arte', nivel: 'PDIG-I', valor: 7000 },
-            
-            // DTI (4 Vagas - Total 22.900)
+            // DTI
             { id: 2, dir: 'DTI', perfil: 'Especialista em Operações de GenAI (GenAIOps)', nivel: 'PDIG-III', valor: 5800 },
             { id: 7, dir: 'DTI', perfil: 'Arquitetura de Data Lakes', nivel: 'PDIG-III', valor: 5800 },
             { id: 25, dir: 'DTI', perfil: 'Plataformas e APIs de Geoprocessamento', nivel: 'PDIG-III', valor: 5800 },
             { id: 8, dir: 'DTI', perfil: 'Especialista em Segurança Cibernética', nivel: 'PDIG-IV', valor: 5500 },
-            
-            // DAF (5 Vagas - Total 29.800)
+            // DAF
             { id: 4, dir: 'DAF', perfil: 'Especialista Otimização Processos e GC', nivel: 'PDIG-II', valor: 6200 },
             { id: 5, dir: 'DAF', perfil: 'Inovação em Psicologia Organizacional', nivel: 'PDIG-II', valor: 6200 },
             { id: 36, dir: 'DAF', perfil: 'Inovação em Custos Contábeis', nivel: 'PDIG-III', valor: 5800 },
             { id: 37, dir: 'DAF', perfil: 'Inovação em Aspectos Tributários', nivel: 'PDIG-III', valor: 5800 },
             { id: 40, dir: 'DAF', perfil: 'Automação Folha de Pagamento', nivel: 'PDIG-III', valor: 5800 },
-
-            // DME (4 Vagas - Total 25.600)
-            // Lógica para fechar 25.600: 3x 6200 (18.600) + 1x 7000 (PDIG-I) = 25.600
+            // DME
             { id: 10, dir: 'DME', perfil: 'Pesquisador Líder em Estratégia de Mercado', nivel: 'PDIG-I', valor: 7000 },
             { id: 3, dir: 'DME', perfil: 'Estratégia de Mercado GovTech', nivel: 'PDIG-II', valor: 6200 },
             { id: 9, dir: 'DME', perfil: 'Apoio em Processos Comerciais', nivel: 'PDIG-II', valor: 6200 },
             { id: 12, dir: 'DME', perfil: 'Gestão de Produtos (Agile/Product Owner)', nivel: 'PDIG-II', valor: 6200 }
         ];
 
-        // Cores
+        // Paleta de Cores CIASC e Complementares
         const colors = {
-            'DAF': '#10b981', // Emerald
+            'DAF': '#00965e', // CIASC Green
             'DME': '#f59e0b', // Amber
-            'DTI': '#3b82f6', // Blue
+            'DTI': '#007dc5', // CIASC Light Blue
             'DIN': '#ec4899', // Pink
-            'PRES': '#8b5cf6' // Violet
+            'PRES': '#6366f1' // Indigo
         };
 
         const formatBRL = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
@@ -243,7 +332,7 @@
             document.getElementById('kpi-vagas').textContent = totalQtd;
             document.getElementById('pie-total').textContent = formatBRL(totalVal);
 
-            // Process Data for Charts
+            // Group Data
             const groups = {};
             vagas.forEach(v => {
                 if(!groups[v.dir]) groups[v.dir] = { name: v.dir, val: 0, qtd: 0, color: colors[v.dir] };
@@ -251,13 +340,8 @@
                 groups[v.dir].qtd += 1;
             });
 
-            // Pie Chart (Conic Gradient)
             renderPie(groups, totalVal);
-
-            // Bar Chart
             renderBars(groups);
-
-            // Table
             renderTable(vagas);
 
             // Filter Event
@@ -280,12 +364,12 @@
                 grad.push(`${g.color} ${deg}deg ${nextDeg}deg`);
                 deg = nextDeg;
 
-                // Legend Item
                 legendEl.innerHTML += `
                     <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-sm" style="background-color: ${g.color}"></div>
-                        <span class="font-semibold text-slate-700 w-10">${g.name}</span>
-                        <span class="text-slate-400">${Math.round(perc)}%</span>
+                        <div class="w-3 h-3 rounded-full" style="background-color: ${g.color}"></div>
+                        <span class="font-semibold text-slate-700 w-10 text-xs">${g.name}</span>
+                        <span class="text-slate-500 text-xs">${Math.round(perc)}%</span>
+                        <span class="text-slate-400 text-xs ml-auto">${formatBRL(g.val)}</span>
                     </div>
                 `;
             });
@@ -322,17 +406,23 @@
                 sum += v.valor;
                 tbody.innerHTML += `
                     <tr>
-                        <td class="px-6 py-4">
-                            <span class="text-xs font-bold text-white px-2 py-1 rounded" style="background-color: ${colors[v.dir]}">${v.dir}</span>
+                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                            <div class="flex items-center">
+                                <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset text-white" style="background-color: ${colors[v.dir]}; ring-color: ${colors[v.dir]}">
+                                    ${v.dir}
+                                </span>
+                            </div>
                         </td>
-                        <td class="px-6 py-4">
-                            <div class="font-medium text-slate-800">${v.perfil}</div>
-                            <div class="text-xs text-slate-400">ID: ${v.id}</div>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-700">
+                            <div class="font-medium text-slate-900">${v.perfil}</div>
+                            <div class="text-slate-500 text-xs">ID: ${v.id}</div>
                         </td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="text-xs font-semibold px-2 py-1 rounded border border-slate-200 bg-slate-50 text-slate-600">${v.nivel}</span>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-center">
+                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">
+                                ${v.nivel}
+                            </span>
                         </td>
-                        <td class="px-6 py-4 text-right font-bold text-slate-700">${formatBRL(v.valor)}</td>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-right font-medium text-slate-900">${formatBRL(v.valor)}</td>
                     </tr>
                 `;
             });
