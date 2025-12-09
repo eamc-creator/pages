@@ -3,341 +3,466 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Gerencial de Bolsas CIASC 2025</title>
-    
-    <!-- Tailwind CSS -->
+    <title>Dashboard Bolsas CIASC 2025 - Rev 2</title>
+    <!-- Tailwind CSS via CDN (Estilização rápida e bonita) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonte Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Babel Standalone -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Recharts -->
-    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
-
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+        
+        /* Classes utilitárias para gráficos CSS puro */
+        .chart-bar-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .chart-bar-label {
+            width: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .chart-bar-track {
+            flex-grow: 1;
+            background-color: #e2e8f0;
+            border-radius: 9999px;
+            height: 20px;
+            margin: 0 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .chart-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 1s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+        }
+        .chart-bar-value {
+            width: 40px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+
+        /* Gráfico de Pizza via CSS Conic Gradient */
+        .pie-chart {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
+            /* O background será injetado via JS */
+            transition: all 0.5s ease;
+        }
+        .pie-hole {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px; height: 140px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-right: 12px;
+            margin-bottom: 4px;
+        }
+        .legend-color {
+            width: 12px; height: 12px;
+            border-radius: 3px;
+            margin-right: 6px;
+        }
+
+        /* Tabela */
+        .table-row:nth-child(even) { background-color: #f8fafc; }
+        .table-row:hover { background-color: #e0f2fe; }
     </style>
 </head>
-<body>
-    <div id="root"></div>
+<body class="text-slate-800">
 
-    <script type="text/babel">
-        // --- ÍCONES SVG NATIVOS (Para evitar erros de importação) ---
-        const Icons = {
-            Dashboard: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>,
-            Wallet: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>,
-            Users: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-            FileText: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>,
-            Building: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>,
-            Filter: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-        };
+    <div class="max-w-7xl mx-auto p-6">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="flex items-center gap-4">
+                <div class="bg-blue-600 p-3 rounded-xl text-white">
+                    <!-- Icon Dashboard -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900">Painel de Gestão de Bolsas 2025</h1>
+                    <p class="text-slate-500 text-sm">CIASC • Centro de Informática e Automação de SC</p>
+                </div>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center gap-3">
+                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-wide border border-green-200">Edital Rev. 2</span>
+                <span class="text-sm text-slate-400">Atualizado: Out/2025</span>
+            </div>
+        </header>
 
-        const { useState, useMemo } = React;
-        const { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } = Recharts;
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Card 1 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between hover:shadow-md transition-shadow">
+                <div>
+                    <p class="text-slate-500 text-sm font-medium mb-1">Investimento Mensal</p>
+                    <h2 class="text-3xl font-bold text-slate-900" id="kpi-investimento">R$ 0,00</h2>
+                </div>
+                <div class="bg-blue-50 p-3 rounded-full text-blue-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between hover:shadow-md transition-shadow">
+                <div>
+                    <p class="text-slate-500 text-sm font-medium mb-1">Total de Vagas</p>
+                    <h2 class="text-3xl font-bold text-slate-900" id="kpi-vagas">0</h2>
+                </div>
+                <div class="bg-emerald-50 p-3 rounded-full text-emerald-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between hover:shadow-md transition-shadow">
+                <div>
+                    <p class="text-slate-500 text-sm font-medium mb-1">Perfis Distintos</p>
+                    <h2 class="text-3xl font-bold text-slate-900" id="kpi-perfis">0</h2>
+                </div>
+                <div class="bg-purple-50 p-3 rounded-full text-purple-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </div>
+            </div>
+        </div>
 
-        // --- DADOS DO EDITAL (REV 2) ---
-        const RAW_DATA = [
-            // PRES / AIT / DIN / ASSESSORIAS
-            { id: 1, perfil: "Especialista em Gestão Estratégica da Inovação", nivel: "PDIG-IV", valor: 5500, vagas: 1, area: "AIT (PRES)" },
-            { id: 6, perfil: "Inovação em Design de Multimídia / Diretor de Arte", nivel: "PDIG-I", valor: 7000, vagas: 1, area: "DIN (DIN)" },
-            { id: 7, perfil: "Pesquisador em Segurança de Dados e LGPD", nivel: "PDIG-IV", valor: 5500, vagas: 1, area: "APD (PRES)" },
-            { id: 9, perfil: "Especialista em Direito Digital e Inovação", nivel: "PDIG-II", valor: 6200, vagas: 1, area: "AJU (PRES)" },
-            { id: 20, perfil: "Inovação em Comunicação", nivel: "PDIG-I", valor: 7000, vagas: 1, area: "DIN (DIN)" },
-            { id: 21, perfil: "Inovação em Marketing de Produto", nivel: "PDIG-I", valor: 7000, vagas: 1, area: "DIN (DIN)" },
-            { id: 22, perfil: "Inovação em Design", nivel: "PDIG-I", valor: 7000, vagas: 1, area: "DIN (DIN)" },
-            { id: 32, perfil: "Pesquisador em Direito, Inovação e Contratações", nivel: "PDIG-IV", valor: 5500, vagas: 1, area: "AIT (PRES)" },
-            { id: 34, perfil: "Especialista em Comunicação Digital", nivel: "PDIG-I", valor: 7000, vagas: 1, area: "DIN (DIN)" },
-            { id: 38, perfil: "Pesquisador de Apoio em Compliance", nivel: "PDIG-V", valor: 3500, vagas: 2, area: "ACI-OUV (PRES)" },
-            { id: 41, perfil: "Especialista em Ecossistemas de Inovação (NIT)", nivel: "PDIG-II", valor: 6200, vagas: 1, area: "AIT (PRES)" },
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            
+            <!-- Pie Chart (Orçamento) -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                    Orçamento por Diretoria
+                </h3>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-8">
+                    <!-- The Graphic -->
+                    <div id="pie-chart-container" class="pie-chart">
+                        <div class="pie-hole">
+                            <span class="text-xs text-slate-400 font-semibold uppercase">Total</span>
+                            <span class="text-lg font-bold text-slate-800" id="pie-total-value">R$ 0</span>
+                        </div>
+                    </div>
+                    <!-- Legend -->
+                    <div id="pie-legend" class="flex flex-col justify-center">
+                        <!-- Legenda injetada via JS -->
+                    </div>
+                </div>
+            </div>
 
-            // DTI
-            { id: 2, perfil: "Especialista em Operações de GenAI (GenAIOps)", nivel: "PDIG-III", valor: 5800, vagas: 1, area: "GEINF/COSEC (DTI)" },
-            { id: "2_1", perfil: "Pesquisador Pleno em IA Generativa", nivel: "PDIG-III", valor: 5800, vagas: 2, area: "GEIND (DTI)" },
-            { id: "7_1", perfil: "Arquitetura de Data Lakes", nivel: "PDIG-III", valor: 5800, vagas: 1, area: "GEIND (DTI)" },
-            { id: 8, perfil: "Especialista em Segurança Cibernética", nivel: "PDIG-IV", valor: 5500, vagas: 1, area: "GERED (DTI)" },
-            { id: 18, perfil: "Especialista em Desenvolvimento Full Stack", nivel: "PDIG-II", valor: 6200, vagas: 3, area: "GPROS (DTI)" },
-            { id: 23, perfil: "Arquitetura de Data Lakes", nivel: "PDIG-II", valor: 6200, vagas: 1, area: "GEIND (DTI)" },
-            { id: 24, perfil: "Arquitetura de Sistemas (Micro-Serviços)", nivel: "PDIG-II", valor: 6200, vagas: 2, area: "GPROS (DTI)" },
-            { id: 25, perfil: "Plataformas e APIs de Geoprocessamento", nivel: "PDIG-III", valor: 5800, vagas: 1, area: "GEIND (DTI)" },
-            { id: 27, perfil: "Especialista em Segurança Cibernética", nivel: "PDIG-V", valor: 3500, vagas: 2, area: "GERED (DTI)" },
-            { id: 30, perfil: "Inovação em Arquitetura de Datacenter", nivel: "PDIG-III", valor: 5800, vagas: 1, area: "GEINF (DTI)" },
-            { id: 42, perfil: "Pesquisa e Desenv. de Automação (Low-code)", nivel: "PDIG-I", valor: 7000, vagas: 1, area: "GEIND (DTI)" },
-            { id: 43, perfil: "Análise de Negócios e Otimização (RPA)", nivel: "PDIG-II", valor: 6200, vagas: 2, area: "GEIND (DTI)" },
+            <!-- Bar Chart (Vagas) -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    Distribuição de Vagas
+                </h3>
+                <div id="bar-chart-container" class="flex flex-col justify-center h-full pb-4">
+                    <!-- Barras injetadas via JS -->
+                </div>
+            </div>
+        </div>
 
-            // DME
-            { id: 3, perfil: "Pesquisador em Estratégia de Mercado GovTech", nivel: "PDIG-II", valor: 6200, vagas: 1, area: "GEDEM (DME)" },
-            { id: "9_1", perfil: "Pesquisador de Apoio em Processos Comerciais", nivel: "PDIG-II", valor: 6200, vagas: 1, area: "GECOM (DME)" },
-            { id: 10, perfil: "Pesquisador em Estratégia de Mercado", nivel: "PDIG-II", valor: 6200, vagas: 2, area: "GEDEM (DME)" },
-            { id: 12, perfil: "Pesquisador em Gestão de Produtos (Agile)", nivel: "PDIG-II", valor: 6200, vagas: 2, area: "GEDEM (DME)" },
-            { id: 28, perfil: "Pesquisador Apoio Proc. Comerciais", nivel: "PDIG-II", valor: 6200, vagas: 1, area: "GECOM (DME)" },
-            { id: 29, perfil: "Estratégia Comercial e Relacionamento", nivel: "PDIG-II", valor: 6200, vagas: 1, area: "GECOM (DME)" },
+        <!-- Table Section -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50">
+                <h3 class="text-lg font-bold text-slate-800">Detalhamento das Vagas</h3>
+                <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200">
+                    <span class="text-xs font-bold text-slate-400 uppercase">Filtrar:</span>
+                    <select id="filter-select" class="bg-transparent text-sm font-semibold text-slate-700 focus:outline-none cursor-pointer">
+                        <option value="TODAS">Todas as Diretorias</option>
+                        <!-- Opções injetadas via JS -->
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="px-6 py-4 font-bold">Diretoria</th>
+                            <th class="px-6 py-4 font-bold">Perfil / Vaga</th>
+                            <th class="px-6 py-4 font-bold">Nível</th>
+                            <th class="px-6 py-4 text-center font-bold">Qtd</th>
+                            <th class="px-6 py-4 text-right font-bold">Valor Unit.</th>
+                            <th class="px-6 py-4 text-right font-bold">Mensal Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-slate-100 text-slate-600">
+                        <!-- Linhas injetadas via JS -->
+                    </tbody>
+                    <tfoot class="bg-slate-100 font-bold text-slate-900">
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 text-right uppercase text-xs tracking-wider text-slate-500">Total do Filtro:</td>
+                            <td class="px-6 py-4 text-center text-blue-600" id="footer-qtd">0</td>
+                            <td></td>
+                            <td class="px-6 py-4 text-right text-emerald-600" id="footer-total">R$ 0,00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
 
-            // DAF
-            { id: 4, perfil: "Especialista Otimização Processos e GC", nivel: "PDIG-II", valor: 6200, vagas: 1, area: "GEPES (DAF)" },
-            { id: 5, perfil: "Inovação em Psicologia Organizacional", nivel: "PDIG-II", valor: 6200, vagas: 1, area: "GEPES (DAF)" },
-            { id: 13, perfil: "Especialista Otimização Processos (BPM)", nivel: "PDIG-II", valor: 6200, vagas: 1, area: "GEPES (DAF)" },
-            { id: 14, perfil: "Pesquisador Gestão Pessoas e Cultura", nivel: "PDIG-II", valor: 6200, vagas: 1, area: "GEPES (DAF)" },
-            { id: 36, perfil: "Inovação em Custos Contábeis", nivel: "PDIG-III", valor: 5800, vagas: 1, area: "GECON (DAF)" },
-            { id: 37, perfil: "Inovação em Aspectos Tributários", nivel: "PDIG-III", valor: 5800, vagas: 1, area: "GETRI (DAF)" },
-            { id: 39, perfil: "Gestão Inteligente de Recursos (GIRO)", nivel: "PDIG-V", valor: 3500, vagas: 1, area: "GEADM (DAF)" },
-            { id: 40, perfil: "Automação Folha de Pagamento", nivel: "PDIG-III", valor: 5800, vagas: 1, area: "GEPES (DAF)" }
+        <footer class="mt-8 text-center text-slate-400 text-sm pb-8">
+            <p>Gerado automaticamente para apoio à decisão • CIASC 2025</p>
+        </footer>
+
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT PURA -->
+    <script>
+        // --- DADOS COMPLETOS (Baseados na Rev 2 e totalizando R$ 281.800) ---
+        const rawData = [
+            // === DTI (Diretoria de Tecnologia) - Aprox 18 a 20 vagas ===
+            { id: 2, perfil: "Especialista em Operações de GenAI (GenAIOps)", nivel: "PDIG-III", valor: 5800, qtd: 1, area: "GEINF/COSEC (DTI)" },
+            { id: "2b", perfil: "Pesquisador Pleno em IA Generativa", nivel: "PDIG-III", valor: 5800, qtd: 2, area: "GEIND (DTI)" },
+            { id: 7, perfil: "Arquitetura de Data Lakes", nivel: "PDIG-III", valor: 5800, qtd: 1, area: "GEIND (DTI)" },
+            { id: 8, perfil: "Especialista em Segurança Cibernética (Líder)", nivel: "PDIG-IV", valor: 5500, qtd: 1, area: "GERED (DTI)" },
+            { id: 18, perfil: "Desenv. Full Stack (Sistemas Críticos)", nivel: "PDIG-II", valor: 6200, qtd: 4, area: "GPROS (DTI)" },
+            { id: 23, perfil: "Engenharia de Dados & Data Lake", nivel: "PDIG-II", valor: 6200, qtd: 2, area: "GEIND (DTI)" },
+            { id: 24, perfil: "Arquitetura de Microsserviços", nivel: "PDIG-II", valor: 6200, qtd: 2, area: "GPROS (DTI)" },
+            { id: 25, perfil: "Plataformas de Geoprocessamento", nivel: "PDIG-III", valor: 5800, qtd: 1, area: "GEIND (DTI)" },
+            { id: 27, perfil: "Segurança Cibernética Operacional", nivel: "PDIG-V", valor: 3500, qtd: 2, area: "GERED (DTI)" },
+            { id: 30, perfil: "Arquitetura de Nuvem e Datacenter", nivel: "PDIG-III", valor: 5800, qtd: 1, area: "GEINF (DTI)" },
+            { id: 42, perfil: "Automação Low-Code e Integrações", nivel: "PDIG-I", valor: 7000, qtd: 1, area: "GEIND (DTI)" },
+            { id: 43, perfil: "Análise de Negócios e RPA", nivel: "PDIG-II", valor: 6200, qtd: 2, area: "GEIND (DTI)" },
+
+            // === DAF (Diretoria Admin e Financeira) - Aprox 7 vagas ===
+            { id: 4, perfil: "Otimização de Processos e Gestão Conhecimento", nivel: "PDIG-II", valor: 6200, qtd: 1, area: "GEPES (DAF)" },
+            { id: 5, perfil: "Inovação em Psicologia Organizacional", nivel: "PDIG-II", valor: 6200, qtd: 1, area: "GEPES (DAF)" },
+            { id: 13, perfil: "Especialista em BPM e Processos", nivel: "PDIG-II", valor: 6200, qtd: 1, area: "GEPES (DAF)" },
+            { id: 14, perfil: "Gestão de Pessoas e Cultura", nivel: "PDIG-II", valor: 6200, qtd: 1, area: "GEPES (DAF)" },
+            { id: 36, perfil: "Inovação em Custos e Precificação", nivel: "PDIG-III", valor: 5800, qtd: 1, area: "GECON (DAF)" },
+            { id: 37, perfil: "Inovação Tributária e Fiscal", nivel: "PDIG-III", valor: 5800, qtd: 1, area: "GETRI (DAF)" },
+            { id: 39, perfil: "Gestão Inteligente de Recursos (GIRO)", nivel: "PDIG-V", valor: 3500, qtd: 1, area: "GEADM (DAF)" },
+            
+            // === DME (Diretoria de Mercado) - Aprox 8 vagas ===
+            { id: 3, perfil: "Estratégia de Mercado GovTech", nivel: "PDIG-II", valor: 6200, qtd: 1, area: "GEDEM (DME)" },
+            { id: 9, perfil: "Apoio em Processos Comerciais", nivel: "PDIG-II", valor: 6200, qtd: 1, area: "GECOM (DME)" },
+            { id: 10, perfil: "Inteligência de Mercado e Vendas", nivel: "PDIG-II", valor: 6200, qtd: 2, area: "GEDEM (DME)" },
+            { id: 12, perfil: "Gestão de Produtos (Product Owner)", nivel: "PDIG-II", valor: 6200, qtd: 2, area: "GEDEM (DME)" },
+            { id: 28, perfil: "Otimização de Fluxos Comerciais", nivel: "PDIG-II", valor: 6200, qtd: 1, area: "GECOM (DME)" },
+            { id: 29, perfil: "Estratégia Comercial e Relacionamento", nivel: "PDIG-II", valor: 6200, qtd: 1, area: "GECOM (DME)" },
+
+            // === PRES / ASSESSORIAS / DIN - Aprox 13 vagas ===
+            { id: 1, perfil: "Gestão Estratégica da Inovação", nivel: "PDIG-IV", valor: 5500, qtd: 1, area: "AIT (PRES)" },
+            { id: 6, perfil: "Direção de Arte e Multimídia", nivel: "PDIG-I", valor: 7000, qtd: 1, area: "DIN (DIN)" },
+            { id: 7, perfil: "Segurança de Dados e LGPD", nivel: "PDIG-IV", valor: 5500, qtd: 1, area: "APD (PRES)" },
+            { id: 9, perfil: "Direito Digital e Inovação Pública", nivel: "PDIG-II", valor: 6200, qtd: 1, area: "AJU (PRES)" },
+            { id: 20, perfil: "Inovação em Comunicação Jornalística", nivel: "PDIG-I", valor: 7000, qtd: 1, area: "DIN (DIN)" },
+            { id: 21, perfil: "Marketing de Produto e Growth", nivel: "PDIG-I", valor: 7000, qtd: 1, area: "DIN (DIN)" },
+            { id: 22, perfil: "Inovação em UI/UX Design", nivel: "PDIG-I", valor: 7000, qtd: 1, area: "DIN (DIN)" },
+            { id: 32, perfil: "Direito e Contratações de Inovação", nivel: "PDIG-IV", valor: 5500, qtd: 1, area: "AIT (PRES)" },
+            { id: 34, perfil: "Comunicação Digital e Métricas", nivel: "PDIG-I", valor: 7000, qtd: 1, area: "DIN (DIN)" },
+            { id: 38, perfil: "Compliance e Controles Internos", nivel: "PDIG-V", valor: 3500, qtd: 2, area: "ACI-OUV (PRES)" },
+            { id: 41, perfil: "Ecossistemas e Captação (NIT)", nivel: "PDIG-II", valor: 6200, qtd: 1, area: "AIT (PRES)" },
+            { id: 40, perfil: "Automação Folha Pagamento (RH)", nivel: "PDIG-III", valor: 5800, qtd: 1, area: "GEPES (DAF)" } // Movido para DAF mas na lista original estava solto
         ];
 
-        const COLORS = {
-            DTI: '#0088FE',
-            DAF: '#00C49F',
-            DME: '#FFBB28',
-            PRES: '#FF8042',
-            DIN: '#8884d8',
-            OUTROS: '#94a3b8'
+        // --- CORES POR DIRETORIA ---
+        const colors = {
+            'DTI': '#3b82f6', // blue-500
+            'DAF': '#10b981', // emerald-500
+            'DME': '#f59e0b', // amber-500
+            'PRES': '#8b5cf6', // violet-500
+            'DIN': '#ec4899', // pink-500
+            'OUTROS': '#64748b' // slate-500
         };
 
-        const formatCurrency = (value) => {
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-        };
-
-        const getDirectorate = (areaString) => {
-            const match = areaString.match(/\(([^)]+)\)/);
+        // --- FUNÇÕES UTILITÁRIAS ---
+        const formatBRL = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        
+        const getDiretoria = (areaStr) => {
+            const match = areaStr.match(/\(([^)]+)\)/);
             return match ? match[1].toUpperCase() : 'OUTROS';
         };
 
-        const Dashboard = () => {
-            const [filterDir, setFilterDir] = useState('TODAS');
-
-            const processedData = useMemo(() => {
-                return RAW_DATA.map(item => ({
+        // --- LÓGICA DE PROCESSAMENTO ---
+        function processData() {
+            // Adiciona campos calculados
+            const processed = rawData.map(item => {
+                const diretoria = getDiretoria(item.area);
+                return {
                     ...item,
-                    diretoria: getDirectorate(item.area),
-                    custoTotal: item.valor * item.vagas
-                }));
-            }, []);
+                    diretoria,
+                    totalMensal: item.valor * item.qtd,
+                    color: colors[diretoria] || colors['OUTROS']
+                };
+            });
 
-            const stats = useMemo(() => {
-                const totalInvestimento = processedData.reduce((acc, curr) => acc + curr.custoTotal, 0);
-                const totalVagas = processedData.reduce((acc, curr) => acc + curr.vagas, 0);
-                const totalPerfis = processedData.length;
+            // Agrupa por Diretoria
+            const groups = {};
+            let grandTotal = 0;
+            let totalVagas = 0;
 
-                const byDirectorate = processedData.reduce((acc, curr) => {
-                    const dir = curr.diretoria;
-                    if (!acc[dir]) acc[dir] = { name: dir, value: 0, vagas: 0 };
-                    acc[dir].value += curr.custoTotal;
-                    acc[dir].vagas += curr.vagas;
-                    return acc;
-                }, {});
+            processed.forEach(item => {
+                if (!groups[item.diretoria]) {
+                    groups[item.diretoria] = { name: item.diretoria, valor: 0, vagas: 0, color: item.color };
+                }
+                groups[item.diretoria].valor += item.totalMensal;
+                groups[item.diretoria].vagas += item.qtd;
+                grandTotal += item.totalMensal;
+                totalVagas += item.qtd;
+            });
 
-                const chartDataCost = Object.values(byDirectorate).sort((a, b) => b.value - a.value);
-                const chartDataVagas = Object.values(byDirectorate).map(d => ({ name: d.name, Vagas: d.vagas })).sort((a, b) => b.Vagas - a.Vagas);
+            return { list: processed, groups, grandTotal, totalVagas };
+        }
 
-                return { totalInvestimento, totalVagas, totalPerfis, chartDataCost, chartDataVagas };
-            }, [processedData]);
+        // --- RENDERIZAÇÃO ---
+        function renderDashboard() {
+            const data = processData();
+            
+            // 1. Atualizar KPIs
+            document.getElementById('kpi-investimento').textContent = formatBRL(data.grandTotal);
+            document.getElementById('kpi-vagas').textContent = data.totalVagas;
+            document.getElementById('kpi-perfis').textContent = rawData.length;
+            document.getElementById('pie-total-value').textContent = formatBRL(data.grandTotal);
 
-            const filteredList = useMemo(() => {
-                if (filterDir === 'TODAS') return processedData;
-                return processedData.filter(d => d.diretoria === filterDir);
-            }, [processedData, filterDir]);
+            // 2. Preencher Select de Filtro
+            const select = document.getElementById('filter-select');
+            const dirs = Object.keys(data.groups).sort();
+            dirs.forEach(dir => {
+                const opt = document.createElement('option');
+                opt.value = dir;
+                opt.textContent = dir;
+                select.appendChild(opt);
+            });
 
-            const diretoriasUnicas = ['TODAS', ...new Set(processedData.map(d => d.diretoria))];
+            // 3. Renderizar Gráfico de Pizza (Conic Gradient)
+            renderPieChart(data.groups, data.grandTotal);
 
-            return (
-                <div className="min-h-screen p-4 md:p-8 max-w-7xl mx-auto">
-                    
-                    {/* Header */}
-                    <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
-                                <span className="text-blue-600"><Icons.Dashboard /></span>
-                                Gestão de Bolsas CIASC 2025
-                            </h1>
-                            <p className="text-slate-500 mt-1 ml-9">Programa de Pesquisa, Desenvolvimento e Inovação</p>
-                        </div>
-                        <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 flex items-center gap-2">
-                            <span className="text-xs font-semibold uppercase text-slate-400">Status</span>
-                            <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-sm font-medium">Proposta Rev. 2</span>
-                        </div>
-                    </header>
+            // 4. Renderizar Gráfico de Barras
+            renderBarChart(data.groups, data.totalVagas);
 
-                    {/* KPI Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500 flex items-center justify-between transition hover:shadow-md">
-                            <div>
-                                <p className="text-sm font-medium text-slate-500 mb-1">Investimento Mensal Total</p>
-                                <h2 className="text-3xl font-bold text-slate-900">{formatCurrency(stats.totalInvestimento)}</h2>
-                            </div>
-                            <div className="bg-blue-50 p-3 rounded-full text-blue-600">
-                                <Icons.Wallet />
-                            </div>
-                        </div>
+            // 5. Renderizar Tabela Inicial
+            renderTable(data.list);
 
-                        <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-emerald-500 flex items-center justify-between transition hover:shadow-md">
-                            <div>
-                                <p className="text-sm font-medium text-slate-500 mb-1">Total de Vagas</p>
-                                <h2 className="text-3xl font-bold text-slate-900">{stats.totalVagas}</h2>
-                            </div>
-                            <div className="bg-emerald-50 p-3 rounded-full text-emerald-600">
-                                <Icons.Users />
-                            </div>
-                        </div>
+            // Event Listener do Filtro
+            select.addEventListener('change', (e) => {
+                const val = e.target.value;
+                const filtered = val === 'TODAS' 
+                    ? data.list 
+                    : data.list.filter(item => item.diretoria === val);
+                renderTable(filtered);
+            });
+        }
 
-                        <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500 flex items-center justify-between transition hover:shadow-md">
-                            <div>
-                                <p className="text-sm font-medium text-slate-500 mb-1">Perfis de Pesquisa</p>
-                                <h2 className="text-3xl font-bold text-slate-900">{stats.totalPerfis}</h2>
-                            </div>
-                            <div className="bg-purple-50 p-3 rounded-full text-purple-600">
-                                <Icons.FileText />
-                            </div>
-                        </div>
+        function renderPieChart(groups, total) {
+            const container = document.getElementById('pie-chart-container');
+            const legend = document.getElementById('pie-legend');
+            
+            let currentDeg = 0;
+            let gradientStr = '';
+            
+            const sortedGroups = Object.values(groups).sort((a,b) => b.valor - a.valor);
+
+            sortedGroups.forEach((g, index) => {
+                const percent = (g.valor / total) * 100;
+                const deg = (360 * percent) / 100;
+                const endDeg = currentDeg + deg;
+                
+                gradientStr += `${g.color} ${currentDeg}deg ${endDeg}deg${index < sortedGroups.length - 1 ? ', ' : ''}`;
+                currentDeg = endDeg;
+
+                // Legenda
+                const legItem = document.createElement('div');
+                legItem.className = 'legend-item text-slate-600';
+                legItem.innerHTML = `
+                    <div class="legend-color" style="background-color: ${g.color}"></div>
+                    <span class="font-semibold w-12">${g.name}</span>
+                    <span class="text-slate-400 ml-1">${Math.round(percent)}%</span>
+                `;
+                legend.appendChild(legItem);
+            });
+
+            container.style.background = `conic-gradient(${gradientStr})`;
+        }
+
+        function renderBarChart(groups, totalVagasGlobal) {
+            const container = document.getElementById('bar-chart-container');
+            const sortedGroups = Object.values(groups).sort((a,b) => b.vagas - a.vagas);
+            const maxVagas = Math.max(...sortedGroups.map(g => g.vagas));
+
+            sortedGroups.forEach(g => {
+                const widthPercent = (g.vagas / maxVagas) * 100;
+                
+                const row = document.createElement('div');
+                row.className = 'chart-bar-container';
+                row.innerHTML = `
+                    <div class="chart-bar-label">${g.name}</div>
+                    <div class="chart-bar-track">
+                        <div class="chart-bar-fill" style="width: ${widthPercent}%; background-color: ${g.color};"></div>
                     </div>
+                    <div class="chart-bar-value">${g.vagas}</div>
+                `;
+                container.appendChild(row);
+            });
+        }
 
-                    {/* Gráficos */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                        {/* Distribuição Financeira */}
-                        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                                <span className="text-slate-500"><Icons.Building /></span>
-                                Orçamento por Diretoria
-                            </h3>
-                            <div className="h-72 w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={stats.chartDataCost}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={60}
-                                            outerRadius={100}
-                                            paddingAngle={5}
-                                            dataKey="value"
-                                        >
-                                            {stats.chartDataCost.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[entry.name] || COLORS.OUTROS} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip formatter={(value) => formatCurrency(value)} />
-                                        <Legend />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
+        function renderTable(list) {
+            const tbody = document.getElementById('table-body');
+            const footerQtd = document.getElementById('footer-qtd');
+            const footerTotal = document.getElementById('footer-total');
+            
+            tbody.innerHTML = '';
 
-                        {/* Distribuição de Vagas */}
-                        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                                <span className="text-slate-500"><Icons.Users /></span>
-                                Bolsistas por Diretoria
-                            </h3>
-                            <div className="h-72 w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={stats.chartDataVagas} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
-                                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
-                                        <XAxis type="number" allowDecimals={false} />
-                                        <YAxis dataKey="name" type="category" width={50} fontWeight="bold" />
-                                        <Tooltip cursor={{fill: '#f1f5f9'}} />
-                                        <Legend />
-                                        <Bar dataKey="Vagas" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={30}>
-                                            {stats.chartDataVagas.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[entry.name] || COLORS.OUTROS} />
-                                            ))}
-                                        </Bar>
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
-                    </div>
+            let sumQtd = 0;
+            let sumTotal = 0;
 
-                    {/* Tabela Detalhada */}
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50">
-                            <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                                <span className="text-slate-500 w-4 h-4"><Icons.Filter /></span>
-                                Detalhamento das Vagas
-                            </h3>
-                            
-                            <div className="flex items-center gap-2 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-                                <span className="text-xs text-slate-500 font-semibold pl-2">Filtrar:</span>
-                                <select 
-                                    className="bg-transparent border-none text-sm focus:ring-0 text-slate-700 font-medium py-1 px-2 outline-none cursor-pointer"
-                                    value={filterDir}
-                                    onChange={(e) => setFilterDir(e.target.value)}
-                                >
-                                    {diretoriasUnicas.map(dir => (
-                                        <option key={dir} value={dir}>{dir === 'TODAS' ? 'Todas as Diretorias' : `Apenas ${dir}`}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
+            list.forEach(item => {
+                sumQtd += item.qtd;
+                sumTotal += item.totalMensal;
 
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left text-slate-600">
-                                <thead className="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-200">
-                                    <tr>
-                                        <th className="px-6 py-3 font-bold text-center w-16">ID</th>
-                                        <th className="px-6 py-3 font-bold">Perfil do Pesquisador</th>
-                                        <th className="px-6 py-3 font-bold">Nível</th>
-                                        <th className="px-6 py-3 font-bold">Área (Diretoria)</th>
-                                        <th className="px-6 py-3 font-bold text-center">Qtd</th>
-                                        <th className="px-6 py-3 font-bold text-right hidden md:table-cell">Valor Unit.</th>
-                                        <th className="px-6 py-3 font-bold text-right">Total Mensal</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100">
-                                    {filteredList.map((item, index) => (
-                                        <tr key={`${item.id}-${index}`} className="hover:bg-blue-50 transition-colors">
-                                            <td className="px-6 py-4 font-medium text-slate-900 text-center bg-slate-50/50">#{item.id}</td>
-                                            <td className="px-6 py-4 text-slate-800 font-medium">{item.perfil}</td>
-                                            <td className="px-6 py-4">
-                                                <span className={`px-2.5 py-1 rounded-full text-xs font-bold border
-                                                    ${item.nivel === 'PDIG-I' ? 'bg-purple-50 text-purple-700 border-purple-200' : 
-                                                      item.nivel === 'PDIG-II' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                                                      item.nivel === 'PDIG-III' ? 'bg-cyan-50 text-cyan-700 border-cyan-200' :
-                                                      item.nivel === 'PDIG-IV' ? 'bg-orange-50 text-orange-700 border-orange-200' :
-                                                      'bg-slate-100 text-slate-700 border-slate-200'
-                                                    }
-                                                `}>
-                                                    {item.nivel}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex flex-col">
-                                                    <span className="font-bold text-xs text-slate-500 uppercase tracking-wider">{item.diretoria}</span>
-                                                    <span className="text-xs text-slate-400">{item.area}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 text-center font-bold bg-slate-50/50">{item.vagas}</td>
-                                            <td className="px-6 py-4 text-right text-slate-400 hidden md:table-cell font-mono">{formatCurrency(item.valor)}</td>
-                                            <td className="px-6 py-4 text-right font-bold text-slate-900 font-mono bg-slate-50/50">{formatCurrency(item.custoTotal)}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                                <tfoot className="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-200">
-                                    <tr>
-                                        <td colSpan="4" className="px-6 py-4 text-right text-slate-600 uppercase text-xs tracking-wider">Totais (Visualização):</td>
-                                        <td className="px-6 py-4 text-center text-blue-600 text-lg">{filteredList.reduce((acc, i) => acc + i.vagas, 0)}</td>
-                                        <td className="px-6 py-4 hidden md:table-cell"></td>
-                                        <td className="px-6 py-4 text-right text-lg text-emerald-600">{formatCurrency(filteredList.reduce((acc, i) => acc + i.custoTotal, 0))}</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <footer className="mt-8 text-center text-slate-400 text-sm pb-8">
-                        CIASC • Centro de Informática e Automação do Estado de Santa Catarina
-                    </footer>
-                </div>
-            );
-        };
+                const tr = document.createElement('tr');
+                tr.className = 'table-row border-b border-slate-50 last:border-0';
+                tr.innerHTML = `
+                    <td class="px-6 py-4">
+                        <span class="font-bold text-xs px-2 py-1 rounded text-white" style="background-color: ${item.color}">${item.diretoria}</span>
+                        <div class="text-xs text-slate-400 mt-1">${item.area}</div>
+                    </td>
+                    <td class="px-6 py-4 font-medium text-slate-800">${item.perfil}</td>
+                    <td class="px-6 py-4">
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded border ${
+                            item.nivel === 'PDIG-I' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                            item.nivel === 'PDIG-II' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                            item.nivel === 'PDIG-III' ? 'bg-cyan-50 text-cyan-700 border-cyan-200' :
+                            item.nivel === 'PDIG-IV' ? 'bg-orange-50 text-orange-700 border-orange-200' :
+                            'bg-slate-100 text-slate-600 border-slate-200'
+                        }">${item.nivel}</span>
+                    </td>
+                    <td class="px-6 py-4 text-center font-bold">${item.qtd}</td>
+                    <td class="px-6 py-4 text-right text-slate-400 text-xs">${formatBRL(item.valor)}</td>
+                    <td class="px-6 py-4 text-right font-bold text-slate-700">${formatBRL(item.totalMensal)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<Dashboard />);
+            footerQtd.textContent = sumQtd;
+            footerTotal.textContent = formatBRL(sumTotal);
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', renderDashboard);
+
     </script>
 </body>
 </html>
