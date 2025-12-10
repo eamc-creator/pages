@@ -12,6 +12,7 @@ As páginas estão publicadas via GitHub Pages e podem ser acessadas pelos links
 * [**Dashboard Jira (Geral)**](https://eamc-creator.github.io/pages/dash_jira.html)  
 * [**Dashboard Jira (RD)**](https://eamc-creator.github.io/pages/dash_jira_RD.html)  
 * [**Dashboard Comparativo PRODs**](https://eamc-creator.github.io/pages/dash_prods.html)
+* [**Dashboard Comparativo PRODs**](https://eamc-creator.github.io/pages/dash_prods.html)
 
 ## **Tecnologias Utilizadas**
 
