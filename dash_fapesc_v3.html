@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<!-- A classe 'dark' ou 'light' será controlada pelo JS -->
+<html lang="pt-br" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Edital de Bolsistas 2025</title>
+    
+    <!-- Favicon do CIASC -->
+    <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" type="image/png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Font Inter -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* Ícones de tema */
+        #theme-icon-light, #theme-icon-dark { display: none; }
+        .dark #theme-icon-light { display: block; }
+        .light #theme-icon-dark { display: block; }
+
+        /* Animação suave para o accordion */
+        .accordion-content {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.open {
+            max-height: 500px; /* Altura máxima arbitrária para permitir expansão */
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-300">
+
+    <!-- Header (Padrão CIASC) -->
+    <header class="bg-white/80 dark:bg-slate-800/50 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-20 backdrop-blur-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
+            <div class="w-full py-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="#">
+                        <span class="sr-only">CIASC</span>
+                        <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </a>
+                    <div class="ml-4 flex flex-col justify-center">
+                        <span class="text-xl font-bold text-blue-800 dark:text-blue-400 leading-none">CIASC</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 tracking-wider">INOVAÇÃO E TECNOLOGIA</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                     <span class="text-sm font-medium text-slate-600 dark:text-slate-400 hidden sm:inline text-right">
+                         Proposta de Edital<br>Bolsistas 2025
+                     </span>
+                     <!-- Botão de Tema -->
+                     <button id="theme-toggle" type="button" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none transition-colors">
+                        <span class="sr-only">Alternar tema</span>
+                        <svg id="theme-icon-light" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12H.75m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25 2.25 2.25 0 0 0 2.25 2.25 2.25 2.25 0 0 0 2.25-2.25A2.25 2.25 0 0 0 12 12Z" />
+                        </svg>
+                        <svg id="theme-icon-dark" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <div class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- Título da Página -->
+        <div class="mb-8 border-b border-slate-200 dark:border-slate-700 pb-5">
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                Reestruturação e Expansão do Anexo de Vagas
+            </h1>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                Dashboard executivo para análise de perfis, custos e distribuição por diretoria.
+                <span class="inline-flex items-center rounded-md bg-blue-50 dark:bg-blue-900/30 px-2 py-1 text-xs font-medium text-blue-700 dark:text-blue-300 ring-1 ring-inset ring-blue-700/10 ml-2">Revisão DME - Dez/2024</span>
+            </p>
+        </div>
+
+        <!-- KPIs (Indicadores) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- KPI 1 -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border-l-4 border-blue-500 border-t border-r border-b border-slate-200 dark:border-slate-700">
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Investimento Mensal</p>
+                <p id="kpi-investimento" class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">R$ 0,00</p>
+                <div class="mt-2 flex items-center text-sm text-green-600 dark:text-green-400">
+                    <i class="fas fa-chart-line mr-1.5"></i> Atualizado (DME +2)
+                </div>
+            </div>
+            <!-- KPI 2 -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border-l-4 border-green-500 border-t border-r border-b border-slate-200 dark:border-slate-700">
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Total de Vagas</p>
+                <p id="kpi-vagas" class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">0</p>
+                <div class="mt-2 flex items-center text-sm text-slate-500 dark:text-slate-400">
+                    Perfis Especializados
+                </div>
+            </div>
+            <!-- KPI 3 -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border-l-4 border-yellow-500 border-t border-r border-b border-slate-200 dark:border-slate-700">
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Custo Médio / Vaga</p>
+                <p id="kpi-medio" class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">R$ 0,00</p>
+                <div class="mt-2 flex items-center text-sm text-slate-500 dark:text-slate-400">
+                    Média Ponderada
+                </div>
+            </div>
+            <!-- KPI 4 -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border-l-4 border-purple-500 border-t border-r border-b border-slate-200 dark:border-slate-700">
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Diretorias Atendidas</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">5</p>
+                <div class="mt-2 flex items-center text-sm text-slate-500 dark:text-slate-400">
+                    Cobertura Institucional
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Gráfico Barras -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Investimento por Diretoria (R$)</h3>
+                <div class="h-80">
+                    <canvas id="costChart"></canvas>
+                </div>
+            </div>
+            <!-- Gráfico Rosca -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Distribuição de Vagas</h3>
+                <div class="h-80 flex justify-center">
+                    <canvas id="vacancyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Vagas (Filtros e Accordion) -->
+        <div class="mb-8">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 border-l-4 border-blue-600 pl-3">
+                    Detalhamento das Vagas
+                </h3>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <span class="text-sm font-medium text-slate-500 dark:text-slate-400 self-center mr-2"><i class="fas fa-filter mr-1"></i>Filtros:</span>
+                    <button onclick="filterList('all')" class="px-3 py-1 text-sm font-medium rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors">Todas</button>
+                    <button onclick="filterList('DAF')" class="px-3 py-1 text-sm font-medium rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30 transition-colors">DAF</button>
+                    <button onclick="filterList('DME')" class="px-3 py-1 text-sm font-medium rounded-md border border-pink-500 text-pink-600 hover:bg-pink-50 dark:text-pink-400 dark:hover:bg-pink-900/30 transition-colors">DME</button>
+                    <button onclick="filterList('DTI')" class="px-3 py-1 text-sm font-medium rounded-md border border-teal-500 text-teal-600 hover:bg-teal-50 dark:text-teal-400 dark:hover:bg-teal-900/30 transition-colors">DTI</button>
+                    <button onclick="filterList('DIN')" class="px-3 py-1 text-sm font-medium rounded-md border border-orange-500 text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-900/30 transition-colors">DIN</button>
+                    <button onclick="filterList('PRES')" class="px-3 py-1 text-sm font-medium rounded-md border border-purple-500 text-purple-600 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-purple-900/30 transition-colors">PRES</button>
+                </div>
+            </div>
+            
+            <div class="text-xs text-slate-500 dark:text-slate-400 text-right mb-2 italic">
+                * Clique no item para expandir detalhes
+            </div>
+
+            <!-- Container das Vagas -->
+            <div id="vagas-container" class="space-y-4">
+                <!-- O conteúdo será injetado via JS -->
+            </div>
+        </div>
+
+        <!-- Tabela de Referência -->
+        <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                <h3 class="text-lg font-medium leading-6 text-slate-900 dark:text-slate-100">
+                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>Referência de Níveis
+                </h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                    <thead class="bg-slate-50 dark:bg-slate-700/50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nível</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Valor Mensal</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Requisito Básico (Resumo)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300">PDIG-I</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">R$ 7.000,00</td>
+                            <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">Doutor (4 anos) ou Graduação + 10 anos exp.</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300">PDIG-II</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">R$ 6.200,00</td>
+                            <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">Doutor (3 anos) ou Graduação + 9 anos exp.</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300">PDIG-III</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">R$ 5.800,00</td>
+                            <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">Mestre (4 anos) ou Graduação + 6 anos exp.</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300">PDIG-IV</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">R$ 5.500,00</td>
+                            <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">Mestre (3 anos) ou Graduação + 5 anos exp.</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300">PDIG-V</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">R$ 3.500,00</td>
+                            <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">Especialista (2 anos) ou Graduação + 4 anos exp.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer (Padrão CIASC) -->
+    <footer class="bg-slate-100 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                
+                <div class="flex flex-col justify-center items-center md:items-start space-y-4">
+                    <div class="w-fit">
+                         <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </div>
+                    <p class="text-xs text-center md:text-left text-slate-600 dark:text-slate-400">
+                        Todos os Direitos reservados - AIT<br>(Assessoria de Inovação e Tecnologia) - CIASC 2025
+                    </p>
+                </div>
+                
+                <div class="text-center md:text-left text-sm text-slate-700 dark:text-slate-300">
+                    <h4 class="font-semibold text-blue-800 dark:text-blue-400">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
+                    <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
+                    <p>Florianópolis, SC - CEP 88034-902</p>
+                    <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
+                </div>
+                
+                <div class="text-center md:text-right text-sm">
+                    <p class="font-semibold text-blue-800 dark:text-blue-400">Links Úteis</p>
+                    <ul class="mt-2 space-y-1">
+                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Site Oficial CIASC</a></li>
+                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Portal da Transparência</a></li>
+                        <li><a href="https://www.fapesc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">FAPESC</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- CONFIGURAÇÃO DE TEMA ---
+        const htmlEl = document.documentElement;
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        htmlEl.classList.add(currentTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlEl.classList.toggle('dark');
+            htmlEl.classList.toggle('light');
+            const newTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            updateChartTheme(newTheme);
+        });
+
+        // --- DADOS (VAGAS) ---
+        // A propriedade 'qtd' foi adicionada. A vaga 3 (DME) tem qtd: 3.
+        const vagasData = [
+            { id: 1,  qtd: 1, titulo: "Especialista em Gestão Estratégica da Inovação", nivel: "PDIG-IV", valor: "5.500,00", diretoria: "PRES", area: "AIT", foco: "Estruturar a governança da inovação, PI e portfólio de projetos.", cap: "Processos de inovação, PI, technology scouting, Marco Legal de CTI." },
+            { id: 2,  qtd: 1, titulo: "Especialista em Operações de GenAI (GenAIOps)", nivel: "PDIG-III", valor: "5.800,00", diretoria: "DTI", area: "GEINF/COSEC", foco: "Infraestrutura e processos para GenAI em produção (escalável e monitorada).", cap: "Pipelines, vetorização, AWS SageMaker, Google AI, Azure AI." },
+            { id: 3,  qtd: 3, titulo: "Pesquisador em Estratégia de Mercado e Negócios GovTech", nivel: "PDIG-II", valor: "6.200,00", diretoria: "DME", area: "GEDEM", foco: "Estratégia de mercado, portfólio de produtos, análise de concorrência.", cap: "Inteligência de Mercado, CRM, Modelagem de Negócios, precificação." },
+            { id: 4,  qtd: 1, titulo: "Especialista em Otimização de Processos e Gestão do Conhecimento", nivel: "PDIG-II", valor: "6.200,00", diretoria: "DAF", area: "GEPES", foco: "Mapear e redesenhar processos (BPM), gestão do conhecimento.", cap: "BPM, metodologias de mapeamento e documentação." },
+            { id: 5,  qtd: 1, titulo: "Inovação em Psicologia Organizacional", nivel: "PDIG-II", valor: "6.200,00", diretoria: "DAF", area: "GEPES", foco: "Psicologia organizacional, dinâmica de equipes, segurança psicológica.", cap: "Perfil comportamental, onboarding, avaliação de desempenho e cultura." },
+            { id: 6,  qtd: 1, titulo: "Inovação em Design de Multimídia / Diretor de Arte", nivel: "PDIG-I", valor: "7.000,00", diretoria: "DIN", area: "DIN", foco: "Novas abordagens estéticas, direção de arte, identidade visual.", cap: "Marketing, branding, Adobe Suite, 2D, tendências visuais, design system." },
+            { id: 7,  qtd: 1, titulo: "Arquitetura de Data Lakes", nivel: "PDIG-III", valor: "5.800,00", diretoria: "DTI", area: "GEIND", foco: "Modernização da plataforma de dados, ingestão e segurança para IA.", cap: "Big Data, Data Lakes, Solr/Elasticsearch, Kafka, Governança." },
+            { id: 8,  qtd: 1, titulo: "Especialista em Segurança Cibernética", nivel: "PDIG-IV", valor: "5.500,00", diretoria: "DTI", area: "GERED", foco: "Monitoramento de ameaças, MIST, CTIR, criptografia e IA para segurança.", cap: "Firewalls, SIEM, Docker/K8s, Python, Certificações Security+." },
+            { id: 9,  qtd: 1, titulo: "Pesquisador de Apoio em Processos Comerciais", nivel: "PDIG-II", valor: "6.200,00", diretoria: "DME", area: "GECOM", foco: "Redesenhar processos comerciais, eficiência operacional, redução de riscos.", cap: "BPM Comercial, CRM, KPIs de vendas, digitalização de fluxos." },
+            { id: 10, qtd: 1, titulo: "Estratégia Comercial e de Relacionamento", nivel: "PDIG-II", valor: "6.200,00", diretoria: "DME", area: "GECOM", foco: "Inteligência comercial, prospecção, relacionamento gov, propostas.", cap: "Negociação, Lei 14.133, elaboração de propostas técnicas." },
+            { id: 11, qtd: 1, titulo: "Inovação em Arquitetura de Datacenter e Cloud", nivel: "PDIG-III", valor: "5.800,00", diretoria: "DTI", area: "GEINF", foco: "Arquiteturas de software para datacenter (IaaS/PaaS style).", cap: "Virtualização (VMware), Containerização, Ansible/Terraform, Cloud pública." },
+            { id: 12, qtd: 1, titulo: "Especialista em Comunicação Digital e Plataformas", nivel: "PDIG-I", valor: "7.000,00", diretoria: "DME", area: "GEMAC", foco: "Gestão da presença digital, métricas, SEO, design system web.", cap: "WordPress, Elementor, GA4, SEO, performance web, HTML/CSS/JS." },
+            { id: 13, qtd: 1, titulo: "Inovação em Custos Contábeis", nivel: "PDIG-III", valor: "5.800,00", diretoria: "DAF", area: "GERCO", foco: "Sistema de custeio por produto, pricing, rentabilidade.", cap: "Contabilidade de Custos, ABC, BI financeiro, formação de preço." },
+            { id: 14, qtd: 1, titulo: "Inovação em Aspectos Tributários", nivel: "PDIG-III", valor: "5.800,00", diretoria: "DAF", area: "GERCO", foco: "Imunidade tributária, reforma tributária 2026, compliance fiscal.", cap: "Direito Tributário, Planejamento fiscal, Reforma Tributária, Tax Tech." },
+            { id: 15, qtd: 1, titulo: "Automação Inteligente (Folha de Pagamento)", nivel: "PDIG-III", valor: "5.800,00", diretoria: "DAF", area: "GEPES", foco: "Automação de processos de Gestão de Pessoas (Low-code/API).", cap: "eSocial, n8n/Make, APIs REST, Python/JS, Interoperabilidade." }
+        ];
+
+        // --- CALCULO AUTOMÁTICO DE DADOS ---
+        function calculateSummary() {
+            const summary = {
+                labels: ['DAF', 'DME', 'DTI', 'DIN', 'PRES'],
+                costs: [0, 0, 0, 0, 0],
+                vacancies: [0, 0, 0, 0, 0],
+                colors: ['#3b82f6', '#ec4899', '#14b8a6', '#f97316', '#a855f7'],
+                totalCost: 0,
+                totalVacancies: 0
+            };
+
+            const dirIndexMap = { 'DAF': 0, 'DME': 1, 'DTI': 2, 'DIN': 3, 'PRES': 4 };
+
+            vagasData.forEach(vaga => {
+                const idx = dirIndexMap[vaga.diretoria];
+                const valorNum = parseFloat(vaga.valor.replace('.', '').replace(',', '.'));
+                const custoTotalVaga = valorNum * vaga.qtd;
+
+                summary.costs[idx] += custoTotalVaga;
+                summary.vacancies[idx] += vaga.qtd;
+                summary.totalCost += custoTotalVaga;
+                summary.totalVacancies += vaga.qtd;
+            });
+
+            return summary;
+        }
+
+        let summaryData = calculateSummary();
+
+        // --- MAPA DE CORES POR DIRETORIA (Tailwind Classes) ---
+        const stylesMap = {
+            'DAF': { border: 'border-blue-500', text: 'text-blue-600 dark:text-blue-400', badge: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' },
+            'DME': { border: 'border-pink-500', text: 'text-pink-600 dark:text-pink-400', badge: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200' },
+            'DTI': { border: 'border-teal-500', text: 'text-teal-600 dark:text-teal-400', badge: 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200' },
+            'DIN': { border: 'border-orange-500', text: 'text-orange-600 dark:text-orange-400', badge: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' },
+            'PRES': { border: 'border-purple-500', text: 'text-purple-600 dark:text-purple-400', badge: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' }
+        };
+
+        // --- RENDERIZAR LISTA (HTML + Tailwind) ---
+        function renderList(filter = 'all') {
+            const container = document.getElementById('vagas-container');
+            container.innerHTML = '';
+
+            const filteredData = filter === 'all' 
+                ? vagasData 
+                : vagasData.filter(v => v.diretoria === filter);
+
+            filteredData.forEach(vaga => {
+                const style = stylesMap[vaga.diretoria];
+                
+                // Calculo valores para exibição
+                const valorNum = parseFloat(vaga.valor.replace('.', '').replace(',', '.'));
+                const totalVaga = (valorNum * vaga.qtd).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+                const item = document.createElement('div');
+                item.className = `bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden border-l-[6px] ${style.border}`;
+                
+                // Destaque se a quantidade for maior que 1
+                const qtdBadge = vaga.qtd > 1 
+                    ? `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-200 dark:border-green-800">x${vaga.qtd} Vagas</span>`
+                    : '';
+
+                item.innerHTML = `
+                    <div class="p-4 cursor-pointer flex flex-col sm:flex-row justify-between items-start sm:items-center" onclick="toggleAccordion(${vaga.id})">
+                        <div class="flex items-center gap-3 w-full">
+                            <span class="flex-shrink-0 inline-flex items-center justify-center h-8 w-8 rounded-full bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">
+                                ${vaga.id}
+                            </span>
+                            <div class="flex-grow">
+                                <h4 class="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 pr-2">
+                                    ${vaga.titulo}
+                                    ${qtdBadge}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="mt-2 sm:mt-0 flex gap-2 flex-shrink-0">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
+                                ${vaga.nivel}
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium ${style.badge}">
+                                ${vaga.diretoria}
+                            </span>
+                             <i id="icon-${vaga.id}" class="fas fa-chevron-down text-slate-400 transition-transform duration-300 ml-2 pt-1"></i>
+                        </div>
+                    </div>
+                    
+                    <div id="content-${vaga.id}" class="accordion-content bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-700">
+                        <div class="p-5 grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="md:col-span-2 space-y-4">
+                                <div>
+                                    <h5 class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide mb-1">Foco da Atuação</h5>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">${vaga.foco}</p>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide mb-1">Capacidade Técnica</h5>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">${vaga.cap}</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Coluna de Valores e Detalhes da Vaga -->
+                            <div class="md:col-span-1 border-t md:border-t-0 md:border-l border-slate-200 dark:border-slate-700 pt-4 md:pt-0 md:pl-6 flex flex-col justify-center space-y-4">
+                                <div class="bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm">
+                                    <div class="grid grid-cols-3 gap-2 text-center divide-x divide-slate-200 dark:divide-slate-600">
+                                        <div>
+                                            <span class="block text-[10px] text-slate-500 uppercase tracking-wide">Qtd</span>
+                                            <span class="block text-sm font-bold text-slate-800 dark:text-slate-200">${vaga.qtd}</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-[10px] text-slate-500 uppercase tracking-wide">Unit.</span>
+                                            <span class="block text-sm font-bold text-slate-800 dark:text-slate-200">${vaga.valor}</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-[10px] text-slate-500 uppercase tracking-wide">Total</span>
+                                            <span class="block text-sm font-bold text-green-600 dark:text-green-400">${totalVaga}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <span class="text-xs text-slate-500 dark:text-slate-500 block">Área Requisitante</span>
+                                    <span class="text-sm font-medium text-slate-800 dark:text-slate-200">${vaga.area}</span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-slate-500 dark:text-slate-500 block">Diretoria</span>
+                                    <span class="text-sm font-bold ${style.text}">${vaga.diretoria}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function filterList(filter) {
+            renderList(filter);
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            content.classList.toggle('open');
+            
+            if (content.classList.contains('open')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // --- ATUALIZAÇÃO DE KPIs ---
+        function updateKPIs() {
+            document.getElementById('kpi-investimento').innerText = 'R$ ' + summaryData.totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            document.getElementById('kpi-vagas').innerText = summaryData.totalVacancies;
+            
+            const media = summaryData.totalVacancies > 0 ? (summaryData.totalCost / summaryData.totalVacancies) : 0;
+            document.getElementById('kpi-medio').innerText = 'R$ ' + media.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // --- GRÁFICOS (Chart.js) ---
+        let costChartInstance = null;
+        let vacancyChartInstance = null;
+
+        function updateChartTheme(theme) {
+            const isDark = (theme === 'dark');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+            const textColor = isDark ? '#cbd5e1' : '#475569'; 
+            
+            Chart.defaults.color = textColor;
+            Chart.defaults.borderColor = gridColor;
+            
+            if (costChartInstance) costChartInstance.destroy();
+            if (vacancyChartInstance) vacancyChartInstance.destroy();
+
+            renderCharts();
+        }
+
+        function renderCharts() {
+            // Gráfico de Barras (Custos)
+            const ctxCost = document.getElementById('costChart').getContext('2d');
+            costChartInstance = new Chart(ctxCost, {
+                type: 'bar',
+                data: {
+                    labels: summaryData.labels,
+                    datasets: [{
+                        label: 'Investimento Mensal (R$)',
+                        data: summaryData.costs,
+                        backgroundColor: summaryData.colors,
+                        borderRadius: 4,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'R$ ' + context.raw.toLocaleString('pt-BR');
+                                }
+                            },
+                            backgroundColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+                            titleColor: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#0f172a',
+                            bodyColor: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#334155',
+                            borderColor: document.documentElement.classList.contains('dark') ? '#334155' : '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 10
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { drawBorder: false }
+                        },
+                        x: { 
+                            grid: { display: false } 
+                        }
+                    }
+                }
+            });
+
+            // Gráfico de Rosca (Vagas)
+            const ctxVacancy = document.getElementById('vacancyChart').getContext('2d');
+            vacancyChartInstance = new Chart(ctxVacancy, {
+                type: 'doughnut',
+                data: {
+                    labels: summaryData.labels,
+                    datasets: [{
+                        data: summaryData.vacancies,
+                        backgroundColor: summaryData.colors,
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            position: 'right',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener("DOMContentLoaded", function() {
+            renderList();
+            updateKPIs();
+            updateChartTheme(currentTheme);
+        });
+
+    </script>
+</body>
+</html>
