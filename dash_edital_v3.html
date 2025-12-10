@@ -81,23 +81,37 @@
 </head>
 <body class="flex flex-col min-h-full text-slate-800">
 
-    <!-- HEADER INSTITUCIONAL -->
-    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <img src="https://www.ciasc.sc.gov.br/wp-content/uploads/2020/07/logo-ciasc-horizontal.png" alt="CIASC Logo" class="h-10 w-auto">
-                <div class="hidden md:block w-px h-8 bg-slate-300 mx-2"></div>
-                <div class="flex flex-col">
-                    <h1 class="text-xl font-bold text-ciasc-blue tracking-tight leading-none">Painel de Gestão de Bolsas</h1>
-                    <span class="text-xs text-slate-500 font-medium mt-1">Programa de Pesquisa, Desenvolvimento e Inovação 2025</span>
+    <!-- Header (Padrão CIASC) -->
+    <header class="bg-white/80 dark:bg-slate-800/50 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-20 backdrop-blur-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
+            <div class="w-full py-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="#">
+                        <span class="sr-only">CIASC</span>
+                        <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </a>
+                    <div class="ml-4 flex flex-col justify-center">
+                        <span class="text-xl font-bold text-blue-800 dark:text-blue-400 leading-none">CIASC</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 tracking-wider">ASSESSORIA DE INOVAÇÃO E TECNOLOGIA</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                     <span class="text-sm font-medium text-slate-600 dark:text-slate-400 hidden sm:inline text-right">
+                         Proposta de Edital<br>Bolsistas 2026-1
+                     </span>
+                     <!-- Botão de Tema -->
+                     <button id="theme-toggle" type="button" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none transition-colors">
+                        <span class="sr-only">Alternar tema</span>
+                        <svg id="theme-icon-light" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12H.75m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25 2.25 2.25 0 0 0 2.25 2.25 2.25 2.25 0 0 0 2.25-2.25A2.25 2.25 0 0 0 12 12Z" />
+                        </svg>
+                        <svg id="theme-icon-dark" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                        </svg>
+                    </button>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20">
-                    Rev. 3 (Ajuste DME)
-                </span>
-            </div>
-        </div>
+        </nav>
     </header>
 
     <!-- MAIN CONTENT -->
@@ -216,19 +230,35 @@
         </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <img src="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" alt="CIASC" class="h-8 w-8 grayscale opacity-50">
-                <div class="text-sm text-slate-500">
-                    <p class="font-semibold text-slate-700">CIASC - Centro de Informática e Automação de SC</p>
-                    <p>Rodovia Admar Gonzaga, 2765 - Itacorubi - Florianópolis/SC</p>
+     <!-- Footer (Padrão CIASC) -->
+    <footer class="bg-slate-100 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                
+                <div class="flex flex-col justify-center items-center md:items-start space-y-4">
+                    <div class="w-fit">
+                         <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </div>
+                    <p class="text-xs text-center md:text-left text-slate-600 dark:text-slate-400">
+                        Todos os Direitos reservados - AIT<br>(Assessoria de Inovação e Tecnologia) - CIASC 2025
+                    </p>
                 </div>
-            </div>
-            <div class="text-xs text-slate-400 text-center md:text-right">
-                <p>&copy; 2025 CIASC. Todos os direitos reservados.</p>
-                <p class="mt-1">Desenvolvido pela Assessoria de Inovação e Transformação (AIT)</p>
+                
+                <div class="text-center md:text-left text-sm text-slate-700 dark:text-slate-300">
+                    <h4 class="font-semibold text-blue-800 dark:text-blue-400">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
+                    <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
+                    <p>Florianópolis, SC - CEP 88034-902</p>
+                    <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
+                </div>
+                
+                <div class="text-center md:text-right text-sm">
+                    <p class="font-semibold text-blue-800 dark:text-blue-400">Links Úteis</p>
+                    <ul class="mt-2 space-y-1">
+                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Site Oficial CIASC</a></li>
+                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Portal da Transparência</a></li>
+                        <li><a href="https://www.fapesc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">FAPESC</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </footer>
