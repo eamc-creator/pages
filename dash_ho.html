@@ -1,118 +1,206 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<!-- A classe 'dark' ou 'light' será controlada pelo JS. Começa com a classe do sistema ou light -->
+<html lang="pt-br" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard: Análise de Trabalho Híbrido</title>
-    <!-- Carrega o Tailwind CSS -->
+    <title>Dashboard - Análise de Trabalho Híbrido</title>
+    
+    <!-- Favicon do CIASC -->
+    <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" type="image/png">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Carrega a biblioteca Chart.js -->
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Carrega a fonte Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Font Inter -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    
     <style>
-        /* Define a fonte Inter como padrão */
-        body {
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
-        /* Estilo para a aba ativa */
-        .tab-active {
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* Ícones de tema */
+        #theme-icon-light, #theme-icon-dark { display: none; }
+        .dark #theme-icon-light { display: block; }
+        .light #theme-icon-dark { display: block; }
+
+        /* Estilo para as abas */
+        .tab-btn {
             border-bottom-width: 2px;
-            border-color: #3b82f6; /* Azul */
-            color: #3b82f6;
+            transition: all 0.3s ease;
+        }
+        .tab-active {
+            border-color: #2563eb; /* blue-600 */
+            color: #2563eb;
             font-weight: 600;
         }
-        /* Estilo para a aba inativa */
+        .dark .tab-active {
+            border-color: #60a5fa; /* blue-400 */
+            color: #60a5fa;
+        }
         .tab-inactive {
-            color: #9ca3af; /* Cinza */
-            border-bottom-width: 2px;
             border-color: transparent;
+            color: #64748b; /* slate-500 */
+        }
+        .dark .tab-inactive {
+            color: #94a3b8; /* slate-400 */
+        }
+        .tab-inactive:hover {
+            color: #334155; /* slate-700 */
+            border-color: #cbd5e1;
+        }
+        .dark .tab-inactive:hover {
+            color: #cbd5e1; /* slate-300 */
+            border-color: #475569;
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-100 p-4 md:p-8">
+<body class="h-full flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-300 transition-colors duration-300">
 
-    <div class="max-w-7xl mx-auto">
+    <!-- Header (Padrão CIASC) -->
+    <header class="bg-white/80 dark:bg-slate-800/50 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-20 backdrop-blur-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
+            <div class="w-full py-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="#">
+                        <span class="sr-only">CIASC</span>
+                        <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </a>
+                    <div class="ml-4 flex flex-col justify-center">
+                        <span class="text-xl font-bold text-blue-800 dark:text-blue-400 leading-none">CIASC</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 tracking-wider">ASSESSORIA DE INOVAÇÃO E TECNOLOGIA</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                     <span class="text-sm font-medium text-slate-600 dark:text-slate-400 hidden sm:inline text-right">
+                         Análise de Trabalho<br>Híbrido
+                     </span>
+                     <!-- Botão de Tema -->
+                     <button id="theme-toggle" type="button" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none transition-colors">
+                        <span class="sr-only">Alternar tema</span>
+                        <svg id="theme-icon-light" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12H.75m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25 2.25 2.25 0 0 0 2.25 2.25 2.25 2.25 0 0 0 2.25-2.25A2.25 2.25 0 0 0 12 12Z" />
+                        </svg>
+                        <svg id="theme-icon-dark" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
         <!-- Título do Dashboard -->
-        <header class="mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-white text-center">Dashboard: Análise do Trabalho Híbrido no Setor Público de TI</h1>
-            <p class="text-center text-lg text-gray-400 mt-2">Análise comparativa (ABEP-TIC), riscos operacionais e recomendações para o CIASC</p>
-        </header>
+        <div class="mb-8 border-b border-slate-200 dark:border-slate-700 pb-5 text-center md:text-left">
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                Dashboard: Análise do Trabalho Híbrido no Setor Público de TI
+            </h1>
+            <p class="mt-2 text-sm md:text-base text-slate-600 dark:text-slate-400">
+                Análise comparativa (ABEP-TIC), riscos operacionais e recomendações para o CIASC.
+            </p>
+        </div>
 
         <!-- Navegação por Abas -->
-        <nav class="flex justify-center border-b border-gray-700 mb-8">
-            <div class="flex space-x-4 md:space-x-8">
-                <button onclick="changeTab('resumo')" id="tab-resumo" class="tab-active py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+        <nav class="flex justify-center md:justify-start border-b border-slate-200 dark:border-slate-700 mb-8 overflow-x-auto">
+            <div class="flex space-x-4 md:space-x-8 min-w-max px-2">
+                <button onclick="changeTab('resumo')" id="tab-resumo" class="tab-btn tab-active py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none">
                     Resumo Executivo
                 </button>
-                <button onclick="changeTab('comparativo')" id="tab-comparativo" class="tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+                <button onclick="changeTab('comparativo')" id="tab-comparativo" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none">
                     Comparativo ABEP-TIC
                 </button>
-                <button onclick="changeTab('estudos')" id="tab-estudos" class="tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+                <button onclick="changeTab('estudos')" id="tab-estudos" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none">
                     Estudos Acadêmicos
                 </button>
-                <button onclick="changeTab('riscos')" id="tab-riscos" class="tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none transition-all duration-300">
+                <button onclick="changeTab('riscos')" id="tab-riscos" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none">
                     Riscos & Recomendações
                 </button>
             </div>
         </nav>
 
         <!-- Conteúdo das Abas -->
-        <main>
+        <div class="transition-opacity duration-300">
+            
             <!-- ======================= -->
             <!-- ABA: Resumo Executivo -->
             <!-- ======================= -->
-            <div id="content-resumo" class="space-y-8">
-                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Resumo Executivo</h2>
+            <div id="content-resumo" class="space-y-8 animate-fade-in">
+                <h2 class="text-2xl font-semibold text-blue-700 dark:text-blue-400 mb-6 text-center md:text-left">Visão Geral</h2>
                 
                 <!-- KPIs Principais -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-                        <h3 class="text-lg font-semibold text-gray-300">Modelo CIASC (Atual)</h3>
-                        <p class="text-3xl font-bold text-green-400 mt-2">Híbrido (1x4)</p>
-                        <p class="text-gray-400 mt-1">1 dia presencial e 4 dias remotos.</p>
+                    <!-- KPI 1 -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border-l-4 border-blue-500 border-t border-r border-b border-slate-200 dark:border-slate-700">
+                        <h3 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Modelo CIASC (Atual)</h3>
+                        <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">Híbrido (1x4)</p>
+                        <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">1 dia presencial e 4 dias remotos.</p>
                     </div>
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-                        <h3 class="text-lg font-semibold text-gray-300">Tendência ABEP-TIC</h3>
-                        <p class="text-3xl font-bold text-green-400 mt-2">Híbrido Flexível</p>
-                        <p class="text-gray-400 mt-1">Maioria adota 2 a 4 dias remotos.</p>
+                    <!-- KPI 2 -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border-l-4 border-green-500 border-t border-r border-b border-slate-200 dark:border-slate-700">
+                        <h3 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Tendência ABEP-TIC</h3>
+                        <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">Híbrido Flexível</p>
+                        <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">Maioria adota 2 a 4 dias remotos.</p>
                     </div>
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-                        <h3 class="text-lg font-semibold text-gray-300">Risco Principal (RTO*)</h3>
-                        <p class="text-3xl font-bold text-red-400 mt-2">Apagão Tecnológico</p>
-                        <p class="text-gray-400 mt-1">*Retorno Obrigatório ao Presencial.</p>
+                    <!-- KPI 3 -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border-l-4 border-red-500 border-t border-r border-b border-slate-200 dark:border-slate-700">
+                        <h3 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Risco Principal (RTO*)</h3>
+                        <p class="mt-2 text-3xl font-bold text-red-600 dark:text-red-400">Apagão Tecnológico</p>
+                        <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">*Retorno Obrigatório ao Presencial.</p>
                     </div>
                 </div>
 
                 <!-- Gráfico e Análise de Riscos -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-                        <h3 class="text-xl font-semibold text-white mb-4">Modelos de Trabalho nas Prods (Amostra ABEP)</h3>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Modelos de Trabalho nas Prods (Amostra ABEP)</h3>
                         <div class="relative h-64 md:h-80">
                             <canvas id="modelosChart"></canvas>
                         </div>
-                        <p class="text-center text-gray-400 mt-4">A maioria das empresas públicas de TI adota o modelo híbrido, reconhecendo a flexibilidade como essencial.</p>
+                        <p class="text-center text-sm text-slate-500 dark:text-slate-400 mt-4">A maioria das empresas públicas de TI adota o modelo híbrido, reconhecendo a flexibilidade como essencial.</p>
                     </div>
                     
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
-                        <h3 class="text-xl font-semibold text-white mb-4">Contexto Crítico do CIASC</h3>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 space-y-5">
+                        <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">Contexto Crítico do CIASC</h3>
                         <div>
-                            <h4 class="text-lg font-semibold text-yellow-400">1. PDVI em Andamento</h4>
-                            <p class="text-gray-300">Saída de profissionais experientes, resultando em perda de conhecimento crítico e sobrecarga das equipes remanescentes.</p>
+                            <h4 class="text-base font-bold text-yellow-600 dark:text-yellow-400 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-2"></i> 1. PDVI em Andamento
+                            </h4>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1 pl-6">Saída de profissionais experientes, resultando em perda de conhecimento crítico e sobrecarga das equipes remanescentes.</p>
                         </div>
                         <div>
-                            <h4 class="text-lg font-semibold text-red-400">2. Risco de Evasão de Talentos</h4>
-                            <p class="text-gray-300">Profissionais de TI (especialmente os mais novos e qualificados) são altamente assediados pela iniciativa privada, que oferece flexibilidade total (remoto) e salários maiores.</p>
+                            <h4 class="text-base font-bold text-red-600 dark:text-red-400 flex items-center">
+                                <i class="fas fa-user-minus mr-2"></i> 2. Risco de Evasão de Talentos
+                            </h4>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1 pl-6">Profissionais de TI são altamente assediados pela iniciativa privada, que oferece flexibilidade total (remoto) e salários maiores.</p>
                         </div>
                         <div>
-                            <h4 class="text-lg font-semibold text-orange-400">3. Restrições de Reposição</h4>
-                            <p class="text-gray-300">A morosidade de concursos públicos e as restrições legais em SC para terceirização de atividade-fim impedem a reposição ágil da força de trabalho.</p>
+                            <h4 class="text-base font-bold text-orange-600 dark:text-orange-400 flex items-center">
+                                <i class="fas fa-ban mr-2"></i> 3. Restrições de Reposição
+                            </h4>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1 pl-6">A morosidade de concursos públicos e as restrições legais em SC para terceirização de atividade-fim impedem a reposição ágil.</p>
                         </div>
-                        <div class="bg-red-900/50 p-4 rounded-md border border-red-700">
-                            <p class="font-semibold text-red-300">Conclusão: Um RTO forçado agravaria a evasão de talentos, criando um risco operacional severo para os serviços essenciais do Estado.</p>
+                        <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-md border border-red-100 dark:border-red-800/50 mt-4">
+                            <p class="font-semibold text-red-800 dark:text-red-300 text-sm">
+                                <i class="fas fa-info-circle mr-1"></i> Conclusão: Um RTO forçado agravaria a evasão de talentos, criando um risco operacional severo.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -121,154 +209,140 @@
             <!-- ========================== -->
             <!-- ABA: Comparativo ABEP-TIC -->
             <!-- ========================== -->
-            <div id="content-comparativo" class="hidden">
-                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Comparativo de Modelos de Trabalho (ABEP-TIC)</h2>
-                <div class="bg-gray-800 p-4 md:p-6 rounded-lg shadow-lg overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-700">
-                        <thead class="bg-gray-700/50">
-                            <tr>
-                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Empresa (Estado)</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Modelo Adotado</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Detalhes do Regime</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs md:text-sm font-semibold text-gray-300 uppercase tracking-wider">Flexibilidade</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-gray-800 divide-y divide-gray-700">
-                            <!-- CIASC (SC) - Destaque -->
-                            <tr class="bg-blue-900/30">
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">CIASC (SC)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-green-400">Híbrido (1x4)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-200">1 presencial, 4 remotos (jornada 6h, escolha do dia).</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Muito Alta</td>
-                            </tr>
-                            
-                            <!-- PRODEST (ES) - Adicionado -->
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODEST (ES)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido (3x2)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">3 dias remotos, 2 dias presenciais (mín. 16h semanais).</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Alta</td>
-                            </tr>
-                            
-                            <!-- PRODESP (SP) - Adicionado -->
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODESP (SP)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Presencial</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">100% Presencial (Conforme dados ABEP).</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Nenhuma</td>
-                            </tr>
+            <div id="content-comparativo" class="hidden animate-fade-in">
+                <h2 class="text-2xl font-semibold text-blue-700 dark:text-blue-400 mb-6">Comparativo de Modelos de Trabalho</h2>
+                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                            <thead class="bg-slate-50 dark:bg-slate-700/50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Empresa (Estado)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Modelo Adotado</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Detalhes do Regime</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Flexibilidade</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+                                <!-- CIASC (SC) - Destaque -->
+                                <tr class="bg-blue-50/50 dark:bg-blue-900/10">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900 dark:text-white border-l-4 border-blue-500">CIASC (SC)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600 dark:text-green-400">Híbrido (1x4)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">1 presencial, 4 remotos (jornada 6h).</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600 dark:text-green-400">Muito Alta</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">PRODEST (ES)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400">Híbrido (3x2)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">3 dias remotos, 2 presenciais.</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400">Alta</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">PRODESP (SP)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 dark:text-red-400">Presencial</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">100% Presencial.</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 dark:text-red-400">Nenhuma</td>
+                                </tr>
 
-                            <!-- CELEPAR (PR) - Adicionado -->
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">CELEPAR (PR)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Presencial</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Retorno ao presencial desde Jan/2025 (Info. Diretor).</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Nenhuma</td>
-                            </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">CELEPAR (PR)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 dark:text-red-400">Presencial</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">Retorno presencial (Jan/2025).</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 dark:text-red-400">Nenhuma</td>
+                                </tr>
 
-                            <!-- Outras Prods -->
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODEMGE (MG)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido Flexível</td>
-                                <!-- ATUALIZADO AQUI -->
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Regime de teletrabalho (PGD) prorrogado até Set/2026.</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Muito Alta</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODAM (AM)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido (4x1)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">4 dias remotos, 1 presencial (foco em Desenvolvimento).</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Muito Alta</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PROCERGS (RS)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Híbrido (Variável)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Modelo definido por área/gestor (sem política universal).</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Média (por área)</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">PRODERJ (RJ)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Modelo regulamentado por PGD (Portaria 793/2020 e outras).</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Alta (com gestão)</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">MTI (MT)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Híbrido (Dinâmico)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">1 a 5 dias remotos (acordo com gestor). Tendência de retorno.</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-yellow-300">Variável</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">ETICE (CE)</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Híbrido</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Modelo híbrido sem tendência de retorno total.</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-green-400">Alta</td>
-                            </tr>
-                             <tr>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-white">ATI-PE / PRODEPA (PA) / etc.</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Presencial</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-300">Algumas Prods menores ou com gestão mais tradicional retornaram 100%.</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-red-400">Nenhuma</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">PRODEMGE (MG)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400">Híbrido Flexível</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">Teletrabalho (PGD) até Set/2026.</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400">Muito Alta</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">PRODAM (AM)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400">Híbrido (4x1)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">4 dias remotos, 1 presencial.</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400">Muito Alta</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">PROCERGS (RS)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-yellow-600 dark:text-yellow-400">Híbrido (Variável)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">Modelo definido por gestor.</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-yellow-600 dark:text-yellow-400">Média</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">PRODERJ (RJ)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400">Híbrido</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">Regulamentado por PGD.</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 dark:text-green-400">Alta</td>
+                                </tr>
+                                 <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">ATI-PE / PRODEPA</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 dark:text-red-400">Presencial</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">Prods menores retornaram 100%.</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 dark:text-red-400">Nenhuma</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <!-- ======================= -->
             <!-- ABA: Estudos Acadêmicos -->
             <!-- ======================= -->
-            <div id="content-estudos" class="hidden">
-                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Evidências e Estudos Científicos</h2>
+            <div id="content-estudos" class="hidden animate-fade-in">
+                <h2 class="text-2xl font-semibold text-blue-700 dark:text-blue-400 mb-6">Evidências e Estudos Científicos</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     
-                    <!-- Card Stanford (ATUALIZADO E CLARIFICADO) -->
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col">
-                        <h3 class="text-xl font-semibold text-white">Universidade de Stanford (N. Bloom)</h3>
-                        <div class="flex items-center my-3">
-                            <span class="text-green-400 text-2xl mr-2">
-                                <!-- Ícone de Check (Pró) -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                            </span>
-                            <span class="text-lg font-semibold text-green-300">Posição Clara: Pró-Híbrido/Remoto</span>
+                    <!-- Card Stanford -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col hover:shadow-md transition-shadow">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Universidade de Stanford</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">(Nick Bloom)</p>
+                        <div class="flex items-center mb-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800">
+                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl mr-2"></i>
+                            <span class="text-sm font-semibold text-green-800 dark:text-green-300">Posição: Pró-Híbrido</span>
                         </div>
-                        <p class="text-gray-300 flex-grow">
-                            A pesquisa de Stanford demonstra que o trabalho híbrido/remoto <strong>AUMENTA a produtividade</strong> (13%), <strong>REDUZ drasticamente a rotatividade</strong> (50%) e melhora a satisfação. O estudo conclui que um modelo híbrido bem gerenciado é um "ganha-ganha-ganha" para empresas, funcionários e sociedade.
+                        <p class="text-sm text-slate-600 dark:text-slate-300 flex-grow leading-relaxed">
+                            A pesquisa demonstra que o trabalho híbrido <strong>AUMENTA a produtividade</strong> (13%), <strong>REDUZ a rotatividade</strong> (50%) e melhora a satisfação.
                         </p>
-                        <a href="https://news.stanford.edu/stories/2024/06/hybrid-work-is-a-win-win-win-for-companies-workers/" target="_blank" class="mt-4 text-blue-400 hover:text-blue-300 text-sm font-medium">Ver fonte (Stanford News) &rarr;</a>
+                        <a href="https://news.stanford.edu/stories/2024/06/hybrid-work-is-a-win-win-win-for-companies-workers/" target="_blank" class="mt-4 inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium">
+                            Ler estudo <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                        </a>
                     </div>
 
-                    <!-- Card FGV / FIA (ATUALIZADO COM FONTES) -->
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col">
-                        <h3 class="text-xl font-semibold text-white">FGV / FIA (Brasil)</h3>
-                        <div class="flex items-center my-3">
-                             <span class="text-green-400 text-2xl mr-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                            </span>
-                            <span class="text-lg font-semibold text-green-300">Posição: Pró-Flexibilidade</span>
+                    <!-- Card FGV / FIA -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col hover:shadow-md transition-shadow">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">FGV / FIA (Brasil)</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Pesquisas Nacionais</p>
+                        <div class="flex items-center mb-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800">
+                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl mr-2"></i>
+                            <span class="text-sm font-semibold text-green-800 dark:text-green-300">Posição: Pró-Flexibilidade</span>
                         </div>
-                        <p class="text-gray-300 flex-grow">
-                            Estudos no Brasil (FIA e FGV) confirmam: <strong>91%</strong> dos profissionais percebem a produtividade igual ou maior no remoto. A flexibilidade é o <strong>segundo maior atrativo</strong> para profissionais de TI no país, atrás apenas do salário.
+                        <p class="text-sm text-slate-600 dark:text-slate-300 flex-grow leading-relaxed">
+                            <strong>91%</strong> dos profissionais percebem produtividade igual ou maior no remoto. A flexibilidade é o <strong>2º maior atrativo</strong> para TI no país.
                         </p>
-                        <!-- Links Adicionados -->
-                        <a href="https://progep.fia.com.br/wp-content/uploads/2025/01/Sumario-pesquisa-2024_vfinal.pdf" target="_blank" class="mt-4 text-blue-400 hover:text-blue-300 text-sm font-medium">Ver fonte (Pesquisa FIA 2024) &rarr;</a>
-                        <a href="https://portal.fgv.br/artigos/consequencias-surpreendentes-aumento-trabalho-remoto" target="_blank" class="mt-2 text-blue-400 hover:text-blue-300 text-sm font-medium">Ver fonte (Artigo FGV) &rarr;</a>
+                        <div class="mt-4 flex flex-col gap-1">
+                            <a href="https://progep.fia.com.br/wp-content/uploads/2025/01/Sumario-pesquisa-2024_vfinal.pdf" target="_blank" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium">
+                                Pesquisa FIA 2024 <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Card Mandatos RTO -->
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col">
-                        <h3 class="text-xl font-semibold text-white">Análises de RTO (Gartner / Univ. Pittsburgh)</h3>
-                        <div class="flex items-center my-3">
-                             <span class="text-red-400 text-2xl mr-2">
-                                <!-- Ícone de Alerta (Contra) -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 102 0v-2a1 1 0 10-2 0v2zM9 7a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
-                            </span>
-                            <span class="text-lg font-semibold text-red-300">Posição: Contra RTO Forçado</span>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col hover:shadow-md transition-shadow">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Análises de RTO</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Gartner / Univ. Pittsburgh</p>
+                        <div class="flex items-center mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-100 dark:border-red-800">
+                            <i class="fas fa-times-circle text-red-600 dark:text-red-400 text-xl mr-2"></i>
+                            <span class="text-sm font-semibold text-red-800 dark:text-red-300">Contra RTO Forçado</span>
                         </div>
-                        <p class="text-gray-300 flex-grow">
-                            Estudos sobre mandatos de Retorno ao Escritório (RTO) forçados mostram que eles <strong>NÃO aumentam a produtividade</strong> nem o desempenho financeiro da empresa. Em vez disso, geram queda no moral e <strong>aumento significativo na rotatividade</strong>, especialmente entre os profissionais de melhor desempenho.
+                        <p class="text-sm text-slate-600 dark:text-slate-300 flex-grow leading-relaxed">
+                            Mandatos forçados de retorno <strong>NÃO aumentam o desempenho</strong> financeiro da empresa, mas geram queda no moral e <strong>aumento na rotatividade</strong> de talentos.
                         </p>
-                        <a href="https://www.businessinsider.com/return-to-office-mandates-no-impact-company-performance-study-2024-5" target="_blank" class="mt-4 text-blue-400 hover:text-blue-300 text-sm font-medium">Ver fonte (Business Insider) &rarr;</a>
+                        <a href="https://www.businessinsider.com/return-to-office-mandates-no-impact-company-performance-study-2024-5" target="_blank" class="mt-4 inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium">
+                            Ver análise <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                        </a>
                     </div>
 
                 </div>
@@ -277,159 +351,234 @@
             <!-- ============================ -->
             <!-- ABA: Riscos & Recomendações -->
             <!-- ============================ -->
-            <div id="content-riscos" class="hidden">
-                <h2 class="text-2xl font-semibold text-blue-400 mb-6 text-center">Riscos Operacionais e Recomendações (CIASC)</h2>
+            <div id="content-riscos" class="hidden animate-fade-in">
+                <h2 class="text-2xl font-semibold text-blue-700 dark:text-blue-400 mb-6">Riscos Operacionais e Recomendações</h2>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Coluna de Riscos -->
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
-                        <h3 class="text-xl font-semibold text-red-400 mb-4">Análise de Risco: A "Tempestade Perfeita"</h3>
-                        <div class="flex items-start">
-                            <span class="text-red-500 text-3xl mr-3 mt-1">1</span>
-                            <div>
-                                <h4 class="text-lg font-semibold">Saída de Experientes (PDVI)</h4>
-                                <p class="text-gray-300">O PDVI drena o conhecimento sênior da empresa, essencial para sistemas legados e críticos.</p>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-red-200 dark:border-red-900/30">
+                        <h3 class="text-xl font-bold text-red-600 dark:text-red-400 mb-6 flex items-center">
+                            <i class="fas fa-bolt mr-2"></i> A "Tempestade Perfeita"
+                        </h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 font-bold mr-3">1</div>
+                                <div>
+                                    <h4 class="text-base font-semibold text-slate-900 dark:text-slate-100">Saída de Experientes (PDVI)</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">O PDVI drena o conhecimento sênior da empresa, essencial para sistemas legados.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 font-bold mr-3">2</div>
+                                <div>
+                                    <h4 class="text-base font-semibold text-slate-900 dark:text-slate-100">Evasão de Talentos</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Um RTO expulsaria talentos para o mercado privado (100% remoto e melhores salários).</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 font-bold mr-3">3</div>
+                                <div>
+                                    <h4 class="text-base font-semibold text-slate-900 dark:text-slate-100">Dificuldade de Reposição</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Concursos lentos e restrições legais à terceirização impedem cobrir vagas rapidamente.</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex items-start">
-                            <span class="text-red-500 text-3xl mr-3 mt-1">2</span>
-                            <div>
-                                <h4 class="text-lg font-semibold">Evasão de Talentos (Se RTO Forçado)</h4>
-                                <p class="text-gray-300">Um RTO (ex: volta para 3x2 ou pior) expulsaria talentos para o mercado privado, que oferece 100% remoto.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <span class="text-red-500 text-3xl mr-3 mt-1">3</span>
-                            <div>
-                                <h4 class="text-lg font-semibold">Impossibilidade de Reposição</h4>
-                                <p class="text-gray-300">A combinação de concursos (lentos) e restrições à terceirização (legais) impede cobrir as vagas abertas.</p>
-                            </div>
-                        </div>
-                        <div class="bg-red-900/50 p-4 mt-4 rounded-md border border-red-700">
-                            <h4 class="text-xl font-bold text-red-300 text-center">Risco Iminente (Se RTO): APAGÃO TECNOLÓGICO</h4>
-                            <p class="text-center text-red-200">Paralisação de serviços essenciais ao cidadão e ao governo (Defesa Civil, Saúde, Educação, Segurança) por falta de pessoal técnico qualificado.</p>
+
+                        <div class="bg-red-50 dark:bg-red-900/20 p-4 mt-6 rounded-md border border-red-100 dark:border-red-800 text-center">
+                            <h4 class="text-sm font-bold text-red-800 dark:text-red-300 uppercase tracking-wide">Consequência Iminente</h4>
+                            <p class="text-lg font-bold text-red-600 dark:text-red-400 mt-1">APAGÃO TECNOLÓGICO</p>
+                            <p class="text-xs text-red-700 dark:text-red-300 mt-1">Paralisação de serviços essenciais (Saúde, Segurança, Defesa Civil).</p>
                         </div>
                     </div>
 
                     <!-- Coluna de Recomendações -->
-                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
-                        <h3 class="text-xl font-semibold text-green-400 mb-4">Recomendações para Evolução da Norma CIASC</h3>
-                        <div class="flex items-start">
-                            <span class="text-green-500 text-3xl mr-3 mt-1">1</span>
-                            <div>
-                                <h4 class="text-lg font-semibold">Manter e Valorizar o 1x4</h4>
-                                <p class="text-gray-300">Sustentar o modelo atual (1 presencial, 4 remotos), que posiciona o CIASC como competitivo na atração e retenção.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <span class="text-green-500 text-3xl mr-3 mt-1">2</span>
-                            <div>
-                                <h4 class="text-lg font-semibold">Foco em Gestão, não em Presença</h4>
-                                <p class="text-gray-300">Migrar de um controle de frequência (ponto) para um controle de produtividade (entregas), inspirado no PGD do Gov. Federal.</p>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-green-200 dark:border-green-900/30">
+                        <h3 class="text-xl font-bold text-green-600 dark:text-green-400 mb-6 flex items-center">
+                            <i class="fas fa-clipboard-check mr-2"></i> Recomendações Estratégicas
+                        </h3>
 
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 font-bold mr-3">1</div>
+                                <div>
+                                    <h4 class="text-base font-semibold text-slate-900 dark:text-slate-100">Manter o Modelo 1x4</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Sustentar o modelo atual. É o diferencial competitivo do CIASC para retenção sem custo financeiro.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex items-start">
-            
-                            <span class="text-green-500 text-3xl mr-3 mt-1">3</span>
-                            <div>
-                                <h4 class="text-lg font-semibold">Implementar OKRs e KPIs Claros</h4>
-                                <p class="text-gray-300">Definir "Objectives and Key Results" (OKRs) trimestrais e KPIs (Key Performance Indicators) claros para empregados, setores e empresa, como critério objetivo de adesão e permanência no modelo.</p>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 font-bold mr-3">2</div>
+                                <div>
+                                    <h4 class="text-base font-semibold text-slate-900 dark:text-slate-100">Gestão por Entregas</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Migrar do controle de ponto para o controle de produtividade (PGD), focado em resultados.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex items-start">
-                            <span class="text-green-500 text-3xl mr-3 mt-1">4</span>
-                            <div>
-                                <h4 class="text-lg font-semibold">Segmentação (Opcional)</h4>
-                                <p class="text-gray-300">Considerar segmentar a flexibilidade por área apenas se houver forte justificativa operacional para áreas específicas exigirem mais dias presenciais (ex: suporte técnico local).</p>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 font-bold mr-3">3</div>
+                                <div>
+                                    <h4 class="text-base font-semibold text-slate-900 dark:text-slate-100">OKRs e KPIs Claros</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Definir metas trimestrais claras como critério objetivo para a manutenção do benefício.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
+
+    </main>
+
+    <!-- Footer (Padrão CIASC) -->
+    <footer class="bg-slate-100 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 mt-8">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                
+                <div class="flex flex-col justify-center items-center md:items-start space-y-4">
+                    <div class="w-fit">
+                         <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </div>
+                    <p class="text-xs text-center md:text-left text-slate-600 dark:text-slate-400">
+                        Todos os Direitos reservados - AIT<br>(Assessoria de Inovação e Tecnologia) - CIASC 2025
+                    </p>
+                </div>
+                
+                <div class="text-center md:text-left text-sm text-slate-700 dark:text-slate-300">
+                    <h4 class="font-semibold text-blue-800 dark:text-blue-400">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
+                    <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
+                    <p>Florianópolis, SC - CEP 88034-902</p>
+                    <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
+                </div>
+                
+                <div class="text-center md:text-right text-sm">
+                    <p class="font-semibold text-blue-800 dark:text-blue-400">Links Úteis</p>
+                    <ul class="mt-2 space-y-1">
+                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Site Oficial CIASC</a></li>
+                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Portal da Transparência</a></li>
+                        <li><a href="https://www.fapesc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">FAPESC</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // --- Script para Gráfico (Chart.js) ---
-        // Dados para o gráfico de pizza (amostra ABEP-TIC atualizada)
-        const chartData = {
-            // Contagem atualizada: 10 Híbrido, 7 Presencial (Celepar movida para Presencial)
-            labels: ['Híbrido', 'Presencial'],
-            datasets: [{
-                label: 'Modelos de Trabalho',
-                data: [10, 7], // 10 Híbrido, 7 Presencial
-                backgroundColor: [
-                    'rgba(59, 130, 246, 0.7)', // Azul (Híbrido)
-                    'rgba(239, 68, 68, 0.7)', // Vermelho (Presencial)
-                ],
-                borderColor: [
-                    'rgba(59, 130, 246, 1)',
-                    'rgba(239, 68, 68, 1)',
-                ],
-                borderWidth: 1
-            }]
-        };
+        // --- CONFIGURAÇÃO DE TEMA ---
+        const htmlEl = document.documentElement;
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        // Verifica preferência do sistema ou localStorage
+        let currentTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        htmlEl.classList.add(currentTheme);
 
-        // Configuração do gráfico
-        const chartConfig = {
-            type: 'doughnut', // Tipo de gráfico: rosca
-            data: chartData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: '#e5e7eb', // Cor do texto da legenda
-                            font: {
-                                size: 14,
-                                family: 'Inter'
+        themeToggleBtn.addEventListener('click', () => {
+            htmlEl.classList.toggle('dark');
+            htmlEl.classList.toggle('light');
+            currentTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', currentTheme);
+            updateChartTheme(currentTheme);
+        });
+
+        // --- Chart.js Config ---
+        let modelChart = null;
+
+        function updateChartTheme(theme) {
+            const isDark = (theme === 'dark');
+            const textColor = isDark ? '#e2e8f0' : '#475569';
+            
+            Chart.defaults.color = textColor;
+            
+            if (modelChart) {
+                modelChart.options.plugins.legend.labels.color = textColor;
+                modelChart.update();
+            } else {
+                renderChart(textColor);
+            }
+        }
+
+        function renderChart(textColor) {
+            const ctx = document.getElementById('modelosChart').getContext('2d');
+            const chartData = {
+                labels: ['Híbrido', 'Presencial'],
+                datasets: [{
+                    label: 'Modelos de Trabalho',
+                    data: [10, 7], 
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.8)', // Azul
+                        'rgba(239, 68, 68, 0.8)', // Vermelho
+                    ],
+                    borderColor: [
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(239, 68, 68, 1)',
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            };
+
+            modelChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: textColor,
+                                font: {
+                                    size: 14,
+                                    family: 'Inter'
+                                },
+                                padding: 20,
+                                usePointStyle: true
                             }
-                        }
-                    },
-                    tooltip: {
-                        titleFont: {
-                            family: 'Inter'
                         },
-                        bodyFont: {
-                            family: 'Inter'
+                        tooltip: {
+                            backgroundColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
+                            titleColor: document.documentElement.classList.contains('dark') ? '#f1f5f9' : '#0f172a',
+                            bodyColor: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#334155',
+                            borderColor: document.documentElement.classList.contains('dark') ? '#334155' : '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 10
                         }
                     }
                 }
-            }
-        };
+            });
+        }
 
-        // Renderiza o gráfico
-        const ctx = document.getElementById('modelosChart').getContext('2d');
-        new Chart(ctx, chartConfig);
-
-
-        // --- Script para Navegação por Abas ---
+        // --- Navegação por Abas ---
         let activeTab = 'resumo';
 
         function changeTab(tabId) {
-            // Se a aba clicada já é a ativa, não faz nada
             if (tabId === activeTab) return;
 
-            // Esconde o conteúdo da aba antiga
-            document.getElementById('content-' + activeTab).classList.add('hidden');
-            // Remove a classe 'ativa' da aba antiga
+            // Transição
+            const oldContent = document.getElementById('content-' + activeTab);
+            const newContent = document.getElementById('content-' + tabId);
+
+            // Classes das abas
             document.getElementById('tab-' + activeTab).classList.remove('tab-active');
             document.getElementById('tab-' + activeTab).classList.add('tab-inactive');
-
-
-            // Mostra o conteúdo da nova aba
-            document.getElementById('content-' + tabId).classList.remove('hidden');
-            // Adiciona a classe 'ativa' à nova aba
             document.getElementById('tab-' + tabId).classList.add('tab-active');
             document.getElementById('tab-' + tabId).classList.remove('tab-inactive');
 
-            // Atualiza a aba ativa
+            // Esconde antigo
+            oldContent.classList.add('hidden');
+            // Mostra novo
+            newContent.classList.remove('hidden');
+
             activeTab = tabId;
         }
+
+        // --- Inicialização ---
+        document.addEventListener("DOMContentLoaded", function() {
+            // Inicializa gráfico com a cor correta do tema atual
+            const initialTextColor = currentTheme === 'dark' ? '#e2e8f0' : '#475569';
+            renderChart(initialTextColor);
+        });
+
     </script>
 </body>
 </html>
-
