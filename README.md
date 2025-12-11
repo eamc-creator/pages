@@ -15,20 +15,20 @@ As páginas estão publicadas via GitHub Pages. Clique nos títulos abaixo para 
 * [**Dashboard Gov TI SC**](https://eamc-creator.github.io/pages/dash_gov_ti_sc.html)  
   *Indicadores e panorama da Governança de TI em Santa Catarina.*  
 * [**Dashboard FAPESC**](https://eamc-creator.github.io/pages/dash_fapesc_v3.html)  
-  *Dados estratégicos e monitoramento de projetos FAPESC.*  
+  *Proposta 2 com n usuários por vaga do Edital 2026.*  
 * [**Dashboard Editais CIASC**](https://eamc-creator.github.io/pages/dash_edital_ciasc.html)  
-  *Painel de acompanhamento de editais e processos licitatórios.*
+  *Proposta 2 com 1 usuário por vaga do Edital 2026.*
 
 ### **🛠️ Operacional e Projetos**
 
-* [**Dashboard Jira (Geral)**](https://eamc-creator.github.io/pages/dash_jira.html)  
-  *Visão geral de tarefas e produtividade no Jira.*  
-* [**Dashboard Jira (RD Station)**](https://eamc-creator.github.io/pages/dash_jira_RD.html)  
-  *Métricas específicas de integração e marketing digital.*  
+* [**Dashboard Jira (Jira x Jira x Outros)**](https://eamc-creator.github.io/pages/dash_jira.html)  
+  *Comparativo entre versões do Jira x Outros.*  
+* [**Dashboard Jira (Apresentação RD)**](https://eamc-creator.github.io/pages/dash_jira_RD.html)  
+  *Análise Jira Premium x Outras opções.*  
 * [**Dashboard Home Office**](https://eamc-creator.github.io/pages/dash_ho.html)  
-  *Monitoramento do regime de teletrabalho.*  
+  *Análise do regime de teletrabalho.*  
 * [**Dashboard VMs**](https://eamc-creator.github.io/pages/dash_vm.html)  
-  *Status e inventário de Máquinas Virtuais.*
+  *Comparativo de Soluções de Virtualização.*
 
 ## **Tecnologias Utilizadas**
 
