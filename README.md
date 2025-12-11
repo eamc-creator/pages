@@ -6,8 +6,8 @@ Este repositório armazena as páginas HTML estáticas para os dashboards de an�
 
 As páginas estão publicadas via GitHub Pages e podem ser acessadas pelos links abaixo:
 
-* [**Dashboard Principal**](https://eamc-creator.github.io/pages/) (Este arquivo index.html)  
-* [**Dashboard Home Office**](https://eamc-creator.github.io/pages/dash_ho.html)  
+* [**Dashboard Principal**](/index.html) (Este arquivo index.html)  
+* [**Dashboard Home Office**](/pages/dash_ho.html)  
 * [**Dashboard VMs**](https://eamc-creator.github.io/pages/dash_vm.html)  
 * [**Dashboard Jira (Geral)**](https://eamc-creator.github.io/pages/dash_jira.html)  
 * [**Dashboard Jira (RD)**](https://eamc-creator.github.io/pages/dash_jira_RD.html)  
