@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM CIASC Conectividade</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Recharts -->
+    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #F4F6F8; }
+        .ciasc-header { background-color: #003366; }
+        .ciasc-accent { color: #E30613; }
+        .ciasc-btn { background-color: #0071BC; }
+        .ciasc-btn:hover { background-color: #005a96; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #999; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect } = React;
+        const { 
+            BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, PieChart, Pie 
+        } = Recharts;
+
+        // --- DADOS PROCESSADOS DOS CSVs ---
+        // Combinamos os dados de CRM.csv e Status.csv em um objeto JSON único para demonstração
+        const rawData = [
+            { id: "MU_0001", municipio: "Joinville", prioridade: "Alta Prioridade", etapa: "Perdido", valor: 0, contato: "Rodrigo Ponick", obs: "Não vai vir - Contrato Fibra CIASC mantido", historico: "13/11/2025: Informou que não migrará no momento." },
+            { id: "MU_0002", municipio: "Florianópolis", prioridade: "Alta Prioridade", etapa: "Perdido", valor: 0, contato: "Deison Olszensvski", obs: "Não vai vir - Contrato Fibra mantido", historico: "" },
+            { id: "MU_0003", municipio: "Blumenau", prioridade: "Alta Prioridade", etapa: "Perdido", valor: 0, contato: "Gustavo Madeira", obs: "Rede Própria", historico: "" },
+            { id: "MU_0004", municipio: "São José", prioridade: "Alta Prioridade", etapa: "S1", valor: 0, contato: "Nilson da Rosa", obs: "Qualificado em 11/11", historico: "" },
+            { id: "MU_0008", municipio: "Criciúma", prioridade: "Alta Prioridade", etapa: "S1", valor: 5631.84, contato: "Matheus Sant'ana", obs: "Atualizado por Abelardo - 13/12/2025", historico: "30/10: Virtualização em andamento. Conectividade ficou para ano que vem." },
+            { id: "MU_0009", municipio: "Jaraguá do Sul", prioridade: "Alta Prioridade", etapa: "Perdido", valor: 0, contato: "Márcio Silveira", obs: "Rede contratada, avaliará em 2026", historico: "03/12: Envio da proposta comercial (em análise)." },
+            { id: "MU_0012", municipio: "Balneário Camboriú", prioridade: "Alta Prioridade", etapa: "S5", valor: 5674014.00, contato: "Murilo Sodré", obs: "Contrato Assinado - Aguarda Ordem Serviço", historico: "12/12: Contrato CIASC Conectividade assinado. 07/11: Aprovado pelo Gabinete." },
+            { id: "MU_0018", municipio: "Biguaçu", prioridade: "Alta Prioridade", etapa: "S2", valor: 0, contato: "Patrycke", obs: "Vão licitar Firewall e DC. Retomar 05/01", historico: "" },
+            { id: "MU_0019", municipio: "Itapema", prioridade: "Alta Prioridade", etapa: "Perdido", valor: 0, contato: "Eliediely Santos", obs: "Contrato com outros fornecedores até 2027", historico: "05/11: Participou CIASC Day. 03/12: Informou contrato vigente." },
+            { id: "MU_0078", municipio: "Morro da Fumaça", prioridade: "Baixa Prioridade", etapa: "S5", valor: 0, contato: "Márcio José Martinho", obs: "Proposta em Análise no Cliente", historico: "03/12: Após apresentação e 2 reuniões, proposta enviada e em análise." },
+            { id: "MU_0231", municipio: "São Martinho", prioridade: "Baixa Prioridade", etapa: "S1", valor: 0, contato: "Sebastião Vanderlinde", obs: "Aguardando informações para proposta", historico: "08/12: Fase de análise de requisitos. Cliente interessado após evento AMUREL." },
+            { id: "MU_0132", municipio: "Pescaria Brava", prioridade: "Baixa Prioridade", etapa: "S1", valor: 0, contato: "Paulo Sérgio", obs: "Aguarda Planilha do Cliente", historico: "16/12: Reunião técnica para dimensionar projeto." },
+            { id: "MU_0124", municipio: "Catanduvas", prioridade: "Baixa Prioridade", etapa: "S5", valor: 0, contato: "Leandro", obs: "Troca de responsável. Avaliará em 2026", historico: "08/12: Novo TI assumiu, desconhece o assunto. Reenviada ATA para análise." },
+            { id: "MU_0006", municipio: "Chapecó", prioridade: "Alta Prioridade", etapa: "S1", valor: 0, contato: "Abelardo Matos", obs: "Qualificado", historico: "" },
+            { id: "MU_0007", municipio: "Palhoça", prioridade: "Alta Prioridade", etapa: "S1", valor: 0, contato: "Tiago Fagonde", obs: "Eny - responsável TI", historico: "" },
+            { id: "MU_0010", municipio: "Lages", prioridade: "Alta Prioridade", etapa: "S1", valor: 0, contato: "Tiago Fagonde", obs: "", historico: "" },
+            { id: "MU_0033", municipio: "Guaramirim", prioridade: "Alta Prioridade", etapa: "S4", valor: 0, contato: "Tiago Fagonde", obs: "PL", historico: "" },
+            { id: "MU_0035", municipio: "Barra Velha", prioridade: "Alta Prioridade", etapa: "S4", valor: 0, contato: "Abelardo Matos", obs: "Não PL", historico: "" },
+             // Adicionando mais dados fictícios para preencher o dashboard baseado no padrão do CSV
+            { id: "MU_0040", municipio: "Rio Negrinho", prioridade: "Baixa Prioridade", etapa: "S5", valor: 0, contato: "", obs: "", historico: "" },
+            { id: "MU_0053", municipio: "Garopaba", prioridade: "Média Prioridade", etapa: "S4", valor: 0, contato: "DTI", obs: "Teve reunião 12/12", historico: "03/12: Cliente licitou rede própria, vê possibilidade de item específico." },
+            { id: "MU_0287", municipio: "Alto Bela Vista", prioridade: "Média Prioridade", etapa: "S4", valor: 0, contato: "", obs: "", historico: "" },
+        ];
+
+        // Mapeamento de Etapas
+        const stageMap = {
+            "S1": "1. Prospecção",
+            "S2": "2. Qualificação",
+            "S3": "3. Apresentação",
+            "S4": "4. Negociação",
+            "S5": "5. Fechamento",
+            "Perdido": "Perdido/Arquivado"
+        };
+
+        const colorMap = {
+            "Alta Prioridade": "#E30613", // Vermelho CIASC
+            "Média Prioridade": "#F9A825", // Amarelo/Laranja
+            "Baixa Prioridade": "#0071BC", // Azul CIASC
+            "Perdido": "#9E9E9E"
+        };
+
+        const Icon = ({ name, size = 16, className = "" }) => {
+            useEffect(() => {
+                lucide.createIcons();
+            }, []);
+            return <i data-lucide={name} className={className} style={{ width: size, height: size }}></i>;
+        };
+
+        const Dashboard = () => {
+            const [data, setData] = useState([]);
+            const [filterPriority, setFilterPriority] = useState("Todos");
+            const [searchTerm, setSearchTerm] = useState("");
+            const [selectedLead, setSelectedLead] = useState(null);
+
+            useEffect(() => {
+                // Processar dados iniciais
+                const processed = rawData.map(item => ({
+                    ...item,
+                    etapaNome: stageMap[item.etapa] || item.etapa,
+                    valorFormatado: item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                }));
+                setData(processed);
+                lucide.createIcons();
+            }, []);
+
+            useEffect(() => {
+                lucide.createIcons();
+            }, [data, filterPriority, searchTerm, selectedLead]);
+
+            // Lógica de Filtro
+            const filteredData = useMemo(() => {
+                return data.filter(item => {
+                    const matchesPriority = filterPriority === "Todos" || item.prioridade === filterPriority;
+                    const matchesSearch = item.municipio.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                          (item.contato && item.contato.toLowerCase().includes(searchTerm.toLowerCase()));
+                    return matchesPriority && matchesSearch;
+                });
+            }, [data, filterPriority, searchTerm]);
+
+            // KPIs
+            const totalLeads = filteredData.length;
+            const pipelineValue = filteredData
+                .filter(i => i.etapa !== "Perdido")
+                .reduce((acc, curr) => acc + curr.valor, 0);
+            const highPriorityCount = filteredData.filter(i => i.prioridade === "Alta Prioridade").length;
+            const closedContracts = filteredData.filter(i => i.etapa === "S5").length;
+
+            // Dados para o Gráfico de Funil (Barras)
+            const funnelData = Object.entries(stageMap).map(([key, label]) => {
+                const count = filteredData.filter(i => i.etapa === key).length;
+                return { name: label, value: count, code: key };
+            }).filter(d => d.value > 0);
+
+            // Dados para Prioridade
+            const priorityData = [
+                { name: "Alta", value: filteredData.filter(i => i.prioridade === "Alta Prioridade").length, color: "#E30613" },
+                { name: "Média", value: filteredData.filter(i => i.prioridade === "Média Prioridade").length, color: "#F9A825" },
+                { name: "Baixa", value: filteredData.filter(i => i.prioridade === "Baixa Prioridade").length, color: "#0071BC" },
+            ].filter(d => d.value > 0);
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    {/* Header Institucional */}
+                    <header className="ciasc-header text-white p-4 shadow-md flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-900 font-bold text-xs border-2 border-blue-300">
+                                CIASC
+                            </div>
+                            <div>
+                                <h1 className="text-xl font-bold tracking-wide">CIASC Conectividade Integrada</h1>
+                                <p className="text-xs text-blue-200 uppercase tracking-wider">Governo de Santa Catarina</p>
+                            </div>
+                        </div>
+                        <div className="text-sm text-right hidden md:block">
+                            <p>Gestão de Relacionamento (CRM)</p>
+                            <p className="opacity-70 text-xs">{new Date().toLocaleDateString()}</p>
+                        </div>
+                    </header>
+
+                    {/* Conteúdo Principal */}
+                    <main className="flex-1 p-6 max-w-7xl mx-auto w-full space-y-6">
+                        
+                        {/* KPIs Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="bg-white p-4 rounded-lg border-l-4 border-blue-600 shadow-sm">
+                                <p className="text-gray-500 text-sm font-medium">Total de Municípios</p>
+                                <div className="flex justify-between items-end">
+                                    <h2 className="text-3xl font-bold text-gray-800">{totalLeads}</h2>
+                                    <Icon name="map-pin" className="text-blue-200" size={24} />
+                                </div>
+                            </div>
+                            <div className="bg-white p-4 rounded-lg border-l-4 border-green-600 shadow-sm">
+                                <p className="text-gray-500 text-sm font-medium">Valor em Pipeline</p>
+                                <div className="flex justify-between items-end">
+                                    <h2 className="text-2xl font-bold text-gray-800">
+                                        {pipelineValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })}
+                                    </h2>
+                                    <Icon name="dollar-sign" className="text-green-200" size={24} />
+                                </div>
+                            </div>
+                            <div className="bg-white p-4 rounded-lg border-l-4 border-red-600 shadow-sm">
+                                <p className="text-gray-500 text-sm font-medium">Alta Prioridade</p>
+                                <div className="flex justify-between items-end">
+                                    <h2 className="text-3xl font-bold text-gray-800">{highPriorityCount}</h2>
+                                    <Icon name="alert-circle" className="text-red-200" size={24} />
+                                </div>
+                            </div>
+                            <div className="bg-white p-4 rounded-lg border-l-4 border-indigo-600 shadow-sm">
+                                <p className="text-gray-500 text-sm font-medium">Contratos/Fechamentos</p>
+                                <div className="flex justify-between items-end">
+                                    <h2 className="text-3xl font-bold text-gray-800">{closedContracts}</h2>
+                                    <Icon name="check-circle" className="text-indigo-200" size={24} />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Área de Gráficos */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* Gráfico de Funil */}
+                            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200 col-span-2">
+                                <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                                    <Icon name="bar-chart-2" size={18} /> Funil de Vendas (Etapas)
+                                </h3>
+                                <div className="h-64 w-full">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={funnelData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                                            <XAxis type="number" />
+                                            <YAxis dataKey="name" type="category" width={120} tick={{fontSize: 12}} />
+                                            <Tooltip formatter={(value) => [value, "Municípios"]} />
+                                            <Bar dataKey="value" fill="#0071BC" radius={[0, 4, 4, 0]}>
+                                                {funnelData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.code === 'Perdido' ? '#9E9E9E' : entry.code === 'S5' ? '#0F9D58' : '#0071BC'} />
+                                                ))}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+
+                            {/* Gráfico de Prioridade */}
+                            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
+                                <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                                    <Icon name="pie-chart" size={18} /> Por Prioridade
+                                </h3>
+                                <div className="h-64 w-full">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={priorityData}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={60}
+                                                outerRadius={80}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                            >
+                                                {priorityData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip />
+                                            <Legend verticalAlign="bottom" height={36}/>
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Filtros e Busca */}
+                        <div className="flex flex-col md:flex-row gap-4 justify-between bg-gray-100 p-4 rounded-lg">
+                            <div className="flex gap-2 items-center">
+                                <span className="text-gray-600 font-medium text-sm">Filtrar Prioridade:</span>
+                                <select 
+                                    className="border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500"
+                                    value={filterPriority}
+                                    onChange={(e) => setFilterPriority(e.target.value)}
+                                >
+                                    <option value="Todos">Todas</option>
+                                    <option value="Alta Prioridade">Alta Prioridade</option>
+                                    <option value="Média Prioridade">Média Prioridade</option>
+                                    <option value="Baixa Prioridade">Baixa Prioridade</option>
+                                </select>
+                            </div>
+                            <div className="relative w-full md:w-1/3">
+                                <input 
+                                    type="text" 
+                                    placeholder="Buscar município ou contato..." 
+                                    className="w-full border border-gray-300 rounded pl-10 pr-3 py-1.5 text-sm focus:outline-none focus:border-blue-500"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                                <div className="absolute left-3 top-2 text-gray-400">
+                                    <Icon name="search" size={16} />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Tabela de Dados */}
+                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-gray-50 border-b border-gray-200">
+                                            <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Município</th>
+                                            <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Prioridade</th>
+                                            <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Etapa</th>
+                                            <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Valor Proposta</th>
+                                            <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Responsável/Contato</th>
+                                            <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {filteredData.map((lead) => (
+                                            <tr key={lead.id} className="hover:bg-blue-50 transition-colors">
+                                                <td className="p-4 font-medium text-gray-800">{lead.municipio}</td>
+                                                <td className="p-4">
+                                                    <span 
+                                                        className="px-2 py-1 rounded text-xs font-semibold"
+                                                        style={{ 
+                                                            backgroundColor: `${colorMap[lead.prioridade]}20`, 
+                                                            color: colorMap[lead.prioridade] 
+                                                        }}
+                                                    >
+                                                        {lead.prioridade.replace(' Prioridade', '')}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4 text-sm text-gray-600">{lead.etapaNome}</td>
+                                                <td className="p-4 text-sm font-mono text-right text-gray-700">
+                                                    {lead.valor > 0 ? lead.valorFormatado : "-"}
+                                                </td>
+                                                <td className="p-4 text-sm text-gray-600">
+                                                    <div className="flex flex-col">
+                                                        <span>{lead.contato || "N/A"}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="p-4 text-center">
+                                                    <button 
+                                                        onClick={() => setSelectedLead(lead)}
+                                                        className="text-blue-600 hover:text-blue-800 p-1 rounded hover:bg-blue-100 transition-colors"
+                                                        title="Ver Detalhes"
+                                                    >
+                                                        <Icon name="eye" size={18} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {filteredData.length === 0 && (
+                                <div className="p-8 text-center text-gray-500">
+                                    Nenhum município encontrado com os filtros atuais.
+                                </div>
+                            )}
+                        </div>
+                    </main>
+
+                    {/* Modal de Detalhes */}
+                    {selectedLead && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 animate-fade-in">
+                                <div className="flex justify-between items-start mb-4 border-b pb-2">
+                                    <div>
+                                        <h2 className="text-2xl font-bold text-gray-800">{selectedLead.municipio}</h2>
+                                        <p className="text-sm text-gray-500">ID: {selectedLead.id}</p>
+                                    </div>
+                                    <button onClick={() => setSelectedLead(null)} className="text-gray-400 hover:text-gray-600">
+                                        <Icon name="x" size={24} />
+                                    </button>
+                                </div>
+                                
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-gray-50 p-3 rounded">
+                                            <p className="text-xs text-gray-500 uppercase">Prioridade</p>
+                                            <p className="font-semibold" style={{ color: colorMap[selectedLead.prioridade] }}>{selectedLead.prioridade}</p>
+                                        </div>
+                                        <div className="bg-gray-50 p-3 rounded">
+                                            <p className="text-xs text-gray-500 uppercase">Etapa Atual</p>
+                                            <p className="font-semibold text-blue-800">{selectedLead.etapaNome}</p>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <h4 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                                            <Icon name="file-text" size={16} /> Observações Gerais (CRM)
+                                        </h4>
+                                        <div className="bg-yellow-50 p-3 rounded border border-yellow-100 text-sm text-gray-700">
+                                            {selectedLead.obs || "Sem observações registradas na planilha CRM."}
+                                        </div>
+                                    </div>
+
+                                    {selectedLead.historico && (
+                                        <div>
+                                            <h4 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                                                <Icon name="history" size={16} /> Histórico de Interações (Status)
+                                            </h4>
+                                            <div className="bg-blue-50 p-3 rounded border border-blue-100 text-sm text-gray-700 whitespace-pre-line">
+                                                {selectedLead.historico}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="mt-6 flex justify-end">
+                                    <button 
+                                        onClick={() => setSelectedLead(null)}
+                                        className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded text-sm font-medium transition-colors"
+                                    >
+                                        Fechar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<Dashboard />);
+    </script>
+</body>
+</html>
