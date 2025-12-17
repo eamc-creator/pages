@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <!-- A classe 'dark' ou 'light' será controlada pelo JS -->
 <html lang="pt-br" class="h-full">
 <head>
@@ -108,7 +108,7 @@
                 <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Investimento Mensal</p>
                 <p id="kpi-investimento" class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">R$ 0,00</p>
                 <div class="mt-2 flex items-center text-sm text-green-600 dark:text-green-400">
-                    <i class="fas fa-chart-line mr-1.5"></i> Atualizado (DME +2)
+                    <i class="fas fa-chart-line mr-1.5"></i> Atualizado
                 </div>
             </div>
             <!-- KPI 2 -->
@@ -130,7 +130,7 @@
             <!-- KPI 4 -->
             <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border-l-4 border-purple-500 border-t border-r border-b border-slate-200 dark:border-slate-700">
                 <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Diretorias Atendidas</p>
-                <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">5</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">4</p>
                 <div class="mt-2 flex items-center text-sm text-slate-500 dark:text-slate-400">
                     Cobertura Institucional
                 </div>
@@ -167,7 +167,7 @@
                     <button onclick="filterList('DAF')" class="px-3 py-1 text-sm font-medium rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30 transition-colors">DAF</button>
                     <button onclick="filterList('DME')" class="px-3 py-1 text-sm font-medium rounded-md border border-pink-500 text-pink-600 hover:bg-pink-50 dark:text-pink-400 dark:hover:bg-pink-900/30 transition-colors">DME</button>
                     <button onclick="filterList('DTI')" class="px-3 py-1 text-sm font-medium rounded-md border border-teal-500 text-teal-600 hover:bg-teal-50 dark:text-teal-400 dark:hover:bg-teal-900/30 transition-colors">DTI</button>
-                    <button onclick="filterList('DIN')" class="px-3 py-1 text-sm font-medium rounded-md border border-orange-500 text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-900/30 transition-colors">DIN</button>
+                    <!-- Filtro DIN removido pois não há mais vagas -->
                     <button onclick="filterList('PRES')" class="px-3 py-1 text-sm font-medium rounded-md border border-purple-500 text-purple-600 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-purple-900/30 transition-colors">PRES</button>
                 </div>
             </div>
@@ -280,14 +280,14 @@
         });
 
         // --- DADOS (VAGAS) ---
-        // A propriedade 'qtd' foi adicionada. A vaga 3 (DME) tem qtd: 3.
+        // Vaga DIN removida conforme solicitado
         const vagasData = [
             { id: 1,  qtd: 1, titulo: "Especialista em Gestão Estratégica da Inovação", nivel: "PDIG-IV", valor: "5.500,00", diretoria: "PRES", area: "AIT", foco: "Estruturar a governança da inovação, PI e portfólio de projetos.", cap: "Processos de inovação, PI, technology scouting, Marco Legal de CTI." },
             { id: 2,  qtd: 1, titulo: "Especialista em Operações de GenAI (GenAIOps)", nivel: "PDIG-III", valor: "5.800,00", diretoria: "DTI", area: "GEINF/COSEC", foco: "Infraestrutura e processos para GenAI em produção (escalável e monitorada).", cap: "Pipelines, vetorização, AWS SageMaker, Google AI, Azure AI." },
             { id: 3,  qtd: 3, titulo: "Pesquisador em Estratégia de Mercado e Negócios GovTech", nivel: "PDIG-II", valor: "6.200,00", diretoria: "DME", area: "GEDEM", foco: "Estratégia de mercado, portfólio de produtos, análise de concorrência.", cap: "Inteligência de Mercado, CRM, Modelagem de Negócios, precificação." },
             { id: 4,  qtd: 1, titulo: "Especialista em Otimização de Processos e Gestão do Conhecimento", nivel: "PDIG-II", valor: "6.200,00", diretoria: "DAF", area: "GEPES", foco: "Mapear e redesenhar processos (BPM), gestão do conhecimento.", cap: "BPM, metodologias de mapeamento e documentação." },
             { id: 5,  qtd: 1, titulo: "Inovação em Psicologia Organizacional", nivel: "PDIG-II", valor: "6.200,00", diretoria: "DAF", area: "GEPES", foco: "Psicologia organizacional, dinâmica de equipes, segurança psicológica.", cap: "Perfil comportamental, onboarding, avaliação de desempenho e cultura." },
-            { id: 6,  qtd: 1, titulo: "Inovação em Design de Multimídia / Diretor de Arte", nivel: "PDIG-I", valor: "7.000,00", diretoria: "DIN", area: "DIN", foco: "Novas abordagens estéticas, direção de arte, identidade visual.", cap: "Marketing, branding, Adobe Suite, 2D, tendências visuais, design system." },
+            // ID 6 REMOVIDO (DIN)
             { id: 7,  qtd: 1, titulo: "Arquitetura de Data Lakes", nivel: "PDIG-III", valor: "5.800,00", diretoria: "DTI", area: "GEIND", foco: "Modernização da plataforma de dados, ingestão e segurança para IA.", cap: "Big Data, Data Lakes, Solr/Elasticsearch, Kafka, Governança." },
             { id: 8,  qtd: 1, titulo: "Especialista em Segurança Cibernética", nivel: "PDIG-IV", valor: "5.500,00", diretoria: "DTI", area: "GERED", foco: "Monitoramento de ameaças, MIST, CTIR, criptografia e IA para segurança.", cap: "Firewalls, SIEM, Docker/K8s, Python, Certificações Security+." },
             { id: 9,  qtd: 1, titulo: "Pesquisador de Apoio em Processos Comerciais", nivel: "PDIG-II", valor: "6.200,00", diretoria: "DME", area: "GECOM", foco: "Redesenhar processos comerciais, eficiência operacional, redução de riscos.", cap: "BPM Comercial, CRM, KPIs de vendas, digitalização de fluxos." },
@@ -301,26 +301,29 @@
 
         // --- CALCULO AUTOMÁTICO DE DADOS ---
         function calculateSummary() {
+            // Removido DIN dos labels para não gerar coluna vazia
             const summary = {
-                labels: ['DAF', 'DME', 'DTI', 'DIN', 'PRES'],
-                costs: [0, 0, 0, 0, 0],
-                vacancies: [0, 0, 0, 0, 0],
-                colors: ['#3b82f6', '#ec4899', '#14b8a6', '#f97316', '#a855f7'],
+                labels: ['DAF', 'DME', 'DTI', 'PRES'],
+                costs: [0, 0, 0, 0],
+                vacancies: [0, 0, 0, 0],
+                colors: ['#3b82f6', '#ec4899', '#14b8a6', '#a855f7'],
                 totalCost: 0,
                 totalVacancies: 0
             };
 
-            const dirIndexMap = { 'DAF': 0, 'DME': 1, 'DTI': 2, 'DIN': 3, 'PRES': 4 };
+            const dirIndexMap = { 'DAF': 0, 'DME': 1, 'DTI': 2, 'PRES': 3 };
 
             vagasData.forEach(vaga => {
-                const idx = dirIndexMap[vaga.diretoria];
-                const valorNum = parseFloat(vaga.valor.replace('.', '').replace(',', '.'));
-                const custoTotalVaga = valorNum * vaga.qtd;
+                if(dirIndexMap[vaga.diretoria] !== undefined) {
+                    const idx = dirIndexMap[vaga.diretoria];
+                    const valorNum = parseFloat(vaga.valor.replace('.', '').replace(',', '.'));
+                    const custoTotalVaga = valorNum * vaga.qtd;
 
-                summary.costs[idx] += custoTotalVaga;
-                summary.vacancies[idx] += vaga.qtd;
-                summary.totalCost += custoTotalVaga;
-                summary.totalVacancies += vaga.qtd;
+                    summary.costs[idx] += custoTotalVaga;
+                    summary.vacancies[idx] += vaga.qtd;
+                    summary.totalCost += custoTotalVaga;
+                    summary.totalVacancies += vaga.qtd;
+                }
             });
 
             return summary;
@@ -333,7 +336,6 @@
             'DAF': { border: 'border-blue-500', text: 'text-blue-600 dark:text-blue-400', badge: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' },
             'DME': { border: 'border-pink-500', text: 'text-pink-600 dark:text-pink-400', badge: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200' },
             'DTI': { border: 'border-teal-500', text: 'text-teal-600 dark:text-teal-400', badge: 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200' },
-            'DIN': { border: 'border-orange-500', text: 'text-orange-600 dark:text-orange-400', badge: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' },
             'PRES': { border: 'border-purple-500', text: 'text-purple-600 dark:text-purple-400', badge: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' }
         };
 
