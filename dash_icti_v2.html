@@ -1,1 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Executivo: CIASC como ICT</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- Fonte Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .ciasc-blue { background-color: #004990; }
+        
+        /* Animações */
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* Sidebar Ativa */
+        .nav-item.active {
+            background-color: #1d4ed8; 
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            border-left: 4px solid #93c5fd;
+        }
+        .nav-item { color: #dbeafe; transition: all 0.2s; }
+        .nav-item:hover:not(.active) { background-color: #1e40af; color: white; padding-left: 1.25rem; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row h-screen overflow-hidden text-gray-800">
+
+    <!-- SIDEBAR -->
+    <aside class="w-full md:w-72 ciasc-blue text-white flex-shrink-0 flex flex-col shadow-2xl z-20">
+        <div class="p-6 border-b border-blue-800 flex items-center gap-3">
+            <div class="bg-white text-blue-900 font-bold p-2 rounded text-xs shadow-sm">CIASC</div>
+            <div>
+                <h1 class="text-lg font-bold leading-none tracking-tight">Diretoria</h1>
+                <span class="text-xs text-blue-200 font-medium">Pauta Estratégica: ICT</span>
+            </div>
+        </div>
+        
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <button onclick="switchTab('geral')" id="btn-geral" class="nav-item active flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm">
+                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                <span>Visão Geral</span>
+            </button>
+            <button onclick="switchTab('legal')" id="btn-legal" class="nav-item flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm">
+                <i data-lucide="scale" class="w-5 h-5"></i>
+                <span>Legalidade & Imunidade</span>
+            </button>
+            <button onclick="switchTab('vantagens')" id="btn-vantagens" class="nav-item flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm">
+                <i data-lucide="rocket" class="w-5 h-5"></i>
+                <span>Novos Negócios (Vantagens)</span>
+            </button>
+            <button onclick="switchTab('minuta')" id="btn-minuta" class="nav-item flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm">
+                <i data-lucide="scroll-text" class="w-5 h-5"></i>
+                <span>A Minuta (Resolução)</span>
+            </button>
+        </nav>
+
+        <div class="p-4 bg-blue-800 text-xs text-blue-200 border-t border-blue-700">
+            <p class="font-semibold">Processo: CIASC 750/2025</p>
+            <p class="opacity-75">Status: Minuta Finalizada</p>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50 relative">
+        
+        <!-- Header -->
+        <header class="mb-8 flex justify-between items-end border-b border-gray-200 pb-4 sticky top-0 bg-gray-50 z-10">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Transformação em ICT</h2>
+                <p class="text-gray-500 text-sm mt-1">Instituição Científica, Tecnológica e de Inovação</p>
+            </div>
+            <div class="hidden md:flex gap-2">
+                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold border border-blue-200 uppercase tracking-wide">
+                    Parecer AJU 090/2025
+                </span>
+                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold border border-green-200 uppercase tracking-wide flex items-center gap-1">
+                    <i data-lucide="check" class="w-3 h-3"></i> Aprovado
+                </span>
+            </div>
+        </header>
+
+        <!-- ABAS -->
+
+        <!-- 1. VISÃO GERAL -->
+        <div id="view-geral" class="view-section fade-in space-y-6">
+            <!-- Big Numbers -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500 hover:shadow-md transition">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status Jurídico</p>
+                            <h3 class="text-2xl font-bold text-gray-800 mt-1">100% Viável</h3>
+                            <p class="text-sm text-gray-500 mt-2">Requisitos legais atendidos</p>
+                        </div>
+                        <div class="p-2 bg-green-50 rounded-lg text-green-600"><i data-lucide="shield-check" class="w-6 h-6"></i></div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500 hover:shadow-md transition">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Implementação</p>
+                            <h3 class="text-2xl font-bold text-gray-800 mt-1">Imediata</h3>
+                            <p class="text-sm text-gray-500 mt-2">Via Autodeclaração (Sem MEC)</p>
+                        </div>
+                        <div class="p-2 bg-blue-50 rounded-lg text-blue-600"><i data-lucide="zap" class="w-6 h-6"></i></div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-indigo-500 hover:shadow-md transition">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Custo Operacional</p>
+                            <h3 class="text-2xl font-bold text-gray-800 mt-1">Zero</h3>
+                            <p class="text-sm text-gray-500 mt-2">NIT absorvido pela estrutura atual</p>
+                        </div>
+                        <div class="p-2 bg-indigo-50 rounded-lg text-indigo-600"><i data-lucide="coins" class="w-6 h-6"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proposta de Valor -->
+            <div class="bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl p-8 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="layers" class="w-48 h-48"></i></div>
+                <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-3">O Salto Estratégico</h2>
+                        <p class="text-blue-100 leading-relaxed max-w-2xl">
+                            A transformação em ICT não é apenas burocracia. É o instrumento jurídico que habilita o CIASC a atuar com <strong>dispensa de licitação</strong> (novos contratos), blinda a tese de <strong>imunidade tributária</strong> e permite captar recursos a <strong>fundo perdido</strong>.
+                        </p>
+                    </div>
+                    <button onclick="switchTab('vantagens')" class="bg-white text-blue-900 px-6 py-3 rounded-lg font-bold hover:bg-blue-50 transition shadow-lg flex items-center gap-2 whitespace-nowrap">
+                        Ver Detalhes <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. LEGALIDADE & IMUNIDADE (Atualizada com a Tese Tributária) -->
+        <div id="view-legal" class="view-section hidden fade-in grid grid-cols-1 gap-6">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Parecer Principal -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i data-lucide="book-open" class="text-blue-600 w-5 h-5"></i>
+                        <h3 class="text-lg font-bold">Segurança Jurídica (Parecer 090/2025)</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">O Parecer da AJU é categórico: o CIASC já atende aos requisitos.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"></i>
+                                <span class="text-sm text-gray-700"><strong>Natureza Jurídica:</strong> Decreto 9.283/18 inclui explicitamente "Empresas Públicas".</span>
+                            </li>
+                            <li class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"></i>
+                                <span class="text-sm text-gray-700"><strong>Estatuto (Art 4º §9):</strong> Previsão expressa de P&D e Inovação.</span>
+                            </li>
+                        </ul>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"></i>
+                                <span class="text-sm text-gray-700"><strong>Atuação Fática:</strong> SISP, Delegacia Virtual e Universidade Gratuita comprovam a prática de ICT.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- CARD ESTRATÉGICO: IMUNIDADE TRIBUTÁRIA -->
+                <div class="bg-gradient-to-br from-indigo-50 to-white rounded-xl shadow-sm border border-indigo-200 p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-indigo-100 rounded-bl-full -mr-8 -mt-8"></div>
+                    <div class="flex items-center gap-2 mb-4 relative z-10">
+                        <div class="p-2 bg-indigo-600 text-white rounded-lg shadow-sm"><i data-lucide="shield" class="w-5 h-5"></i></div>
+                        <h3 class="text-lg font-bold text-indigo-900">Tese da Imunidade</h3>
+                    </div>
+                    <p class="text-sm text-gray-700 leading-relaxed mb-4 text-justify">
+                        <strong>O Argumento de Defesa:</strong> Ao formalizar-se como ICT, o CIASC comprova estatutariamente que sua finalidade primária é o <strong>desenvolvimento tecnológico de Estado</strong>, e não a exploração de mercado visando lucro.
+                    </p>
+                    <div class="bg-indigo-100 p-3 rounded text-xs text-indigo-900 font-medium border-l-4 border-indigo-500">
+                        "Isso afasta a tese de concorrência privada e fortalece o pleito pela Imunidade Recíproca (Art. 150, CF)."
+                    </div>
+                </div>
+            </div>
+
+            <!-- NIT -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="font-bold text-gray-800 mb-2 flex items-center gap-2"><i data-lucide="building" class="w-4 h-4 text-gray-400"></i> Estrutura do NIT (Núcleo de Inovação)</h3>
+                <p class="text-sm text-gray-600">A legislação exige um NIT. A solução proposta é eficiente e sem custo:</p>
+                <div class="mt-4 flex items-center p-4 border border-green-200 bg-green-50 rounded-lg gap-4">
+                    <i data-lucide="arrow-right-circle" class="w-6 h-6 text-green-600"></i>
+                    <div>
+                        <span class="font-bold text-green-900">Solução:</span>
+                        <span class="text-green-800 text-sm"> Designar a atual <strong>Assessoria de Inovação e Tecnologia (AIT)</strong> para exercer as funções de NIT. (Item 6.4 do Regimento Interno).</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. VANTAGENS (Foco em Novos Negócios) -->
+        <div id="view-vantagens" class="view-section hidden fade-in space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Card: Contratação Direta -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-blue-400 transition group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-3 bg-blue-100 text-blue-700 rounded-full group-hover:bg-blue-600 group-hover:text-white transition"><i data-lucide="file-signature" class="w-6 h-6"></i></div>
+                        <h3 class="text-lg font-bold text-gray-800">Contratação Direta (Lei 14.133)</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4 text-justify">
+                        ICTs podem ser contratadas por dispensa de licitação para transferência de tecnologia. Isso permite vender soluções inovadoras para prefeituras e outros estados sem a guerra de preços do pregão comum.
+                    </p>
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wide">Base: Art. 75, IV, 'd' da Nova Lei de Licitações</span>
+                </div>
+
+                <!-- Card: Marco Legal das Startups -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-purple-400 transition group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-3 bg-purple-100 text-purple-700 rounded-full group-hover:bg-purple-600 group-hover:text-white transition"><i data-lucide="rocket" class="w-6 h-6"></i></div>
+                        <h3 class="text-lg font-bold text-gray-800">CPSI & Encomendas Tecnológicas</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4 text-justify">
+                        Habilita o CIASC a usar o <strong>Contrato Público de Solução Inovadora (CPSI)</strong>. Podemos lançar desafios, contratar startups para resolver dores do governo e incorporar a solução, atuando como o grande hub de tecnologia GovTech.
+                    </p>
+                    <span class="text-xs font-bold text-purple-600 uppercase tracking-wide">Base: Marco Legal das Startups</span>
+                </div>
+
+                <!-- Card: Fundo Perdido -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-green-400 transition group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-3 bg-green-100 text-green-700 rounded-full group-hover:bg-green-600 group-hover:text-white transition"><i data-lucide="landmark" class="w-6 h-6"></i></div>
+                        <h3 class="text-lg font-bold text-gray-800">Recursos a Fundo Perdido</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4 text-justify">
+                        Acesso exclusivo a editais da FINEP, CNPq e FAPESC. Dinheiro para financiar o desenvolvimento de novos produtos (ex: evolução do SISP) sem onerar o caixa da empresa.
+                    </p>
+                </div>
+
+                 <!-- Card: Retenção de Talentos -->
+                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-orange-400 transition group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-3 bg-orange-100 text-orange-700 rounded-full group-hover:bg-orange-600 group-hover:text-white transition"><i data-lucide="users" class="w-6 h-6"></i></div>
+                        <h3 class="text-lg font-bold text-gray-800">Cultura & Retenção</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4 text-justify">
+                        Possibilidade de pagar <strong>Bolsas de Estímulo à Inovação</strong> para servidores atuando em projetos de P&D, aumentando a remuneração por mérito e projeto, sem inchar a folha fixa.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. A MINUTA -->
+        <div id="view-minuta" class="view-section hidden fade-in space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 text-center">
+                    <p class="text-xs text-blue-500 font-bold uppercase">Tipo de Ato</p>
+                    <p class="font-bold text-blue-900">Resolução Presi</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg border border-green-100 text-center">
+                    <p class="text-xs text-green-500 font-bold uppercase">Efeito</p>
+                    <p class="font-bold text-green-900">Imediato (Autodeclaração)</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100 text-center">
+                    <p class="text-xs text-indigo-500 font-bold uppercase">Número</p>
+                    <p class="font-bold text-indigo-900">057/2025</p>
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-300 shadow-lg rounded-none p-8 mx-auto max-w-3xl relative">
+                <div class="absolute top-0 left-0 w-2 h-full bg-blue-900"></div>
+                
+                <h3 class="text-center font-serif text-xl font-bold text-gray-900 mb-8">Resumo do Ato Administrativo</h3>
+                
+                <div class="space-y-6 font-serif">
+                    <div>
+                        <p class="font-bold text-gray-800 mb-1">O DIRETOR-PRESIDENTE DO CIASC RESOLVE:</p>
+                        <p class="text-gray-700 leading-relaxed pl-4 border-l-2 border-gray-300">
+                            <strong>Art 1º.</strong> Fica reconhecido o CIASC como <strong>Instituição Científica, Tecnológica e de Inovação (ICT)</strong>, nos termos da Lei Federal 10.973/2004 e Lei Estadual 14.328/2008.
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-gray-700 leading-relaxed pl-4 border-l-2 border-gray-300">
+                            <strong>Art 2º.</strong> A unidade responsável pelas funções de Núcleo de Inovação Tecnológica (NIT) será a <strong>Assessoria de Inovação e Tecnologia (AIT)</strong>.
+                        </p>
+                    </div>
+
+                    <div class="pt-6 border-t border-gray-100">
+                        <p class="text-sm text-gray-500">Base Legal Considerada:</p>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <span class="px-2 py-1 bg-gray-100 text-xs text-gray-600">CF Arts. 218/219</span>
+                            <span class="px-2 py-1 bg-gray-100 text-xs text-gray-600">Lei 13.243/2016</span>
+                            <span class="px-2 py-1 bg-gray-100 text-xs text-gray-600">Decreto 9.283/2018</span>
+                            <span class="px-2 py-1 bg-gray-100 text-xs text-gray-600">Parecer AJU 090/2025</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button onclick="window.print()" class="bg-blue-900 text-white px-6 py-2 rounded shadow hover:bg-blue-800 transition flex items-center gap-2">
+                    <i data-lucide="printer" class="w-4 h-4"></i> Imprimir para Assinatura
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JS Interativo -->
+    <script>
+        lucide.createIcons();
+
+        function switchTab(tabId) {
+            // Esconde todas
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            // Mostra alvo
+            const target = document.getElementById(`view-${tabId}`);
+            const btn = document.getElementById(`btn-${tabId}`);
+            
+            if(target && btn) {
+                target.classList.remove('hidden');
+                btn.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
