@@ -5,326 +5,356 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Executivo: CIASC como ICT</title>
     
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    
-    <!-- Babel -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (Estilização) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Lucide Icons -->
+    <!-- Lucide Icons (Ícones) -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Font -->
+    <!-- Fonte Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .ciasc-blue { background-color: #004990; }
         .ciasc-blue-text { color: #004990; }
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Animação suave ao trocar de aba */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* Estilo para aba ativa na sidebar */
+        .nav-item.active {
+            background-color: #1d4ed8; /* blue-700 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+        .nav-item {
+            color: #dbeafe; /* blue-100 */
+        }
+        .nav-item:hover:not(.active) {
+            background-color: #1e40af; /* blue-800 */
+            color: white;
+        }
     </style>
 </head>
-<body>
-    <div id="root"></div>
+<body class="flex flex-col md:flex-row h-screen overflow-hidden">
 
-    <script type="text/babel">
-        const { useState } = React;
-        const { 
-            ShieldCheck, 
-            FileText, 
-            TrendingUp, 
-            Building2, 
-            CheckCircle, 
-            AlertCircle, 
-            Briefcase, 
-            Landmark, 
-            Lightbulb,
-            ScrollText,
-            Gavel
-        } = lucide;
-
-        // Componentes de Layout
-        const Card = ({ title, children, icon: Icon, className = "" }) => (
-            <div className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6 fade-in ${className}`}>
-                <div className="flex items-center gap-3 mb-4 border-b border-gray-100 pb-2">
-                    {Icon && <Icon className="w-6 h-6 text-blue-700" />}
-                    <h3 className="text-lg font-bold text-gray-800">{title}</h3>
-                </div>
-                <div>{children}</div>
+    <!-- SIDEBAR -->
+    <aside class="w-full md:w-64 ciasc-blue text-white flex-shrink-0 flex flex-col shadow-xl z-20">
+        <div class="p-6 border-b border-blue-800 flex items-center gap-2">
+            <div class="bg-white p-1.5 rounded text-blue-900 font-bold tracking-tighter text-sm">CIASC</div>
+            <div>
+                <h1 class="text-lg font-bold leading-none">Diretoria</h1>
+                <span class="text-xs text-blue-300">Pauta ICT & NIT</span>
             </div>
-        );
+        </div>
+        
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <button onclick="switchTab('geral')" id="btn-geral" class="nav-item active flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-all duration-200">
+                <i data-lucide="trending-up" class="w-5 h-5"></i>
+                <span class="hidden md:inline">Visão Geral</span>
+            </button>
+            <button onclick="switchTab('legal')" id="btn-legal" class="nav-item flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-all duration-200">
+                <i data-lucide="gavel" class="w-5 h-5"></i>
+                <span class="hidden md:inline">Legalidade & AJU</span>
+            </button>
+            <button onclick="switchTab('vantagens')" id="btn-vantagens" class="nav-item flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-all duration-200">
+                <i data-lucide="lightbulb" class="w-5 h-5"></i>
+                <span class="hidden md:inline">Vantagens</span>
+            </button>
+            <button onclick="switchTab('minuta')" id="btn-minuta" class="nav-item flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-all duration-200">
+                <i data-lucide="file-text" class="w-5 h-5"></i>
+                <span class="hidden md:inline">A Minuta</span>
+            </button>
+        </nav>
 
-        const StatCard = ({ value, label, subtext, icon: Icon }) => (
-            <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-600 flex items-start justify-between fade-in">
-                <div>
-                    <h4 className="text-3xl font-bold text-gray-900">{value}</h4>
-                    <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mt-1">{label}</p>
-                    <p className="text-xs text-gray-500 mt-2">{subtext}</p>
-                </div>
-                <div className="p-3 bg-blue-50 rounded-full text-blue-700">
-                    <Icon size={24} />
-                </div>
+        <div class="p-4 bg-blue-800 text-xs text-blue-200">
+            <p>Processo: CIASC 750/2025</p>
+            <p>Data: Dez/2025</p>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50 relative">
+        
+        <!-- Header Fixo -->
+        <header class="mb-8 flex justify-between items-center sticky top-0 bg-gray-50 z-10 py-2">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800">Transformação em ICT</h2>
+                <p class="text-gray-500 text-sm">Instituição Científica, Tecnológica e de Inovação</p>
             </div>
-        );
+            <div class="hidden md:block">
+                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold border border-green-200 flex items-center gap-1">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i> Status: Pronto para Aprovação
+                </span>
+            </div>
+        </header>
 
-        // Views do Dashboard
-        const VisaoGeral = () => (
-            <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <StatCard 
-                        value="Viável" 
-                        label="Parecer Jurídico" 
-                        subtext="AJU 090/2025: Requisitos atendidos"
-                        icon={ShieldCheck} 
-                    />
-                    <StatCard 
-                        value="057/2025" 
-                        label="Minuta Pronta" 
-                        subtext="Resolução de Autodeclaração"
-                        icon={FileText} 
-                    />
-                    <StatCard 
-                        value="NIT = AIT" 
-                        label="Estrutura Pronta" 
-                        subtext="Sem criação de novos cargos"
-                        icon={Building2} 
-                    />
-                </div>
-
-                <div className="bg-blue-900 text-white rounded-xl p-8 shadow-lg flex flex-col md:flex-row items-center justify-between">
-                    <div className="mb-4 md:mb-0">
-                        <h2 className="text-2xl font-bold mb-2">Proposta de Valor</h2>
-                        <p className="opacity-90 max-w-2xl">
-                            Transformar o CIASC formalmente em ICT (Instituição Científica, Tecnológica e de Inovação) para desbloquear acesso a recursos de fomento, imunidade tributária (em discussão) e novos modelos de contratação pública.
-                        </p>
+        <!-- VIEW: VISÃO GERAL -->
+        <div id="view-geral" class="view-section fade-in space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Stat 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-600 flex items-start justify-between">
+                    <div>
+                        <h4 class="text-3xl font-bold text-gray-900">Viável</h4>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mt-1">Parecer Jurídico</p>
+                        <p class="text-xs text-gray-500 mt-2">AJU 090/2025: Requisitos atendidos</p>
                     </div>
-                    <button onClick={() => window.print()} className="bg-white text-blue-900 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition flex items-center gap-2">
-                        <FileText size={18} /> Imprimir Pauta
-                    </button>
+                    <div class="p-3 bg-blue-50 rounded-full text-blue-700">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+                </div>
+                <!-- Stat 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-600 flex items-start justify-between">
+                    <div>
+                        <h4 class="text-3xl font-bold text-gray-900">057/2025</h4>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mt-1">Minuta Pronta</p>
+                        <p class="text-xs text-gray-500 mt-2">Resolução de Autodeclaração</p>
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-full text-blue-700">
+                        <i data-lucide="file-text" class="w-6 h-6"></i>
+                    </div>
+                </div>
+                <!-- Stat 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-600 flex items-start justify-between">
+                    <div>
+                        <h4 class="text-3xl font-bold text-gray-900">NIT = AIT</h4>
+                        <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mt-1">Estrutura Pronta</p>
+                        <p class="text-xs text-gray-500 mt-2">Sem criação de novos cargos</p>
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-full text-blue-700">
+                        <i data-lucide="building-2" class="w-6 h-6"></i>
+                    </div>
                 </div>
             </div>
-        );
 
-        const Legalidade = () => (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card title="Parecer Jurídico AJU nº 090/2025" icon={Gavel} className="lg:col-span-2">
-                    <div className="flex gap-4 items-start">
-                        <div className="bg-green-100 p-3 rounded-full text-green-700 flex-shrink-0">
-                            <CheckCircle size={24} />
-                        </div>
-                        <div>
-                            <h4 className="font-bold text-gray-900 text-lg">Conclusão: Juridicamente Viável</h4>
-                            <p className="text-gray-600 mt-2 text-justify">
-                                "O CIASC preenche os requisitos legais para ser reconhecido como ICT pública, nos termos da Lei Federal nº 10.973/2004 e da Lei Estadual nº 14.328/2008."
-                            </p>
-                            <ul className="mt-4 space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg">
-                                <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-600"/> Integra a administração indireta (Empresa Pública).</li>
-                                <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-600"/> Missão institucional prevê pesquisa e inovação.</li>
-                                <li className="flex items-center gap-2"><CheckCircle size={14} className="text-green-600"/> Atuação comprovada (SISP, Universidade Gratuita, DetranNET).</li>
-                            </ul>
-                        </div>
-                    </div>
-                </Card>
-
-                <Card title="Estatuto Social (Art. 4º)" icon={ScrollText}>
-                    <p className="text-sm text-gray-600 mb-3">O alicerce da nossa vocação inovadora já existe:</p>
-                    <blockquote className="border-l-4 border-blue-500 pl-4 italic text-gray-700 bg-gray-50 py-2 rounded-r">
-                        "§9º ...o CIASC desenvolverá e incentivará a pesquisa científica, tecnológica e de inovação, bem como o desenvolvimento de novos produtos..."
-                    </blockquote>
-                    <p className="text-xs text-gray-500 mt-2 text-right">Fonte: Estatuto Social Vigente</p>
-                </Card>
-
-                <Card title="Regimento Interno & NIT" icon={Building2}>
-                    <p className="text-sm text-gray-600 mb-3">
-                        A legislação exige um <strong>Núcleo de Inovação Tecnológica (NIT)</strong>. A proposta não cria nova despesa, utilizando estrutura existente.
+            <div class="bg-blue-900 text-white rounded-xl p-8 shadow-lg flex flex-col md:flex-row items-center justify-between">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-2xl font-bold mb-2">Proposta de Valor</h2>
+                    <p class="opacity-90 max-w-2xl text-sm leading-relaxed">
+                        Transformar o CIASC formalmente em ICT (Instituição Científica, Tecnológica e de Inovação) para desbloquear acesso a recursos de fomento, imunidade tributária (em discussão) e novos modelos de contratação pública.
                     </p>
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3 bg-blue-50 p-3 rounded border border-blue-100">
-                            <CheckCircle className="text-blue-600" size={20} />
-                            <div>
-                                <span className="block font-bold text-blue-900">Assessoria de Inovação (AIT)</span>
-                                <span className="text-xs text-blue-700">Já prevista no Regimento Interno (Item 6.4)</span>
-                            </div>
+                </div>
+                <button onclick="window.print()" class="bg-white text-blue-900 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition flex items-center gap-2 shadow-lg">
+                    <i data-lucide="printer" class="w-4 h-4"></i> Imprimir Pauta
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW: LEGALIDADE -->
+        <div id="view-legal" class="view-section hidden fade-in grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Parecer Jurídico -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
+                <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-2">
+                    <i data-lucide="gavel" class="w-6 h-6 text-blue-700"></i>
+                    <h3 class="text-lg font-bold text-gray-800">Parecer Jurídico AJU nº 090/2025</h3>
+                </div>
+                <div class="flex flex-col md:flex-row gap-4 items-start">
+                    <div class="bg-green-100 p-3 rounded-full text-green-700 flex-shrink-0 mt-1">
+                        <i data-lucide="check-circle" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900 text-lg">Conclusão: Juridicamente Viável</h4>
+                        <p class="text-gray-600 mt-2 text-justify text-sm">
+                            "O CIASC preenche os requisitos legais para ser reconhecido como ICT pública, nos termos da Lei Federal nº 10.973/2004 e da Lei Estadual nº 14.328/2008."
+                        </p>
+                        <ul class="mt-4 space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-600"></i> Integra a administração indireta (Empresa Pública).</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-600"></i> Missão institucional prevê pesquisa e inovação.</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-600"></i> Atuação comprovada (SISP, Universidade Gratuita, DetranNET).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estatuto -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-2">
+                    <i data-lucide="scroll-text" class="w-6 h-6 text-blue-700"></i>
+                    <h3 class="text-lg font-bold text-gray-800">Estatuto Social (Art. 4º)</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">O alicerce da nossa vocação inovadora já existe:</p>
+                <blockquote class="border-l-4 border-blue-500 pl-4 italic text-gray-700 bg-gray-50 py-3 rounded-r text-sm">
+                    "§9º ...o CIASC desenvolverá e incentivará a pesquisa científica, tecnológica e de inovação, bem como o desenvolvimento de novos produtos..."
+                </blockquote>
+                <p class="text-xs text-gray-500 mt-2 text-right">Fonte: Estatuto Social Vigente</p>
+            </div>
+
+            <!-- NIT -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-2">
+                    <i data-lucide="building-2" class="w-6 h-6 text-blue-700"></i>
+                    <h3 class="text-lg font-bold text-gray-800">Regimento Interno & NIT</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">
+                    A legislação exige um <strong>Núcleo de Inovação Tecnológica (NIT)</strong>. A proposta não cria nova despesa.
+                </p>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 bg-blue-50 p-3 rounded border border-blue-100">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-blue-600"></i>
+                        <div>
+                            <span class="block font-bold text-blue-900 text-sm">Assessoria de Inovação (AIT)</span>
+                            <span class="text-xs text-blue-700">Já prevista no Regimento Interno (Item 6.4)</span>
                         </div>
-                        <p className="text-xs text-gray-500 text-justify">
-                            A designação da AIT como NIT cumpre o Art. 16 da Lei de Inovação sem necessidade de reforma administrativa complexa.
+                    </div>
+                    <p class="text-xs text-gray-500 text-justify">
+                        A designação da AIT como NIT cumpre o Art. 16 da Lei de Inovação sem necessidade de reforma administrativa complexa.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: VANTAGENS -->
+        <div id="view-vantagens" class="view-section hidden fade-in space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Card 1 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:border-blue-400 transition">
+                    <div class="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center text-blue-700 mb-4">
+                        <i data-lucide="landmark" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 mb-2">Recursos a Fundo Perdido</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">Acesso a editais da FINEP, CNPq e FAPESC exclusivos para ICTs.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:border-blue-400 transition">
+                    <div class="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center text-blue-700 mb-4">
+                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 mb-2">Dispensa de Licitação</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">Contratação direta pela adm. pública para produtos inovadores (Lei 14.133).</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:border-blue-400 transition">
+                    <div class="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center text-blue-700 mb-4">
+                        <i data-lucide="trending-up" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 mb-2">Royalties & Patentes</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">Segurança jurídica para explorar propriedade intelectual e transferir tecnologia.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:border-blue-400 transition">
+                    <div class="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center text-blue-700 mb-4">
+                        <i data-lucide="briefcase" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 mb-2">Parcerias PD&I</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">Segurança para acordos com UFSC, Epagri e setor privado.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-2">
+                    <i data-lucide="trending-up" class="w-6 h-6 text-blue-700"></i>
+                    <h3 class="text-lg font-bold text-gray-800">Impacto Estratégico e Financeiro</h3>
+                </div>
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-gray-800 mb-2">Por que ser uma ICT agora?</h4>
+                        <p class="text-gray-600 text-sm mb-4 text-justify leading-relaxed">
+                            O mercado de GovTech exige agilidade. Como ICT, o CIASC deixa de ser apenas um prestador de serviços de TI para ser um <strong>hub de inovação do estado</strong>. Isso permite captar recursos externos para financiar o desenvolvimento de produtos (como o SISP e plataformas de educação) sem onerar o caixa da empresa.
                         </p>
                     </div>
-                </Card>
-            </div>
-        );
-
-        const Vantagens = () => (
-            <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {[
-                        { title: "Recursos a Fundo Perdido", desc: "Acesso a editais da FINEP, CNPq e FAPESC exclusivos para ICTs.", icon: Landmark },
-                        { title: "Dispensa de Licitação", desc: "Contratação direta pela adm. pública para produtos inovadores (Lei 14.133).", icon: FileText },
-                        { title: "Royalties & Patentes", desc: "Segurança jurídica para explorar propriedade intelectual e transferir tecnologia.", icon: TrendingUp },
-                        { title: "Parcerias PD&I", desc: "Segurança para acordos com UFSC, Epagri e setor privado.", icon: Briefcase }
-                    ].map((item, idx) => (
-                        <div key={idx} className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:border-blue-400 transition fade-in">
-                            <div className="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center text-blue-700 mb-4">
-                                <item.icon size={20} />
-                            </div>
-                            <h4 className="font-bold text-gray-800 mb-2">{item.title}</h4>
-                            <p className="text-sm text-gray-600 leading-relaxed">{item.desc}</p>
-                        </div>
-                    ))}
-                </div>
-
-                <Card title="Impacto Estratégico e Financeiro" icon={TrendingUp}>
-                    <div className="flex flex-col md:flex-row gap-8">
-                        <div className="flex-1">
-                            <h4 className="font-bold text-gray-800 mb-2">Por que ser uma ICT agora?</h4>
-                            <p className="text-gray-600 text-sm mb-4 text-justify">
-                                O mercado de GovTech exige agilidade. Como ICT, o CIASC deixa de ser apenas um prestador de serviços de TI para ser um <strong>hub de inovação do estado</strong>. Isso permite captar recursos externos para financiar o desenvolvimento de produtos (como o SISP e plataformas de educação) sem onerar o caixa da empresa.
-                            </p>
-                        </div>
-                        <div className="flex-1 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 className="font-bold text-gray-800 mb-2 text-sm uppercase">Oportunidades Imediatas</h4>
-                            <ul className="space-y-2 text-sm">
-                                <li className="flex items-start gap-2">
-                                    <div className="mt-1 w-2 h-2 bg-green-500 rounded-full"></div>
-                                    <span>Parceria com FAPESC (Edital de Inovação Aberta).</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <div className="mt-1 w-2 h-2 bg-green-500 rounded-full"></div>
-                                    <span>Regularização do "status" inovador já praticado (Ex: Delegacia Virtual).</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <div className="mt-1 w-2 h-2 bg-green-500 rounded-full"></div>
-                                    <span>Mitigação de riscos jurídicos na contratação de startups (Marco Legal das Startups).</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </Card>
-            </div>
-        );
-
-        const AMinuta = () => (
-            <div className="grid grid-cols-1 gap-6">
-                <Card title="Resumo da Resolução Presi 057/2025" icon={ScrollText}>
-                    <div className="prose max-w-none text-gray-700">
-                        <p className="font-semibold mb-4">O documento proposto realiza dois atos administrativos simples, mas de alto impacto:</p>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <div className="border border-blue-200 bg-blue-50 p-4 rounded-lg">
-                                <div className="text-blue-800 font-bold mb-1">Ato 1: Autodeclaração</div>
-                                <p className="text-sm">"Fica reconhecido o CIASC como Instituição Científica, Tecnológica e de Inovação (ICT), nos termos da Lei 10.973/2004."</p>
-                            </div>
-                            <div className="border border-indigo-200 bg-indigo-50 p-4 rounded-lg">
-                                <div className="text-indigo-800 font-bold mb-1">Ato 2: Designação do NIT</div>
-                                <p className="text-sm">"A unidade responsável pelas funções de Núcleo de Inovação Tecnológica (NIT)... será a Assessoria de Inovação e Tecnologia (AIT)."</p>
-                            </div>
-                        </div>
-
-                        <h4 className="font-bold text-gray-800 text-sm uppercase mb-2">Base Legal Citada na Minuta:</h4>
-                        <div className="flex flex-wrap gap-2">
-                            <span className="px-2 py-1 bg-gray-200 text-xs rounded text-gray-700">CF Arts. 218/219</span>
-                            <span className="px-2 py-1 bg-gray-200 text-xs rounded text-gray-700">Lei Federal 10.973 (Inovação)</span>
-                            <span className="px-2 py-1 bg-gray-200 text-xs rounded text-gray-700">Lei Estadual 14.328</span>
-                            <span className="px-2 py-1 bg-gray-200 text-xs rounded text-gray-700">Estatuto CIASC Art. 4º</span>
-                            <span className="px-2 py-1 bg-gray-200 text-xs rounded text-gray-700">Regimento Interno Item 6.4</span>
-                        </div>
-                    </div>
-                </Card>
-                
-                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow-sm">
-                    <div className="flex">
-                        <div className="flex-shrink-0">
-                            <AlertCircle className="h-5 w-5 text-yellow-400" />
-                        </div>
-                        <div className="ml-3">
-                            <p className="text-sm text-yellow-700">
-                                <strong>Próximo Passo:</strong> Aprovação e assinatura da Diretoria Executiva para publicação imediata, habilitando o CIASC nos cadastros nacionais (MCTI/Formict).
-                            </p>
-                        </div>
+                    <div class="flex-1 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h4 class="font-bold text-gray-800 mb-2 text-sm uppercase">Oportunidades Imediatas</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                                <span class="text-gray-700">Parceria com FAPESC (Edital de Inovação Aberta).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                                <span class="text-gray-700">Regularização do "status" inovador já praticado (Ex: Delegacia Virtual).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                                <span class="text-gray-700">Mitigação de riscos jurídicos na contratação de startups.</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        );
+        </div>
 
-        const App = () => {
-            const [activeTab, setActiveTab] = useState('geral');
-
-            const renderContent = () => {
-                switch(activeTab) {
-                    case 'geral': return <VisaoGeral />;
-                    case 'legal': return <Legalidade />;
-                    case 'vantagens': return <Vantagens />;
-                    case 'minuta': return <AMinuta />;
-                    default: return <VisaoGeral />;
-                }
-            };
-
-            const NavItem = ({ id, icon: Icon, label }) => (
-                <button 
-                    onClick={() => setActiveTab(id)}
-                    className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-all duration-200 ${
-                        activeTab === id 
-                        ? 'bg-blue-700 text-white shadow-md font-semibold' 
-                        : 'text-blue-100 hover:bg-blue-800 hover:text-white'
-                    }`}
-                >
-                    <Icon size={20} />
-                    <span className="hidden md:inline">{label}</span>
-                </button>
-            );
-
-            return (
-                <div className="min-h-screen flex flex-col md:flex-row">
-                    {/* Sidebar */}
-                    <aside className="w-full md:w-64 ciasc-blue text-white flex-shrink-0 flex flex-col">
-                        <div className="p-6 border-b border-blue-800 flex items-center gap-2">
-                            <div className="bg-white p-1.5 rounded text-blue-900 font-bold tracking-tighter">CIASC</div>
-                            <div>
-                                <h1 className="text-lg font-bold leading-none">Diretoria</h1>
-                                <span className="text-xs text-blue-300">Pauta ICT & NIT</span>
-                            </div>
-                        </div>
-                        
-                        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-                            <NavItem id="geral" icon={TrendingUp} label="Visão Geral" />
-                            <NavItem id="legal" icon={Gavel} label="Legalidade & AJU" />
-                            <NavItem id="vantagens" icon={Lightbulb} label="Vantagens Estratégicas" />
-                            <NavItem id="minuta" icon={FileText} label="A Minuta" />
-                        </nav>
-
-                        <div className="p-4 bg-blue-800 text-xs text-blue-200">
-                            <p>Processo: CIASC 750/2025</p>
-                            <p>Data: Dez/2025</p>
-                        </div>
-                    </aside>
-
-                    {/* Main Content */}
-                    <main className="flex-1 overflow-y-auto p-4 md:p-8">
-                        <header className="mb-8 flex justify-between items-center">
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-800">Transformação em ICT</h2>
-                                <p className="text-gray-500">Instituição Científica, Tecnológica e de Inovação</p>
-                            </div>
-                            <div className="hidden md:block">
-                                <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold border border-green-200 flex items-center gap-1">
-                                    <CheckCircle size={14} /> Status: Pronto para Aprovação
-                                </span>
-                            </div>
-                        </header>
-
-                        {renderContent()}
-                    </main>
+        <!-- VIEW: A MINUTA -->
+        <div id="view-minuta" class="view-section hidden fade-in grid grid-cols-1 gap-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-2">
+                    <i data-lucide="scroll-text" class="w-6 h-6 text-blue-700"></i>
+                    <h3 class="text-lg font-bold text-gray-800">Resumo da Resolução Presi 057/2025</h3>
                 </div>
-            );
-        };
+                <div class="prose max-w-none text-gray-700">
+                    <p class="font-semibold mb-4 text-sm">O documento proposto realiza dois atos administrativos simples, mas de alto impacto:</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="border border-blue-200 bg-blue-50 p-4 rounded-lg">
+                            <div class="text-blue-800 font-bold mb-1 text-sm">Ato 1: Autodeclaração</div>
+                            <p class="text-xs text-blue-900 leading-relaxed">"Fica reconhecido o CIASC como Instituição Científica, Tecnológica e de Inovação (ICT), nos termos da Lei 10.973/2004."</p>
+                        </div>
+                        <div class="border border-indigo-200 bg-indigo-50 p-4 rounded-lg">
+                            <div class="text-indigo-800 font-bold mb-1 text-sm">Ato 2: Designação do NIT</div>
+                            <p class="text-xs text-indigo-900 leading-relaxed">"A unidade responsável pelas funções de Núcleo de Inovação Tecnológica (NIT)... será a Assessoria de Inovação e Tecnologia (AIT)."</p>
+                        </div>
+                    </div>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+                    <h4 className="font-bold text-gray-800 text-xs uppercase mb-2 mt-4">Base Legal Citada na Minuta:</h4>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <span class="px-2 py-1 bg-gray-200 text-xs rounded text-gray-700 font-medium">CF Arts. 218/219</span>
+                        <span class="px-2 py-1 bg-gray-200 text-xs rounded text-gray-700 font-medium">Lei Federal 10.973</span>
+                        <span class="px-2 py-1 bg-gray-200 text-xs rounded text-gray-700 font-medium">Lei Estadual 14.328</span>
+                        <span class="px-2 py-1 bg-gray-200 text-xs rounded text-gray-700 font-medium">Estatuto CIASC Art. 4º</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow-sm">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i data-lucide="alert-circle" class="w-5 h-5 text-yellow-500"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-800">
+                            <strong>Próximo Passo:</strong> Aprovação e assinatura da Diretoria Executiva para publicação imediata, habilitando o CIASC nos cadastros nacionais (MCTI/Formict).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JS Puro (Vanilla) para interatividade -->
+    <script>
+        // Inicializa os ícones Lucide
+        lucide.createIcons();
+
+        function switchTab(tabId) {
+            // 1. Esconder todas as views
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(view => {
+                view.classList.add('hidden');
+            });
+
+            // 2. Mostrar a view selecionada
+            const targetView = document.getElementById('view-' + tabId);
+            if (targetView) {
+                targetView.classList.remove('hidden');
+            }
+
+            // 3. Atualizar botões da sidebar
+            const buttons = document.querySelectorAll('.nav-item');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const activeButton = document.getElementById('btn-' + tabId);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        }
     </script>
 </body>
 </html>
