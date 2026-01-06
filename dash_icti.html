@@ -148,7 +148,7 @@
 
         <!-- VIEW: LEGALIDADE -->
         <div id="view-legal" class="view-section hidden fade-in grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Parecer Jurídico -->
+            <!-- Parecer Jurídico (Expandido) -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
                 <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-2">
                     <i data-lucide="gavel" class="w-6 h-6 text-blue-700"></i>
@@ -159,15 +159,31 @@
                         <i data-lucide="check-circle" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-900 text-lg">Conclusão: Juridicamente Viável</h4>
+                        <h4 class="font-bold text-gray-900 text-lg">Conclusão: Juridicamente Viável e Seguro</h4>
                         <p class="text-gray-600 mt-2 text-justify text-sm">
                             "O CIASC preenche os requisitos legais para ser reconhecido como ICT pública, nos termos da Lei Federal nº 10.973/2004 e da Lei Estadual nº 14.328/2008."
                         </p>
-                        <ul class="mt-4 space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg">
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-600"></i> Integra a administração indireta (Empresa Pública).</li>
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-600"></i> Missão institucional prevê pesquisa e inovação.</li>
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-600"></i> Atuação comprovada (SISP, Universidade Gratuita, DetranNET).</li>
-                        </ul>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                             <!-- Ponto existente -->
+                            <ul class="space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg h-full">
+                                <li class="font-bold text-blue-900 mb-2">Requisitos Formais:</li>
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-600"></i> Integra a administração indireta (Empresa Pública).</li>
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-600"></i> Missão institucional prevê pesquisa e inovação.</li>
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-600"></i> Atuação comprovada (SISP, Universidade Gratuita).</li>
+                            </ul>
+                            <!-- Novo Ponto: Segurança Jurídica -->
+                            <ul class="space-y-2 text-sm text-gray-700 bg-blue-50 p-4 rounded-lg h-full border border-blue-100">
+                                <li class="font-bold text-blue-900 mb-2">Blindagem Jurídica:</li>
+                                <li class="flex items-start gap-2">
+                                    <i data-lucide="shield" class="w-4 h-4 text-blue-600 mt-0.5"></i> 
+                                    <span><strong>Autodeclaração:</strong> MCTI e Parecer AGU 04/2020 confirmam que não há necessidade de credenciamento prévio externo.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i data-lucide="shield" class="w-4 h-4 text-blue-600 mt-0.5"></i> 
+                                    <span><strong>Decreto 9.283/18:</strong> Art. 2º, IV inclui explicitamente "empresas públicas" no rol de ICTs, eliminando dúvidas sobre a natureza jurídica.</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -246,6 +262,29 @@
                 </div>
             </div>
 
+            <!-- Novos Cards de Vantagens (Insights Adicionais) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100 flex gap-4 items-start">
+                    <div class="bg-white p-2 rounded-full text-indigo-600 shadow-sm"><i data-lucide="rocket" class="w-5 h-5"></i></div>
+                    <div>
+                        <h4 class="font-bold text-indigo-900 text-sm uppercase">Marco Legal das Startups (CPSI)</h4>
+                        <p class="text-xs text-indigo-800 mt-1 leading-relaxed text-justify">
+                            Como ICT, o CIASC pode operar com mais segurança o <strong>CPSI (Contrato Público de Solução Inovadora)</strong>. Isso permite lançar desafios tecnológicos e contratar startups para resolver problemas do governo com risco jurídico mitigado, posicionando o CIASC como o "hub" central dessas contratações no estado.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100 flex gap-4 items-start">
+                    <div class="bg-white p-2 rounded-full text-emerald-600 shadow-sm"><i data-lucide="users" class="w-5 h-5"></i></div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 text-sm uppercase">Cultura & Retenção de Talentos</h4>
+                        <p class="text-xs text-emerald-800 mt-1 leading-relaxed text-justify">
+                            Habilita o pagamento de <strong>Bolsas de Estímulo à Inovação</strong> (Lei 10.973/04, Art. 9º). Isso permite remunerar e incentivar servidores envolvidos em projetos de P&D sem alterar a estrutura salarial base, aumentando a retenção de talentos técnicos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-2">
                     <i data-lucide="trending-up" class="w-6 h-6 text-blue-700"></i>
@@ -281,6 +320,40 @@
 
         <!-- VIEW: A MINUTA -->
         <div id="view-minuta" class="view-section hidden fade-in grid grid-cols-1 gap-6">
+            
+            <!-- Seção de Insights Expressivos (NOVO) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-5 text-white shadow-md">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i data-lucide="zap" class="w-5 h-5 text-yellow-300"></i>
+                        <h4 class="font-bold text-sm uppercase tracking-wide">Desburocratização</h4>
+                    </div>
+                    <p class="text-xs opacity-90 leading-relaxed">
+                        A Resolução é um ato interno. Não precisamos de "carimbo" prévio do MEC ou MCTI. A autodeclaração tem validade imediata para iniciar os trabalhos.
+                    </p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-gray-700 to-gray-900 rounded-xl p-5 text-white shadow-md">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i data-lucide="scale" class="w-5 h-5 text-green-300"></i>
+                        <h4 class="font-bold text-sm uppercase tracking-wide">Fato vs. Direito</h4>
+                    </div>
+                    <p class="text-xs opacity-90 leading-relaxed">
+                        Juridicamente, apenas alinhamos o "Direito" ao "Fato". O CIASC <strong>já opera</strong> como ICT (P&D no SISP, Educação, etc). A minuta apenas regulariza essa realidade.
+                    </p>
+                </div>
+
+                <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-xl p-5 text-white shadow-md">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i data-lucide="coins" class="w-5 h-5 text-emerald-200"></i>
+                        <h4 class="font-bold text-sm uppercase tracking-wide">Custo Zero</h4>
+                    </div>
+                    <p class="text-xs opacity-90 leading-relaxed">
+                        A minuta <strong>não cria cargos</strong> e <strong>não aumenta despesas</strong>. Ela designa a AIT (existente) para cumprir a função legal de NIT. Eficiência administrativa pura.
+                    </p>
+                </div>
+            </div>
+
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-2">
                     <i data-lucide="scroll-text" class="w-6 h-6 text-blue-700"></i>
@@ -300,7 +373,7 @@
                         </div>
                     </div>
 
-                    <h4 className="font-bold text-gray-800 text-xs uppercase mb-2 mt-4">Base Legal Citada na Minuta:</h4>
+                    <h4 class="font-bold text-gray-800 text-xs uppercase mb-2 mt-4">Base Legal Citada na Minuta:</h4>
                     <div class="flex flex-wrap gap-2 mt-2">
                         <span class="px-2 py-1 bg-gray-200 text-xs rounded text-gray-700 font-medium">CF Arts. 218/219</span>
                         <span class="px-2 py-1 bg-gray-200 text-xs rounded text-gray-700 font-medium">Lei Federal 10.973</span>
