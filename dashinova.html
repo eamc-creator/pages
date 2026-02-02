@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<!-- Controle de tema via classe 'dark' -->
+<html lang="pt-br" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Inovação CIASC 2026</title>
+    
+    <!-- Favicon do CIASC -->
+    <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" type="image/png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Font Inter -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* Ícones de tema (SVG manual para o header) */
+        #theme-icon-light, #theme-icon-dark { display: none; }
+        .dark #theme-icon-light { display: block; }
+        .light #theme-icon-dark { display: block; }
+
+        /* Animação suave */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* Estilo das Abas */
+        .tab-btn {
+            border-bottom-width: 2px;
+            transition: all 0.3s ease;
+        }
+        .tab-active {
+            border-color: #2563eb; /* blue-600 */
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .dark .tab-active {
+            border-color: #60a5fa; /* blue-400 */
+            color: #60a5fa;
+        }
+        .tab-inactive {
+            border-color: transparent;
+            color: #64748b; /* slate-500 */
+        }
+        .dark .tab-inactive {
+            color: #94a3b8; /* slate-400 */
+        }
+        .tab-inactive:hover {
+            color: #334155; /* slate-700 */
+            border-color: #cbd5e1;
+        }
+        .dark .tab-inactive:hover {
+            color: #cbd5e1; /* slate-300 */
+            border-color: #475569;
+        }
+
+        /* Estilo para detalhes da leitura */
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-300 transition-colors duration-300">
+
+    <!-- Header (Padrão CIASC) -->
+    <header class="bg-white/80 dark:bg-slate-800/50 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 backdrop-blur-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
+            <div class="w-full py-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="#">
+                        <span class="sr-only">CIASC</span>
+                        <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </a>
+                    <div class="ml-4 flex flex-col justify-center">
+                        <span class="text-xl font-bold text-blue-800 dark:text-blue-400 leading-none">CIASC</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 tracking-wider">ASSESSORIA DE INOVAÇÃO E TECNOLOGIA</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                     <span class="text-sm font-medium text-slate-600 dark:text-slate-400 hidden sm:inline text-right">
+                         Resolução PRESI XX/2026<br>Aprovação de Política
+                     </span>
+                     <!-- Botão de Tema -->
+                     <button id="theme-toggle" type="button" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none transition-colors">
+                        <span class="sr-only">Alternar</span>
+                        <!-- Ícones SVG inline para o botão de tema -->
+                        <svg id="theme-icon-light" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12H.75m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25 2.25 2.25 0 0 0 2.25 2.25 2.25 2.25 0 0 0 2.25-2.25A2.25 2.25 0 0 0 12 12Z" />
+                        </svg>
+                        <svg id="theme-icon-dark" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <!-- Título da Página -->
+        <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 dark:border-slate-700 pb-5">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                    Política de Inovação e Empreendedorismo
+                </h1>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                    Regulamentação Interna da Lei Federal nº 10.973/2004 e Lei Estadual nº 14.329/2008
+                </p>
+            </div>
+            <div class="mt-4 md:mt-0 flex gap-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                    <i data-lucide="file-check" class="w-4 h-4 mr-2"></i> Minuta Validada
+                </span>
+                <button onclick="window.print()" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                    <i data-lucide="printer" class="w-4 h-4 mr-2"></i> Imprimir
+                </button>
+            </div>
+        </div>
+
+        <!-- Navegação (Abas) -->
+        <nav class="flex justify-center md:justify-start border-b border-slate-200 dark:border-slate-700 mb-8 overflow-x-auto">
+            <div class="flex space-x-4 md:space-x-8 min-w-max px-2">
+                <button onclick="switchTab('estrategia')" id="btn-estrategia" class="tab-btn tab-active py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none flex items-center gap-2">
+                    <i data-lucide="target" class="w-4 h-4"></i> Estratégia & Governança
+                </button>
+                <button onclick="switchTab('instrumentos')" id="btn-instrumentos" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none flex items-center gap-2">
+                    <i data-lucide="wrench" class="w-4 h-4"></i> Instrumentos
+                </button>
+                <button onclick="switchTab('incentivos')" id="btn-incentivos" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none flex items-center gap-2">
+                    <i data-lucide="users" class="w-4 h-4"></i> Pessoas
+                </button>
+                <button onclick="switchTab('negocios')" id="btn-negocios" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none flex items-center gap-2">
+                    <i data-lucide="briefcase" class="w-4 h-4"></i> Negócios
+                </button>
+                <!-- ABA LEITURA -->
+                <button onclick="switchTab('leitura')" id="btn-leitura" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-4 h-4"></i> Leitura na Íntegra
+                </button>
+            </div>
+        </nav>
+
+        <!-- TAB 1: ESTRATÉGIA & GOVERNANÇA -->
+        <div id="view-estrategia" class="view-section fade-in space-y-6">
+            <!-- Introdução -->
+            <div class="bg-blue-900 dark:bg-blue-950 text-white rounded-lg p-6 shadow-md flex flex-col md:flex-row items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold mb-2">Objetivo da Política</h2>
+                    <p class="opacity-90 max-w-3xl text-sm leading-relaxed text-blue-100">
+                        Estabelecer o marco legal interno que permite ao CIASC atuar plenamente como ICT Pública, autorizando novos modelos de negócios, parcerias de risco tecnológico e fomento ao empreendedorismo inovador.
+                    </p>
+                </div>
+                <div class="mt-4 md:mt-0 bg-white/10 p-3 rounded-lg backdrop-blur-sm">
+                    <div class="text-center">
+                        <span class="block text-2xl font-bold">16</span>
+                        <span class="text-xs uppercase tracking-wide">Capítulos</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card de Obrigatoriedade do Empreendedorismo -->
+            <div class="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 p-5 rounded-lg shadow-sm">
+                <div class="flex items-start gap-4">
+                    <div class="bg-amber-100 dark:bg-amber-900/40 p-2 rounded-full text-amber-600 dark:text-amber-400">
+                        <i data-lucide="rocket" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-amber-900 dark:text-amber-100">Fomento ao Empreendedorismo: Mandato Legal</h3>
+                        <p class="text-sm text-amber-800 dark:text-amber-200 mt-1 mb-2">
+                            Embora o CIASC seja uma empresa pública, a legislação impõe que sua Política de Inovação trate expressamente do <strong>fomento ao empreendedorismo de base tecnológica</strong>.
+                        </p>
+                        <div class="bg-white/50 dark:bg-black/20 p-3 rounded text-xs font-mono text-amber-900 dark:text-amber-100 border border-amber-200 dark:border-amber-800/50">
+                            "A política de inovação... deve dispor sobre: (...) II - orientações sobre o fomento ao empreendedorismo de base tecnológica e à criação de ambientes de inovação..." <br>
+                            <strong>(Lei Federal nº 10.973/04, Art. 15-A, Parágrafo Único, II)</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Governança -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="building" class="w-16 h-16"></i></div>
+                    <h3 class="text-lg font-bold text-blue-800 dark:text-blue-400 mb-2">Diretoria Executiva</h3>
+                    <span class="text-xs font-semibold bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-slate-600 dark:text-slate-300">Decisório</span>
+                    <ul class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div> Aprova portfólio estratégico.</li>
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div> Delibera sobre participação em empresas.</li>
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div> Designa o Comitê.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="users-2" class="w-16 h-16"></i></div>
+                    <h3 class="text-lg font-bold text-blue-800 dark:text-blue-400 mb-2">Comitê de Inovação</h3>
+                    <span class="text-xs font-semibold bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-slate-600 dark:text-slate-300">Consultivo</span>
+                    <ul class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Avalia riscos tecnológicos.</li>
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Propõe diretrizes de PI.</li>
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Mandato de 2 anos.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="cpu" class="w-16 h-16"></i></div>
+                    <h3 class="text-lg font-bold text-blue-800 dark:text-blue-400 mb-2">NIT (AIT)</h3>
+                    <span class="text-xs font-semibold bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-slate-600 dark:text-slate-300">Executivo</span>
+                    <ul class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div> Proteção da Propriedade Intelectual.</li>
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div> Gestão de acordos de parceria.</li>
+                        <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div> Relacionamento com o ecossistema.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: INSTRUMENTOS DE INOVAÇÃO -->
+        <div id="view-instrumentos" class="view-section hidden fade-in space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center gap-3 mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">
+                    <i data-lucide="wrench" class="w-6 h-6 text-blue-700 dark:text-blue-400"></i>
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Novos Mecanismos Habilitados</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Parcerias -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                            <i data-lucide="handshake" class="w-4 h-4 text-blue-500"></i> Parcerias e Acordos (Cap. VII)
+                        </h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 text-justify">
+                            Permite co-desenvolvimento com <strong>Startups (CPSI)</strong>, Universidades e outras ICTs. Habilita <em>Sandbox Regulatório</em> para testes em ambiente controlado.
+                        </p>
+                    </div>
+
+                    <!-- Compartilhamento -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                            <i data-lucide="server" class="w-4 h-4 text-indigo-500"></i> Compartilhamento de Infra (Cap. VIII)
+                        </h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 text-justify">
+                            Autoriza o uso de Data Center, Laboratórios e APIs por terceiros para fins de PD&I, mediante contrapartida financeira ou técnica, sem prejuízo à operação governamental.
+                        </p>
+                    </div>
+
+                    <!-- Inventor Independente -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                            <i data-lucide="lightbulb" class="w-4 h-4 text-yellow-500"></i> Inventor Independente (Cap. XIII)
+                        </h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 text-justify">
+                            O CIASC pode "adotar" invenções de pessoas físicas externas para desenvolvimento industrial ou comercial, mediante partilha de ganhos futuros.
+                        </p>
+                    </div>
+
+                    <!-- Inovação Interna -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <h4 class="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4 text-orange-500"></i> Programas Internos (Cap. X)
+                        </h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 text-justify">
+                            Institucionaliza Hackathons, desafios tecnológicos e ciclos de inovação interna como ferramentas oficiais de gestão, com reconhecimento funcional.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: PESSOAS & INCENTIVOS -->
+        <div id="view-incentivos" class="view-section hidden fade-in grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Bolsas -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                        <i data-lucide="graduation-cap" class="w-5 h-5 text-emerald-500"></i> Bolsas de Estímulo (Cap. XI)
+                    </h3>
+                </div>
+                <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-lg border border-emerald-100 dark:border-emerald-800 mb-4">
+                    <p class="text-sm text-emerald-900 dark:text-emerald-100 font-medium">
+                        "Não possui natureza salarial e não cria vínculo empregatício."
+                    </p>
+                </div>
+                <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5"></i>
+                        <span>Para empregados do CIASC em projetos de PD&I.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5"></i>
+                        <span>Para pesquisadores externos e estudantes.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5"></i>
+                        <span>Financiadas por recursos próprios, convênios ou agências de fomento.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Serviços Especializados -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                        <i data-lucide="user-cog" class="w-5 h-5 text-blue-500"></i> Retribuição Pecuniária (Cap. IX)
+                    </h3>
+                </div>
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800 mb-4">
+                    <p class="text-sm text-blue-900 dark:text-blue-100 font-medium">
+                        "Adicional variável para empregados em Serviços Técnicos Especializados."
+                    </p>
+                </div>
+                <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5"></i>
+                        <span>Consultorias, testes, certificações e auditorias técnicas.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5"></i>
+                        <span>Custeada exclusivamente com a receita do serviço (sem onerar a folha).</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5"></i>
+                        <span>Base legal: Art. 8º da Lei de Inovação.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Premiação por PI -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 lg:col-span-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-full text-yellow-600 dark:text-yellow-400">
+                            <i data-lucide="award" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100">Prêmio ao Inventor (Cap. VI)</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">Direito assegurado sobre ganhos econômicos de Propriedade Intelectual.</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-3xl font-bold text-blue-600 dark:text-blue-400">5%</span>
+                        <span class="block text-xs uppercase text-slate-500">Dos ganhos econômicos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: NEGÓCIOS & PI -->
+        <div id="view-negocios" class="view-section hidden fade-in space-y-6">
+            
+            <!-- Corporate Venture -->
+            <div class="bg-indigo-900 text-white rounded-lg p-6 shadow-md border border-indigo-700">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 bg-white/10 rounded-lg">
+                        <i data-lucide="trending-up" class="w-8 h-8 text-indigo-300"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">Participação Societária (Cap. XII)</h3>
+                        <p class="text-indigo-200 text-sm mt-1 mb-4">
+                            O CIASC poderá participar minoritariamente do capital de startups e empresas inovadoras.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div class="bg-indigo-800/50 p-3 rounded border border-indigo-700">
+                                <span class="font-bold block text-white">Aporte Financeiro</span>
+                                <span class="text-indigo-300 text-xs">Investimento direto</span>
+                            </div>
+                            <div class="bg-indigo-800/50 p-3 rounded border border-indigo-700">
+                                <span class="font-bold block text-white">Aporte Econômico</span>
+                                <span class="text-indigo-300 text-xs">Troca por Tecnologia/Infra</span>
+                            </div>
+                            <div class="bg-indigo-800/50 p-3 rounded border border-indigo-700">
+                                <span class="font-bold block text-white">Fundos</span>
+                                <span class="text-indigo-300 text-xs">Participação em Fundos de Inv.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intraempreendedorismo e Spinoffs -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center gap-3 mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">
+                    <i data-lucide="rocket" class="w-6 h-6 text-orange-500"></i>
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Criação de Spin-offs e Intraempreendedorismo</h3>
+                </div>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-1">
+                        <p class="text-sm text-slate-600 dark:text-slate-300 text-justify">
+                            Em cumprimento à diretriz de fomento ao empreendedorismo (Art. 15-A), a política prevê mecanismos para que tecnologias desenvolvidas internamente possam ser "licenciadas" para criação de novas empresas (spin-offs), onde o CIASC mantém participação societária ou recebe royalties, levando a inovação pública para o mercado.
+                        </p>
+                    </div>
+                    <div class="flex-1 bg-slate-50 dark:bg-slate-900/50 p-4 rounded border border-slate-100 dark:border-slate-700">
+                        <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-400">
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i> Incubação de projetos internos.</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i> Licenciamento para ex-colaboradores.</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i> Geração de novas receitas não-operacionais.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Propriedade Intelectual -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
+                        <i data-lucide="copyright" class="w-5 h-5 text-slate-500"></i> Gestão da Propriedade Intelectual
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex gap-3">
+                            <div class="mt-1 min-w-[4px] h-full bg-slate-200 dark:bg-slate-700 rounded-full"></div>
+                            <div>
+                                <strong class="block text-sm text-slate-800 dark:text-slate-200">Titularidade do CIASC</strong>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                    Softwares e criações feitas por empregados ou com recursos do CIASC pertencem à empresa.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <div class="mt-1 min-w-[4px] h-full bg-slate-200 dark:bg-slate-700 rounded-full"></div>
+                            <div>
+                                <strong class="block text-sm text-slate-800 dark:text-slate-200">Sigilo Obrigatório</strong>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                    Criações não protegidas são "Segredo Industrial". Divulgação requer aval do NIT.
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Receitas -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
+                        <i data-lucide="coins" class="w-5 h-5 text-yellow-500"></i> Classificação de Receitas (Cap. XIV)
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-slate-400 pl-3">
+                            <span class="text-xs font-bold uppercase text-slate-500">Receita Operacional (Padrão)</span>
+                            <p class="text-sm text-slate-700 dark:text-slate-300 mt-1">
+                                Desenvolvimento de sistemas, Data Center, Hospedagem, Serviços Continuados.
+                            </p>
+                        </div>
+                        <div class="border-l-4 border-blue-500 pl-3 bg-blue-50 dark:bg-blue-900/10 py-2 pr-2 rounded-r">
+                            <span class="text-xs font-bold uppercase text-blue-600 dark:text-blue-400">Receita de Inovação (Nova)</span>
+                            <p class="text-sm text-slate-700 dark:text-slate-300 mt-1">
+                                Royalties, Transferência de Tec., Consultoria Especializada, Ganhos de Capital (Startups).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOVO TAB 5: LEITURA NA ÍNTEGRA COM BUSCA -->
+        <div id="view-leitura" class="view-section hidden fade-in max-w-4xl mx-auto">
+            <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-8">
+                <!-- Cabeçalho e Busca -->
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Resolução PRESI Nº XX/2026</h2>
+                    <p class="text-slate-500 dark:text-slate-400 mt-2">Institui a Política de Inovação e Empreendedorismo do CIASC.</p>
+                    
+                    <!-- Barra de Busca -->
+                    <div class="mt-6 relative max-w-xl mx-auto">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="h-5 w-5 text-slate-400"></i>
+                        </div>
+                        <input type="text" 
+                               id="policySearch" 
+                               onkeyup="searchPolicy()" 
+                               class="block w-full pl-10 pr-3 py-3 border border-slate-300 dark:border-slate-600 rounded-lg leading-5 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm shadow-sm transition" 
+                               placeholder="Busque por tema, capítulo ou palavra-chave (ex: 'NIT', 'Ganhos')">
+                    </div>
+                </div>
+
+                <!-- Conteúdo dos Capítulos -->
+                <div id="policyContainer" class="space-y-4">
+                    <!-- Cap I -->
+                    <details class="group bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <summary class="flex justify-between items-center font-medium cursor-pointer p-4 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                            <span class="text-slate-900 dark:text-slate-200">Capítulo I - Disposições Preliminares</span>
+                            <span class="transition group-open:rotate-180">
+                                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500"></i>
+                            </span>
+                        </summary>
+                        <div class="text-slate-600 dark:text-slate-400 text-sm p-4 border-t border-slate-200 dark:border-slate-700 leading-relaxed text-justify">
+                            Define os objetivos da política, conceitos legais (inovação, ICT, NIT, criação, inventor) e alinha a atuação do CIASC à Lei de Inovação. Estabelece que o CIASC atuará como ICT para promover o desenvolvimento científico e tecnológico.
+                        </div>
+                    </details>
+
+                    <!-- Cap II -->
+                    <details class="group bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <summary class="flex justify-between items-center font-medium cursor-pointer p-4 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                            <span class="text-slate-900 dark:text-slate-200">Capítulo II - Da Governança da Inovação</span>
+                            <span class="transition group-open:rotate-180">
+                                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500"></i>
+                            </span>
+                        </summary>
+                        <div class="text-slate-600 dark:text-slate-400 text-sm p-4 border-t border-slate-200 dark:border-slate-700 leading-relaxed text-justify">
+                            Estrutura as competências da Diretoria Executiva (decisória), do Comitê de Inovação (consultivo) e do Núcleo de Inovação Tecnológica - NIT (executivo). Define a composição e o mandato dos membros do Comitê.
+                        </div>
+                    </details>
+
+                    <!-- Cap III -->
+                    <details class="group bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <summary class="flex justify-between items-center font-medium cursor-pointer p-4 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                            <span class="text-slate-900 dark:text-slate-200">Capítulo III - Do Núcleo de Inovação (NIT)</span>
+                            <span class="transition group-open:rotate-180">
+                                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500"></i>
+                            </span>
+                        </summary>
+                        <div class="text-slate-600 dark:text-slate-400 text-sm p-4 border-t border-slate-200 dark:border-slate-700 leading-relaxed text-justify">
+                            Designa a Assessoria de Inovação e Tecnologia (AIT) para exercer as funções de NIT. Lista as atribuições legais, como zelar pela propriedade intelectual, avaliar solicitações de patente e acompanhar parcerias de PD&I.
+                        </div>
+                    </details>
+                    
+                    <!-- Cap IV - PI -->
+                    <details class="group bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <summary class="flex justify-between items-center font-medium cursor-pointer p-4 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                            <span class="text-slate-900 dark:text-slate-200">Capítulo IV - Da Propriedade Intelectual</span>
+                            <span class="transition group-open:rotate-180">
+                                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500"></i>
+                            </span>
+                        </summary>
+                        <div class="text-slate-600 dark:text-slate-400 text-sm p-4 border-t border-slate-200 dark:border-slate-700 leading-relaxed text-justify">
+                            Regula a titularidade das invenções. Determina que criações desenvolvidas por empregados no exercício de suas funções pertencem ao CIASC. Estabelece regras de sigilo industrial para invenções não patenteadas.
+                        </div>
+                    </details>
+
+                    <!-- Cap V - Transferência -->
+                    <details class="group bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <summary class="flex justify-between items-center font-medium cursor-pointer p-4 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                            <span class="text-slate-900 dark:text-slate-200">Capítulo V - Da Transferência de Tecnologia</span>
+                            <span class="transition group-open:rotate-180">
+                                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500"></i>
+                            </span>
+                        </summary>
+                        <div class="text-slate-600 dark:text-slate-400 text-sm p-4 border-t border-slate-200 dark:border-slate-700 leading-relaxed text-justify">
+                            Define as modalidades de transferência (licenciamento, cessão) e os critérios para contratação, admitindo a exclusividade ou não-exclusividade. Dispensa licitação em casos específicos previstos na Lei de Inovação.
+                        </div>
+                    </details>
+                    
+                    <!-- Cap VI - Ganhos -->
+                    <details class="group bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <summary class="flex justify-between items-center font-medium cursor-pointer p-4 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                            <span class="text-slate-900 dark:text-slate-200">Capítulo VI - Dos Ganhos Econômicos e Premiação</span>
+                            <span class="transition group-open:rotate-180">
+                                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500"></i>
+                            </span>
+                        </summary>
+                        <div class="text-slate-600 dark:text-slate-400 text-sm p-4 border-t border-slate-200 dark:border-slate-700 leading-relaxed text-justify">
+                            Assegura ao inventor a participação mínima de 5% e máxima de 1/3 nos ganhos econômicos auferidos pelo CIASC com a exploração da patente ou registro de software, conforme Art. 13 da Lei 10.973.
+                        </div>
+                    </details>
+                    
+                    <!-- Cap VII - Parcerias -->
+                    <details class="group bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <summary class="flex justify-between items-center font-medium cursor-pointer p-4 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                            <span class="text-slate-900 dark:text-slate-200">Capítulo VII - Das Parcerias para PD&I</span>
+                            <span class="transition group-open:rotate-180">
+                                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500"></i>
+                            </span>
+                        </summary>
+                        <div class="text-slate-600 dark:text-slate-400 text-sm p-4 border-t border-slate-200 dark:border-slate-700 leading-relaxed text-justify">
+                            Autoriza a celebração de acordos de parceria, convênios e Contratos Públicos de Solução Inovadora (CPSI). Permite que o CIASC e parceiros privados aportem recursos financeiros e humanos para desenvolvimento conjunto.
+                        </div>
+                    </details>
+                    
+                     <!-- Cap VIII - Infra -->
+                     <details class="group bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <summary class="flex justify-between items-center font-medium cursor-pointer p-4 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                            <span class="text-slate-900 dark:text-slate-200">Capítulo VIII - Do Compartilhamento de Infraestrutura</span>
+                            <span class="transition group-open:rotate-180">
+                                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500"></i>
+                            </span>
+                        </summary>
+                        <div class="text-slate-600 dark:text-slate-400 text-sm p-4 border-t border-slate-200 dark:border-slate-700 leading-relaxed text-justify">
+                            Regulamenta o uso dos laboratórios e data center do CIASC por terceiros (empresas, universidades) para atividades de PD&I, mediante remuneração ou contrapartida técnica, desde que não interfira na atividade-fim.
+                        </div>
+                    </details>
+
+                    <!-- Cap XV - Empreendedorismo (Highlight) -->
+                    <details class="group bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800/50 overflow-hidden">
+                        <summary class="flex justify-between items-center font-medium cursor-pointer p-4 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition">
+                            <span class="text-amber-900 dark:text-amber-100 flex items-center gap-2">
+                                <i data-lucide="rocket" class="w-4 h-4"></i> Capítulo XV - Do Estímulo ao Empreendedorismo
+                            </span>
+                            <span class="transition group-open:rotate-180">
+                                <i data-lucide="chevron-down" class="w-5 h-5 text-amber-500"></i>
+                            </span>
+                        </summary>
+                        <div class="text-slate-700 dark:text-slate-300 text-sm p-4 border-t border-amber-200 dark:border-amber-800/50 leading-relaxed text-justify">
+                            <strong>(Atendimento ao Art. 15-A da Lei 10.973)</strong><br>
+                            Estabelece diretrizes para o CIASC fomentar ambientes de inovação e apoiar o surgimento de empresas de base tecnológica. Prevê mecanismos de licenciamento de tecnologia para criação de <em>spin-offs</em> e apoio ao intraempreendedorismo corporativo.
+                        </div>
+                    </details>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button class="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium">Baixar Documento Completo (PDF)</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer (Padrão CIASC) -->
+    <footer class="bg-slate-100 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 mt-8">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                
+                <div class="flex flex-col justify-center items-center md:items-start space-y-4">
+                    <div class="w-fit">
+                         <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </div>
+                    <p class="text-xs text-center md:text-left text-slate-600 dark:text-slate-400">
+                        Todos os Direitos reservados - AIT<br>(Assessoria de Inovação e Tecnologia) - CIASC 2026
+                    </p>
+                </div>
+                
+                <div class="text-center md:text-left text-sm text-slate-700 dark:text-slate-300">
+                    <h4 class="font-semibold text-blue-800 dark:text-blue-400">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
+                    <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
+                    <p>Florianópolis, SC - CEP 88034-902</p>
+                    <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
+                </div>
+                
+                <div class="text-center md:text-right text-sm">
+                    <p class="font-semibold text-blue-800 dark:text-blue-400">Links Úteis</p>
+                    <ul class="mt-2 space-y-1">
+                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Site Oficial CIASC</a></li>
+                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Portal da Transparência</a></li>
+                        <li><a href="https://www.fapesc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">FAPESC</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS para interatividade -->
+    <script>
+        // Inicializa ícones Lucide
+        function initIcons() {
+             lucide.createIcons();
+        }
+
+        // --- LÓGICA DE BUSCA NA POLÍTICA ---
+        function searchPolicy() {
+            const input = document.getElementById('policySearch');
+            const filter = input.value.toUpperCase();
+            const container = document.getElementById('policyContainer');
+            const details = container.getElementsByTagName('details');
+
+            for (let i = 0; i < details.length; i++) {
+                const summary = details[i].getElementsByTagName('summary')[0];
+                // Pega o conteúdo dentro da div após o summary
+                const contentDiv = details[i].getElementsByTagName('div')[0];
+                
+                const txtValue = (summary.textContent || summary.innerText) + " " + (contentDiv.textContent || contentDiv.innerText);
+
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    details[i].style.display = ""; // Mostra se corresponder
+                    // Se o filtro for específico (mais de 2 letras), expande para mostrar o conteúdo
+                    if (filter.length > 2) {
+                        details[i].open = true;
+                    } else {
+                        // Se apagar a busca, fecha para ficar organizado (opcional)
+                        details[i].open = false;
+                    }
+                } else {
+                    details[i].style.display = "none"; // Esconde se não corresponder
+                }
+            }
+        }
+
+        // --- CONFIGURAÇÃO DE TEMA ---
+        const htmlEl = document.documentElement;
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        
+        let currentTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        htmlEl.classList.add(currentTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlEl.classList.toggle('dark');
+            htmlEl.classList.toggle('light');
+            currentTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', currentTheme);
+        });
+
+        // --- NAVEGAÇÃO ---
+        function switchTab(tabId) {
+            // 1. Esconder todas as views
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(view => {
+                view.classList.add('hidden');
+            });
+
+            // 2. Mostrar a view selecionada
+            const targetView = document.getElementById('view-' + tabId);
+            if (targetView) {
+                targetView.classList.remove('hidden');
+            }
+
+            // 3. Atualizar classes dos botões
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+            });
+            
+            const activeButton = document.getElementById('btn-' + tabId);
+            if (activeButton) {
+                activeButton.classList.remove('tab-inactive');
+                activeButton.classList.add('tab-active');
+            }
+            
+            // Re-renderizar ícones caso necessário
+            setTimeout(initIcons, 50);
+        }
+
+        // Inicialização
+        document.addEventListener("DOMContentLoaded", function() {
+            initIcons();
+        });
+
+    </script>
+</body>
+</html>
