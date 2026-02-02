@@ -156,7 +156,7 @@
                 <button onclick="switchTab('negocios')" id="btn-negocios" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none flex items-center gap-2">
                     <i data-lucide="briefcase" class="w-4 h-4"></i> Negócios
                 </button>
-                <!-- NOVA ABA: LEITURA -->
+                <!-- ABA LEITURA -->
                 <button onclick="switchTab('leitura')" id="btn-leitura" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none flex items-center gap-2">
                     <i data-lucide="book-open" class="w-4 h-4"></i> Leitura na Íntegra
                 </button>
@@ -181,7 +181,7 @@
                 </div>
             </div>
             
-            <!-- NOVO: Card de Obrigatoriedade do Empreendedorismo -->
+            <!-- Card de Obrigatoriedade do Empreendedorismo -->
             <div class="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 p-5 rounded-lg shadow-sm">
                 <div class="flex items-start gap-4">
                     <div class="bg-amber-100 dark:bg-amber-900/40 p-2 rounded-full text-amber-600 dark:text-amber-400">
@@ -477,15 +477,29 @@
             </div>
         </div>
 
-        <!-- NOVO TAB 5: LEITURA NA ÍNTEGRA -->
+        <!-- NOVO TAB 5: LEITURA NA ÍNTEGRA COM BUSCA -->
         <div id="view-leitura" class="view-section hidden fade-in max-w-4xl mx-auto">
             <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-8">
+                <!-- Cabeçalho e Busca -->
                 <div class="text-center mb-8">
                     <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Resolução PRESI Nº XX/2026</h2>
                     <p class="text-slate-500 dark:text-slate-400 mt-2">Institui a Política de Inovação e Empreendedorismo do CIASC.</p>
+                    
+                    <!-- Barra de Busca -->
+                    <div class="mt-6 relative max-w-xl mx-auto">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="h-5 w-5 text-slate-400"></i>
+                        </div>
+                        <input type="text" 
+                               id="policySearch" 
+                               onkeyup="searchPolicy()" 
+                               class="block w-full pl-10 pr-3 py-3 border border-slate-300 dark:border-slate-600 rounded-lg leading-5 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm shadow-sm transition" 
+                               placeholder="Busque por tema, capítulo ou palavra-chave (ex: 'NIT', 'Ganhos')">
+                    </div>
                 </div>
 
-                <div class="space-y-4">
+                <!-- Conteúdo dos Capítulos -->
+                <div id="policyContainer" class="space-y-4">
                     <!-- Cap I -->
                     <details class="group bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
                         <summary class="flex justify-between items-center font-medium cursor-pointer p-4 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
@@ -591,7 +605,7 @@
                     </details>
 
                     <!-- Cap XV - Empreendedorismo (Highlight) -->
-                    <details class="group bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800/50 overflow-hidden" open>
+                    <details class="group bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800/50 overflow-hidden">
                         <summary class="flex justify-between items-center font-medium cursor-pointer p-4 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition">
                             <span class="text-amber-900 dark:text-amber-100 flex items-center gap-2">
                                 <i data-lucide="rocket" class="w-4 h-4"></i> Capítulo XV - Do Estímulo ao Empreendedorismo
@@ -605,8 +619,8 @@
                             Estabelece diretrizes para o CIASC fomentar ambientes de inovação e apoiar o surgimento de empresas de base tecnológica. Prevê mecanismos de licenciamento de tecnologia para criação de <em>spin-offs</em> e apoio ao intraempreendedorismo corporativo.
                         </div>
                     </details>
-
                 </div>
+
                 <div class="mt-8 text-center">
                     <button class="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium">Baixar Documento Completo (PDF)</button>
                 </div>
@@ -653,6 +667,35 @@
         // Inicializa ícones Lucide
         function initIcons() {
              lucide.createIcons();
+        }
+
+        // --- LÓGICA DE BUSCA NA POLÍTICA ---
+        function searchPolicy() {
+            const input = document.getElementById('policySearch');
+            const filter = input.value.toUpperCase();
+            const container = document.getElementById('policyContainer');
+            const details = container.getElementsByTagName('details');
+
+            for (let i = 0; i < details.length; i++) {
+                const summary = details[i].getElementsByTagName('summary')[0];
+                // Pega o conteúdo dentro da div após o summary
+                const contentDiv = details[i].getElementsByTagName('div')[0];
+                
+                const txtValue = (summary.textContent || summary.innerText) + " " + (contentDiv.textContent || contentDiv.innerText);
+
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    details[i].style.display = ""; // Mostra se corresponder
+                    // Se o filtro for específico (mais de 2 letras), expande para mostrar o conteúdo
+                    if (filter.length > 2) {
+                        details[i].open = true;
+                    } else {
+                        // Se apagar a busca, fecha para ficar organizado (opcional)
+                        details[i].open = false;
+                    }
+                } else {
+                    details[i].style.display = "none"; // Esconde se não corresponder
+                }
+            }
         }
 
         // --- CONFIGURAÇÃO DE TEMA ---
