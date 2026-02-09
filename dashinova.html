@@ -132,8 +132,8 @@
                 </p>
             </div>
             <div class="mt-4 md:mt-0 flex gap-3">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-                    <i data-lucide="file-check" class="w-4 h-4 mr-2"></i> Minuta a ser Validada
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800">
+                    <i data-lucide="file-clock" class="w-4 h-4 mr-2"></i> Minuta para aprovação
                 </span>
                 <button onclick="window.print()" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
                     <i data-lucide="printer" class="w-4 h-4 mr-2"></i> Imprimir
@@ -292,81 +292,98 @@
         </div>
 
         <!-- TAB 3: PESSOAS & INCENTIVOS -->
-        <div id="view-incentivos" class="view-section hidden fade-in grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div id="view-incentivos" class="view-section hidden fade-in space-y-6">
             
-            <!-- Bolsas -->
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <i data-lucide="graduation-cap" class="w-5 h-5 text-emerald-500"></i> Bolsas de Estímulo (Cap. XI)
-                    </h3>
-                </div>
-                <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-lg border border-emerald-100 dark:border-emerald-800 mb-4">
-                    <p class="text-sm text-emerald-900 dark:text-emerald-100 font-medium">
-                        "Não possui natureza salarial e não cria vínculo empregatício."
-                    </p>
-                </div>
-                <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                    <li class="flex items-start gap-2">
-                        <i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5"></i>
-                        <span>Para empregados do CIASC em projetos de PD&I.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5"></i>
-                        <span>Para pesquisadores externos e estudantes.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5"></i>
-                        <span>Financiadas por recursos próprios, convênios ou agências de fomento.</span>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Serviços Especializados -->
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                        <i data-lucide="user-cog" class="w-5 h-5 text-blue-500"></i> Retribuição Pecuniária (Cap. IX)
-                    </h3>
-                </div>
-                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800 mb-4">
-                    <p class="text-sm text-blue-900 dark:text-blue-100 font-medium">
-                        "Adicional variável para empregados em Serviços Técnicos Especializados."
-                    </p>
-                </div>
-                <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                    <li class="flex items-start gap-2">
-                        <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5"></i>
-                        <span>Consultorias, testes, certificações e auditorias técnicas.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5"></i>
-                        <span>Custeada exclusivamente com a receita do serviço (sem onerar a folha).</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5"></i>
-                        <span>Base legal: Art. 8º da Lei de Inovação.</span>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Premiação por PI -->
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 lg:col-span-2">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-full text-yellow-600 dark:text-yellow-400">
-                            <i data-lucide="award" class="w-6 h-6"></i>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Card 1: Bolsas -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col">
+                    <div class="mb-4">
+                        <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center mb-3">
+                            <i data-lucide="graduation-cap" class="w-6 h-6 text-emerald-600 dark:text-emerald-400"></i>
                         </div>
-                        <div>
-                            <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100">Prêmio ao Inventor (Cap. VI)</h4>
-                            <p class="text-sm text-slate-500 dark:text-slate-400">Direito assegurado sobre ganhos econômicos de Propriedade Intelectual.</p>
-                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Bolsas de Estímulo</h3>
+                        <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Capítulo XI</span>
                     </div>
-                    <div class="text-right">
-                        <span class="text-3xl font-bold text-blue-600 dark:text-blue-400">5%</span>
-                        <span class="block text-xs uppercase text-slate-500">Dos ganhos econômicos</span>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow">
+                        Aporte financeiro para capacitação e dedicação a projetos de PD&I, sem caracterizar contraprestação de serviço ou vínculo empregatício.
+                    </p>
+                    <div class="bg-emerald-50 dark:bg-emerald-900/10 p-3 rounded border border-emerald-100 dark:border-emerald-800/30">
+                        <ul class="space-y-2 text-xs text-slate-700 dark:text-slate-300">
+                            <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> <strong>Para quem:</strong> Empregados, estudantes e pesquisadores externos.</li>
+                            <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> <strong>Fonte:</strong> Recursos próprios ou de convênios/agências.</li>
+                        </ul>
                     </div>
                 </div>
+
+                <!-- Card 2: Retribuição -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col">
+                    <div class="mb-4">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-3">
+                            <i data-lucide="coins" class="w-6 h-6 text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Retribuição Pecuniária</h3>
+                        <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Capítulo IX</span>
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow">
+                        Adicional variável pago aos empregados que atuarem na execução de Serviços Técnicos Especializados (consultorias, análises, etc).
+                    </p>
+                    <div class="bg-blue-50 dark:bg-blue-900/10 p-3 rounded border border-blue-100 dark:border-blue-800/30">
+                        <ul class="space-y-2 text-xs text-slate-700 dark:text-slate-300">
+                            <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-blue-500"></i> <strong>Custeio:</strong> Pago exclusivamente com a receita do serviço.</li>
+                            <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-blue-500"></i> <strong>Natureza:</strong> Não incorpora ao salário.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Card 3: Prêmio -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col">
+                    <div class="mb-4">
+                        <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center mb-3">
+                            <i data-lucide="award" class="w-6 h-6 text-yellow-600 dark:text-yellow-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Prêmio ao Inventor</h3>
+                        <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Capítulo VI</span>
+                    </div>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 mb-4 flex-grow">
+                        Participação direta nos resultados financeiros obtidos pelo CIASC com a exploração de patentes ou registros de software.
+                    </p>
+                    <div class="bg-yellow-50 dark:bg-yellow-900/10 p-3 rounded border border-yellow-100 dark:border-yellow-800/30">
+                        <ul class="space-y-2 text-xs text-slate-700 dark:text-slate-300">
+                            <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-yellow-500"></i> <strong>Valor:</strong> Entre 5% e 33% dos ganhos econômicos.</li>
+                            <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-yellow-500"></i> <strong>Pagamento:</strong> Periodicidade definida pelo CIASC.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparative Table/Summary to bind them together -->
+            <div class="bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                    <thead class="bg-slate-100 dark:bg-slate-800">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Instrumento</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Fato Gerador</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Vínculo</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-slate-800/50 divide-y divide-slate-200 dark:divide-slate-700">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-emerald-600 dark:text-emerald-400">Bolsa</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">Capacitação / Projeto PD&I</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">Sem vínculo trabalhista</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600 dark:text-blue-400">Retribuição</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">Prestação de Serviço Técnico</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">Empregado (Adicional Variável)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-yellow-600 dark:text-yellow-400">Prêmio</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">Exploração de Propriedade Intelectual</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">Inventor (Empregado ou não)</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
