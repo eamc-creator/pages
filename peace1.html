@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lealdade no Tatame - Peace & Combat</title>
+    <title>A Ciência da Lealdade - Peace & Combat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -13,10 +13,11 @@
             font-family: 'Inter', sans-serif;
             background-color: #0f172a;
             color: #f8fafc;
+            scroll-behavior: smooth;
         }
 
         .hero-gradient {
-            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1555597673-b21d5c935865?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1555597673-b21d5c935865?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
             background-size: cover;
             background-position: center;
         }
@@ -30,122 +31,156 @@
         .martial-border {
             border-left: 4px solid #ef4444;
         }
+
+        .text-justify {
+            text-align: justify;
+        }
+        
+        .tradition-badge {
+            background: linear-gradient(90deg, #ef4444 0%, #991b1b 100%);
+        }
     </style>
 </head>
 <body class="antialiased">
 
     <!-- Header / Nav -->
-    <nav class="p-6 flex justify-between items-center bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
-        <div class="flex items-center space-x-2">
-            <span class="text-2xl font-black tracking-tighter text-red-600 italic">PEACE & COMBAT</span>
+    <nav class="p-6 flex justify-between items-center bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-2xl">
+        <div class="flex flex-col">
+            <span class="text-xl md:text-2xl font-black tracking-tighter text-red-600 italic">PEACE & COMBAT</span>
+            <span class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold">A Tradição de Biguaçu</span>
+        </div>
+        <div class="hidden md:block space-x-8 text-sm font-bold uppercase tracking-widest text-slate-400">
+            <a href="#artigo" class="hover:text-red-500 transition">O Artigo</a>
+            <a href="#origem" class="hover:text-red-500 transition">Origem do Creonte</a>
+            <a href="#pilares" class="hover:text-red-500 transition">Pilares</a>
         </div>
         <div>
-            <a href="https://www.instagram.com/peace_combat/" target="_blank" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full text-sm font-bold transition">
+            <a href="https://www.instagram.com/peace_combat/" target="_blank" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-full text-xs md:text-sm font-bold transition">
                 <i class="fab fa-instagram mr-2"></i>Seguir o Time
             </a>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero-gradient min-h-[60vh] flex items-center justify-center text-center p-6">
+    <header class="hero-gradient min-h-[70vh] flex items-center justify-center text-center p-6 border-b border-red-900/30">
         <div class="max-w-4xl">
-            <span class="text-red-500 font-bold tracking-widest uppercase mb-4 block">Cultura de Tatame</span>
-            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">VESTIR A CAMISA É <span class="text-red-600">EVOLUIR</span> MAIS RÁPIDO</h1>
-            <p class="text-xl text-slate-300 max-w-2xl mx-auto mb-8 leading-relaxed">
-                Na Peace & Combat, a lealdade não é apenas uma palavra; é o alicerce que protege sua integridade e acelera seu aprendizado.
+            <div class="inline-block tradition-badge px-4 py-1 rounded-full text-[10px] font-black tracking-[0.3em] uppercase mb-6">
+                Desde as Raízes em Biguaçu
+            </div>
+            <h1 class="text-5xl md:text-8xl font-black mb-6 leading-tight uppercase italic">Honra & <span class="text-red-600">Lealdade</span></h1>
+            <p class="text-xl text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+                Entenda por que a fidelidade ao seu brasão é o segredo dos maiores campeões formados na história da Peace & Combat.
             </p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="#artigo" class="bg-white text-slate-900 px-8 py-3 rounded-lg font-bold hover:bg-slate-200 transition">Ler o Artigo</a>
-                <a href="#pilares" class="border border-slate-500 px-8 py-3 rounded-lg font-bold hover:bg-white hover:text-slate-900 transition">Os 4 Pilares</a>
+                <a href="#artigo" class="bg-white text-slate-900 px-10 py-4 rounded-lg font-bold hover:bg-slate-200 transition shadow-lg shadow-white/10">Ler o Artigo Completo</a>
             </div>
         </div>
     </header>
 
-    <!-- Intro Text -->
-    <section id="artigo" class="py-20 px-6 max-w-4xl mx-auto">
-        <div class="martial-border pl-6">
-            <h2 class="text-3xl font-bold mb-6">Papo Reto: Por que a Lealdade importa?</h2>
-            <p class="text-lg text-slate-400 mb-4 leading-relaxed">
-                Artes marciais são esportes de confiança. Você entrega seu braço, seu pescoço e sua integridade física na mão do seu parceiro de treino. Muita gente confunde pagar mensalidade com um serviço de streaming como a Netflix, mas aqui o laço é de família.
+    <!-- Main Article Section -->
+    <article id="artigo" class="py-24 px-6 max-w-3xl mx-auto">
+        <div class="mb-16">
+            <h2 class="text-4xl md:text-5xl font-black mb-8 leading-tight">A Tradição que Forma Campeões: No Tatame e na Vida</h2>
+            <div class="h-1 w-24 bg-red-600 mb-10"></div>
+            
+            <p class="text-xl text-slate-300 leading-relaxed mb-6 text-justify">
+                Na <strong>Peace & Combat</strong>, não estamos apenas ensinando técnicas de alavanca ou projeção. Sendo a equipe mais tradicional de <strong>Biguaçu</strong>, carregamos a responsabilidade de preservar a essência marcial que muitas vezes se perde na modernidade "comercial" das lutas.
             </p>
-            <p class="text-lg text-slate-400 leading-relaxed">
-                Ficar pulando de academia em academia — o famoso "turista de tatame" — atrasa sua evolução, confunde sua técnica e pode até te machucar.
+            
+            <p class="text-lg text-slate-400 leading-relaxed mb-8 text-justify">
+                Artes marciais são, antes de tudo, esportes de confiança mútua. Quando você pisa no nosso tatame, você está entregando sua integridade física — seu braço, seu pescoço, suas articulações — nas mãos de seus parceiros de treino. Esse nível de entrega exige um laço que vai além de um contrato de prestação de serviço. É uma irmandade.
+            </p>
+
+            <div class="bg-slate-800/50 p-8 rounded-2xl border-l-4 border-red-600 my-12 italic text-slate-300">
+                "Muitos buscam a técnica rápida, mas poucos entendem que a técnica sem lealdade é como uma espada sem punho: perigosa e sem propósito."
+                <footer class="mt-4 font-bold text-red-500">— Filosofia Peace & Combat</footer>
+            </div>
+        </div>
+
+        <!-- Origem do Termo Creonte -->
+        <div id="origem" class="mb-20 pt-10">
+            <h3 class="text-3xl font-bold mb-6 text-red-500">A Origem do Termo: O que é um "Creonte"?</h3>
+            <p class="text-lg text-slate-400 leading-relaxed mb-6 text-justify">
+                Você já deve ter ouvido alguém ser chamado de "Creonte" no mundo do Jiu-Jitsu. Mas você sabe de onde isso veio? O termo foi imortalizado pelo lendário <strong>Mestre Carlson Gracie</strong> na década de 90. 
+            </p>
+            <p class="text-lg text-slate-400 leading-relaxed mb-6 text-justify">
+                Naquela época, uma novela chamada <i>"A Próxima Vítima"</i> fazia muito sucesso no Brasil, e nela havia um personagem chamado <strong>Creonte</strong> (interpretado por Tony Ramos). O personagem era conhecido por sua falta de caráter, mudando de lado e de opinião conforme lhe convinha, traindo a confiança de quem o ajudava.
+            </p>
+            <p class="text-lg text-slate-400 leading-relaxed mb-8 text-justify">
+                Carlson, percebendo que alguns alunos saíam de sua academia levando segredos técnicos para treinar com rivais, passou a usar o nome do personagem para rotular aqueles que abandonavam seu mestre por conveniência ou pequenos benefícios. Para o Jiu-Jitsu raiz, o "Creontismo" é a antítese do Bushido (o código samurai).
             </p>
         </div>
-    </section>
+    </article>
 
     <!-- The Pillars (Cards) -->
-    <section id="pilares" class="py-20 bg-slate-800/50 px-6">
+    <section id="pilares" class="py-20 bg-slate-900 px-6 border-y border-slate-800">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-black mb-4">A ESTRUTURA DA FIDELIDADE</h2>
+                <span class="text-red-500 font-bold uppercase tracking-widest text-sm mb-4 block">Metodologia Crystian Prazeres</span>
+                <h2 class="text-4xl font-black mb-4">OS PILARES DA EVOLUÇÃO</h2>
                 <div class="h-1 w-20 bg-red-600 mx-auto"></div>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Pillar 1 -->
-                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 card-hover">
-                    <div class="text-red-500 text-3xl mb-4"><i class="fas fa-scroll"></i></div>
-                    <h3 class="text-xl font-bold mb-3">História e Raiz</h3>
-                    <p class="text-slate-400 text-sm">Do Judô aos Samurais: o conceito de <i>Hamon</i> (expulsão) protegia os segredos do clã. Respeitamos essa tradição.</p>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700 card-hover">
+                    <div class="text-red-500 text-3xl mb-4"><i class="fas fa-shield-alt"></i></div>
+                    <h3 class="text-xl font-bold mb-3 uppercase">Segurança no 'Camp'</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">O treino é sagrado. Quando você é leal, o time compartilha segredos e estratégias sem medo de que sua "brecha" seja exposta a adversários.</p>
                 </div>
-                <!-- Pillar 2 -->
-                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 card-hover">
-                    <div class="text-red-500 text-3xl mb-4"><i class="fas fa-user-shield"></i></div>
-                    <h3 class="text-xl font-bold mb-3">Estratégia e Alma</h3>
-                    <p class="text-slate-400 text-sm">O "Camp" é sagrado. Treinar em vários lugares pode expor fraquezas dos seus parceiros de equipe.</p>
+                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700 card-hover">
+                    <div class="text-red-500 text-3xl mb-4"><i class="fas fa-history"></i></div>
+                    <h3 class="text-xl font-bold mb-3 uppercase">Histórico Técnico</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">O Mestre Crystian Prazeres conhece cada lesão e cada detalhe da sua técnica. Pular de galho em galho apaga seu histórico e atrasa sua faixa.</p>
                 </div>
-                <!-- Pillar 3 -->
-                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 card-hover">
-                    <div class="text-red-500 text-3xl mb-4"><i class="fas fa-brain"></i></div>
-                    <h3 class="text-xl font-bold mb-3">Foco Técnico</h3>
-                    <p class="text-slate-400 text-sm">Misturar métodos sem base sólida cria confusão. Siga o sistema do Mestre para não virar um "pato".</p>
-                </div>
-                <!-- Pillar 4 -->
-                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 card-hover">
-                    <div class="text-red-500 text-3xl mb-4"><i class="fas fa-heartbeat"></i></div>
-                    <h3 class="text-xl font-bold mb-3">Sua Segurança</h3>
-                    <p class="text-slate-400 text-sm">Seu Mestre conhece suas lesões e limites. Fora de casa, você é apenas um visitante testado ao extremo.</p>
+                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700 card-hover">
+                    <div class="text-red-500 text-3xl mb-4"><i class="fas fa-trophy"></i></div>
+                    <h3 class="text-xl font-bold mb-3 uppercase">Legado de Biguaçu</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Somos a equipe mais tradicional da cidade. Ser Peace & Combat é carregar um sobrenome respeitado em qualquer competição do mundo.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Comparison Table -->
-    <section class="py-20 px-6 max-w-5xl mx-auto">
-        <div class="bg-slate-900 rounded-3xl overflow-hidden border border-slate-700">
-            <div class="p-8 bg-slate-800 border-b border-slate-700">
-                <h3 class="text-2xl font-bold text-center">Lealdade vs. Nomadismo</h3>
+    <section class="py-24 px-6 max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-black mb-2 uppercase">Consequências da Escolha</h2>
+            <p class="text-slate-500">A diferença entre quem constrói um legado e quem apenas passa pelo tatame.</p>
+        </div>
+        <div class="bg-slate-900 rounded-3xl overflow-hidden border border-slate-700 shadow-2xl">
+            <div class="p-8 bg-slate-800 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="text-2xl font-bold">Lealdade vs. Creontismo</h3>
+                <span class="text-red-500 font-black italic">OSS!</span>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
                     <thead>
                         <tr class="text-slate-500 text-sm uppercase">
-                            <th class="p-6">Fator</th>
-                            <th class="p-6">Ser Leal ao Time</th>
-                            <th class="p-6">Ser "Turista"</th>
+                            <th class="p-6">Fator Crítico</th>
+                            <th class="p-6 border-l border-slate-800">Caminho da Lealdade</th>
+                            <th class="p-6 border-l border-slate-800">O Creontismo</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-800">
                         <tr>
-                            <td class="p-6 font-bold">Aprendizado</td>
-                            <td class="p-6 text-green-400">Sequência lógica e clara</td>
-                            <td class="p-6 text-red-400">Confusão e "nó" na cabeça</td>
+                            <td class="p-6 font-bold text-slate-300 italic">Identidade</td>
+                            <td class="p-6 text-green-400 border-l border-slate-800">Respeitado por onde passa</td>
+                            <td class="p-6 text-red-400 border-l border-slate-800">Olhado com desconfiança</td>
                         </tr>
                         <tr>
-                            <td class="p-6 font-bold">Segurança</td>
-                            <td class="p-6 text-green-400">Treino entre amigos/irmãos</td>
-                            <td class="p-6 text-red-400">Risco alto de lesões graves</td>
+                            <td class="p-6 font-bold text-slate-300 italic">Curva de Aprendizado</td>
+                            <td class="p-6 text-green-400 border-l border-slate-800">Consistente e lógica</td>
+                            <td class="p-6 text-red-400 border-l border-slate-800">Remendada e confusa</td>
                         </tr>
                         <tr>
-                            <td class="p-6 font-bold">Ambiente</td>
-                            <td class="p-6 text-green-400">Pertencimento à família</td>
-                            <td class="p-6 text-red-400">Fama de "Creonte"</td>
+                            <td class="p-6 font-bold text-slate-300 italic">Integridade Física</td>
+                            <td class="p-6 text-green-400 border-l border-slate-800">Treino protegido e seguro</td>
+                            <td class="p-6 text-red-400 border-l border-slate-800">Exposição a riscos desnecessários</td>
                         </tr>
                         <tr>
-                            <td class="p-6 font-bold">Evolução</td>
-                            <td class="p-6 text-green-400">Foco total do Mestre em você</td>
-                            <td class="p-6 text-red-400">Evolução estagnada</td>
+                            <td class="p-6 font-bold text-slate-300 italic">Promoção de Faixa</td>
+                            <td class="p-6 text-green-400 border-l border-slate-800">Mérito reconhecido pelo Mestre</td>
+                            <td class="p-6 text-red-400 border-l border-slate-800">Vazio de história e raiz</td>
                         </tr>
                     </tbody>
                 </table>
@@ -154,30 +189,41 @@
     </section>
 
     <!-- Mestre Section -->
-    <section class="py-20 bg-red-600 text-white px-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl font-black mb-8 uppercase italic">Confie no Processo</h2>
-            <p class="text-xl mb-10 leading-relaxed">
-                "O Mestre Crystian Prazeres montou a metodologia da Peace & Combat baseada no que existe de melhor no mundo. Você não precisa buscar fórmulas mágicas fora. Tudo o que você precisa para virar uma máquina está aqui dentro."
+    <section class="py-24 bg-red-600 text-white px-6 relative overflow-hidden">
+        <div class="absolute top-0 right-0 opacity-10 text-[200px] font-black italic select-none">PEACE</div>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <h2 class="text-4xl md:text-5xl font-black mb-8 uppercase italic">Campeões na Vida e no Tatame</h2>
+            <p class="text-xl md:text-2xl mb-12 leading-relaxed font-medium">
+                "Não formamos apenas lutadores; formamos caráteres. A Peace & Combat é a casa dos que buscam a paz através da disciplina e a vitória através da resiliência."
             </p>
-            <div class="inline-block border-2 border-white p-4 rounded-lg">
-                <p class="font-bold text-2xl tracking-widest uppercase">OSS!</p>
+            <div class="inline-flex flex-col items-center">
+                <div class="h-16 w-1 text-white bg-white mb-4"></div>
+                <p class="font-bold text-3xl tracking-widest uppercase italic">Mestre Crystian Prazeres</p>
+                <p class="text-red-200 text-sm mt-2 uppercase tracking-tighter">Biguaçu - Santa Catarina</p>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 px-6 bg-slate-950 text-slate-500 text-center border-t border-slate-900">
-        <div class="mb-6">
-            <span class="text-white font-bold italic mr-4">PEACE & COMBAT</span>
-            <span>|</span>
-            <span class="ml-4">Jiu-Jitsu & Judô</span>
+    <footer class="py-16 px-6 bg-slate-950 text-slate-500 text-center border-t border-slate-900">
+        <div class="mb-10">
+            <span class="text-white font-black italic text-3xl tracking-tighter mr-4 uppercase">PEACE & COMBAT</span>
+            <div class="flex justify-center items-center mt-4 space-x-4 text-xs font-bold uppercase tracking-widest">
+                <span>Jiu-Jitsu</span>
+                <span class="text-red-600 text-lg">•</span>
+                <span>Judô</span>
+                <span class="text-red-600 text-lg">•</span>
+                <span>Defesa Pessoal</span>
+            </div>
         </div>
-        <p class="text-sm">© 2026 Peace & Combat. Honre seu brasão. Treine com lealdade.</p>
-        <div class="mt-4 space-x-4">
-            <a href="https://www.instagram.com/peace_combat/" target="_blank" class="hover:text-red-500"><i class="fab fa-instagram text-xl"></i></a>
-            <a href="#" class="hover:text-red-500"><i class="fas fa-map-marker-alt text-xl"></i></a>
+        <p class="max-w-md mx-auto text-sm mb-8">
+            A academia mais tradicional de Biguaçu. Resgatando valores, forjando guerreiros e honrando a arte suave.
+        </p>
+        <div class="flex justify-center space-x-6">
+            <a href="https://www.instagram.com/peace_combat/" target="_blank" class="w-12 h-12 flex items-center justify-center bg-slate-900 rounded-full hover:text-red-500 transition border border-slate-800"><i class="fab fa-instagram text-xl"></i></a>
+            <a href="#" class="w-12 h-12 flex items-center justify-center bg-slate-900 rounded-full hover:text-red-500 transition border border-slate-800"><i class="fas fa-map-marker-alt text-xl"></i></a>
         </div>
+        <p class="mt-12 text-[10px] uppercase tracking-widest opacity-30">© 2026 Peace & Combat. Honre seu Brasão.</p>
     </footer>
 
 </body>
