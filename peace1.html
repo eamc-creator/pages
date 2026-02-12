@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lealdade no Tatame - Peace & Combat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1555597673-b21d5c935865?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            border-color: #ef4444;
+            transition: all 0.3s ease;
+        }
+
+        .martial-border {
+            border-left: 4px solid #ef4444;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header / Nav -->
+    <nav class="p-6 flex justify-between items-center bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="flex items-center space-x-2">
+            <span class="text-2xl font-black tracking-tighter text-red-600 italic">PEACE & COMBAT</span>
+        </div>
+        <div>
+            <a href="https://www.instagram.com/peace_combat/" target="_blank" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full text-sm font-bold transition">
+                <i class="fab fa-instagram mr-2"></i>Seguir o Time
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-gradient min-h-[60vh] flex items-center justify-center text-center p-6">
+        <div class="max-w-4xl">
+            <span class="text-red-500 font-bold tracking-widest uppercase mb-4 block">Cultura de Tatame</span>
+            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">VESTIR A CAMISA É <span class="text-red-600">EVOLUIR</span> MAIS RÁPIDO</h1>
+            <p class="text-xl text-slate-300 max-w-2xl mx-auto mb-8 leading-relaxed">
+                Na Peace & Combat, a lealdade não é apenas uma palavra; é o alicerce que protege sua integridade e acelera seu aprendizado.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#artigo" class="bg-white text-slate-900 px-8 py-3 rounded-lg font-bold hover:bg-slate-200 transition">Ler o Artigo</a>
+                <a href="#pilares" class="border border-slate-500 px-8 py-3 rounded-lg font-bold hover:bg-white hover:text-slate-900 transition">Os 4 Pilares</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Intro Text -->
+    <section id="artigo" class="py-20 px-6 max-w-4xl mx-auto">
+        <div class="martial-border pl-6">
+            <h2 class="text-3xl font-bold mb-6">Papo Reto: Por que a Lealdade importa?</h2>
+            <p class="text-lg text-slate-400 mb-4 leading-relaxed">
+                Artes marciais são esportes de confiança. Você entrega seu braço, seu pescoço e sua integridade física na mão do seu parceiro de treino. Muita gente confunde pagar mensalidade com um serviço de streaming como a Netflix, mas aqui o laço é de família.
+            </p>
+            <p class="text-lg text-slate-400 leading-relaxed">
+                Ficar pulando de academia em academia — o famoso "turista de tatame" — atrasa sua evolução, confunde sua técnica e pode até te machucar.
+            </p>
+        </div>
+    </section>
+
+    <!-- The Pillars (Cards) -->
+    <section id="pilares" class="py-20 bg-slate-800/50 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black mb-4">A ESTRUTURA DA FIDELIDADE</h2>
+                <div class="h-1 w-20 bg-red-600 mx-auto"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Pillar 1 -->
+                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 card-hover">
+                    <div class="text-red-500 text-3xl mb-4"><i class="fas fa-scroll"></i></div>
+                    <h3 class="text-xl font-bold mb-3">História e Raiz</h3>
+                    <p class="text-slate-400 text-sm">Do Judô aos Samurais: o conceito de <i>Hamon</i> (expulsão) protegia os segredos do clã. Respeitamos essa tradição.</p>
+                </div>
+                <!-- Pillar 2 -->
+                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 card-hover">
+                    <div class="text-red-500 text-3xl mb-4"><i class="fas fa-user-shield"></i></div>
+                    <h3 class="text-xl font-bold mb-3">Estratégia e Alma</h3>
+                    <p class="text-slate-400 text-sm">O "Camp" é sagrado. Treinar em vários lugares pode expor fraquezas dos seus parceiros de equipe.</p>
+                </div>
+                <!-- Pillar 3 -->
+                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 card-hover">
+                    <div class="text-red-500 text-3xl mb-4"><i class="fas fa-brain"></i></div>
+                    <h3 class="text-xl font-bold mb-3">Foco Técnico</h3>
+                    <p class="text-slate-400 text-sm">Misturar métodos sem base sólida cria confusão. Siga o sistema do Mestre para não virar um "pato".</p>
+                </div>
+                <!-- Pillar 4 -->
+                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 card-hover">
+                    <div class="text-red-500 text-3xl mb-4"><i class="fas fa-heartbeat"></i></div>
+                    <h3 class="text-xl font-bold mb-3">Sua Segurança</h3>
+                    <p class="text-slate-400 text-sm">Seu Mestre conhece suas lesões e limites. Fora de casa, você é apenas um visitante testado ao extremo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="py-20 px-6 max-w-5xl mx-auto">
+        <div class="bg-slate-900 rounded-3xl overflow-hidden border border-slate-700">
+            <div class="p-8 bg-slate-800 border-b border-slate-700">
+                <h3 class="text-2xl font-bold text-center">Lealdade vs. Nomadismo</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-slate-500 text-sm uppercase">
+                            <th class="p-6">Fator</th>
+                            <th class="p-6">Ser Leal ao Time</th>
+                            <th class="p-6">Ser "Turista"</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr>
+                            <td class="p-6 font-bold">Aprendizado</td>
+                            <td class="p-6 text-green-400">Sequência lógica e clara</td>
+                            <td class="p-6 text-red-400">Confusão e "nó" na cabeça</td>
+                        </tr>
+                        <tr>
+                            <td class="p-6 font-bold">Segurança</td>
+                            <td class="p-6 text-green-400">Treino entre amigos/irmãos</td>
+                            <td class="p-6 text-red-400">Risco alto de lesões graves</td>
+                        </tr>
+                        <tr>
+                            <td class="p-6 font-bold">Ambiente</td>
+                            <td class="p-6 text-green-400">Pertencimento à família</td>
+                            <td class="p-6 text-red-400">Fama de "Creonte"</td>
+                        </tr>
+                        <tr>
+                            <td class="p-6 font-bold">Evolução</td>
+                            <td class="p-6 text-green-400">Foco total do Mestre em você</td>
+                            <td class="p-6 text-red-400">Evolução estagnada</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mestre Section -->
+    <section class="py-20 bg-red-600 text-white px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl font-black mb-8 uppercase italic">Confie no Processo</h2>
+            <p class="text-xl mb-10 leading-relaxed">
+                "O Mestre Crystian Prazeres montou a metodologia da Peace & Combat baseada no que existe de melhor no mundo. Você não precisa buscar fórmulas mágicas fora. Tudo o que você precisa para virar uma máquina está aqui dentro."
+            </p>
+            <div class="inline-block border-2 border-white p-4 rounded-lg">
+                <p class="font-bold text-2xl tracking-widest uppercase">OSS!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 bg-slate-950 text-slate-500 text-center border-t border-slate-900">
+        <div class="mb-6">
+            <span class="text-white font-bold italic mr-4">PEACE & COMBAT</span>
+            <span>|</span>
+            <span class="ml-4">Jiu-Jitsu & Judô</span>
+        </div>
+        <p class="text-sm">© 2026 Peace & Combat. Honre seu brasão. Treine com lealdade.</p>
+        <div class="mt-4 space-x-4">
+            <a href="https://www.instagram.com/peace_combat/" target="_blank" class="hover:text-red-500"><i class="fab fa-instagram text-xl"></i></a>
+            <a href="#" class="hover:text-red-500"><i class="fas fa-map-marker-alt text-xl"></i></a>
+        </div>
+    </footer>
+
+</body>
+</html>
