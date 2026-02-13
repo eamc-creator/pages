@@ -1,36 +1,455 @@
-<div style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; border-radius: 10px; border: 1px solid #ddd;">
-  <h3 style="text-align: center; color: #333;">Dashboard Eleitoral 2026 (Projeção Fev)</h3>
-  
-  <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
-    <div style="flex: 1; min-width: 250px; margin: 10px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-      <h4 style="border-bottom: 2px solid #0056b3; padding-bottom: 5px;">Probabilidade de Vitória (%)</h4>
-      <div style="margin: 10px 0;">
-        <span>Flávio Bolsonaro: 38%</span>
-        <div style="background: #e0e0e0; border-radius: 5px; height: 12px;"><div style="background: #28a745; width: 38%; height: 100%; border-radius: 5px;"></div></div>
-      </div>
-      <div style="margin: 10px 0;">
-        <span>Lula: 35%</span>
-        <div style="background: #e0e0e0; border-radius: 5px; height: 12px;"><div style="background: #dc3545; width: 35%; height: 100%; border-radius: 5px;"></div></div>
-      </div>
-      <div style="margin: 10px 0;">
-        <span>Tarcísio de Freitas: 12%</span>
-        <div style="background: #e0e0e0; border-radius: 5px; height: 12px;"><div style="background: #007bff; width: 12%; height: 100%; border-radius: 5px;"></div></div>
-      </div>
-      <div style="margin: 10px 0;">
-        <span>Outros: 15%</span>
-        <div style="background: #e0e0e0; border-radius: 5px; height: 12px;"><div style="background: #6c757d; width: 15%; height: 100%; border-radius: 5px;"></div></div>
-      </div>
-    </div>
+import React, { useState } from 'react';
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
+  PieChart, Pie, Cell, LineChart, Line, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar 
+} from 'recharts';
+import { 
+  TrendingUp, Users, AlertTriangle, FileText, Activity, 
+  Globe, ShieldAlert, ArrowRight, Menu, X, ChevronRight, Brain
+} from 'lucide-react';
 
-    <div style="flex: 1; min-width: 250px; margin: 10px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-      <h4 style="border-bottom: 2px solid #0056b3; padding-bottom: 5px;">Momentum Digital (Variação Jan-Fev)</h4>
-      <ul style="list-style: none; padding: 0;">
-        <li style="padding: 5px 0; color: #28a745;">▲ <strong>Flávio B.:</strong> Alto (+4.2%)</li>
-        <li style="padding: 5px 0; color: #28a745;">▲ <strong>Renan S.:</strong> Médio (+2.1%)</li>
-        <li style="padding: 5px 0; color: #dc3545;">▼ <strong>Lula:</strong> Baixo (-1.5%)</li>
-        <li style="padding: 5px 0; color: #6c757d;">━ <strong>Tarcísio:</strong> Estável (0.0%)</li>
-      </ul>
-      <p style="font-size: 0.8em; color: #666;">Baseado em interações no Instagram/YouTube.[26, 27]</p>
+// --- CORES & TEMA ---
+const COLORS = {
+  pt: '#c4122d',
+  pl: '#1f3a93',
+  tarcisio: '#2c3e50',
+  psd: '#f39c12',
+  novo: '#f16522',
+  missao: '#000000',
+  neutral: '#95a5a6',
+  background: '#0f172a',
+  card: '#1e293b',
+  text: '#f1f5f9',
+  textMuted: '#94a3b8'
+};
+
+// --- DADOS (Extraídos do Relatório) ---
+
+const dataFirstRound = [
+  { name: 'Lula (PT)', votos: 42.5, fill: COLORS.pt, label: '42.5%' },
+  { name: 'Flávio (PL)', votos: 35.2, fill: COLORS.pl, label: '35.2%' },
+  { name: 'Ratinho Jr (PSD)', votos: 7.1, fill: COLORS.psd, label: '7.1%' },
+  { name: 'Caiado (PSD)', votos: 5.3, fill: COLORS.psd, label: '5.3%' },
+  { name: 'Zema (Novo)', votos: 4.4, fill: COLORS.novo, label: '4.4%' },
+  { name: 'Leite (PSD)', votos: 3.6, fill: COLORS.psd, label: '3.6%' },
+  { name: 'R. Santos (Missão)', votos: 1.9, fill: COLORS.missao, label: '1.9%' },
+];
+
+const dataRejection = [
+  { name: 'Lula (PT)', value: 51.6, fill: COLORS.pt },
+  { name: 'Flávio (PL)', value: 48.4, fill: COLORS.pl },
+  { name: 'Tarcísio (REP)', value: 41.1, fill: COLORS.tarcisio },
+  { name: 'Ratinho Jr', value: 40.0, fill: COLORS.psd },
+  { name: 'Caiado', value: 35.0, fill: COLORS.psd },
+  { name: 'Zema', value: 34.0, fill: COLORS.novo },
+];
+
+const scenarioLulaFlavio = [
+  { name: 'Lula (PT)', value: 51.2, fill: COLORS.pt },
+  { name: 'Flávio (PL)', value: 48.8, fill: COLORS.pl },
+];
+
+const scenarioLulaTarcisio = [
+  { name: 'Lula (PT)', value: 48.2, fill: COLORS.pt },
+  { name: 'Tarcísio (REP)', value: 51.8, fill: COLORS.tarcisio },
+];
+
+const dataDigitalPresence = [
+  { subject: 'Instagram', A: 90, B: 65, fullMark: 100 },
+  { subject: 'TikTok', A: 98, B: 40, fullMark: 100 },
+  { subject: 'YouTube', A: 30, B: 95, fullMark: 100 },
+  { subject: 'X (Twitter)', A: 45, B: 88, fullMark: 100 },
+  { subject: 'Engajamento', A: 40, B: 92, fullMark: 100 },
+  { subject: 'Sentimento +', A: 35, B: 70, fullMark: 100 },
+];
+// A = Lula/Esquerda, B = Bolsonarismo/Direita
+
+// --- COMPONENTES ---
+
+const Card = ({ title, value, subtext, icon: Icon, trend }) => (
+  <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+    <div className="flex justify-between items-start mb-4">
+      <div>
+        <p className="text-slate-400 text-sm uppercase tracking-wider font-semibold">{title}</p>
+        <h3 className="text-3xl font-bold text-white mt-1">{value}</h3>
+      </div>
+      <div className={`p-3 rounded-lg ${trend === 'negative' ? 'bg-red-500/10 text-red-400' : 'bg-blue-500/10 text-blue-400'}`}>
+        <Icon size={24} />
+      </div>
     </div>
+    <p className="text-slate-400 text-sm flex items-center gap-2">
+      {trend === 'negative' ? <TrendingUp className="text-red-400 w-4 h-4 rotate-180" /> : <Activity className="text-blue-400 w-4 h-4" />}
+      {subtext}
+    </p>
   </div>
-</div>
+);
+
+const SectionTitle = ({ title, subtitle }) => (
+  <div className="mb-8">
+    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+      <div className="w-1 h-8 bg-blue-500 rounded-full mr-2"></div>
+      {title}
+    </h2>
+    {subtitle && <p className="text-slate-400 mt-1 ml-4">{subtitle}</p>}
+  </div>
+);
+
+const BlogPost = ({ title, content, citation }) => (
+  <div className="mb-12 border-l-4 border-blue-500 pl-6 py-2">
+    <h3 className="text-xl font-bold text-white mb-4">{title}</h3>
+    <div className="text-slate-300 leading-relaxed text-lg space-y-4 text-justify">
+      {content}
+    </div>
+    {citation && (
+      <div className="mt-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+        <p className="text-sm text-slate-400 italic">
+          <span className="font-bold text-blue-400">Fonte/Dado:</span> {citation}
+        </p>
+      </div>
+    )}
+  </div>
+);
+
+// --- APP PRINCIPAL ---
+
+export default function ElectionDashboard() {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [scenario, setScenario] = useState('flavio'); // 'flavio' or 'tarcisio'
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+
+  const renderDashboard = () => (
+    <div className="space-y-8 animate-fade-in">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card 
+          title="Projeção PIB 2026" 
+          value="1.8%" 
+          subtext="Desaceleração prevista (IPEA/ONU)" 
+          icon={TrendingUp} 
+          trend="negative"
+        />
+        <Card 
+          title="Rejeição Incumbente" 
+          value="51.6%" 
+          subtext="Lula (Média Consolidada)" 
+          icon={ShieldAlert} 
+          trend="negative"
+        />
+        <Card 
+          title="Liderança 1º Turno" 
+          value="42.5%" 
+          subtext="Lula (Vantagem Inercial)" 
+          icon={Users} 
+          trend="positive"
+        />
+        <Card 
+          title="Cenário Crítico" 
+          value="Tarcísio" 
+          subtext="Maior ameaça no 2º Turno" 
+          icon={AlertTriangle} 
+          trend="neutral"
+        />
+      </div>
+
+      {/* Main Charts Area */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* 1st Round Chart */}
+        <div className="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+          <h3 className="text-lg font-bold text-white mb-6">Projeção de Votos Válidos - 1º Turno</h3>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={dataFirstRound} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" horizontal={false} />
+                <XAxis type="number" stroke="#94a3b8" />
+                <YAxis dataKey="name" type="category" width={100} stroke="#f1f5f9" tick={{fontSize: 12}} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#f1f5f9' }}
+                  itemStyle={{ color: '#fff' }}
+                  cursor={{fill: 'transparent'}}
+                />
+                <Bar dataKey="votos" radius={[0, 4, 4, 0]}>
+                  {dataFirstRound.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <p className="text-xs text-slate-500 mt-4 text-center">Fonte: Agregação AtlasIntel, Quaest, Futura/Apex (Modelagem Probabilística)</p>
+        </div>
+
+        {/* Digital Radar */}
+        <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+          <h3 className="text-lg font-bold text-white mb-2">Batalha Digital</h3>
+          <p className="text-xs text-slate-400 mb-6">Governo (A) vs. Oposição (B)</p>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart outerRadius={90} data={dataDigitalPresence}>
+                <PolarGrid stroke="#334155" />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                <Radar name="Lula/Gov" dataKey="A" stroke={COLORS.pt} fill={COLORS.pt} fillOpacity={0.3} />
+                <Radar name="Direita/Oposição" dataKey="B" stroke={COLORS.pl} fill={COLORS.pl} fillOpacity={0.3} />
+                <Legend wrapperStyle={{ fontSize: '12px', marginTop: '10px' }} />
+                <Tooltip contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155' }} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
+      {/* Second Round Simulator */}
+      <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-xl p-8 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-4 opacity-10">
+            <Brain size={120} />
+        </div>
+        
+        <SectionTitle title="Simulador de 2º Turno" subtitle="Selecione o adversário para projetar o resultado final." />
+        
+        <div className="flex flex-col md:flex-row gap-8 items-center">
+          <div className="w-full md:w-1/3 space-y-4 z-10">
+            <button 
+              onClick={() => setScenario('flavio')}
+              className={`w-full p-4 rounded-lg border flex items-center justify-between transition-all ${
+                scenario === 'flavio' 
+                ? 'bg-blue-600 border-blue-500 text-white shadow-lg scale-105' 
+                : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'
+              }`}
+            >
+              <div className="text-left">
+                <span className="text-xs uppercase tracking-wider block opacity-70">Cenário Padrão</span>
+                <span className="font-bold text-lg">Lula vs. Flávio</span>
+              </div>
+              {scenario === 'flavio' && <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>}
+            </button>
+
+            <button 
+              onClick={() => setScenario('tarcisio')}
+              className={`w-full p-4 rounded-lg border flex items-center justify-between transition-all ${
+                scenario === 'tarcisio' 
+                ? 'bg-blue-600 border-blue-500 text-white shadow-lg scale-105' 
+                : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'
+              }`}
+            >
+              <div className="text-left">
+                <span className="text-xs uppercase tracking-wider block opacity-70">Cenário Crítico</span>
+                <span className="font-bold text-lg">Lula vs. Tarcísio</span>
+              </div>
+              {scenario === 'tarcisio' && <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>}
+            </button>
+          </div>
+
+          <div className="w-full md:w-2/3 flex flex-col items-center justify-center bg-slate-800/50 rounded-xl p-6 backdrop-blur-sm z-10">
+            <h4 className="text-xl font-bold text-white mb-6">
+              {scenario === 'flavio' ? 'Disputa Acirrada (Margem de Erro)' : 'Vantagem da Oposição (Checkmate)'}
+            </h4>
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={scenario === 'flavio' ? scenarioLulaFlavio : scenarioLulaTarcisio}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={5}
+                    dataKey="value"
+                    startAngle={180}
+                    endAngle={0}
+                  >
+                    {(scenario === 'flavio' ? scenarioLulaFlavio : scenarioLulaTarcisio).map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} stroke="none" />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', borderRadius: '8px' }} />
+                  <Legend verticalAlign="bottom" height={36} iconType="circle"/>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex justify-between w-full px-12 mt-[-40px]">
+                <div className="text-center">
+                    <p className="text-3xl font-bold text-white">
+                        {scenario === 'flavio' ? '51.2%' : '48.2%'}
+                    </p>
+                    <p className="text-sm text-red-400 font-semibold">Lula (PT)</p>
+                </div>
+                <div className="text-center">
+                    <p className="text-3xl font-bold text-white">
+                        {scenario === 'flavio' ? '48.8%' : '51.8%'}
+                    </p>
+                    <p className={`text-sm font-semibold ${scenario === 'flavio' ? 'text-blue-400' : 'text-slate-300'}`}>
+                        {scenario === 'flavio' ? 'Flávio (PL)' : 'Tarcísio (REP)'}
+                    </p>
+                </div>
+            </div>
+            <p className="mt-8 text-sm text-slate-400 text-center max-w-md">
+                {scenario === 'flavio' 
+                 ? "A alta rejeição de Flávio (48.4%) impede a virada completa, mantendo a esquerda no jogo pelo 'voto de aversão'." 
+                 : "Tarcísio herda o voto bolsonarista e captura o centro devido à rejeição menor (41.1%), superando o teto de Lula."}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderAnalysis = () => (
+    <div className="max-w-4xl mx-auto animate-fade-in pb-20">
+      <div className="text-center mb-16">
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">O Cenário Presidencial 2026</h1>
+        <p className="text-xl text-slate-400">Relatório Analítico de Projeção Eleitoral</p>
+        <div className="flex justify-center gap-4 mt-6">
+           <span className="px-3 py-1 rounded-full bg-blue-900/30 text-blue-400 text-xs font-bold border border-blue-800">GEOPOLÍTICA</span>
+           <span className="px-3 py-1 rounded-full bg-green-900/30 text-green-400 text-xs font-bold border border-green-800">ECONOMIA</span>
+           <span className="px-3 py-1 rounded-full bg-purple-900/30 text-purple-400 text-xs font-bold border border-purple-800">INTELIGÊNCIA</span>
+        </div>
+      </div>
+
+      <div className="bg-slate-800/50 p-8 rounded-2xl border border-slate-700 backdrop-blur-sm mb-12">
+        <h4 className="text-blue-400 font-bold mb-4 flex items-center gap-2"><Globe size={18}/> Doutrina de Choque Geopolítico</h4>
+        <p className="text-slate-300 leading-relaxed italic border-l-2 border-slate-600 pl-4">
+          "A análise do cenário eleitoral brasileiro para 2026 é indissociável das drásticas e recentes transformações na geopolítica continental, capitaneadas pelo retorno de Donald Trump à presidência dos Estados Unidos."
+        </p>
+      </div>
+
+      <BlogPost 
+        title="1. A Fragilidade do Incumbente"
+        content={
+          <>
+            <p>O atual presidente Lula ingressa neste ciclo defendendo a posição de incumbente, mas as bases estruturais desta vantagem encontram-se severamente tensionadas. O ambiente político que circunda o Planalto é caracterizado por índices de desaprovação que superam os de aprovação.</p>
+            <br/>
+            <p>A probabilidade de reeleição apresenta forte correlação com o PIB. Para 2026, projeções indicam um crescimento anêmico de <strong>1,8% (IPEA)</strong>, insuficiente para gerar sensação de prosperidade.</p>
+          </>
+        }
+        citation="Rejeição à candidatura de Lula atinge 62% (Quaest, 2025)."
+      />
+
+      <div className="my-12">
+         <h3 className="text-xl font-bold text-white mb-6">Teto de Vidro: Comparativo de Rejeição</h3>
+         <div className="h-64 bg-slate-900 rounded-xl p-4 border border-slate-800">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={dataRejection} layout="vertical" margin={{left: 40}}>
+                 <XAxis type="number" hide />
+                 <YAxis dataKey="name" type="category" stroke="#94a3b8" width={100} tick={{fontSize: 12}} />
+                 <Tooltip cursor={{fill: 'transparent'}} contentStyle={{backgroundColor: '#0f172a', borderColor: '#334155'}} />
+                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={20}>
+                    {dataRejection.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                 </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+         </div>
+         <p className="text-xs text-slate-500 mt-2 text-center">Fator determinante para derrota no 2º turno.</p>
+      </div>
+
+      <BlogPost 
+        title="2. A Ascensão da Direita Pós-Bolsonaro"
+        content={
+          <>
+            <p>A direita brasileira passa por uma reconfiguração acelerada. Flávio Bolsonaro consolidou-se como o herdeiro natural, unificando o voto conservador e atingindo até <strong>35% no primeiro turno</strong>. Sua campanha foca na segurança pública (Modelo Bukele) e liberdade econômica.</p>
+            <br/>
+            <p>Entretanto, a "Sombra Tática" é Tarcísio de Freitas. Com melhor imagem junto ao mercado e rejeição menor, ele captura o eleitorado moderado que rejeita o radicalismo, sendo o único capaz de vencer Lula com margem segura nas simulações atuais.</p>
+          </>
+        }
+        citation="Tarcísio atinge 51,8% dos votos válidos em simulação de 2º turno contra Lula."
+      />
+
+      <BlogPost 
+        title="3. O Fator Geração Z e o Novo Conservadorismo"
+        content={
+          <>
+            <p>Há uma ruptura geracional em curso. A Geração Z, especialmente masculina, rejeita o discurso progressista tradicional ("woke") e demanda ordem e prosperidade material.</p>
+            <br/>
+            <p>Candidatos como Renan Santos (Missão) exploram esse nicho com retórica agressiva e propostas radicais de segurança (Direito Penal do Inimigo), atingindo quase <strong>19% de intenção de voto exclusivamente neste segmento</strong>, embora tenham pouca expressão nacional.</p>
+          </>
+        }
+      />
+    </div>
+  );
+
+  return (
+    <div className="flex min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-500/30">
+      
+      {/* Sidebar Navigation */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static`}>
+        <div className="h-full flex flex-col">
+          <div className="p-6 border-b border-slate-800 flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                <Activity size={20} className="text-white" />
+            </div>
+            <div>
+                <h1 className="font-bold text-white tracking-tight">POLÍTICA<span className="text-blue-500">2026</span></h1>
+                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Analytics Dashboard</p>
+            </div>
+          </div>
+
+          <nav className="flex-1 p-4 space-y-2">
+            <button 
+                onClick={() => { setActiveTab('dashboard'); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${activeTab === 'dashboard' ? 'bg-blue-600/10 text-blue-400 border border-blue-600/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+            >
+                <Activity size={18} />
+                Sala de Situação
+            </button>
+            <button 
+                onClick={() => { setActiveTab('analysis'); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${activeTab === 'analysis' ? 'bg-blue-600/10 text-blue-400 border border-blue-600/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+            >
+                <FileText size={18} />
+                Relatório de Inteligência
+            </button>
+            
+            <div className="pt-8 px-4">
+                <p className="text-xs font-bold text-slate-600 uppercase tracking-widest mb-4">Fontes de Dados</p>
+                <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <div className="w-2 h-2 rounded-full bg-green-500"></div> AtlasIntel (RDR)
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <div className="w-2 h-2 rounded-full bg-blue-500"></div> Genial/Quaest
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <div className="w-2 h-2 rounded-full bg-orange-500"></div> Futura/Apex
+                    </div>
+                </div>
+            </div>
+          </nav>
+
+          <div className="p-4 border-t border-slate-800">
+            <div className="bg-slate-800 rounded-lg p-4">
+                <p className="text-xs text-slate-400 mb-2">Confiabilidade do Modelo</p>
+                <div className="w-full bg-slate-700 h-1.5 rounded-full mb-1">
+                    <div className="bg-blue-500 h-1.5 rounded-full w-[85%]"></div>
+                </div>
+                <p className="text-right text-xs text-blue-400 font-bold">Alta (85%)</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto h-screen relative">
+        {/* Mobile Header */}
+        <div className="md:hidden flex items-center justify-between p-4 bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
+           <div className="font-bold text-white">POLÍTICA<span className="text-blue-500">2026</span></div>
+           <button onClick={toggleSidebar} className="text-slate-400">
+             {isSidebarOpen ? <X size={24}/> : <Menu size={24}/>}
+           </button>
+        </div>
+
+        <div className="p-6 md:p-12 max-w-7xl mx-auto">
+          {activeTab === 'dashboard' ? renderDashboard() : renderAnalysis()}
+        </div>
+        
+        {/* Footer */}
+        <footer className="border-t border-slate-800 p-8 text-center text-slate-500 text-sm">
+            <p>Painel gerado com base no "Relatório Analítico de Projeção Eleitoral 2026".</p>
+            <p className="mt-2 text-xs">Atualizado em 13 Fev 2026 • Florianópolis, SC</p>
+        </footer>
+      </main>
+    </div>
+  );
+}
