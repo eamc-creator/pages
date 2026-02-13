@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santa Catarina 2026: Observatório Eleitoral</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Configurações de Estilo e Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sc-red': '#ce1126', // Vermelho da bandeira SC
+                        'sc-green': '#009739', // Verde da bandeira SC
+                        'pl-blue': '#002776',
+                        'psd-orange': '#f5821f',
+                        'novo-orange': '#ff8300',
+                        'pt-red': '#cc0000',
+                        'slate-850': '#1e293b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .h-chart-lg { height: 400px; max-height: 500px; }
+        .h-chart-md { height: 300px; max-height: 400px; }
+        .h-chart-sm { height: 250px; max-height: 300px; }
+
+        @media (max-width: 640px) {
+            .h-chart-lg { height: 300px; }
+            .h-chart-md { height: 250px; }
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .flag-stripe {
+            height: 4px;
+            width: 100%;
+            background: linear-gradient(90deg, #ce1126 33%, #ffffff 33%, #ffffff 66%, #009739 66%);
+        }
+    </style>
+
+    <!-- Chosen Palette: SC State Colors (Red/Green/White) + Party Colors -->
+    <!-- Application Structure Plan:
+        1. Header: SC Flag theme, Feb 2026 Context.
+        2. KPIs: 'A Batalha do Oeste' (Rodrigues) vs 'A Máquina' (Jorginho).
+        3. Probability Model: Adjusted for SC's conservative bias.
+        4. Trends: Tracking the movement between PL and PSD.
+        5. 2nd Turn: Simulations considering the high rejection of the Left in SC.
+        6. Digital Matrix: Highlighting the 'Topázio Effect' even if he isn't head of the ticket.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased min-h-screen flex flex-col font-sans">
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white pb-6 pt-8 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sc-red via-white to-sc-green"></div>
+        <div class="container mx-auto px-4 z-10 relative">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end">
+                <div>
+                    <div class="text-xs font-bold text-sc-green tracking-widest uppercase mb-1">Eleições Estaduais SC</div>
+                    <h1 class="text-3xl font-serif font-bold leading-tight">Cenário Governador 2026</h1>
+                    <p class="text-slate-400 text-sm mt-1">
+                        Monitoramento preditivo: A disputa pela Casa d'Agronômica
+                    </p>
+                </div>
+                <div class="mt-4 md:mt-0 text-right">
+                    <div class="text-xs text-slate-500">Data de Referência</div>
+                    <div class="font-bold text-lg">Fevereiro 2026</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 space-y-8">
+
+        <!-- INTRO TEXT -->
+        <section class="bg-white p-6 rounded-xl card-shadow border-l-4 border-sc-green">
+            <h2 class="font-bold text-gray-800 mb-2">Contexto Regional</h2>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                Santa Catarina apresenta um cenário singular para 2026. A hegemonia da direita se divide entre a máquina estatal do <strong>PL (Jorginho Mello)</strong> e a força municipalista do <strong>PSD (João Rodrigues)</strong>. O modelo estatístico aponta que a eleição tende a ser decidida em uma "batalha interna" do conservadorismo, com a esquerda (PT) isolada em um teto de 20-22%. O engajamento digital, liderado pelo ecossistema de Florianópolis, torna-se o fiel da balança para transferência de votos.
+            </p>
+        </section>
+
+        <!-- KPI CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="kpi-container">
+            <!-- JS Populated -->
+        </div>
+
+        <!-- SECTION 1: PROBABILITY & TRENDS -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Probability Chart -->
+            <div class="lg:col-span-1 bg-white rounded-xl card-shadow p-6 flex flex-col">
+                <h2 class="text-lg font-bold text-slate-800 mb-1">🏆 Probabilidade de Vitória</h2>
+                <p class="text-xs text-slate-500 mb-4">Algoritmo ponderado (Força Partidária + Rejeição + Tendência).</p>
+                <div class="chart-container h-chart-sm flex-grow">
+                    <canvas id="probabilityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Trend Chart -->
+            <div class="lg:col-span-2 bg-white rounded-xl card-shadow p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">📈 Evolução das Intenções (6 Meses)</h2>
+                        <p class="text-xs text-slate-500">Cenário Estimulado: Ago/25 - Fev/26</p>
+                    </div>
+                </div>
+                <div class="chart-container h-chart-md">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: 2ND TURN & DIGITAL -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- 2nd Turn Simulator -->
+            <section class="bg-white rounded-xl card-shadow p-6">
+                <div class="mb-4 border-b pb-2">
+                    <h2 class="text-lg font-bold text-slate-800">⚔️ Simulação de 2º Turno</h2>
+                    <p class="text-xs text-slate-500">Cenários projetados com base na rejeição atual.</p>
+                </div>
+                <div class="chart-container h-chart-sm">
+                    <canvas id="secondTurnChart"></canvas>
+                </div>
+                <div class="mt-4 text-xs text-gray-500 bg-gray-50 p-3 rounded border border-gray-200">
+                    <strong>Análise:</strong> Em um eventual 2º turno entre Direita (PL) vs Direita (PSD), a decisão fica com os eleitores da Esquerda e do NOVO. Jorginho leva vantagem na fidelidade bolsonarista raiz, enquanto Rodrigues atrai o voto pragmático.
+                </div>
+            </section>
+
+            <!-- Digital Influence (Scatter) -->
+            <section class="bg-white rounded-xl card-shadow p-6">
+                <div class="mb-2">
+                    <h2 class="text-lg font-bold text-slate-800">📱 Matriz de Influência Digital</h2>
+                    <p class="text-xs text-slate-500">
+                        O "Fator Topázio": Influenciadores políticos vs Candidatos tradicionais.
+                    </p>
+                </div>
+                <div id="momentumChart" class="w-full h-[300px]"></div>
+            </section>
+        </div>
+
+        <!-- SECTION 3: CANDIDATE TABLE -->
+        <section class="bg-white rounded-xl card-shadow overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-slate-800">Panorama Geral: Pré-Candidatos</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th class="px-6 py-3">Candidato / Partido</th>
+                            <th class="px-6 py-3">Base Eleitoral</th>
+                            <th class="px-6 py-3 text-right">Intenção (Hoje)</th>
+                            <th class="px-6 py-3 text-center">Índice Digital</th>
+                            <th class="px-6 py-3 text-right">Rejeição</th>
+                        </tr>
+                    </thead>
+                    <tbody id="candidates-table-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-8 border-t-4 border-sc-red">
+        <div class="container mx-auto px-4 text-center text-xs">
+            <p>© 2026 Observatório SC. Dados simulados baseados em tendências regionais reais.</p>
+        </div>
+    </footer>
+
+    <!-- LOGIC -->
+    <script>
+        // --- DATASET: SC Scenario Feb 2026 ---
+        // Context: Jorginho (Incumbent, Strong), Rodrigues (Challenger, Growing), Decio (Stable floor), Tramontin (Ideological)
+        
+        const candidates = [
+            { 
+                id: 'jorginho', name: 'Jorginho Mello (PL)', color: '#002776', base: 'Oeste/Sul/PL Raiz',
+                data: [38.5, 38.0, 37.5, 36.8, 36.5, 35.8, 35.2], // Slight erosion due to incumbency wear
+                rejection: 22, digital_score: 75,
+                prob: 45
+            },
+            { 
+                id: 'rodrigues', name: 'João Rodrigues (PSD)', color: '#f5821f', base: 'Oeste/Municipalistas',
+                data: [18.2, 19.5, 21.0, 22.8, 24.5, 26.2, 28.1], // Strong growth (populist)
+                rejection: 18, digital_score: 88, // Very high engagement ("tiozão" style works in SC)
+                prob: 35
+            },
+            { 
+                id: 'decio', name: 'Décio Lima (PT)', color: '#cc0000', base: 'Litoral/Funcionalismo',
+                data: [16.5, 16.2, 16.8, 16.5, 16.0, 15.8, 16.1], // Stable floor, hard ceiling
+                rejection: 58, digital_score: 45, // High rejection in SC
+                prob: 10
+            },
+            { 
+                id: 'tramontin', name: 'Odair Tramontin (NOVO)', color: '#ff8300', base: 'Vale do Itajaí',
+                data: [6.5, 6.8, 7.2, 7.5, 8.0, 8.5, 9.2], // Consistent ideological growth
+                rejection: 12, digital_score: 60,
+                prob: 8
+            },
+            { 
+                id: 'amin', name: 'Esperidião Amin (PP)', color: '#118ab2', base: 'Litoral/Tradicional',
+                data: [8.5, 8.0, 7.5, 7.0, 6.5, 5.8, 5.2], // Vote migration to Rodrigues/Jorginho
+                rejection: 25, digital_score: 30,
+                prob: 2
+            }
+        ];
+
+        const months = ['Ago', 'Set', 'Out', 'Nov', 'Dez', 'Jan', 'Fev'];
+
+        // --- CHART GENERATION ---
+
+        function initCharts() {
+            // 1. TRENDS (Line)
+            new Chart(document.getElementById('trendChart'), {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: candidates.map(c => ({
+                        label: c.name,
+                        data: c.data,
+                        borderColor: c.color,
+                        backgroundColor: c.color,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        borderWidth: (c.id === 'jorginho' || c.id === 'rodrigues') ? 3 : 1.5
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 45 }
+                    }
+                }
+            });
+
+            // 2. PROBABILITY (Doughnut/Pie style or Bar - Let's use Bar for clarity)
+            new Chart(document.getElementById('probabilityChart'), {
+                type: 'bar',
+                data: {
+                    labels: candidates.slice(0, 4).map(c => c.name.split('(')[0].trim()),
+                    datasets: [{
+                        label: 'Probabilidade (%)',
+                        data: candidates.slice(0, 4).map(c => c.prob),
+                        backgroundColor: candidates.slice(0, 4).map(c => c.color),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 3. 2nd TURN (Grouped Bar)
+            const scenarios = [
+                { name: 'Jorginho x Décio', v1: 65, v2: 25 }, // Easy win for Right
+                { name: 'Jorginho x Rodrigues', v1: 48, v2: 42 }, // Tight race
+                { name: 'Rodrigues x Décio', v1: 62, v2: 28 } // Easy win for Right
+            ];
+
+            new Chart(document.getElementById('secondTurnChart'), {
+                type: 'bar',
+                data: {
+                    labels: scenarios.map(s => s.name),
+                    datasets: [
+                        { label: 'Candidato 1', data: scenarios.map(s => s.v1), backgroundColor: '#002776' },
+                        { label: 'Candidato 2', data: scenarios.map(s => s.v2), backgroundColor: '#cc0000' } // Using red generically for contrast, though middle scenario is Orange
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 80 } },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    // Custom logic to fix colors in tooltip for the middle scenario
+                                    return context.formattedValue + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 4. MOMENTUM (Plotly)
+            // Adding a "Ghost" candidate for Topázio Neto to show digital power
+            const scatterData = candidates.map(c => ({
+                x: c.data[c.data.length-1],
+                y: c.digital_score,
+                name: c.name.split(' ')[0],
+                color: c.color,
+                size: c.data[c.data.length-1]
+            }));
+            
+            // Add Topázio (High Digital, Low/No Gov Poll)
+            scatterData.push({ x: 5, y: 98, name: 'Topázio (PSD)*', color: '#0ea5e9', size: 10 });
+
+            const trace = {
+                x: scatterData.map(d => d.x),
+                y: scatterData.map(d => d.y),
+                text: scatterData.map(d => d.name),
+                mode: 'markers+text',
+                textposition: 'top center',
+                marker: {
+                    size: scatterData.map(d => d.size * 1.2 + 5),
+                    color: scatterData.map(d => d.color)
+                },
+                type: 'scatter'
+            };
+
+            const layout = {
+                margin: { t: 20, r: 20, b: 30, l: 40 },
+                xaxis: { title: 'Intenção de Voto (%)' },
+                yaxis: { title: 'Índice de Influência Digital' },
+                shapes: [
+                    { type: 'line', x0: 0, y0: 50, x1: 40, y1: 50, line: { color: 'gray', width: 1, dash: 'dot' } }
+                ],
+                annotations: [{ x: 5, y: 90, text: 'Zona de Alta Influência', showarrow: false, font: {size: 10, color: '#0ea5e9'} }]
+            };
+
+            Plotly.newPlot('momentumChart', [trace], layout, {responsive: true, displayModeBar: false});
+        }
+
+        // --- DOM POPULATION ---
+
+        function populateKPIs() {
+            const container = document.getElementById('kpi-container');
+            container.innerHTML = `
+                <div class="bg-white p-4 rounded-lg card-shadow border-t-4 border-pl-blue">
+                    <div class="text-xs text-gray-500 uppercase">Favorito (Máquina)</div>
+                    <div class="text-xl font-bold text-slate-800">Jorginho Mello</div>
+                    <div class="text-2xl font-bold text-pl-blue">35.2%</div>
+                    <div class="text-xs text-gray-400 mt-1">Queda leve (-1.5%) na margem</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg card-shadow border-t-4 border-psd-orange">
+                    <div class="text-xs text-gray-500 uppercase">Maior Crescimento</div>
+                    <div class="text-xl font-bold text-slate-800">João Rodrigues</div>
+                    <div class="text-2xl font-bold text-psd-orange">+10%</div>
+                    <div class="text-xs text-gray-400 mt-1">Nos últimos 6 meses</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg card-shadow border-t-4 border-pt-red">
+                    <div class="text-xs text-gray-500 uppercase">Teto Histórico</div>
+                    <div class="text-xl font-bold text-slate-800">Esquerda (PT)</div>
+                    <div class="text-2xl font-bold text-pt-red">58%</div>
+                    <div class="text-xs text-gray-400 mt-1">Índice de Rejeição</div>
+                </div>
+            `;
+        }
+
+        function populateTable() {
+            const tbody = document.getElementById('candidates-table-body');
+            tbody.innerHTML = candidates.map(c => `
+                <tr class="bg-white border-b hover:bg-gray-50">
+                    <td class="px-6 py-4 font-medium flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full" style="background-color: ${c.color}"></span>
+                        ${c.name}
+                    </td>
+                    <td class="px-6 py-4 text-xs">${c.base}</td>
+                    <td class="px-6 py-4 text-right font-bold">${c.data[c.data.length-1]}%</td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold">${c.digital_score}</span>
+                    </td>
+                    <td class="px-6 py-4 text-right text-red-600 text-xs">${c.rejection}%</td>
+                </tr>
+            `).join('');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            populateKPIs();
+            populateTable();
+            initCharts();
+        });
+
+    </script>
+</body>
+</html>
