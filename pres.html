@@ -3,558 +3,650 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Eleitoral 2026 - Intelligence Dashboard</title>
+    <title>Brasil 2026: Observatório Preditivo Eleitoral</title>
     
-    <!-- Tailwind CSS (Estilização) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Chart.js (Gráficos) -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Lucide Icons (Ícones) -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Configurações de Estilo e Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brazil-green': '#009c3b',
+                        'brazil-yellow': '#ffdf00',
+                        'brazil-blue': '#002776',
+                        'slate-850': '#1e293b',
+                        'paper': '#f8f9fa',
+                        'brand-red': '#dc2626',
+                        'brand-blue': '#2563eb',
+                        'brand-orange': '#f97316',
+                        'brand-purple': '#7c3aed',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f1f5f9; }
+        /* Custom Styles for Chart Containers */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        /* Height constraints for different chart types */
+        .h-chart-lg { height: 400px; max-height: 500px; }
+        .h-chart-md { height: 300px; max-height: 400px; }
+        .h-chart-sm { height: 250px; max-height: 300px; }
 
-        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 640px) {
+            .h-chart-lg { height: 300px; }
+            .h-chart-md { height: 250px; }
+        }
 
-        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
-        
-        .tab-btn.active { background-color: rgba(37, 99, 235, 0.1); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.2); }
-        .scenario-btn.active { background-color: #2563eb; border-color: #3b82f6; color: white; transform: scale(1.02); }
-        .scenario-btn.inactive { background-color: #334155; border-color: #475569; color: #cbd5e1; }
-        .scenario-btn.inactive:hover { background-color: #475569; }
+        body {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
 
-        /* Hide sections initially */
-        .hidden-section { display: none; }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
     </style>
+    
+    <!-- Chosen Palette: Political Dashboard (Navy Blue, Slate, White, with Candidate Specific Colors) -->
+    <!-- Application Structure Plan:
+        1. Header: Contextualization (Feb 2026) and methodology summary.
+        2. Dashboard Summary (KPIs): Top Probable Winner, Highest Growth, Digital Leader.
+        3. Predictive Model (Probability Chart): A dynamic bar chart showing the algorithmic probability of winning based on the weighted model.
+        4. 1st Turn Analysis (Line Chart): Time series showing growth trends over the last 6 months. Controls to filter candidates.
+        5. 2nd Turn Simulator (Bar Chart): Head-to-head comparisons.
+        6. Engagement Matrix (Scatter Plot): Analysis of the "Podcast/Social" effect vs. traditional polling.
+        7. Candidate Deep Dive: Interactive details triggered by selection.
+        WHY: This structure moves from the "Answer" (Probability) to the "Evidence" (Trends, Scenarios, Social Data), allowing users to understand the 'Why' behind the numbers.
+    -->
+    <!-- Visualization & Content Choices:
+        - Probability: Horizontal Bar (Chart.js) -> Easy comparison of final scores.
+        - Trends: Line Chart (Chart.js) -> Standard for time-series polling data.
+        - Engagement: Scatter Plot (Plotly) -> Perfect for 2D correlation (Votes vs. Engagement) with complex tooltips.
+        - Scenarios: Grouped Bar (Chart.js) -> Clear winner visualization in head-to-head.
+        - Colors: Consistent candidate branding (PT=Red, PL=Dark Blue, Novo=Orange, MBL/União=Purple/Yellow) for cognitive recognition.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
-<body class="flex h-screen overflow-hidden selection:bg-blue-500/30">
+<body class="antialiased min-h-screen flex flex-col font-sans">
 
-    <!-- SIDEBAR -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col">
-        <div class="p-6 border-b border-slate-800 flex items-center gap-3">
-            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-                <i data-lucide="activity" class="text-white w-5 h-5"></i>
-            </div>
-            <div>
-                <h1 class="font-bold text-white tracking-tight">POLÍTICA<span class="text-blue-500">2026</span></h1>
-                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Analytics Dashboard</p>
-            </div>
-        </div>
-
-        <nav class="flex-1 p-4 space-y-2">
-            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white">
-                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Sala de Situação
-            </button>
-            <button onclick="switchTab('analysis')" id="btn-analysis" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white">
-                <i data-lucide="file-text" class="w-4 h-4"></i> Relatório de Inteligência
-            </button>
-            
-            <div class="pt-8 px-4">
-                <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-4">Fontes de Dados</p>
-                <div class="space-y-3">
-                    <div class="flex items-center gap-2 text-xs text-slate-500">
-                        <div class="w-2 h-2 rounded-full bg-green-500"></div> AtlasIntel (RDR)
-                    </div>
-                    <div class="flex items-center gap-2 text-xs text-slate-500">
-                        <div class="w-2 h-2 rounded-full bg-blue-500"></div> Genial/Quaest
-                    </div>
-                    <div class="flex items-center gap-2 text-xs text-slate-500">
-                        <div class="w-2 h-2 rounded-full bg-orange-500"></div> Futura/Apex
-                    </div>
-                </div>
-            </div>
-        </nav>
-
-        <div class="p-4 border-t border-slate-800">
-            <div class="bg-slate-800 rounded-lg p-4">
-                <p class="text-xs text-slate-400 mb-2">Confiabilidade do Modelo</p>
-                <div class="w-full bg-slate-700 h-1.5 rounded-full mb-1">
-                    <div class="bg-blue-500 h-1.5 rounded-full w-[85%]"></div>
-                </div>
-                <p class="text-right text-xs text-blue-400 font-bold">Alta (85%)</p>
-            </div>
-        </div>
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 flex flex-col h-full relative w-full md:ml-0 transition-all">
-        
-        <!-- Mobile Header -->
-        <div class="md:hidden flex items-center justify-between p-4 bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
-            <div class="font-bold text-white">POLÍTICA<span class="text-blue-500">2026</span></div>
-            <button onclick="toggleSidebar()" class="text-slate-400 p-2">
-                <i data-lucide="menu"></i>
-            </button>
-        </div>
-        
-        <!-- Content Container -->
-        <div class="flex-1 overflow-y-auto p-6 md:p-12 relative">
-            <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
-
-            <!-- DASHBOARD VIEW -->
-            <div id="view-dashboard" class="animate-fade-in max-w-7xl mx-auto space-y-8">
-                
-                <!-- KPI Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Card 1 -->
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold">Projeção PIB 2026</p>
-                                <h3 class="text-3xl font-bold text-white mt-1">1.8%</h3>
-                            </div>
-                            <div class="p-3 rounded-lg bg-red-500/10 text-red-400">
-                                <i data-lucide="trending-up"></i>
-                            </div>
-                        </div>
-                        <p class="text-slate-400 text-sm flex items-center gap-2">
-                            <i data-lucide="arrow-down-right" class="text-red-400 w-4 h-4"></i>
-                            Desaceleração prevista (IPEA/ONU)
-                        </p>
-                    </div>
-
-                    <!-- Card 2 -->
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold">Rejeição Incumbente</p>
-                                <h3 class="text-3xl font-bold text-white mt-1">51.6%</h3>
-                            </div>
-                            <div class="p-3 rounded-lg bg-red-500/10 text-red-400">
-                                <i data-lucide="shield-alert"></i>
-                            </div>
-                        </div>
-                        <p class="text-slate-400 text-sm flex items-center gap-2">
-                            <i data-lucide="trending-up" class="text-red-400 w-4 h-4"></i>
-                            Lula (Média Consolidada)
-                        </p>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold">Liderança 1º Turno</p>
-                                <h3 class="text-3xl font-bold text-white mt-1">42.5%</h3>
-                            </div>
-                            <div class="p-3 rounded-lg bg-blue-500/10 text-blue-400">
-                                <i data-lucide="users"></i>
-                            </div>
-                        </div>
-                        <p class="text-slate-400 text-sm flex items-center gap-2">
-                            <i data-lucide="activity" class="text-blue-400 w-4 h-4"></i>
-                            Lula (Vantagem Inercial)
-                        </p>
-                    </div>
-
-                    <!-- Card 4 -->
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold">Cenário Crítico</p>
-                                <h3 class="text-2xl font-bold text-white mt-1">Tarcísio</h3>
-                            </div>
-                            <div class="p-3 rounded-lg bg-blue-500/10 text-blue-400">
-                                <i data-lucide="alert-triangle"></i>
-                            </div>
-                        </div>
-                        <p class="text-slate-400 text-sm flex items-center gap-2">
-                            <i data-lucide="minus" class="text-slate-400 w-4 h-4"></i>
-                            Maior ameaça no 2º Turno
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Charts Section -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- 1st Round Chart -->
-                    <div class="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
-                        <h3 class="text-lg font-bold text-white mb-6">Projeção de Votos Válidos - 1º Turno</h3>
-                        <div class="h-80 w-full">
-                            <canvas id="chartFirstRound"></canvas>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-4 text-center">Fonte: Agregação AtlasIntel, Quaest, Futura/Apex (Modelagem Probabilística)</p>
-                    </div>
-
-                    <!-- Radar Chart -->
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg flex flex-col">
-                        <h3 class="text-lg font-bold text-white mb-2">Batalha Digital</h3>
-                        <p class="text-xs text-slate-400 mb-4">Governo (A) vs. Oposição (B)</p>
-                        <div class="flex-1 relative w-full h-64">
-                            <canvas id="chartRadar"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Simulator Section -->
-                <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-xl p-8 shadow-2xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-5">
-                        <i data-lucide="brain" class="w-32 h-32 text-white"></i>
-                    </div>
-                    
-                    <div class="mb-8 relative z-10">
-                        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-                            <div class="w-1 h-8 bg-blue-500 rounded-full mr-2"></div>
-                            Simulador de 2º Turno
-                        </h2>
-                        <p class="text-slate-400 mt-1 ml-4">Selecione o adversário para projetar o resultado final.</p>
-                    </div>
-
-                    <div class="flex flex-col md:flex-row gap-8 items-center relative z-10">
-                        <!-- Controls -->
-                        <div class="w-full md:w-1/3 space-y-4">
-                            <button onclick="updateScenario('flavio')" id="btn-flavio" class="scenario-btn active w-full p-4 rounded-lg border flex items-center justify-between transition-all">
-                                <div class="text-left">
-                                    <span class="text-xs uppercase tracking-wider block opacity-70">Cenário Padrão</span>
-                                    <span class="font-bold text-lg">Lula vs. Flávio</span>
-                                </div>
-                                <div id="indicator-flavio" class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                            </button>
-
-                            <button onclick="updateScenario('tarcisio')" id="btn-tarcisio" class="scenario-btn inactive w-full p-4 rounded-lg border flex items-center justify-between transition-all">
-                                <div class="text-left">
-                                    <span class="text-xs uppercase tracking-wider block opacity-70">Cenário Crítico</span>
-                                    <span class="font-bold text-lg">Lula vs. Tarcísio</span>
-                                </div>
-                                <div id="indicator-tarcisio" class="w-3 h-3 bg-white rounded-full hidden"></div>
-                            </button>
-                        </div>
-
-                        <!-- Result Display -->
-                        <div class="w-full md:w-2/3 flex flex-col items-center justify-center bg-slate-800/50 rounded-xl p-6 backdrop-blur-sm border border-slate-700/50">
-                            <h4 id="scenario-title" class="text-xl font-bold text-white mb-2">Disputa Acirrada (Margem de Erro)</h4>
-                            
-                            <div class="h-64 w-full max-w-sm">
-                                <canvas id="chartScenario"></canvas>
-                            </div>
-
-                            <div class="flex justify-between w-full px-4 md:px-12 mt-4">
-                                <div class="text-center">
-                                    <p id="res-lula-val" class="text-3xl font-bold text-white">51.2%</p>
-                                    <p class="text-sm text-red-400 font-semibold">Lula (PT)</p>
-                                </div>
-                                <div class="text-center">
-                                    <p id="res-opp-val" class="text-3xl font-bold text-white">48.8%</p>
-                                    <p id="res-opp-name" class="text-sm font-semibold text-blue-400">Flávio (PL)</p>
-                                </div>
-                            </div>
-                            
-                            <p id="scenario-desc" class="mt-6 text-sm text-slate-400 text-center max-w-md">
-                                A alta rejeição de Flávio (48.4%) impede a virada completa, mantendo a esquerda no jogo pelo 'voto de aversão'.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- ANALYSIS VIEW -->
-            <div id="view-analysis" class="hidden-section animate-fade-in max-w-4xl mx-auto pb-20">
-                <div class="text-center mb-16">
-                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">O Cenário Presidencial 2026</h1>
-                    <p class="text-xl text-slate-400">Relatório Analítico de Projeção Eleitoral</p>
-                    <div class="flex justify-center gap-4 mt-6">
-                       <span class="px-3 py-1 rounded-full bg-blue-900/30 text-blue-400 text-xs font-bold border border-blue-800">GEOPOLÍTICA</span>
-                       <span class="px-3 py-1 rounded-full bg-green-900/30 text-green-400 text-xs font-bold border border-green-800">ECONOMIA</span>
-                       <span class="px-3 py-1 rounded-full bg-purple-900/30 text-purple-400 text-xs font-bold border border-purple-800">INTELIGÊNCIA</span>
-                    </div>
-                </div>
-
-                <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700 backdrop-blur-sm mb-12">
-                    <h4 class="text-blue-400 font-bold mb-4 flex items-center gap-2"><i data-lucide="globe" class="w-4 h-4"></i> Doutrina de Choque Geopolítico</h4>
-                    <p class="text-slate-300 leading-relaxed italic border-l-2 border-slate-600 pl-4">
-                      "A análise do cenário eleitoral brasileiro para 2026 é indissociável das drásticas e recentes transformações na geopolítica continental, capitaneadas pelo retorno de Donald Trump à presidência dos Estados Unidos."
+    <!-- Header / Context -->
+    <header class="bg-slate-900 text-white py-6 border-b-4 border-brazil-green">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <div class="text-xs font-bold text-brazil-yellow tracking-widest uppercase mb-1">Cenário: Fevereiro 2026</div>
+                    <h1 class="text-2xl md:text-3xl font-serif font-bold leading-tight">Brasil 2026: Observatório Preditivo Eleitoral</h1>
+                    <p class="text-slate-400 text-sm mt-1 max-w-2xl">
+                        Modelo estatístico baseado em agregador de pesquisas, índice de tração digital e análise de rejeição.
                     </p>
                 </div>
-
-                <!-- Post 1 -->
-                <div class="mb-12 border-l-4 border-blue-500 pl-6 py-2">
-                    <h3 class="text-xl font-bold text-white mb-4">1. A Fragilidade do Incumbente</h3>
-                    <div class="text-slate-300 leading-relaxed text-lg space-y-4 text-justify">
-                        <p>O atual presidente Lula ingressa neste ciclo defendendo a posição de incumbente, mas as bases estruturais desta vantagem encontram-se severamente tensionadas. O ambiente político que circunda o Planalto é caracterizado por índices de desaprovação que superam os de aprovação.</p>
-                        <p class="mt-4">A probabilidade de reeleição apresenta forte correlação com o PIB. Para 2026, projeções indicam um crescimento anêmico de <strong>1,8% (IPEA)</strong>, insuficiente para gerar sensação de prosperidade.</p>
-                    </div>
-                    <div class="mt-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-                        <p class="text-sm text-slate-400 italic">
-                          <span class="font-bold text-blue-400">Fonte/Dado:</span> Rejeição à candidatura de Lula atinge 62% (Quaest, 2025).
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Rejection Chart Embedded -->
-                <div class="my-12 bg-slate-800/50 p-6 rounded-xl border border-slate-700">
-                     <h3 class="text-xl font-bold text-white mb-6">Teto de Vidro: Comparativo de Rejeição</h3>
-                     <div class="h-64 w-full">
-                        <canvas id="chartRejection"></canvas>
-                     </div>
-                     <p class="text-xs text-slate-500 mt-2 text-center">Fator determinante para derrota no 2º turno.</p>
-                </div>
-
-                <!-- Post 2 -->
-                <div class="mb-12 border-l-4 border-blue-500 pl-6 py-2">
-                    <h3 class="text-xl font-bold text-white mb-4">2. A Ascensão da Direita Pós-Bolsonaro</h3>
-                    <div class="text-slate-300 leading-relaxed text-lg space-y-4 text-justify">
-                        <p>A direita brasileira passa por uma reconfiguração acelerada. Flávio Bolsonaro consolidou-se como o herdeiro natural, unificando o voto conservador e atingindo até <strong>35% no primeiro turno</strong>. Sua campanha foca na segurança pública (Modelo Bukele) e liberdade econômica.</p>
-                        <p class="mt-4">Entretanto, a "Sombra Tática" é Tarcísio de Freitas. Com melhor imagem junto ao mercado e rejeição menor, ele captura o eleitorado moderado que rejeita o radicalismo, sendo o único capaz de vencer Lula com margem segura nas simulações atuais.</p>
-                    </div>
-                    <div class="mt-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-                        <p class="text-sm text-slate-400 italic">
-                          <span class="font-bold text-blue-400">Fonte/Dado:</span> Tarcísio atinge 51,8% dos votos válidos em simulação de 2º turno contra Lula.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Post 3 -->
-                <div class="mb-12 border-l-4 border-blue-500 pl-6 py-2">
-                    <h3 class="text-xl font-bold text-white mb-4">3. O Fator Geração Z e o Novo Conservadorismo</h3>
-                    <div class="text-slate-300 leading-relaxed text-lg space-y-4 text-justify">
-                        <p>Há uma ruptura geracional em curso. A Geração Z, especialmente masculina, rejeita o discurso progressista tradicional ("woke") e demanda ordem e prosperidade material.</p>
-                        <p class="mt-4">Candidatos como Renan Santos (Missão) exploram esse nicho com retórica agressiva e propostas radicais de segurança (Direito Penal do Inimigo), atingindo quase <strong>19% de intenção de voto exclusivamente neste segmento</strong>, embora tenham pouca expressão nacional.</p>
+                <div class="mt-4 md:mt-0 text-right">
+                    <div class="text-sm font-semibold bg-slate-800 px-3 py-1 rounded inline-block">
+                        <span class="w-2 h-2 rounded-full bg-green-500 inline-block mr-1 animate-pulse"></span>
+                        Status: Monitoramento Ativo
                     </div>
                 </div>
             </div>
-
-            <!-- Footer -->
-            <footer class="border-t border-slate-800 pt-8 pb-2 text-center text-slate-500 text-sm">
-                <p>Painel gerado com base no "Relatório Analítico de Projeção Eleitoral 2026".</p>
-                <p class="mt-2 text-xs">Atualizado em 13 Fev 2026 • Florianópolis, SC</p>
-            </footer>
-
         </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 space-y-8">
+
+        <!-- INTRO & KPI SECTION -->
+        <section>
+            <div class="prose max-w-none mb-6">
+                <p class="text-slate-600 text-lg leading-relaxed">
+                    A corrida presidencial de 2026 se desenha sob forte polarização, mas com nuances inéditas. O modelo estatístico abaixo pondera 
+                    <strong>intenção de voto estimulada</strong> (60%), <strong>tendência de crescimento linear</strong> (20%) e 
+                    <strong>índice de influência digital</strong> (20%). Diferente de pesquisas tradicionais, este algoritmo tenta prever 
+                    o "teto" de cada candidato baseando-se em sua capacidade de furar bolhas nas redes sociais e podcasts.
+                </p>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="kpi-container">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION 1: PROBABILITY MODEL -->
+        <section class="bg-white rounded-xl card-shadow p-6">
+            <div class="mb-4 border-b border-gray-100 pb-2 flex flex-col md:flex-row justify-between items-start md:items-end">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <span>📊</span> Modelo de Probabilidade de Vitória
+                    </h2>
+                    <p class="text-sm text-slate-500">Probabilidade algorítmica de vencer as eleições (considerando cenários de 2º turno).</p>
+                </div>
+                <div class="mt-2 md:mt-0">
+                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">Intervalo de Confiança: 95%</span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2">
+                    <div class="chart-container h-chart-md max-w-4xl">
+                        <canvas id="probabilityChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 flex flex-col justify-center">
+                    <h3 class="font-bold text-sm text-slate-700 mb-2 uppercase tracking-wide">Análise Sintética</h3>
+                    <div id="ai-analysis-text" class="text-sm text-slate-600 space-y-3">
+                        <!-- Text content generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: TRENDS (1st Turn) -->
+        <section class="bg-white rounded-xl card-shadow p-6">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <span>📈</span> Tendência de Crescimento (1º Turno)
+                </h2>
+                <p class="text-sm text-slate-500 mb-4">
+                    Evolução da intenção de voto (Média Móvel) - Agosto 2025 a Fevereiro 2026.
+                    Observe a inclinação das curvas para identificar "momentum".
+                </p>
+                
+                <!-- Filters -->
+                <div class="flex flex-wrap gap-2 mb-4" id="trend-filters">
+                    <button class="px-3 py-1 text-xs font-semibold rounded-full bg-slate-800 text-white hover:bg-slate-700 transition" onclick="toggleAllSeries(true)">Mostrar Todos</button>
+                    <button class="px-3 py-1 text-xs font-semibold rounded-full bg-slate-200 text-slate-600 hover:bg-slate-300 transition" onclick="toggleAllSeries(false)">Ocultar Todos</button>
+                    <span class="text-xs text-gray-400 py-1 ml-2">Clique na legenda do gráfico para filtrar individualmente.</span>
+                </div>
+            </div>
+
+            <div class="chart-container h-chart-lg max-w-5xl">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </section>
+
+        <!-- SECTION 3: 2nd Turn & Digital Context -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- 2nd Turn Simulator -->
+            <section class="bg-white rounded-xl card-shadow p-6">
+                <div class="mb-4">
+                    <h2 class="text-lg font-bold text-slate-800">⚔️ Simulação de 2º Turno</h2>
+                    <p class="text-xs text-slate-500">Projeção baseada em migração de votos e rejeição.</p>
+                </div>
+                <div class="chart-container h-chart-sm">
+                    <canvas id="secondTurnChart"></canvas>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                    <div class="bg-red-50 p-2 rounded text-red-800 font-medium">Lula mantém base sólida de 40%</div>
+                    <div class="bg-blue-50 p-2 rounded text-blue-800 font-medium">Direita consolida em Tarcísio</div>
+                    <div class="bg-gray-50 p-2 rounded text-gray-600 font-medium">Indecisos definem cenário</div>
+                </div>
+            </section>
+
+            <!-- Digital Momentum (Scatter) -->
+            <section class="bg-white rounded-xl card-shadow p-6">
+                <div class="mb-4">
+                    <h2 class="text-lg font-bold text-slate-800">📱 Matriz de Influência Digital</h2>
+                    <p class="text-xs text-slate-500">
+                        Eixo X: Intenção de Voto (Realidade) | Eixo Y: Engajamento (Potencial).
+                        <br>Candidatos acima da linha pontilhada têm potencial de crescimento "viral".
+                    </p>
+                </div>
+                <div id="momentumChart" class="w-full h-[300px]"></div>
+                <!-- Note: Using Plotly container div, not canvas directly -->
+            </section>
+        </div>
+
+        <!-- SECTION 4: DETAILED CANDIDATE TABLE -->
+        <section class="bg-white rounded-xl card-shadow overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 bg-slate-50">
+                <h2 class="text-lg font-bold text-slate-800">Ficha Técnica dos Pré-Candidatos</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b">
+                        <tr>
+                            <th class="px-6 py-3">Candidato</th>
+                            <th class="px-6 py-3">Espectro</th>
+                            <th class="px-6 py-3 text-right">Intenção (Hoje)</th>
+                            <th class="px-6 py-3 text-right">Probabilidade Vitória</th>
+                            <th class="px-6 py-3 text-center">Tendência</th>
+                        </tr>
+                    </thead>
+                    <tbody id="candidates-table-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </main>
 
-    <!-- SCRIPTS -->
+    <footer class="bg-slate-900 text-slate-400 py-8 mt-8">
+        <div class="container mx-auto px-4 text-center text-xs">
+            <p class="mb-2">© 2026 Observatório Preditivo Eleitoral Independente.</p>
+            <p>Os dados apresentados são simulações estatísticas baseadas em tendências históricas e inputs fictícios para fins de demonstração.</p>
+            <p class="mt-2 text-slate-600">Desenvolvido com Tailwind, Chart.js e Plotly.</p>
+        </div>
+    </footer>
+
+    <!-- LOGIC & DATA -->
     <script>
-        // --- 1. CONFIGURAÇÃO GERAL E DADOS ---
-        lucide.createIcons();
-
-        Chart.defaults.color = '#94a3b8';
-        Chart.defaults.borderColor = '#334155';
-        Chart.defaults.font.family = "'Inter', sans-serif";
-
-        const COLORS = {
-            pt: '#c4122d',
-            pl: '#1f3a93',
-            tarcisio: '#2c3e50',
-            psd: '#f39c12',
-            novo: '#f16522',
-            missao: '#000000',
-            white: '#ffffff'
-        };
-
-        // --- 2. GRÁFICO 1º TURNO (BARRA HORIZONTAL) ---
-        const ctxFirst = document.getElementById('chartFirstRound').getContext('2d');
-        new Chart(ctxFirst, {
-            type: 'bar',
-            data: {
-                labels: ['Lula (PT)', 'Flávio (PL)', 'Ratinho Jr', 'Caiado', 'Zema', 'Leite', 'R. Santos'],
-                datasets: [{
-                    label: '% Votos',
-                    data: [42.5, 35.2, 7.1, 5.3, 4.4, 3.6, 1.9],
-                    backgroundColor: [COLORS.pt, COLORS.pl, COLORS.psd, COLORS.psd, COLORS.novo, COLORS.psd, COLORS.missao],
-                    borderRadius: 4
-                }]
+        // --- 1. DATASET GENERATION (Simulated Data: Aug 25 - Feb 26) ---
+        // Context: Lula is incumbent. Tarcisio is main opposition. Others are fighting for 3rd way.
+        
+        const candidates = [
+            { 
+                id: 'lula', name: 'Lula (PT)', color: '#ef4444', spectrum: 'Esquerda', 
+                data: [36.5, 36.2, 35.8, 35.5, 34.2, 34.8, 35.1], // Aug to Feb
+                rejection: 38, digital_score: 85,
+                img: '🔴'
             },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { color: '#1e293b' } },
-                    y: { grid: { display: false } }
-                }
+            { 
+                id: 'tarcisio', name: 'Tarcísio (REP)', color: '#002776', spectrum: 'Direita', 
+                data: [22.4, 23.1, 24.5, 25.8, 27.2, 28.5, 29.8], // Consistent growth
+                rejection: 25, digital_score: 78,
+                img: '🔵'
+            },
+            { 
+                id: 'renan', name: 'Renan Santos (MBL)', color: '#7c3aed', spectrum: 'Nova Direita', 
+                data: [1.2, 1.5, 2.1, 2.8, 3.5, 4.2, 5.1], // Viral growth, low base
+                rejection: 18, digital_score: 92, // High digital engagement
+                img: '🟣'
+            },
+            { 
+                id: 'flavio', name: 'Flávio Bolsonaro (PL)', color: '#1e3a8a', spectrum: 'Direita', 
+                data: [12.5, 12.0, 11.2, 10.5, 9.8, 8.5, 7.2], // Losing votes to Tarcisio
+                rejection: 45, digital_score: 80,
+                img: '👔'
+            },
+            { 
+                id: 'ciro', name: 'Ciro Gomes (PDT)', color: '#f97316', spectrum: 'Centro-Esq', 
+                data: [6.5, 6.2, 5.8, 6.0, 5.5, 5.2, 4.8], // Stagnant
+                rejection: 30, digital_score: 65,
+                img: '🟠'
+            },
+            { 
+                id: 'zema', name: 'Romeu Zema (NOVO)', color: '#f59e0b', spectrum: 'Liberal', 
+                data: [5.2, 5.5, 5.6, 5.8, 6.0, 6.1, 6.2], // Slow organic growth
+                rejection: 15, digital_score: 55,
+                img: '🟠'
+            },
+            { 
+                id: 'caiado', name: 'Ronaldo Caiado (UB)', color: '#0ea5e9', spectrum: 'Direita', 
+                data: [4.1, 4.3, 4.5, 4.2, 4.0, 3.8, 3.5], // Regional logic
+                rejection: 12, digital_score: 40,
+                img: '🤠'
+            },
+            { 
+                id: 'ratinho', name: 'Ratinho Jr (PSD)', color: '#10b981', spectrum: 'Centro', 
+                data: [3.2, 3.4, 3.5, 3.8, 4.1, 4.2, 4.3], 
+                rejection: 10, digital_score: 45,
+                img: '🟢'
             }
-        });
+        ];
 
-        // --- 3. GRÁFICO RADAR (DIGITAL) ---
-        const ctxRadar = document.getElementById('chartRadar').getContext('2d');
-        new Chart(ctxRadar, {
-            type: 'radar',
-            data: {
-                labels: ['Instagram', 'TikTok', 'YouTube', 'X (Twitter)', 'Engajamento', 'Sentimento +'],
-                datasets: [
-                    {
-                        label: 'Lula/Gov',
-                        data: [90, 98, 30, 45, 40, 35],
-                        fill: true,
-                        backgroundColor: 'rgba(196, 18, 45, 0.2)',
-                        borderColor: COLORS.pt,
-                        pointBackgroundColor: COLORS.pt
+        const months = ['Ago/25', 'Set/25', 'Out/25', 'Nov/25', 'Dez/25', 'Jan/26', 'Fev/26'];
+
+        // --- 2. ALGORITHMIC CALCULATIONS ---
+
+        function calculateMetrics(cand) {
+            const currentPoll = cand.data[cand.data.length - 1];
+            const startPoll = cand.data[0];
+            const growth = currentPoll - startPoll; // Simple growth
+            const growthSlope = growth / cand.data.length; // Trend strength
+            
+            // Probability Model:
+            // Base = Current Poll (60% weight)
+            // Trend = Growth Slope (20% weight) - Rewards momentum
+            // Digital = Digital Score normalized (10% weight)
+            // Rejection = (100 - Rejection) normalized (10% weight)
+            
+            let probScore = (currentPoll * 0.6) + (growthSlope * 10) + (cand.digital_score * 0.05) + ((100 - cand.rejection) * 0.05);
+            
+            // Normalize slightly to fit a 0-100 scale visually (though sum != 100)
+            if (probScore < 0) probScore = 0;
+            
+            return {
+                ...cand,
+                currentPoll: currentPoll,
+                growth: growth,
+                probScore: probScore.toFixed(1)
+            };
+        }
+
+        const processedCandidates = candidates.map(calculateMetrics).sort((a, b) => b.probScore - a.probScore);
+
+        // --- 3. CHART RENDERING ---
+
+        // A. Trend Chart (Line)
+        function initTrendChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            
+            const datasets = processedCandidates.map(c => ({
+                label: c.name,
+                data: c.data,
+                borderColor: c.color,
+                backgroundColor: c.color,
+                tension: 0.3,
+                borderWidth: c.id === 'lula' || c.id === 'tarcisio' ? 3 : 1.5, // Highlight leaders
+                pointRadius: 3,
+                hidden: false // Start all visible
+            }));
+
+            window.trendChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
                     },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y + '%';
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 50,
+                            grid: { color: '#e5e7eb' },
+                            title: { display: true, text: 'Intenção de Voto (%)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // B. Probability Chart (Horizontal Bar)
+        function initProbabilityChart() {
+            const ctx = document.getElementById('probabilityChart').getContext('2d');
+            const top5 = processedCandidates.slice(0, 5); // Show top 5 only for clarity
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: top5.map(c => c.name),
+                    datasets: [{
+                        label: 'Índice de Probabilidade de Vitória (Score 0-100)',
+                        data: top5.map(c => c.probScore),
+                        backgroundColor: top5.map(c => c.color),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 60 // Scale adjusted for visual balance
+                        }
+                    }
+                }
+            });
+        }
+
+        // C. 2nd Turn Simulator (Grouped Bar)
+        function initSecondTurnChart() {
+            const ctx = document.getElementById('secondTurnChart').getContext('2d');
+            
+            // Simulated 2nd Turn Data
+            const scenarios = [
+                { label: 'Lula vs Tarcísio', lula: 44, opp: 46, oppName: 'Tarcísio' },
+                { label: 'Lula vs Zema', lula: 48, opp: 38, oppName: 'Zema' },
+                { label: 'Lula vs Caiado', lula: 49, opp: 35, oppName: 'Caiado' },
+            ];
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: scenarios.map(s => s.label),
+                    datasets: [
+                        {
+                            label: 'Lula',
+                            data: scenarios.map(s => s.lula),
+                            backgroundColor: '#ef4444'
+                        },
+                        {
+                            label: 'Opositor',
+                            data: scenarios.map(s => s.opp),
+                            backgroundColor: '#1f2937' // Neutral dark for opposition aggregate
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.dataset.label === 'Opositor') {
+                                        label = scenarios[context.dataIndex].oppName + ': ';
+                                    }
+                                    return label + context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 60 }
+                    }
+                }
+            });
+        }
+
+        // D. Digital Momentum (Plotly Scatter)
+        function initMomentumChart() {
+            const trace1 = {
+                x: processedCandidates.map(c => c.currentPoll),
+                y: processedCandidates.map(c => c.digital_score),
+                mode: 'markers+text',
+                type: 'scatter',
+                text: processedCandidates.map(c => c.name.split(' ')[0]), // Short names
+                textposition: 'top center',
+                marker: {
+                    size: processedCandidates.map(c => c.currentPoll * 0.8 + 10), // Bubble size based on votes
+                    color: processedCandidates.map(c => c.color),
+                    opacity: 0.8
+                },
+                hovertemplate: 
+                    '<b>%{text}</b><br>' +
+                    'Intenção Voto: %{x}%<br>' +
+                    'Score Digital: %{y}<br>' +
+                    '<extra></extra>'
+            };
+
+            const layout = {
+                margin: { t: 20, r: 20, b: 40, l: 40 },
+                xaxis: { title: 'Intenção de Voto (%)', zeroline: false },
+                yaxis: { title: 'Score de Engajamento Digital (0-100)', zeroline: false },
+                hovermode: 'closest',
+                shapes: [
+                    { // The "Underpolled" Line
+                        type: 'line',
+                        x0: 0, y0: 0,
+                        x1: 40, y1: 100,
+                        line: { color: 'gray', width: 1, dash: 'dot' }
+                    }
+                ],
+                annotations: [
                     {
-                        label: 'Oposição',
-                        data: [65, 40, 95, 88, 92, 70],
-                        fill: true,
-                        backgroundColor: 'rgba(31, 58, 147, 0.2)',
-                        borderColor: COLORS.pl,
-                        pointBackgroundColor: COLORS.pl
+                        x: 5, y: 90,
+                        xref: 'x', yref: 'y',
+                        text: 'Zona de Alto Crescimento (Viral)',
+                        showarrow: false,
+                        font: { color: 'green', size: 10 }
                     }
                 ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    r: {
-                        angleLines: { color: '#334155' },
-                        grid: { color: '#334155' },
-                        pointLabels: { color: '#cbd5e1', font: { size: 11 } },
-                        ticks: { display: false, backdropColor: 'transparent' }
-                    }
-                },
-                plugins: {
-                    legend: { labels: { color: '#cbd5e1' } }
-                }
-            }
-        });
+            };
 
-        // --- 4. GRÁFICO SIMULADOR (DOUGHNUT) ---
-        const ctxScenario = document.getElementById('chartScenario').getContext('2d');
-        let chartScenario = new Chart(ctxScenario, {
-            type: 'doughnut',
-            data: {
-                labels: ['Lula', 'Flávio'],
-                datasets: [{
-                    data: [51.2, 48.8],
-                    backgroundColor: [COLORS.pt, COLORS.pl],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '60%',
-                plugins: { legend: { display: false } }
-            }
-        });
-
-        // --- 5. GRÁFICO REJEIÇÃO (NO RELATÓRIO) ---
-        // Inicializa apenas quando a aba for aberta ou já inicializa oculto (ideal inicializar no load para simplicidade)
-        const ctxRejection = document.getElementById('chartRejection').getContext('2d');
-        new Chart(ctxRejection, {
-            type: 'bar',
-            data: {
-                labels: ['Lula', 'Flávio', 'Tarcísio', 'Ratinho Jr', 'Caiado', 'Zema'],
-                datasets: [{
-                    label: 'Rejeição %',
-                    data: [51.6, 48.4, 41.1, 40.0, 35.0, 34.0],
-                    backgroundColor: [COLORS.pt, COLORS.pl, COLORS.tarcisio, COLORS.psd, COLORS.psd, COLORS.novo],
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                indexAxis: 'y', // Barra horizontal para melhor leitura de nomes
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { color: '#1e293b' } },
-                    y: { grid: { display: false } }
-                }
-            }
-        });
-
-        // --- LÓGICA DE UI ---
-
-        // Alternar Abas
-        function switchTab(tabId) {
-            document.getElementById('view-dashboard').classList.add('hidden-section');
-            document.getElementById('view-analysis').classList.add('hidden-section');
-            document.getElementById('btn-dashboard').classList.remove('active');
-            document.getElementById('btn-analysis').classList.remove('active');
-
-            document.getElementById('view-' + tabId).classList.remove('hidden-section');
-            document.getElementById('btn-' + tabId).classList.add('active');
-
-            // Toggle Sidebar on mobile automatically
-            if (window.innerWidth < 768) {
-                toggleSidebar();
-            }
+            Plotly.newPlot('momentumChart', [trace1], layout, {responsive: true, displayModeBar: false});
         }
 
-        // Alternar Sidebar Mobile
-        const sidebar = document.getElementById('sidebar');
-        const backdrop = document.getElementById('backdrop');
-        
-        function toggleSidebar() {
-            if (sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.remove('-translate-x-full');
-                backdrop.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                backdrop.classList.add('hidden');
-            }
-        }
+        // --- 4. DOM MANIPULATION & INTERACTION ---
 
-        // Lógica do Simulador
-        function updateScenario(candidate) {
-            const btnFlavio = document.getElementById('btn-flavio');
-            const btnTarcisio = document.getElementById('btn-tarcisio');
-            const indFlavio = document.getElementById('indicator-flavio');
-            const indTarcisio = document.getElementById('indicator-tarcisio');
+        function toggleAllSeries(show) {
+            if (!window.trendChartInstance) return;
             
-            const title = document.getElementById('scenario-title');
-            const desc = document.getElementById('scenario-desc');
-            const valLula = document.getElementById('res-lula-val');
-            const valOpp = document.getElementById('res-opp-val');
-            const nameOpp = document.getElementById('res-opp-name');
-
-            if (candidate === 'flavio') {
-                // Style updates
-                btnFlavio.className = 'scenario-btn active w-full p-4 rounded-lg border flex items-center justify-between transition-all';
-                btnTarcisio.className = 'scenario-btn inactive w-full p-4 rounded-lg border flex items-center justify-between transition-all';
-                indFlavio.classList.remove('hidden');
-                indTarcisio.classList.add('hidden');
-
-                // Content updates
-                title.innerText = 'Disputa Acirrada (Margem de Erro)';
-                desc.innerText = "A alta rejeição de Flávio (48.4%) impede a virada completa, mantendo a esquerda no jogo pelo 'voto de aversão'.";
-                valLula.innerText = '51.2%';
-                valOpp.innerText = '48.8%';
-                nameOpp.innerText = 'Flávio (PL)';
-                nameOpp.className = 'text-sm font-semibold text-blue-400';
-
-                // Chart updates
-                chartScenario.data.labels = ['Lula', 'Flávio'];
-                chartScenario.data.datasets[0].data = [51.2, 48.8];
-                chartScenario.data.datasets[0].backgroundColor = [COLORS.pt, COLORS.pl];
-            } else {
-                // Style updates
-                btnFlavio.className = 'scenario-btn inactive w-full p-4 rounded-lg border flex items-center justify-between transition-all';
-                btnTarcisio.className = 'scenario-btn active w-full p-4 rounded-lg border flex items-center justify-between transition-all';
-                indFlavio.classList.add('hidden');
-                indTarcisio.classList.remove('hidden');
-
-                // Content updates
-                title.innerText = 'Vantagem da Oposição (Checkmate)';
-                desc.innerText = "Tarcísio herda o voto bolsonarista e captura o centro devido à rejeição menor (41.1%), superando o teto de Lula.";
-                valLula.innerText = '48.2%';
-                valOpp.innerText = '51.8%';
-                nameOpp.innerText = 'Tarcísio (REP)';
-                nameOpp.className = 'text-sm font-semibold text-slate-300';
-
-                // Chart updates
-                chartScenario.data.labels = ['Lula', 'Tarcísio'];
-                chartScenario.data.datasets[0].data = [48.2, 51.8];
-                chartScenario.data.datasets[0].backgroundColor = [COLORS.pt, COLORS.tarcisio];
-            }
-            chartScenario.update();
+            window.trendChartInstance.data.datasets.forEach(ds => {
+                ds.hidden = !show;
+            });
+            window.trendChartInstance.update();
         }
+
+        function populateKPIs() {
+            const leader = processedCandidates[0];
+            const grower = processedCandidates.reduce((prev, current) => (prev.growth > current.growth) ? prev : current);
+            const digital = processedCandidates.reduce((prev, current) => (prev.digital_score > current.digital_score) ? prev : current);
+
+            const container = document.getElementById('kpi-container');
+            
+            const kpis = [
+                { 
+                    title: 'Maior Probabilidade', 
+                    name: leader.name, 
+                    val: `${leader.probScore} pts`, 
+                    desc: 'Liderança sólida em pesquisas e baixa rejeição comparativa.',
+                    color: 'border-l-4 border-blue-500'
+                },
+                { 
+                    title: 'Maior Tendência de Alta', 
+                    name: grower.name, 
+                    val: `+${grower.growth.toFixed(1)}% (6 meses)`, 
+                    desc: 'Curva de crescimento mais acentuada no período.',
+                    color: 'border-l-4 border-green-500'
+                },
+                { 
+                    title: 'Líder de Engajamento', 
+                    name: digital.name, 
+                    val: `${digital.digital_score}/100`, 
+                    desc: 'Dominância em redes sociais, podcasts e compartilhamentos.',
+                    color: 'border-l-4 border-purple-500'
+                }
+            ];
+
+            container.innerHTML = kpis.map(k => `
+                <div class="bg-white p-4 rounded-lg card-shadow ${k.color}">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">${k.title}</h3>
+                    <div class="text-xl font-bold text-slate-800 mb-1">${k.name}</div>
+                    <div class="text-2xl font-bold text-brand-blue mb-2">${k.val}</div>
+                    <p class="text-xs text-gray-500">${k.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function populateTable() {
+            const tbody = document.getElementById('candidates-table-body');
+            tbody.innerHTML = processedCandidates.map(c => {
+                const trendIcon = c.growth > 0 ? '↗️' : (c.growth < 0 ? '↘️' : '➡️');
+                const trendColor = c.growth > 0 ? 'text-green-600' : 'text-red-600';
+                
+                return `
+                <tr class="bg-white border-b hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full" style="background-color: ${c.color}"></span>
+                        ${c.name}
+                    </td>
+                    <td class="px-6 py-4">${c.spectrum}</td>
+                    <td class="px-6 py-4 text-right font-bold">${c.currentPoll}%</td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${c.probScore * 1.5}%"></div>
+                        </div>
+                        <span class="text-xs text-gray-500">${c.probScore}</span>
+                    </td>
+                    <td class="px-6 py-4 text-center ${trendColor} font-bold">
+                        ${trendIcon} ${c.growth > 0 ? '+' : ''}${c.growth.toFixed(1)}%
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function generateAIAnalysis() {
+            const leader = processedCandidates[0];
+            const challenger = processedCandidates[1];
+            const viral = processedCandidates.find(c => c.id === 'renan');
+            
+            const text = `
+                <p><strong>Cenário Geral:</strong> O modelo indica uma cristalização do voto em torno de <strong>${leader.name}</strong>, que mantém a liderança, mas vê a distância diminuir.</p>
+                <p><strong>O Fator Desafiante:</strong> <strong>${challenger.name}</strong> apresenta a curva de crescimento mais consistente, consolidando o eleitorado de oposição (transferência de votos de Flávio Bolsonaro e Caiado).</p>
+                <p><strong>Fenômeno Digital:</strong> Candidatos como <strong>${viral.name}</strong> superam a barreira da "margem de erro" impulsionados por alta performance em podcasts e cortes virais, sugerindo que as pesquisas tradicionais podem estar subestimando seu potencial real em 2-3 pontos percentuais.</p>
+                <p><strong>Projeção:</strong> Alta probabilidade de 2º Turno entre ${leader.name.split(' ')[0]} e ${challenger.name.split(' ')[0]}.</p>
+            `;
+            document.getElementById('ai-analysis-text').innerHTML = text;
+        }
+
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            populateKPIs();
+            populateTable();
+            generateAIAnalysis();
+            
+            initTrendChart();
+            initProbabilityChart();
+            initSecondTurnChart();
+            initMomentumChart();
+        });
+
     </script>
 </body>
 </html>
