@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<!-- Controle de tema via classe 'dark' -->
+<html lang="pt-br" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolução da Política de Inovação CIASC </title>
+    
+    <!-- Favicon do CIASC -->
+    <link rel="icon" href="https://ciasc.sc.gov.br/wp-content/uploads/2023/03/ciasc_favicon2.png" type="image/png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Font Inter -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* Ícones de tema */
+        #theme-icon-light, #theme-icon-dark { display: none; }
+        .dark #theme-icon-light { display: block; }
+        .light #theme-icon-dark { display: block; }
+
+        /* Animação suave */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* Estilo das Abas */
+        .tab-btn {
+            border-bottom-width: 2px;
+            transition: all 0.3s ease;
+        }
+        .tab-active {
+            border-color: #2563eb; /* blue-600 */
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .dark .tab-active {
+            border-color: #60a5fa; /* blue-400 */
+            color: #60a5fa;
+        }
+        .tab-inactive {
+            border-color: transparent;
+            color: #64748b; /* slate-500 */
+        }
+        .dark .tab-inactive {
+            color: #94a3b8; /* slate-400 */
+        }
+        .tab-inactive:hover {
+            color: #334155; /* slate-700 */
+            border-color: #cbd5e1;
+        }
+        .dark .tab-inactive:hover {
+            color: #cbd5e1; /* slate-300 */
+            border-color: #475569;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-300 transition-colors duration-300">
+
+    <!-- Header -->
+    <header class="bg-white/80 dark:bg-slate-800/50 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 backdrop-blur-sm">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
+            <div class="w-full py-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="#">
+                        <span class="sr-only">CIASC</span>
+                        <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </a>
+                    <div class="ml-4 flex flex-col justify-center">
+                        <span class="text-xl font-bold text-blue-800 dark:text-blue-400 leading-none">CIASC</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 tracking-wider">ASSESSORIA DE INOVAÇÃO E TECNOLOGIA</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                     <span class="text-sm font-medium text-slate-600 dark:text-slate-400 hidden sm:inline text-right">
+                         Histórico de Minutas<br>Evolução da Política
+                     </span>
+                     <!-- Botão de Tema -->
+                     <button id="theme-toggle" type="button" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none transition-colors">
+                        <span class="sr-only">Alternar tema</span>
+                        <svg id="theme-icon-light" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12H.75m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25 2.25 2.25 0 0 0 2.25 2.25 2.25 2.25 0 0 0 2.25-2.25A2.25 2.25 0 0 0 12 12Z" />
+                        </svg>
+                        <svg id="theme-icon-dark" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <!-- Título da Página -->
+        <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-200 dark:border-slate-700 pb-5">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                    Evolução da Política de Inovação
+                </h1>
+                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                    Acompanhamento das rodadas de revisão, amadurecimento jurídico e aprimoramento institucional.
+                </p>
+            </div>
+            <div class="mt-4 md:mt-0 flex gap-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                    <i data-lucide="history" class="w-4 h-4 mr-2"></i> Histórico V1 a V4
+                </span>
+            </div>
+        </div>
+
+        <!-- Navegação (Abas) -->
+        <nav class="flex justify-center md:justify-start border-b border-slate-200 dark:border-slate-700 mb-8 overflow-x-auto">
+            <div class="flex space-x-4 md:space-x-8 min-w-max px-2">
+                <button onclick="switchTab('timeline')" id="btn-timeline" class="tab-btn tab-active py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none flex items-center gap-2">
+                    <i data-lucide="git-branch" class="w-4 h-4"></i> Linha do Tempo
+                </button>
+                <button onclick="switchTab('v1v2')" id="btn-v1v2" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none flex items-center gap-2">
+                    <i data-lucide="file-text" class="w-4 h-4"></i> V1 & V2 (A Base)
+                </button>
+                <button onclick="switchTab('v3')" id="btn-v3" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none flex items-center gap-2">
+                    <i data-lucide="git-merge" class="w-4 h-4"></i> V3 (Revisão DME)
+                </button>
+                <button onclick="switchTab('v4')" id="btn-v4" class="tab-btn tab-inactive py-4 px-2 md:px-4 text-sm md:text-base focus:outline-none flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> V4 (PRESI / DTI)
+                </button>
+            </div>
+        </nav>
+
+        <!-- TAB 1: LINHA DO TEMPO GERAL -->
+        <div id="view-timeline" class="view-section fade-in">
+            <div class="max-w-4xl mx-auto">
+                <div class="relative border-l-4 border-slate-200 dark:border-slate-700 ml-3 md:ml-6 space-y-12 pb-8">
+                    
+                    <!-- V1 / V2 -->
+                    <div class="relative pl-8 md:pl-12">
+                        <div class="absolute -left-[22px] bg-slate-200 dark:bg-slate-700 w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-slate-900">
+                            <i data-lucide="file-text" class="w-4 h-4 text-slate-500 dark:text-slate-300"></i>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Versões 1 e 2: A Gênese</h3>
+                                <span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs px-2 py-1 rounded font-semibold">Proposta Inicial</span>
+                            </div>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Estruturação do marco legal básico para adequação do CIASC como ICT.</p>
+                            <ul class="space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Criação do NIT e Comitê de Inovação.</li>
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Habilitação de Bolsas, Prêmios e Retribuição Pecuniária.</li>
+                                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Percentual fixo estipulado para reinvestimento no NIT.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- V3 -->
+                    <div class="relative pl-8 md:pl-12">
+                        <div class="absolute -left-[22px] bg-purple-100 dark:bg-purple-900/50 w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-slate-900">
+                            <i data-lucide="git-merge" class="w-4 h-4 text-purple-600 dark:text-purple-400"></i>
+                        </div>
+                        <div class="bg-purple-50 dark:bg-purple-900/10 p-6 rounded-lg shadow-sm border border-purple-200 dark:border-purple-800">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-purple-900 dark:text-purple-100">Versão 3: Governança Reforçada</h3>
+                                <span class="bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 text-xs px-2 py-1 rounded font-semibold">Análise DME</span>
+                            </div>
+                            <p class="text-sm text-purple-800 dark:text-purple-200 mb-4">Adequação às exigências da Diretoria de Mercado e Empreendedorismo (DME), elevando o nível de controle sobre impactos financeiros e societários.</p>
+                            <ul class="space-y-2 text-sm text-purple-900 dark:text-purple-200">
+                                <li class="flex items-start gap-2"><i data-lucide="arrow-right" class="w-4 h-4 mt-0.5 text-purple-500"></i> <strong>Inclusão do GGG:</strong> Regulamento de remuneração extra passa a exigir aval do Governo.</li>
+                                <li class="flex items-start gap-2"><i data-lucide="arrow-right" class="w-4 h-4 mt-0.5 text-purple-500"></i> <strong>Inclusão do CONSAD:</strong> Autorização obrigatória para participação em Startups (Corporate Venture).</li>
+                                <li class="flex items-start gap-2"><i data-lucide="arrow-right" class="w-4 h-4 mt-0.5 text-purple-500"></i> <strong>Flexibilização:</strong> Reinvestimento no NIT deixa de ser fixo e passa a ser definido anualmente.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- V4 -->
+                    <div class="relative pl-8 md:pl-12">
+                        <div class="absolute -left-[22px] bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-slate-900">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg shadow-md border-2 border-blue-500">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-blue-900 dark:text-blue-100">Versão 4: Blindagem Jurídica</h3>
+                                <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded font-bold">Análise PRESI/DTI</span>
+                            </div>
+                            <p class="text-sm text-blue-800 dark:text-blue-200 mb-4">Amadurecimento provocado pela Presidência e DTI, focando em segurança trabalhista e clareza conceitual.</p>
+                            <ul class="space-y-2 text-sm text-blue-900 dark:text-blue-200">
+                                <li class="flex items-start gap-2"><i data-lucide="shield" class="w-4 h-4 mt-0.5 text-blue-600"></i> <strong>Trava de Rotina vs. Inovação:</strong> Proibição expressa de pagar prêmios por atividades que já fazem parte da rotina funcional do cargo.</li>
+                                <li class="flex items-start gap-2"><i data-lucide="shield" class="w-4 h-4 mt-0.5 text-blue-600"></i> <strong>Comitê Não Remunerado:</strong> Explicitação de que participar do comitê não gera acréscimo salarial.</li>
+                                <li class="flex items-start gap-2"><i data-lucide="shield" class="w-4 h-4 mt-0.5 text-blue-600"></i> <strong>Abertura do Ecossistema:</strong> Ampliação do rol de parceiros (terceiro setor, autarquias, coop, etc).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: V1 e V2 -->
+        <div id="view-v1v2" class="view-section hidden fade-in space-y-6">
+            <div class="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg text-center mb-6 border border-slate-200 dark:border-slate-700">
+                <i data-lucide="flag" class="w-10 h-10 mx-auto text-slate-400 mb-2"></i>
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">A Proposta Original</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-2 max-w-2xl mx-auto">
+                    As primeiras versões estabeleceram a base da política. O foco era apenas "ativar" os mecanismos previstos na Lei de Inovação (10.973) para que o CIASC passasse a operar formalmente como ICT.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h3 class="font-bold text-lg mb-3 flex items-center gap-2"><i data-lucide="check-circle" class="text-green-500 w-5 h-5"></i> O que foi criado aqui e se manteve:</h3>
+                    <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                        <li><strong>Criação do NIT:</strong> Designação da AIT como Núcleo de Inovação.</li>
+                        <li><strong>Habilitação de Bolsas:</strong> Permissão genérica para pagar bolsas de pesquisa.</li>
+                        <li><strong>Instrumentos de Contratação:</strong> Habilitação do CPSI (Startups) e compartilhamento de infraestrutura.</li>
+                        <li><strong>Propriedade Intelectual:</strong> Definição de que softwares criados internamente pertencem ao CIASC.</li>
+                    </ul>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h3 class="font-bold text-lg mb-3 flex items-center gap-2"><i data-lucide="alert-circle" class="text-amber-500 w-5 h-5"></i> O que faltava (Gaps identificados):</h3>
+                    <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                        <li>Decisões sobre entrada em Startups (Corporate Venture) ficavam restritas apenas à Diretoria.</li>
+                        <li>Não havia menção ao GGG para regulamentos que afetam a folha de pagamento.</li>
+                        <li>O pagamento de prêmios/royalties não distinguia "trabalho do dia a dia" de "invenção extraordinária", gerando passivo trabalhista potencial.</li>
+                        <li>Reinvestimento no NIT era um percentual fixo "engessado".</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: V3 (DME) -->
+        <div id="view-v3" class="view-section hidden fade-in space-y-6">
+            <div class="bg-purple-900 text-white p-6 rounded-lg text-center mb-6 shadow-md">
+                <i data-lucide="git-merge" class="w-10 h-10 mx-auto text-purple-300 mb-2"></i>
+                <h2 class="text-2xl font-bold">A Revisão da DME (Versão 3)</h2>
+                <p class="text-purple-200 mt-2 max-w-2xl mx-auto">
+                    A análise da Diretoria de Mercado e Empreendedorismo adicionou <strong>freios e contrapesos (Compliance)</strong>. O foco foi garantir que a Política de Inovação não atropelasse as instâncias superiores de governança do Estado.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Alteração 1 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg border-t-4 border-purple-500 shadow-sm">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-100 mb-2">Art. 34, §4º: Trava do GGG</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 text-justify">
+                        Como a Retribuição Pecuniária por Serviços Técnicos afeta a remuneração (mesmo sendo variável), a DME exigiu que o regulamento interno disso passe pelo Grupo Gestor de Governo (GGG).
+                    </p>
+                    <div class="bg-slate-100 dark:bg-slate-900/50 p-2 rounded text-xs font-mono text-purple-700 dark:text-purple-400">
+                        "A eficácia do regulamento... dependerá de manifestação do GGG, nos termos do Estatuto Social."
+                    </div>
+                </div>
+
+                <!-- Alteração 2 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg border-t-4 border-purple-500 shadow-sm">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-100 mb-2">Art. 55: Trava do CONSAD</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 text-justify">
+                        Participar de Startups (Corporate Venture) envolve risco de capital. A DME exigiu que a política deixe claro que o aval não é só da Diretoria, mas do Conselho de Administração.
+                    </p>
+                    <div class="bg-slate-100 dark:bg-slate-900/50 p-2 rounded text-xs font-mono text-purple-700 dark:text-purple-400">
+                        "A participação societária... dependerá de autorização expressa do Conselho de Administração (CONSAD)..."
+                    </div>
+                </div>
+
+                <!-- Alteração 3 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg border-t-4 border-purple-500 shadow-sm">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-100 mb-2">Art. 64: Reinvestimento Flexível</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 text-justify">
+                        A versão anterior travava "XX%" da receita de inovação para voltar ao NIT. A DME sugeriu flexibilizar para adequar à realidade do caixa da empresa ano a ano.
+                    </p>
+                    <div class="bg-slate-100 dark:bg-slate-900/50 p-2 rounded text-xs font-mono text-purple-700 dark:text-purple-400">
+                        "O percentual... será definido anualmente pelo Conselho de Administração..."
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: V4 (PRESI/DTI) -->
+        <div id="view-v4" class="view-section hidden fade-in space-y-6">
+            <div class="bg-blue-600 text-white p-6 rounded-lg text-center mb-6 shadow-md">
+                <i data-lucide="shield-check" class="w-10 h-10 mx-auto text-blue-200 mb-2"></i>
+                <h2 class="text-2xl font-bold">A Revisão PRESI / DTI (Versão 4 - Atual)</h2>
+                <p class="text-blue-100 mt-2 max-w-2xl mx-auto">
+                    A análise da Presidência e da Diretoria de Tecnologia blindou a empresa contra <strong>passivos trabalhistas</strong>. A principal preocupação foi evitar que empregados exigissem "prêmios de inovação" por fazerem apenas o trabalho que já consta na descrição de seus cargos.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Alteração 1 (Blindagem Principal) -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-bl-lg font-bold">Ajuste Crítico</div>
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2 flex items-center gap-2">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 text-red-500"></i> Rotina vs. Inovação (Art. 22 e 34)
+                    </h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 text-justify">
+                        Foi inserido um parágrafo que separa claramente o que é uma invenção/inovação sujeita a prêmio/royalties e o que é o desenvolvimento de sistemas cotidiano. 
+                    </p>
+                    <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded text-sm border-l-4 border-red-500 text-slate-800 dark:text-slate-200 italic">
+                        "A participação... somente será devida quando a criação intelectual resultar de projetos formais de PD&I, <strong class="text-red-700 dark:text-red-400">ficando excluídas as criações decorrentes exclusivamente das atribuições funcionais, rotineiras ou inerentes ao vínculo laboral</strong>."
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Alteração 2 -->
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100 mb-2 flex items-center gap-2">
+                            <i data-lucide="users" class="w-4 h-4 text-blue-500"></i> Comitê Não Remunerado (Art. 6º)
+                        </h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            Ficou explícito que fazer parte do Comitê de Inovação é "atividade institucional de caráter não remunerado", vedando qualquer acréscimo salarial. Também definiu-se a periodicidade mínima semestral.
+                        </p>
+                    </div>
+
+                    <!-- Alteração 3 -->
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100 mb-2 flex items-center gap-2">
+                            <i data-lucide="network" class="w-4 h-4 text-blue-500"></i> Ecossistema Ampliado (Art. 2º, VII)
+                        </h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            O texto original limitava parcerias a empresas e universidades. A V4 expandiu a redação para englobar expressamente: <em>fundações, autarquias, terceiro setor, cooperativas e organizações internacionais</em>, garantindo que o CIASC não tenha restrições burocráticas ao inovar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer (Padrão CIASC) -->
+    <footer class="bg-slate-100 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 mt-8">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                
+                <div class="flex flex-col justify-center items-center md:items-start space-y-4">
+                    <div class="w-fit">
+                         <img class="h-10 w-auto" src="https://ciasc.sc.gov.br/wp-content/uploads/2022/09/Logo_simboloCIASC.png" alt="Logo CIASC">
+                    </div>
+                    <p class="text-xs text-center md:text-left text-slate-600 dark:text-slate-400">
+                        Todos os Direitos reservados - AIT<br>(Assessoria de Inovação e Tecnologia) - CIASC 2026
+                    </p>
+                </div>
+                
+                <div class="text-center md:text-left text-sm text-slate-700 dark:text-slate-300">
+                    <h4 class="font-semibold text-blue-800 dark:text-blue-400">Centro de Informática e Automação do Estado de Santa Catarina S.A.</h4>
+                    <p class="mt-2">Rua Murilo Andriani, 327 - Itacorubi</p>
+                    <p>Florianópolis, SC - CEP 88034-902</p>
+                    <p class="mt-1 font-medium">CNPJ: 83.590.222/0001-08</p>
+                </div>
+                
+                <div class="text-center md:text-right text-sm">
+                    <p class="font-semibold text-blue-800 dark:text-blue-400">Links Úteis</p>
+                    <ul class="mt-2 space-y-1">
+                        <li><a href="https://ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Site Oficial CIASC</a></li>
+                        <li><a href="https://transparencia.ciasc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">Portal da Transparência</a></li>
+                        <li><a href="https://www.fapesc.sc.gov.br/" target="_blank" class="text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 hover:underline">FAPESC</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS para interatividade -->
+    <script>
+        function initIcons() {
+             lucide.createIcons();
+        }
+
+        // TEMA
+        const htmlEl = document.documentElement;
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        
+        let currentTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        htmlEl.classList.add(currentTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlEl.classList.toggle('dark');
+            htmlEl.classList.toggle('light');
+            currentTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', currentTheme);
+        });
+
+        // NAVEGAÇÃO
+        function switchTab(tabId) {
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(view => {
+                view.classList.add('hidden');
+            });
+
+            const targetView = document.getElementById('view-' + tabId);
+            if (targetView) {
+                targetView.classList.remove('hidden');
+            }
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+            });
+            
+            const activeButton = document.getElementById('btn-' + tabId);
+            if (activeButton) {
+                activeButton.classList.remove('tab-inactive');
+                activeButton.classList.add('tab-active');
+            }
+            
+            setTimeout(initIcons, 50);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            initIcons();
+        });
+    </script>
+</body>
+</html>
