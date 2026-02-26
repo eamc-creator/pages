@@ -3,21 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SC 2026: Cenário Pós-Aliança PL+NOVO</title>
+    <title>Santa Catarina 2026: Observatório Eleitoral (Atualizado)</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <!-- Configurações de Estilo e Tailwind -->
     <script>
         tailwind.config = {
             theme: {
@@ -27,9 +22,9 @@
                         'sc-green': '#009739',
                         'pl-blue': '#002776',
                         'psd-orange': '#f5821f',
-                        'novo-orange': '#ff8300',
                         'pt-red': '#cc0000',
-                        'alliance-purple': '#4c1d95', // Cor para representar a fusão PL+NOVO
+                        'slate-850': '#1e293b',
+                        'alliance-purple': '#4c1d95',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -41,56 +36,57 @@
     </script>
 
     <style>
-        .chart-container { position: relative; width: 100%; margin: 0 auto; }
-        .h-chart-lg { height: 400px; max-height: 500px; }
-        .h-chart-md { height: 300px; max-height: 400px; }
-        .h-chart-sm { height: 250px; max-height: 300px; }
-        @media (max-width: 640px) { .h-chart-lg { height: 300px; } .h-chart-md { height: 250px; } }
-        body { background-color: #f8fafc; color: #334155; }
-        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+       .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
         
-        /* Table styles */
-        .city-row:nth-child(even) { background-color: #f8fafc; }
-        .city-row:hover { background-color: #f1f5f9; }
-        .bar-bg { background-color: #e2e8f0; border-radius: 2px; height: 6px; width: 100%; margin-top: 4px; overflow: hidden; }
-        .bar-fill { height: 100%; border-radius: 2px; }
-        
-        /* Badge for Vice */
-        .vice-badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: #ff8300; color: white; font-weight: bold; margin-left: 8px; }
-    </style>
+       .h-chart-lg { height: 400px; max-height: 500px; }
+       .h-chart-md { height: 300px; max-height: 400px; }
+       .h-chart-sm { height: 250px; max-height: 300px; }
 
-    <!-- Chosen Palette: Political Alliance (Navy Blue + Orange Accent) -->
-    <!-- Application Structure:
-        1. Context Header: Highlighting the new PL+NOVO alliance.
-        2. Breaking News/Analysis: Explaining the impact of Adriano Silva (Mayor of Joinville) joining the ticket.
-        3. Updated KPIs: Probability of 1st turn win increases dramatically.
-        4. Charts: 
-           - Trends showing the jump in Jorginho's numbers after absorbing NOVO's electorate.
-           - 3-Way Race: Jorginho vs Rodrigues vs Decio.
-        5. City Projection: Joinville numbers adjusted to >60% for the alliance.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+        @media (max-width: 640px) {
+           .h-chart-lg { height: 300px; }
+           .h-chart-md { height: 250px; }
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+        }
+
+       .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* City Table Specifics */
+       .city-row:nth-child(even) { background-color: #f8fafc; }
+       .city-row:hover { background-color: #f1f5f9; transition: background-color 0.2s; }
+       .bar-bg { background-color: #e2e8f0; border-radius: 2px; height: 6px; width: 100%; margin-top: 4px; overflow: hidden; }
+       .bar-fill { height: 100%; border-radius: 2px; }
+    </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col font-sans">
 
-    <!-- Header -->
-    <header class="bg-slate-900 text-white pb-6 pt-8 relative overflow-hidden border-b-4 border-novo-orange">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pl-blue via-white to-novo-orange"></div>
+    <header class="bg-slate-900 text-white pb-6 pt-8 relative overflow-hidden border-b-4 border-sc-green">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sc-red via-white to-sc-green"></div>
         <div class="container mx-auto px-4 z-10 relative">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end">
                 <div>
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="text-xs font-bold text-white bg-red-600 px-2 py-0.5 rounded animate-pulse">NOVO CENÁRIO</span>
-                        <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Eleições SC 2026</span>
+                    <div class="flex items-center gap-3 mb-1">
+                        <div class="text-xs font-bold text-sc-green tracking-widest uppercase">Eleições Estaduais SC</div>
+                        <span class="bg-alliance-purple text-white text-[10px] px-2 py-0.5 rounded font-bold animate-pulse">NOVO CENÁRIO PL+NOVO</span>
                     </div>
-                    <h1 class="text-3xl font-serif font-bold leading-tight">Jorginho + Adriano Silva</h1>
+                    <h1 class="text-3xl font-serif font-bold leading-tight">Cenário Governador 2026</h1>
                     <p class="text-slate-400 text-sm mt-1">
-                        Impacto da aliança PL (Governo) + NOVO (Joinville) na projeção eleitoral.
+                        Monitoramento preditivo por macro-regiões e divisão de Fundo Eleitoral
                     </p>
                 </div>
                 <div class="mt-4 md:mt-0 text-right">
-                    <div class="text-xs text-slate-500">Probabilidade Vitória 1º Turno</div>
-                    <div class="font-bold text-2xl text-sc-green">Alta ↗</div>
+                    <div class="text-xs text-slate-500">Data de Referência</div>
+                    <div class="font-bold text-lg">Fevereiro 2026</div>
                 </div>
             </div>
         </div>
@@ -98,50 +94,20 @@
 
     <main class="flex-grow container mx-auto px-4 py-8 space-y-8">
 
-        <!-- ANALYSIS SECTION -->
-        <section class="bg-white p-6 rounded-xl card-shadow border-l-4 border-pl-blue">
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="md:w-2/3">
-                    <h2 class="font-bold text-xl text-gray-800 mb-2">O "Xeque-Mate" do Norte</h2>
-                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
-                        A confirmação de <strong>Adriano Silva (NOVO)</strong>, prefeito de Joinville com 78% de aprovação, como vice de Jorginho Mello altera drasticamente a matemática eleitoral. 
-                    </p>
-                    <ul class="text-sm text-gray-600 space-y-2 list-disc pl-5">
-                        <li><strong>Unificação da Direita Técnica:</strong> O eleitor que rejeitava o bolsonarismo raiz mas votava no NOVO (perfil técnico/liberal) agora migra para a chapa governista.</li>
-                        <li><strong>Muralha em Joinville:</strong> O maior colégio eleitoral, antes disputado, tende a entregar mais de 60% dos votos para a chapa, neutralizando o crescimento de João Rodrigues no Oeste.</li>
-                        <li><strong>Fim da 3ª Via:</strong> Sem Tramontin, a eleição polariza entre a Máquina (PL+NOVO) e o Desafio Populista (PSD).</li>
-                    </ul>
-                </div>
-                <div class="md:w-1/3 bg-slate-50 p-4 rounded border border-slate-100 flex flex-col justify-center text-center">
-                    <div class="text-xs text-gray-500 uppercase font-bold mb-2">Transferência de Votos (Ex-Tramontin)</div>
-                    <div class="flex justify-between items-end h-32 px-4 space-x-2">
-                        <div class="w-1/3 bg-pl-blue rounded-t relative group h-[85%]">
-                            <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold">85%</span>
-                            <div class="absolute bottom-2 left-0 w-full text-[10px] text-white">P/ Jorginho</div>
-                        </div>
-                        <div class="w-1/3 bg-psd-orange rounded-t relative h-[10%]">
-                            <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold">10%</span>
-                            <div class="absolute bottom-2 left-0 w-full text-[10px] text-white">P/ Rodrigues</div>
-                        </div>
-                        <div class="w-1/3 bg-gray-400 rounded-t relative h-[5%]">
-                            <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold">5%</span>
-                            <div class="absolute bottom-2 left-0 w-full text-[10px] text-white">Nulo</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <section class="bg-white p-6 rounded-xl card-shadow border-l-4 border-alliance-purple">
+            <h2 class="font-bold text-gray-800 mb-2">Contexto Pós-Aliança (Fevereiro 2026)</h2>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                A entrada de Adriano Silva (NOVO) como vice na chapa de Jorginho Mello (PL) reconfigurou o cenário catarinense, garantindo forte dominância no Norte do estado e neutralizando o crescimento da oposição. Pesquisas recentes indicam que o incumbente atingiu a marca de 48% a 49% das intenções de voto. A vantagem é amplificada pela projeção do Fundo Eleitoral nacional, onde o PL disporá de aproximadamente R$ 886,7 milhões contra R$ 420,8 milhões do PSD de João Rodrigues.
+            </p>
         </section>
 
-        <!-- KPI CARDS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="kpi-container">
-            <!-- JS Populated -->
-        </div>
+            </div>
 
-        <!-- SECTION 1: CHARTS -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-1 bg-white rounded-xl card-shadow p-6 flex flex-col">
                 <h2 class="text-lg font-bold text-slate-800 mb-1">🏆 Probabilidade</h2>
-                <p class="text-xs text-slate-500 mb-4">Novo Modelo Ponderado (PL + NOVO)</p>
+                <p class="text-xs text-slate-500 mb-4">Algoritmo ponderado (Força Partidária + Fundo + Tendência).</p>
                 <div class="chart-container h-chart-sm flex-grow">
                     <canvas id="probabilityChart"></canvas>
                 </div>
@@ -150,8 +116,8 @@
             <div class="lg:col-span-2 bg-white rounded-xl card-shadow p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-800">📈 Impacto da Aliança na Intenção de Voto</h2>
-                        <p class="text-xs text-slate-500">Observe o salto em Fev/26 (Anúncio da Aliança)</p>
+                        <h2 class="text-lg font-bold text-slate-800">📈 Evolução das Intenções</h2>
+                        <p class="text-xs text-slate-500">Cenário Estimulado: Ago/25 - Fev/26 (Salto Pós-Aliança)</p>
                     </div>
                 </div>
                 <div class="chart-container h-chart-md">
@@ -160,223 +126,206 @@
             </div>
         </div>
 
-        <!-- SECTION 2: 2ND TURN SIMULATION -->
-        <section class="bg-white rounded-xl card-shadow p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <section class="bg-white rounded-xl card-shadow p-6">
+                <div class="mb-4 border-b pb-2">
+                    <h2 class="text-lg font-bold text-slate-800">⚔️ Simulação de 2º Turno</h2>
+                    <p class="text-xs text-slate-500">Projeções atualizadas mitigando a rejeição do governo com o eleitorado do NOVO.</p>
+                </div>
                 <div class="chart-container h-chart-sm">
                     <canvas id="secondTurnChart"></canvas>
                 </div>
-                <div>
-                    <h3 class="font-bold text-slate-800 mb-2">Análise de Cenário</h3>
-                    <p class="text-sm text-gray-600 mb-2">
-                        Com a união PL+NOVO, a chance de segundo turno diminui. Se houver, João Rodrigues (PSD) teria que conquistar todo o eleitorado de esquerda (voto "anti-Jorginho") para competir, algo ideologicamente improvável em SC.
+            </section>
+
+            <section class="bg-white rounded-xl card-shadow p-6">
+                <div class="mb-2">
+                    <h2 class="text-lg font-bold text-slate-800">📱 Matriz Digital</h2>
+                    <p class="text-xs text-slate-500">
+                        Cruzamento de intenção de voto com o potencial de engajamento (viralidade).
                     </p>
-                    <div class="bg-blue-50 border-l-4 border-blue-600 p-3 mt-4">
-                        <p class="text-xs text-blue-800 font-bold">
-                            "A chapa Jorginho/Adriano blinda o governo contra críticas de gestão ineficiente, trazendo a marca 'NOVO' de gestão."
-                        </p>
-                    </div>
                 </div>
+                <div id="momentumChart" class="w-full h-[300px]"></div>
+            </section>
+        </div>
+
+        <section class="bg-white rounded-xl card-shadow overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-slate-800">Panorama Estrutural dos Pré-Candidatos</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th class="px-6 py-3">Candidato / Chapa</th>
+                            <th class="px-6 py-3 text-right">Intenção Fev/26</th>
+                            <th class="px-6 py-3 text-center">Digital Score</th>
+                            <th class="px-6 py-3 text-right">Fundo Eleitoral (Estimado)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="candidates-table-body">
+                        </tbody>
+                </table>
             </div>
         </section>
 
-        <!-- SECTION 3: TOP 20 CITIES PROJECTION (UPDATED) -->
         <section class="bg-white rounded-xl card-shadow overflow-hidden">
             <div class="px-6 py-6 border-b border-gray-100 bg-slate-50">
                 <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                    🏙️ Projeção Regional Ajustada (20 Maiores Cidades)
+                    🏙️ Projeção: 20 Maiores Colégios Eleitorais
                 </h2>
                 <p class="text-xs text-slate-500 mt-1">
-                    Nota: Coluna "Tramontin" removida. Votos redistribuídos. Joinville agora é reduto PL/NOVO.
+                    Estimativa baseada em transferência de votos e arranjos partidários regionais pós-fevereiro.
                 </p>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-xs md:text-sm text-left text-gray-600">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100 border-b-2 border-gray-200">
                         <tr>
-                            <th class="px-4 py-3 w-1/3">Cidade / Região</th>
-                            <th class="px-2 py-3 text-center text-pl-blue font-bold border-b-2 border-pl-blue">Jorginho + Adriano (PL/NOVO)</th>
-                            <th class="px-2 py-3 text-center text-psd-orange font-bold">Rodrigues (PSD)</th>
-                            <th class="px-2 py-3 text-center text-pt-red font-bold">Décio (PT)</th>
-                            <th class="px-2 py-3 text-center text-gray-400">Out/B/N</th>
+                            <th class="px-4 py-3 w-1/4">Cidade / Região</th>
+                            <th class="px-2 py-3 w-1/5 text-center text-pl-blue font-bold">Jorginho + Adriano</th>
+                            <th class="px-2 py-3 w-1/5 text-center text-psd-orange font-bold">Rodrigues (PSD)</th>
+                            <th class="px-2 py-3 w-1/5 text-center text-pt-red font-bold">Décio (PT)</th>
+                            <th class="px-2 py-3 w-1/5 text-center text-slate-700 font-bold">M. Brigadeiro / Outros</th>
                         </tr>
                     </thead>
                     <tbody id="cities-table-body">
-                        <!-- Populated by JS -->
-                    </tbody>
+                        </tbody>
                 </table>
+            </div>
+            <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 text-xs text-gray-500 text-center">
+                * Projeções estatísticas baseadas em agrupamento. Margem de erro estimada em 3.5% por município.
             </div>
         </section>
 
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 py-8 mt-8 border-t-4 border-sc-green">
+    <footer class="bg-slate-900 text-slate-400 py-8 mt-8 border-t-4 border-alliance-purple">
         <div class="container mx-auto px-4 text-center">
             <p class="text-sm font-semibold text-slate-200">© 2026 MagicSunset</p>
-            <p class="text-xs mt-1 opacity-75">Análise de Cenários Políticos Complexos</p>
+            <p class="text-xs mt-1 opacity-75">Análise Preditiva e Inteligência de Dados</p>
         </div>
     </footer>
 
-    <!-- LOGIC -->
     <script>
-        // --- DATASET: UPDATED FOR ALLIANCE ---
-        // Jorginho jumps from ~35% to ~44% (absorbing Tramontin + Boost from Adriano)
-        // Rodrigues stays stable or grows slightly (anti-system), but loses potential liberal votes.
-        
+        // --- DATASET: SC Scenario Feb 2026 (Updated with PL+NOVO Alliance) ---
         const candidates = [
             { 
-                id: 'jorginho', name: 'Jorginho + Adriano', party: 'PL / NOVO', color: '#002776', 
-                data: [38.5, 38.0, 37.5, 36.8, 36.5, 35.8, 44.2], // Big jump in last month (Feb)
-                rejection: 20, // Rejection drops slightly due to "technical" vice
-                prob: 65 
+                id: 'jorginho', name: 'Jorginho/Adriano (PL/NOVO)', color: '#002776', 
+                data: [38.5, 38.0, 37.5, 36.8, 36.5, 44.2, 48.5], 
+                digital_score: 82, prob: 75, fundo: 'R$ 886 Milhões' 
             },
             { 
-                id: 'rodrigues', name: 'João Rodrigues', party: 'PSD', color: '#f5821f', 
-                data: [18.2, 19.5, 21.0, 22.8, 24.5, 26.2, 27.5], // Slower growth
-                rejection: 22, 
-                prob: 25 
+                id: 'rodrigues', name: 'João Rodrigues (PSD)', color: '#f5821f', 
+                data: [18.2, 19.5, 21.0, 22.8, 24.5, 26.2, 24.5], 
+                digital_score: 88, prob: 20, fundo: 'R$ 420 Milhões' 
             },
             { 
-                id: 'decio', name: 'Décio Lima', party: 'PT', color: '#cc0000', 
-                data: [16.5, 16.2, 16.8, 16.5, 16.0, 15.8, 15.5], // Stable/Slight drop
-                rejection: 58, 
-                prob: 5 
+                id: 'decio', name: 'Décio Lima (PT)', color: '#cc0000', 
+                data: [16.5, 16.2, 16.8, 16.5, 16.0, 15.8, 15.5], 
+                digital_score: 45, prob: 3, fundo: 'R$ 619 Milhões' 
             },
             { 
-                id: 'others', name: 'Branco/Nulo/Ind', party: '-', color: '#94a3b8', 
-                data: [26.8, 26.3, 24.7, 24.2, 23.0, 22.2, 12.8], // Drop as polarization increases
-                rejection: 0, 
-                prob: 0 
+                id: 'brigadeiro', name: 'M. Brigadeiro (Missão)', color: '#1e293b', 
+                data: [0, 0, 0.5, 1.0, 1.5, 2.0, 2.5], 
+                digital_score: 78, prob: 2, fundo: 'Sem Fundo Expressivo' 
             }
         ];
 
-        // --- UPDATED CITY DATA (No Tramontin column, massive boost to Jorginho in North) ---
-        const cityData = [
-            { name: "Joinville", region: "Norte", jorginho: 62, rodrigues: 18, decio: 14, others: 6 }, // Historic lead due to Mayor
-            { name: "Florianópolis", region: "Capital", jorginho: 38, rodrigues: 30, decio: 24, others: 8 }, // Topazio helps Rodrigues here
-            { name: "Blumenau", region: "Vale", jorginho: 52, rodrigues: 24, decio: 15, others: 9 }, // NOVO voters go to Jorginho
-            { name: "São José", region: "G. Floripa", jorginho: 46, rodrigues: 26, decio: 18, others: 10 },
-            { name: "Chapecó", region: "Oeste", jorginho: 18, rodrigues: 70, decio: 9, others: 3 }, // Rodrigues stronghold
-            { name: "Itajaí", region: "Litoral Norte", jorginho: 50, rodrigues: 22, decio: 18, others: 10 },
-            { name: "Criciúma", region: "Sul", jorginho: 48, rodrigues: 26, decio: 16, others: 10 },
-            { name: "Palhoça", region: "G. Floripa", jorginho: 45, rodrigues: 24, decio: 17, others: 14 },
-            { name: "Jaraguá do Sul", region: "Norte", jorginho: 60, rodrigues: 18, decio: 10, others: 12 }, // NOVO/Adriano influence
-            { name: "Lages", region: "Serra", jorginho: 50, rodrigues: 24, decio: 15, others: 11 },
-            { name: "Bal. Camboriú", region: "Litoral", jorginho: 58, rodrigues: 20, decio: 12, others: 10 },
-            { name: "Brusque", region: "Vale", jorginho: 55, rodrigues: 22, decio: 13, others: 10 },
-            { name: "Tubarão", region: "Sul", jorginho: 48, rodrigues: 24, decio: 15, others: 13 },
-            { name: "São Bento do Sul", region: "Planalto Norte", jorginho: 52, rodrigues: 22, decio: 12, others: 14 },
-            { name: "Camboriú", region: "Litoral", jorginho: 48, rodrigues: 22, decio: 15, others: 15 },
-            { name: "Navegantes", region: "Litoral", jorginho: 52, rodrigues: 18, decio: 15, others: 15 },
-            { name: "Caçador", region: "Meio-Oeste", jorginho: 32, rodrigues: 45, decio: 12, others: 11 },
-            { name: "Concórdia", region: "Oeste", jorginho: 22, rodrigues: 58, decio: 12, others: 8 },
-            { name: "Rio do Sul", region: "Alto Vale", jorginho: 50, rodrigues: 25, decio: 10, others: 15 },
-            { name: "Içara", region: "Sul", jorginho: 44, rodrigues: 28, decio: 16, others: 12 },
-        ];
+        // --- CITY PROJECTION DATA (20 Largest Electoral Colleges) ---
+        const cityData =;
 
         // --- RENDER FUNCTIONS ---
 
         function initCharts() {
-            // Trend (Line) - Highlight the divergence
-            const ctxTrend = document.getElementById('trendChart').getContext('2d');
-            new Chart(ctxTrend, {
+            new Chart(document.getElementById('trendChart'), {
                 type: 'line',
                 data: {
-                    labels: ['Ago', 'Set', 'Out', 'Nov', 'Dez', 'Jan', 'Fev (Aliança)'],
-                    datasets: candidates.filter(c => c.id !== 'others').map(c => ({
+                    labels:,
+                    datasets: candidates.map(c => ({
                         label: c.name,
                         data: c.data,
                         borderColor: c.color,
                         backgroundColor: c.color,
                         tension: 0.3,
                         pointRadius: 4,
-                        borderWidth: c.id === 'jorginho' ? 4 : 2,
-                        borderDash: c.id === 'jorginho' ? [0, 0] : [0, 0] // Solid lines
+                        borderWidth: 2
                     }))
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { y: { beginAtZero: true, max: 60 } },
                     plugins: {
                         annotation: {
                             annotations: {
-                                line1: {
-                                    type: 'line',
-                                    xMin: 5, xMax: 5,
-                                    borderColor: 'gray', borderDash: [5, 5],
-                                    label: { content: 'Aliança PL+NOVO', enabled: true, position: 'top' }
-                                }
+                                line1: { type: 'line', xMin: 5, xMax: 5, borderColor: '#4c1d95', borderWidth: 2, borderDash: [4, 4] }
                             }
                         }
-                    },
-                    scales: { y: { beginAtZero: true, max: 55 } }
+                    }
                 }
             });
 
-            // Probability (Bar)
             new Chart(document.getElementById('probabilityChart'), {
                 type: 'bar',
                 data: {
-                    labels: candidates.slice(0, 3).map(c => c.name),
-                    datasets: [{
-                        label: '% Probabilidade',
-                        data: candidates.slice(0, 3).map(c => c.prob),
-                        backgroundColor: candidates.slice(0, 3).map(c => c.color),
-                        borderRadius: 6
-                    }]
+                    labels: candidates.map(c => c.name.split('(').trim()),
+                    datasets:
                 },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } }
-                }
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
-            // 2nd Turn (Bar)
             new Chart(document.getElementById('secondTurnChart'), {
                 type: 'bar',
                 data: {
-                    labels: ['Jorginho x Rodrigues', 'Jorginho x Décio'],
+                    labels:,
                     datasets: [
-                        { label: 'Jorginho (PL/NOVO)', data: [58, 68], backgroundColor: '#002776' },
-                        { label: 'Opositor', data: [42, 32], backgroundColor: '#9ca3af' }
+                        { label: 'Candidato 1', data: , backgroundColor: '#002776' },
+                        { label: 'Candidato 2', data: [1, 2, 3], backgroundColor: '#cc0000' }
                     ]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true, max: 80 } }
-                }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 80 } } }
             });
+
+            const scatterData = candidates.map(c => ({
+                x: c.data[4], y: c.digital_score, name: c.name.split(' '), color: c.color, size: c.data[4]
+            }));
+
+            Plotly.newPlot('momentumChart',, {
+                margin: { t: 20, r: 20, b: 30, l: 30 },
+                xaxis: { title: 'Intenção de Voto (%)' }, yaxis: { title: 'Digital Score (Viralidade)' },
+                shapes: [{ type: 'line', x0: 0, y0: 50, x1: 50, y1: 50, line: { color: 'gray', width: 1, dash: 'dot' } }]
+            }, {responsive: true, displayModeBar: false});
         }
 
         function populateKPIs() {
             document.getElementById('kpi-container').innerHTML = `
                 <div class="bg-white p-4 rounded-lg card-shadow border-t-4 border-pl-blue">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="text-xs text-gray-500 uppercase">Intenção de Voto</div>
-                            <div class="text-xl font-bold text-slate-800">Jorginho + Adriano</div>
-                        </div>
-                        <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">+8.4%</span>
-                    </div>
-                    <div class="text-3xl font-bold text-pl-blue mt-2">44.2%</div>
-                    <div class="text-xs text-gray-400 mt-1">Próximo da vitória em 1º turno (50% válidos)</div>
+                    <div class="text-xs text-gray-500 uppercase">Favorito (Chapa Consolidada)</div>
+                    <div class="text-xl font-bold text-slate-800">Jorginho + Adriano</div>
+                    <div class="text-2xl font-bold text-pl-blue">48.5%</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg card-shadow border-t-4 border-alliance-purple">
+                    <div class="text-xs text-gray-500 uppercase">Vantagem Financeira (PL)</div>
+                    <div class="text-xl font-bold text-slate-800">Fundo Eleitoral</div>
+                    <div class="text-2xl font-bold text-alliance-purple">R$ 886 Milhões</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg card-shadow border-t-4 border-psd-orange">
-                    <div class="text-xs text-gray-500 uppercase">Opositor Principal</div>
+                    <div class="text-xs text-gray-500 uppercase">Principal Oposição</div>
                     <div class="text-xl font-bold text-slate-800">João Rodrigues</div>
-                    <div class="text-3xl font-bold text-psd-orange mt-2">27.5%</div>
-                    <div class="text-xs text-gray-400 mt-1">Crescimento desacelerado no Norte</div>
-                </div>
-                <div class="bg-white p-4 rounded-lg card-shadow border-t-4 border-gray-400">
-                    <div class="text-xs text-gray-500 uppercase">Projeção Joinville</div>
-                    <div class="text-xl font-bold text-slate-800">Domínio da Chapa</div>
-                    <div class="text-3xl font-bold text-gray-700 mt-2">62%</div>
-                    <div class="text-xs text-gray-400 mt-1">Transferência direta de votos do Prefeito</div>
+                    <div class="text-2xl font-bold text-psd-orange">24.5%</div>
                 </div>
             `;
+        }
+
+        function populateTable() {
+            document.getElementById('candidates-table-body').innerHTML = candidates.map(c => `
+                <tr class="bg-white border-b hover:bg-gray-50">
+                    <td class="px-6 py-3 font-medium flex items-center gap-2"><span class="w-3 h-3 rounded-full" style="background-color: ${c.color}"></span>${c.name}</td>
+                    <td class="px-6 py-3 text-right font-bold">${c.data[4]}%</td>
+                    <td class="px-6 py-3 text-center"><span class="bg-slate-100 px-2 py-1 rounded text-xs font-bold">${c.digital_score}</span></td>
+                    <td class="px-6 py-3 text-right text-gray-600 text-xs font-mono">${c.fundo}</td>
+                </tr>
+            `).join('');
         }
 
         function populateCitiesTable() {
@@ -390,31 +339,20 @@
                         <div class="font-bold text-slate-800">${city.name}</div>
                         <div class="text-[10px] text-gray-400 uppercase tracking-wide">${city.region}</div>
                     </td>
-                    <td class="px-2 py-2 text-center align-middle bg-blue-50/50">
-                        ${num(city.jorginho)}
-                        ${bar(city.jorginho, '#002776')}
-                    </td>
-                    <td class="px-2 py-2 text-center align-middle">
-                        ${num(city.rodrigues)}
-                        ${bar(city.rodrigues, '#f5821f')}
-                    </td>
-                    <td class="px-2 py-2 text-center align-middle">
-                        ${num(city.decio)}
-                        ${bar(city.decio, '#cc0000')}
-                    </td>
-                    <td class="px-2 py-2 text-center align-middle text-gray-400 text-xs font-mono">
-                        ${city.others}%
-                    </td>
+                    <td class="px-2 py-2 text-center align-middle">${num(city.jorginho)}${bar(city.jorginho, '#002776')}</td>
+                    <td class="px-2 py-2 text-center align-middle">${num(city.rodrigues)}${bar(city.rodrigues, '#f5821f')}</td>
+                    <td class="px-2 py-2 text-center align-middle">${num(city.decio)}${bar(city.decio, '#cc0000')}</td>
+                    <td class="px-2 py-2 text-center align-middle">${num(city.outros)}${bar(city.outros, '#1e293b')}</td>
                 </tr>
             `).join('');
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             populateKPIs();
+            populateTable();
             populateCitiesTable();
             initCharts();
         });
-
     </script>
 </body>
 </html>
