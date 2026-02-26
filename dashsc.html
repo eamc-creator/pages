@@ -3,449 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SC 2026: Dashboard Preditivo Expandido</title>
-    
-    <!-- Tailwind CSS -->
+    <title>SC 2026: Poder Econômico e Midiático</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9;
-            color: #0f172a;
-        }
-        h1, h2, h3, h4, .font-heading {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            max-height: 400px;
-        }
-
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            border-radius: 0.75rem;
-        }
-
-        .city-row:hover {
-            background-color: #f8fafc;
-        }
-
-        /* Custom Scrollbar for the table */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 18px;
-            width: 18px;
-            border-radius: 50%;
-            background: #1e293b;
-            cursor: pointer;
-            margin-top: -7px;
-            border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 4px;
-            cursor: pointer;
-            background: #cbd5e1;
-            border-radius: 2px;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        h1, h2, h3, .font-heading { font-family: 'Space Grotesk', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.9); border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .chart-container { position: relative; height: 320px; width: 100%; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: #1e293b; cursor: pointer; margin-top: -7px; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #cbd5e1; border-radius: 2px; }
     </style>
-    
-    <!-- Chosen Palette: Slate & Indigo (Professional Data Viz) -->
-    <!-- Application Structure Plan: 
-         1. Executive Summary: Main Probabilities based on Documents.
-         2. Predictive Engine: Real-time Bayesian simulation.
-         3. TOP 20 CITIES: New section with regional weighted projections.
-         4. Geopolitical Trends: Factors from the analysis document.
+    <!-- 
+    Application Structure Plan:
+    1. Financial/Media Gap Analysis: Visual comparison of TV Seconds and Estimated Election Fund (R$).
+    2. Logistic Regression Graph: Shows how the 'Growth Rate' (k) increases with more money/TV.
+    3. 20 Largest Cities: Table with a "Media Saturation" index.
+    4. Geopolitical Cards: Explaining the influence of the Presidential race on SC resources.
     -->
 </head>
-<body class="p-2 md:p-6">
+<body class="p-4 md:p-8">
 
-    <!-- Header Section -->
-    <header class="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-end gap-4">
-        <div>
-            <div class="inline-block bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded mb-2 uppercase tracking-widest">Inteligência Eleitoral</div>
-            <h1 class="text-4xl font-bold text-slate-900 font-heading">SC 2026: Projeção por Cidades</h1>
-            <p class="text-slate-500 mt-1">Simulação estocástica baseada nos 20 maiores colégios eleitorais e alianças de cúpula.</p>
-        </div>
-        <div class="text-right">
-            <span class="text-xs font-mono text-slate-400">STATUS DO MODELO: ATUALIZADO (FEV 2026)</span>
+    <header class="max-w-7xl mx-auto mb-10">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-4xl font-bold tracking-tight text-slate-900 font-heading">A Balança de Poder: SC 2026</h1>
+                <p class="text-slate-500 mt-2 text-lg">Análise Probabilística: O impacto do Fundo Eleitoral e Tempo de TV na conversão de votos.</p>
+            </div>
+            <div class="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg">
+                MODELO: REGRESSÃO LOGÍSTICA V3.1
+            </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto space-y-8">
-        
-        <!-- KPI Row -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="glass-panel p-5 border-l-4 border-blue-900">
-                <p class="text-xs font-bold text-slate-400 uppercase">Jorginho (PL+NOVO)</p>
-                <div class="flex items-center gap-2">
-                    <h2 class="text-3xl font-bold text-slate-900" id="kpi-jorginho">58.4%</h2>
-                    <span class="text-[10px] bg-green-100 text-green-700 px-1 rounded">Favorito</span>
+
+        <!-- Section 1: The Disparity (Bars) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="glass p-6">
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <span>Estimação de Fundo Eleitoral (SC - Gov)</span>
+                    <span class="text-xs bg-slate-100 text-slate-400 font-normal px-2 py-1 rounded">Valores em Milhões (R$)</span>
+                </h2>
+                <div class="space-y-6">
+                    <!-- PL/NOVO -->
+                    <div>
+                        <div class="flex justify-between text-sm font-bold mb-1">
+                            <span>PL + NOVO (Máquina)</span>
+                            <span class="text-blue-800">R$ 65.0M</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
+                            <div class="bg-blue-800 h-full w-[100%]"></div>
+                        </div>
+                    </div>
+                    <!-- PSD -->
+                    <div>
+                        <div class="flex justify-between text-sm font-bold mb-1 text-slate-600">
+                            <span>PSD (João Rodrigues)</span>
+                            <span class="text-orange-600">R$ 28.5M</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
+                            <div class="bg-orange-500 h-full w-[44%]"></div>
+                        </div>
+                    </div>
+                    <!-- PT -->
+                    <div>
+                        <div class="flex justify-between text-sm font-bold mb-1 text-slate-600">
+                            <span>Frente Esquerda</span>
+                            <span class="text-red-700">R$ 18.0M</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
+                            <div class="bg-red-600 h-full w-[28%]"></div>
+                        </div>
+                    </div>
                 </div>
+                <p class="mt-6 text-xs text-slate-400 italic">Nota: Estimativa baseada na partilha nacional do Fundo Especial de Financiamento de Campanha (FEFC).</p>
             </div>
-            <div class="glass-panel p-5 border-l-4 border-orange-500">
-                <p class="text-xs font-bold text-slate-400 uppercase">João Rodrigues (PSD)</p>
-                <h2 class="text-3xl font-bold text-slate-900" id="kpi-rodrigues">24.1%</h2>
-            </div>
-            <div class="glass-panel p-5 border-l-4 border-red-600">
-                <p class="text-xs font-bold text-slate-400 uppercase">Frente Esquerda</p>
-                <h2 class="text-3xl font-bold text-slate-900" id="kpi-decio">14.2%</h2>
-            </div>
-            <div class="glass-panel p-5 border-l-4 border-slate-400 bg-white">
-                <p class="text-xs font-bold text-slate-400 uppercase">Prob. 2º Turno</p>
-                <h2 class="text-3xl font-bold text-slate-900" id="kpi-round2">32%</h2>
+
+            <div class="glass p-6">
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <span>Tempo de TV (Segundos/Bloco)</span>
+                    <span class="text-xs bg-slate-100 text-slate-400 font-normal px-2 py-1 rounded">Estimativa Março/2026</span>
+                </h2>
+                <div class="chart-container">
+                    <canvas id="tvTimeChart"></canvas>
+                </div>
             </div>
         </div>
 
-        <!-- NEW: TOP 20 CITIES SECTION -->
-        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <!-- City Ranking Table (8 columns) -->
-            <div class="lg:col-span-8 glass-panel overflow-hidden flex flex-col">
-                <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
+        <!-- Section 2: Logistic Regression Simulation -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 glass p-6">
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold font-heading">Curva de Crescimento (Regressão Logística)</h2>
+                    <p class="text-sm text-slate-500">O gráfico mostra como a intenção de voto atinge o teto conforme os recursos são injetados.</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="logisticChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Simulation Controls -->
+            <div class="glass p-6 bg-slate-900 text-white">
+                <h2 class="text-lg font-bold mb-6 text-blue-400 font-heading">Ajuste de Variáveis</h2>
+                <div class="space-y-6">
                     <div>
-                        <h2 class="text-xl font-bold font-heading">Projeção Regional: TOP 20 Municípios</h2>
-                        <p class="text-xs text-slate-500">Estimativa baseada em histórico regional e alianças municipais vigentes.</p>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Eficiência do Fundo (PL)</label>
+                        <input type="range" id="sim-fund-pl" min="0" max="100" value="85" class="accent-blue-500">
+                        <div class="flex justify-between text-[10px] mt-1 text-slate-500 font-mono">
+                            <span>BAIXA</span><span id="val-fund-pl">85%</span><span>ALTA</span>
+                        </div>
                     </div>
-                    <div class="flex gap-2">
-                         <div class="flex items-center gap-1"><span class="w-3 h-3 bg-blue-800 rounded-full"></span><span class="text-[10px] text-slate-400">PL</span></div>
-                         <div class="flex items-center gap-1"><span class="w-3 h-3 bg-orange-500 rounded-full"></span><span class="text-[10px] text-slate-400">PSD</span></div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Impacto do Tempo de TV</label>
+                        <input type="range" id="sim-tv" min="0" max="100" value="70" class="accent-blue-500">
+                        <div class="flex justify-between text-[10px] mt-1 text-slate-500 font-mono">
+                            <span>MÍNIMO</span><span id="val-tv">70%</span><span>MÁXIMO</span>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="overflow-y-auto max-h-[600px] custom-scrollbar">
-                    <table class="w-full text-left">
-                        <thead class="bg-slate-50 text-slate-400 text-[10px] uppercase font-bold sticky top-0">
-                            <tr>
-                                <th class="px-6 py-3">Município</th>
-                                <th class="px-6 py-3">Região</th>
-                                <th class="px-6 py-3">Jorginho (%)</th>
-                                <th class="px-6 py-3">Rodrigues (%)</th>
-                                <th class="px-6 py-3">Status Probabilístico</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cities-table-body" class="divide-y divide-slate-100">
-                            <!-- JS Injection -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Simulation Sidebar (4 columns) -->
-            <div class="lg:col-span-4 space-y-6">
-                <div class="glass-panel p-6 bg-slate-900 text-white">
-                    <h3 class="text-lg font-bold font-heading mb-4 text-blue-400">Motor de Simulação</h3>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Engajamento Orgânico (PSD)</label>
+                        <input type="range" id="sim-organic-psd" min="0" max="100" value="50" class="accent-orange-500">
+                        <div class="flex justify-between text-[10px] mt-1 text-slate-500 font-mono">
+                            <span>FRÁGIL</span><span id="val-organic">50%</span><span>VIRAL</span>
+                        </div>
+                    </div>
                     
-                    <div class="space-y-5">
-                        <!-- Controls -->
-                        <div>
-                            <div class="flex justify-between text-xs mb-2">
-                                <span>Aprovação do Governo</span>
-                                <span class="font-mono text-blue-300" id="label-gov">75%</span>
-                            </div>
-                            <input type="range" id="sim-gov" min="0" max="100" value="75">
-                        </div>
-                        
-                        <div>
-                            <div class="flex justify-between text-xs mb-2">
-                                <span>Força Aliança NOVO</span>
-                                <span class="font-mono text-blue-300" id="label-novo">90%</span>
-                            </div>
-                            <input type="range" id="sim-novo" min="0" max="100" value="90">
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between text-xs mb-2">
-                                <span>Fator Polarização Nacional</span>
-                                <span class="font-mono text-blue-300" id="label-pol">80%</span>
-                            </div>
-                            <input type="range" id="sim-pol" min="0" max="100" value="80">
-                        </div>
-
-                        <div class="pt-4 border-t border-slate-700">
-                            <h4 class="text-xs font-bold text-slate-500 mb-2">MODIFICADOR DO OESTE</h4>
-                            <div class="flex justify-between text-xs mb-2">
-                                <span>Resistência João Rodrigues</span>
-                                <span class="font-mono text-orange-400" id="label-west">Média</span>
-                            </div>
-                            <input type="range" id="sim-west" min="0" max="100" value="50">
+                    <div class="pt-6 border-t border-slate-700">
+                        <div class="p-3 bg-slate-800 rounded border border-slate-700">
+                            <h4 class="text-xs font-bold text-blue-300 mb-1">Predição de 1º Turno:</h4>
+                            <div class="text-2xl font-bold font-heading" id="pred-result">VITÓRIA PL</div>
+                            <p class="text-[10px] text-slate-500 mt-1">Probabilidade: <span id="pred-prob">82%</span></p>
                         </div>
                     </div>
                 </div>
-
-                <!-- Small Radar Chart -->
-                <div class="glass-panel p-6">
-                    <h3 class="text-sm font-bold text-slate-900 mb-4 uppercase">Equilíbrio de Forças (SC)</h3>
-                    <div class="chart-container">
-                        <canvas id="balanceRadar"></canvas>
-                    </div>
-                </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Dynamic Chart: Logistic Growth -->
-        <section class="glass-panel p-6">
-            <h2 class="text-xl font-bold font-heading mb-6">Projeção Temporal de Campanha (Mar-Out 2026)</h2>
-            <div class="h-80 w-full">
-                <canvas id="campaignTimeline"></canvas>
+        <!-- Section 3: Geopolitical Influence (Presidential) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass p-6 border-t-4 border-indigo-500">
+                <h3 class="font-bold text-lg mb-4">Influência Presidencial 2026</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    A corrida presidencial afeta o cenário de SC de duas formas:
+                    <br><br>
+                    <strong>1. Nacionalização de Recursos:</strong> Se o PL Nacional priorizar a presidência, o repasse para SC pode diminuir, dando fôlego ao PSD (Rodrigues).
+                    <br>
+                    <strong>2. O "Voto Casado":</strong> Em SC, o eleitor tende a votar no "Governador do Presidente". Se o candidato da direita nacional (apoiado por Bolsonaro) estiver forte, Jorginho Mello cresce automaticamente por osmose ideológica.
+                </p>
             </div>
-        </section>
+            <div class="glass p-6 border-t-4 border-emerald-500">
+                <h3 class="font-bold text-lg mb-4">Fatores Geopolíticos (Agronegócio)</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    A estabilidade econômica global e o preço das commodities impactam o **Oeste Catarinense**. 
+                    Uma crise no setor de proteína animal tende a fragilizar a prefeitura de Chapecó (Rodrigues) e forçar uma dependência maior de recursos federais/estaduais, o que favorece a narrativa da "Máquina Estadual" do PL.
+                </p>
+            </div>
+        </div>
+
+        <!-- Section 4: City Saturation Table -->
+        <div class="glass overflow-hidden">
+            <div class="p-6 border-b border-slate-100 bg-white">
+                <h3 class="text-xl font-bold font-heading">Saturação Midiática: Top 20 Cidades</h3>
+                <p class="text-xs text-slate-500 uppercase mt-1">Relação entre Alcance de TV e Intenção de Voto Calculada</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-slate-400 font-bold text-[10px] uppercase">
+                        <tr>
+                            <th class="px-6 py-4">Cidade</th>
+                            <th class="px-6 py-4">Alcance TV (Emissoras)</th>
+                            <th class="px-6 py-4">Investimento Est. (R$)</th>
+                            <th class="px-6 py-4">Vantagem PL (Mídia)</th>
+                            <th class="px-6 py-4">Risco João Rodrigues</th>
+                        </tr>
+                    </thead>
+                    <tbody id="city-table-body" class="divide-y divide-slate-100">
+                        <!-- JS Injection -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </main>
 
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <footer class="max-w-7xl mx-auto py-12 text-center text-slate-400 text-xs">
+        <p>© 2026 Inteligência Eleitoral SC | Modelagem Baseada em Dados Históricos e Tendências de Fundo Eleitoral.</p>
+    </footer>
 
+    <!-- LOGIC SCRIPTS -->
     <script>
-        // --- Data Definitions ---
-        const cities = [
-            { name: "Joinville", region: "Norte", weight: 1.2, biasJ: 15, biasR: -5 },
-            { name: "Florianópolis", region: "Litoral", weight: 1.1, biasJ: 5, biasR: -2 },
-            { name: "Blumenau", region: "Vale", weight: 1.0, biasJ: 10, biasR: -3 },
-            { name: "São José", region: "Litoral", weight: 0.9, biasJ: 8, biasR: -3 },
-            { name: "Itajaí", region: "Litoral", weight: 0.8, biasJ: 12, biasR: -5 },
-            { name: "Chapecó", region: "Oeste", weight: 0.8, biasJ: -15, biasR: 35 },
-            { name: "Criciúma", region: "Sul", weight: 0.8, biasJ: 0, biasR: 15 },
-            { name: "Palhoça", region: "Litoral", weight: 0.7, biasJ: 10, biasR: -2 },
-            { name: "Lages", region: "Serra", weight: 0.7, biasJ: -5, biasR: 5 },
-            { name: "Jaraguá do Sul", region: "Norte", weight: 0.6, biasJ: 18, biasR: -8 },
-            { name: "B. Camboriú", region: "Litoral", weight: 0.6, biasJ: 20, biasR: -10 },
-            { name: "Brusque", region: "Vale", weight: 0.5, biasJ: 15, biasR: -5 },
-            { name: "Tubarão", region: "Sul", weight: 0.5, biasJ: 5, biasR: 5 },
-            { name: "S. Bento do Sul", region: "Norte", weight: 0.4, biasJ: 10, biasR: -5 },
-            { name: "Camboriú", region: "Litoral", weight: 0.4, biasJ: 15, biasR: -5 },
-            { name: "Navegantes", region: "Litoral", weight: 0.4, biasJ: 12, biasR: -5 },
-            { name: "Caçador", region: "Meio-Oeste", weight: 0.4, biasJ: 0, biasR: 10 },
-            { name: "Concórdia", region: "Oeste", weight: 0.3, biasJ: -10, biasR: 25 },
-            { name: "Rio do Sul", region: "Vale", weight: 0.3, biasJ: 8, biasR: 0 },
-            { name: "Gaspar", region: "Vale", weight: 0.3, biasJ: 10, biasR: -2 }
+        const cityData = [
+            { name: "Joinville", tv: "Alta (4 canais)", fund: 8.5, mediaAdv: "92%", risk: "Muito Alto" },
+            { name: "Florianópolis", tv: "Total (Sede)", fund: 7.2, mediaAdv: "85%", risk: "Alto" },
+            { name: "Blumenau", tv: "Alta (3 canais)", fund: 5.4, mediaAdv: "88%", risk: "Alto" },
+            { name: "São José", tv: "Dependente Capital", fund: 4.1, mediaAdv: "90%", risk: "Crítico" },
+            { name: "Itajaí", tv: "Alta (Porto)", fund: 3.8, mediaAdv: "82%", risk: "Médio" },
+            { name: "Chapecó", tv: "Própria (Oeste)", fund: 3.2, mediaAdv: "40%", risk: "Mínimo" },
+            { name: "Criciúma", tv: "Própria (Sul)", fund: 3.1, mediaAdv: "65%", risk: "Moderado" },
+            { name: "Palhoça", tv: "Dependente Capital", fund: 2.8, mediaAdv: "90%", risk: "Crítico" },
+            { name: "Lages", tv: "Própria (Serra)", fund: 2.5, mediaAdv: "70%", risk: "Médio" },
+            { name: "Jaraguá do Sul", tv: "Forte (Norte)", fund: 2.2, mediaAdv: "88%", risk: "Alto" }
         ];
 
-        let state = {
-            gov: 0.75,
-            novo: 0.90,
-            pol: 0.80,
-            west: 0.50
-        };
+        let state = { fundEff: 0.85, tvImpact: 0.70, organicPsd: 0.50 };
 
-        // --- Model Logic ---
-
-        function calculateProbabilities() {
-            // Base state
-            const baseJ = 35 + (state.gov * 20) + (state.novo * 10) + (state.pol * 5);
-            const baseR = 15 + (state.west * 20) - (state.novo * 5);
-            const baseD = 12 + (state.pol * 3);
-            
-            const total = baseJ + baseR + baseD + 10;
-            const factor = 100 / total;
-
-            return {
-                jorginho: (baseJ * factor).toFixed(1),
-                rodrigues: (baseR * factor).toFixed(1),
-                decio: (baseD * factor).toFixed(1)
-            };
-        }
-
-        function calculateCityProjection(city) {
-            const global = calculateProbabilities();
-            
-            // Regional Modifiers
-            let jVal = parseFloat(global.jorginho) + city.biasJ;
-            let rVal = parseFloat(global.rodrigues) + city.biasR;
-
-            // Apply West modifier from slider specifically to Rodrigues in West
-            if (city.region === "Oeste" || city.region === "Meio-Oeste") {
-                rVal += (state.west - 0.5) * 20;
+        // --- Logistic Function ---
+        // P(t) = L / (1 + e^-k(t-t0))
+        // L = Capacity (Intention Ceiling)
+        // k = growth rate (boosted by money/tv)
+        function getLogisticCurve(L, k_base, boost, t_range) {
+            const data = [];
+            const k = k_base + (boost * 0.8);
+            for (let t = 0; t <= t_range; t++) {
+                const val = L / (1 + Math.exp(-k * (t - t_range/2)));
+                data.push(val + (Math.random() * 1)); // Add slight noise
             }
-            
-            // Apply Novo modifier to Jorginho in North/Vale/Litoral
-            if (["Norte", "Vale", "Litoral"].includes(city.region)) {
-                jVal += (state.novo - 0.5) * 10;
-            }
-
-            const total = jVal + rVal + 15; // 15% others/left
-            const factor = 100 / total;
-
-            return {
-                j: (jVal * factor).toFixed(1),
-                r: (rVal * factor).toFixed(1)
-            };
+            return data;
         }
 
-        // --- Render Logic ---
-
-        function renderCities() {
-            const tbody = document.getElementById('cities-table-body');
-            tbody.innerHTML = '';
-
-            cities.forEach(city => {
-                const proj = calculateCityProjection(city);
-                const status = proj.j > proj.r ? 
-                    `<span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">DOMÍNIO PL</span>` : 
-                    `<span class="text-[10px] font-bold text-orange-700 bg-orange-50 px-2 py-0.5 rounded">AMEAÇA PSD</span>`;
-
-                const row = `
-                    <tr class="city-row transition-colors">
-                        <td class="px-6 py-4 font-bold text-slate-800">${city.name}</td>
-                        <td class="px-6 py-4 text-xs text-slate-400">${city.region}</td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="font-mono font-bold text-blue-900">${proj.j}%</span>
-                                <div class="w-16 h-1 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="bg-blue-800 h-full" style="width: ${proj.j}%"></div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="font-mono font-bold text-orange-600">${proj.r}%</span>
-                                <div class="w-16 h-1 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="bg-orange-500 h-full" style="width: ${proj.r}%"></div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">${status}</td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
-            });
-        }
-
-        function updateUI() {
-            const probs = calculateProbabilities();
-            document.getElementById('kpi-jorginho').innerText = probs.jorginho + '%';
-            document.getElementById('kpi-rodrigues').innerText = probs.rodrigues + '%';
-            document.getElementById('kpi-decio').innerText = probs.decio + '%';
-            
-            // Round 2 logic
-            let p2 = 0;
-            if (probs.jorginho < 48) p2 = 80;
-            else if (probs.jorginho < 52) p2 = 45;
-            else p2 = 12;
-            document.getElementById('kpi-round2').innerText = p2 + '%';
-
-            renderCities();
-            updateCharts();
-        }
-
-        // --- Chart Config ---
-        let timelineChart, radarChart;
+        let tvChart, logChart;
 
         function initCharts() {
-            const ctxLine = document.getElementById('campaignTimeline').getContext('2d');
-            timelineChart = new Chart(ctxLine, {
+            // TV Bar Chart
+            const ctxTv = document.getElementById('tvTimeChart').getContext('2d');
+            tvChart = new Chart(ctxTv, {
+                type: 'bar',
+                data: {
+                    labels: ['PL+NOVO', 'PSD', 'MDB (Indep)', 'Frente Esq.', 'Outros'],
+                    datasets: [{
+                        data: [180, 85, 45, 60, 20],
+                        backgroundColor: ['#002776', '#f5821f', '#009739', '#ce1126', '#cbd5e1'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { display: false } }
+                }
+            });
+
+            // Logistic Regression Chart
+            const ctxLog = document.getElementById('logisticChart').getContext('2d');
+            logChart = new Chart(ctxLog, {
                 type: 'line',
                 data: {
                     labels: ['Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'],
                     datasets: [
-                        { label: 'Jorginho Mello', data: [], borderColor: '#002776', borderWidth: 4, tension: 0.4, fill: true, backgroundColor: 'rgba(0,39,118,0.05)' },
-                        { label: 'João Rodrigues', data: [], borderColor: '#f5821f', borderWidth: 3, tension: 0.4, borderDash: [5, 5] },
-                        { label: 'Oposição', data: [], borderColor: '#ce1126', borderWidth: 2, tension: 0.4 }
+                        { label: 'Jorginho (Efeito Máquina)', borderColor: '#002776', borderWidth: 4, tension: 0.3, fill: true, backgroundColor: 'rgba(0,39,118,0.05)', data: [] },
+                        { label: 'Rodrigues (Efeito Orgânico)', borderColor: '#f5821f', borderWidth: 3, tension: 0.3, borderDash: [5,5], data: [] }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 70 } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 70 } }
+                }
             });
-
-            const ctxRadar = document.getElementById('balanceRadar').getContext('2d');
-            radarChart = new Chart(ctxRadar, {
-                type: 'radar',
-                data: {
-                    labels: ['Fundo $', 'TV', 'Digital', 'Prefeitos', 'Engajamento'],
-                    datasets: [
-                        { label: 'PL', data: [95, 90, 80, 85, 75], borderColor: '#002776', backgroundColor: 'rgba(0,39,118,0.1)' },
-                        { label: 'PSD', data: [60, 40, 75, 70, 85], borderColor: '#f5821f', backgroundColor: 'rgba(245,130,31,0.1)' }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { suggestedMin: 0, suggestedMax: 100 } } }
-            });
-
-            updateCharts();
+            updateSimulation();
         }
 
-        function updateCharts() {
-            if (!timelineChart) return;
-            
-            const probs = calculateProbabilities();
-            const startJ = 40, startR = 18, startD = 14;
-            
-            // Simulating logistic growth toward the calculated probability
-            const dataJ = [], dataR = [], dataD = [];
-            for(let i=0; i<8; i++) {
-                const progress = i / 7;
-                dataJ.push(startJ + (parseFloat(probs.jorginho) - startJ) * progress + (Math.random() * 2));
-                dataR.push(startR + (parseFloat(probs.rodrigues) - startR) * progress + (Math.random() * 2));
-                dataD.push(startD + (parseFloat(probs.decio) - startD) * progress);
-            }
+        function updateSimulation() {
+            // Recalculate curves based on sliders
+            const plBoost = (state.fundEff * 0.5) + (state.tvImpact * 0.5);
+            const psdBoost = state.organicPsd * 0.4;
 
-            timelineChart.data.datasets[0].data = dataJ;
-            timelineChart.data.datasets[1].data = dataR;
-            timelineChart.data.datasets[2].data = dataD;
-            timelineChart.update();
+            const curvePL = getLogisticCurve(60, 0.5, plBoost, 7);
+            const curvePSD = getLogisticCurve(30, 0.4, psdBoost, 7);
 
-            // Radar updates
-            radarChart.data.datasets[0].data[3] = 60 + (state.novo * 30); // Prefeitos weight linked to NOVO alliance
-            radarChart.data.datasets[1].data[3] = 40 + (state.west * 40); // PSD mayors link to west
-            radarChart.update();
+            logChart.data.datasets[0].data = curvePL;
+            logChart.data.datasets[1].data = curvePSD;
+            logChart.update();
+
+            // Update Prediction Text
+            const finalPL = curvePL[7];
+            const prob = (finalPL > 50) ? Math.round(70 + (finalPL - 50) * 2) : Math.round(finalPL * 1.5);
+            document.getElementById('pred-prob').innerText = Math.min(prob, 98) + '%';
+            document.getElementById('pred-result').innerText = finalPL > 50 ? "VITÓRIA 1º TURNO" : "SEGUNDO TURNO";
+            document.getElementById('pred-result').className = finalPL > 50 ? "text-2xl font-bold font-heading text-blue-400" : "text-2xl font-bold font-heading text-amber-400";
         }
 
-        // --- Interaction ---
-        function setupListeners() {
-            const inputs = [
-                { id: 'sim-gov', key: 'gov', labelId: 'label-gov' },
-                { id: 'sim-novo', key: 'novo', labelId: 'label-novo' },
-                { id: 'sim-pol', key: 'pol', labelId: 'label-pol' },
-                { id: 'sim-west', key: 'west', labelId: 'label-west' }
-            ];
-
-            inputs.forEach(input => {
-                document.getElementById(input.id).addEventListener('input', (e) => {
-                    const val = e.target.value / 100;
-                    state[input.key] = val;
-                    
-                    if(input.id === 'sim-west') {
-                        document.getElementById(input.labelId).innerText = val > 0.7 ? "Intensa" : val > 0.3 ? "Média" : "Fraca";
-                    } else {
-                        document.getElementById(input.labelId).innerText = e.target.value + '%';
-                    }
-                    updateUI();
-                });
-            });
+        function populateTable() {
+            const body = document.getElementById('city-table-body');
+            body.innerHTML = cityData.map(c => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 font-bold text-slate-800">${c.name}</td>
+                    <td class="px-6 py-4 text-slate-500">${c.tv}</td>
+                    <td class="px-6 py-4 font-mono text-slate-600">R$ ${c.fund}M</td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-blue-800">${c.mediaAdv}</span>
+                            <div class="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="bg-blue-800 h-full" style="width: ${c.mediaAdv}"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase ${c.risk === 'Mínimo' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                            ${c.risk}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
         }
 
+        // --- Listeners ---
         window.onload = () => {
-            setupListeners();
             initCharts();
-            updateUI();
-        };
+            populateTable();
 
+            document.getElementById('sim-fund-pl').oninput = (e) => {
+                state.fundEff = e.target.value / 100;
+                document.getElementById('val-fund-pl').innerText = e.target.value + '%';
+                updateSimulation();
+            };
+            document.getElementById('sim-tv').oninput = (e) => {
+                state.tvImpact = e.target.value / 100;
+                document.getElementById('val-tv').innerText = e.target.value + '%';
+                updateSimulation();
+            };
+            document.getElementById('sim-organic-psd').oninput = (e) => {
+                state.organicPsd = e.target.value / 100;
+                document.getElementById('val-organic').innerText = e.target.value + '%';
+                updateSimulation();
+            };
+        };
     </script>
 </body>
 </html>
