@@ -14,25 +14,146 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'sc-red': '#ce1126', 
-                        'sc-green': '#009739',
-                        'pl-blue': '#002776',
-                        'psd-orange': '#f5821f',
-                        'pt-red': '#cc0000',
-                        'slate-850': '#1e293b',
-                        'alliance-purple': '#4c1d95',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Merriweather', 'serif'],
-                    }
-                }
+        // --- DATASET: SC Scenario Feb 2026 (Updated with PL+NOVO Alliance) ---
+        const candidates = [
+            { 
+                id: 'jorginho', name: 'Jorginho/Adriano (PL/NOVO)', color: '#002776', 
+                data: [38.5, 38.0, 37.5, 36.8, 36.5, 44.2, 48.5], 
+                digital_score: 82, prob: 75, fundo: 'R$ 886 Milhões' 
+            },
+            { 
+                id: 'rodrigues', name: 'João Rodrigues (PSD)', color: '#f5821f', 
+                data: [18.2, 19.5, 21.0, 22.8, 24.5, 26.2, 24.5], 
+                digital_score: 88, prob: 20, fundo: 'R$ 420 Milhões' 
+            },
+            { 
+                id: 'decio', name: 'Décio Lima (PT)', color: '#cc0000', 
+                data: [16.5, 16.2, 16.8, 16.5, 16.0, 15.8, 15.5], 
+                digital_score: 45, prob: 3, fundo: 'R$ 619 Milhões' 
+            },
+            { 
+                id: 'brigadeiro', name: 'M. Brigadeiro (Missão)', color: '#1e293b', 
+                data: [0, 0, 0.5, 1.0, 1.5, 2.0, 2.5], 
+                digital_score: 78, prob: 2, fundo: 'Sem Fundo Expressivo' 
             }
+        ];
+
+        const months =;
+
+        // --- CITY PROJECTION DATA (20 Largest Electoral Colleges) ---
+        const cityData =;
+
+        // --- RENDER FUNCTIONS ---
+        function initCharts() {
+            new Chart(document.getElementById('trendChart'), {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: candidates.map(c => ({
+                        label: c.name,
+                        data: c.data,
+                        borderColor: c.color,
+                        backgroundColor: c.color,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        borderWidth: 2
+                    }))
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { y: { beginAtZero: true, max: 60 } }
+                }
+            });
+
+            new Chart(document.getElementById('probabilityChart'), {
+                type: 'bar',
+                data: {
+                    labels: candidates.map(c => c.name.split('(').trim()),
+                    datasets:
+                },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            new Chart(document.getElementById('secondTurnChart'), {
+                type: 'bar',
+                data: {
+                    labels:,
+                    datasets: [
+                        { label: 'Jorginho + Adriano', data: , backgroundColor: '#002776' },
+                        { label: 'Oposição', data: [1, 2], backgroundColor: '#cc0000' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 80 } } }
+            });
+
+            const scatterData = candidates.map(c => ({
+                x: c.data[3], y: c.digital_score, name: c.name.split(' '), color: c.color, size: c.data[3]
+            }));
+
+            Plotly.newPlot('momentumChart',, {
+                margin: { t: 20, r: 20, b: 30, l: 30 },
+                xaxis: { title: 'Intenção de Voto (%)' }, yaxis: { title: 'Digital Score (Viralidade)' },
+                shapes: [{ type: 'line', x0: 0, y0: 50, x1: 50, y1: 50, line: { color: 'gray', width: 1, dash: 'dot' } }]
+            }, {responsive: true, displayModeBar: false});
         }
+
+        function populateKPIs() {
+            document.getElementById('kpi-container').innerHTML = `
+                <div class="bg-white p-4 rounded-lg card-shadow border-t-4 border-pl-blue">
+                    <div class="text-xs text-gray-500 uppercase">Favorito (Chapa Consolidada)</div>
+                    <div class="text-xl font-bold text-slate-800">Jorginho + Adriano</div>
+                    <div class="text-2xl font-bold text-pl-blue">48.5%</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg card-shadow border-t-4 border-alliance-purple">
+                    <div class="text-xs text-gray-500 uppercase">Vantagem Financeira (PL)</div>
+                    <div class="text-xl font-bold text-slate-800">Fundo Eleitoral</div>
+                    <div class="text-2xl font-bold text-alliance-purple">R$ 886 Milhões</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg card-shadow border-t-4 border-psd-orange">
+                    <div class="text-xs text-gray-500 uppercase">Principal Oposição</div>
+                    <div class="text-xl font-bold text-slate-800">João Rodrigues</div>
+                    <div class="text-2xl font-bold text-psd-orange">24.5%</div>
+                </div>
+            `;
+        }
+
+        function populateTable() {
+            document.getElementById('candidates-table-body').innerHTML = candidates.map(c => `
+                <tr class="bg-white border-b hover:bg-gray-50">
+                    <td class="px-6 py-3 font-medium flex items-center gap-2"><span class="w-3 h-3 rounded-full" style="background-color: ${c.color}"></span>${c.name}</td>
+                    <td class="px-6 py-3 text-right font-bold">${c.data[3]}%</td>
+                    <td class="px-6 py-3 text-center"><span class="bg-slate-100 px-2 py-1 rounded text-xs font-bold">${c.digital_score}</span></td>
+                    <td class="px-6 py-3 text-right text-gray-600 text-xs font-mono">${c.fundo}</td>
+                </tr>
+            `).join('');
+        }
+
+        function populateCitiesTable() {
+            const tbody = document.getElementById('cities-table-body');
+            const bar = (val, color) => `<div class="bar-bg"><div class="bar-fill" style="width: ${val}%; background-color: ${color}"></div></div>`;
+            const num = (val) => `<div class="font-bold text-slate-700">${val}%</div>`;
+
+            tbody.innerHTML = cityData.map(city => `
+                <tr class="city-row border-b border-gray-200">
+                    <td class="px-4 py-3 align-middle">
+                        <div class="font-bold text-slate-800">${city.name}</div>
+                        <div class="text-[10px] text-gray-400 uppercase tracking-wide">${city.region}</div>
+                    </td>
+                    <td class="px-2 py-2 text-center align-middle">${num(city.jorginho)}${bar(city.jorginho, '#002776')}</td>
+                    <td class="px-2 py-2 text-center align-middle">${num(city.rodrigues)}${bar(city.rodrigues, '#f5821f')}</td>
+                    <td class="px-2 py-2 text-center align-middle">${num(city.decio)}${bar(city.decio, '#cc0000')}</td>
+                    <td class="px-2 py-2 text-center align-middle">${num(city.outros)}${bar(city.outros, '#1e293b')}</td>
+                </tr>
+            `).join('');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            populateKPIs();
+            populateTable();
+            populateCitiesTable();
+            initCharts();
+        });
     </script>
 
     <style>
