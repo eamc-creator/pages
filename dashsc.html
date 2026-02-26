@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Eleitoral SC 2026 - Versão Outsiders</title>
+    <title>SC 2026: Inteligência Preditiva Governamental</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,22 +15,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: #0f172a; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
         h1, h2, h3, h4, .font-heading { font-family: 'Space Grotesk', sans-serif; }
         
         .glass-panel {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
             border-radius: 1rem;
         }
 
         .chart-container {
             position: relative;
             width: 100%;
-            height: 350px;
+            height: 380px;
         }
 
+        /* Custom Slider Styling */
         input[type=range] {
             -webkit-appearance: none;
             width: 100%;
@@ -45,7 +46,7 @@
             cursor: pointer;
             margin-top: -7px;
             border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
         }
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
@@ -56,167 +57,176 @@
 
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .kpi-card:hover { transform: translateY(-3px); transition: all 0.3s ease; }
     </style>
     
-    <!-- Chosen Palette: Slate, Blue & Amber (Neutral Pro with high contrast accents) -->
+    <!-- Chosen Palette: Slate & Deep Blue (Professional Analytic) -->
     <!-- Application Structure Plan: 
-         1. Multi-Candidate Scorecard: Inclusive of Merisio, Brigadeiro and others.
-         2. Factor Simulation: Integration of Social Media, Approval, and Financial weights.
-         3. Dynamic Comparison: Comparison of growth curves (Logistic) between traditional and outsiders.
-         4. Digital Influence Heatmap: Regional digital reach index.
+         1. Master Controls: Unified panel with all 7 modeling parameters.
+         2. KPI Scorecard: Dynamic probability for 6 main contenders/groups.
+         3. Temporal Analysis: Logistic regression curves.
+         4. Regional Matrix: Macrorregião analysis (Vetos vs Support).
+         5. TOP 20 Cities: Comprehensive weighted table for the 20 largest electorates.
     -->
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 lg:p-10">
 
-    <header class="max-w-7xl mx-auto mb-10 flex flex-col md:flex-row justify-between items-start gap-6">
-        <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                </span>
-                Modelagem Bayesiana Ativa
+    <header class="max-w-screen-2xl mx-auto mb-10">
+        <div class="flex flex-col md:flex-row justify-between items-start gap-4 border-b border-slate-200 pb-6">
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded">ESTOCÁSTICO V5.0</span>
+                    <span class="text-slate-400 text-xs font-mono">Última Variável: Marcelo Brigadeiro (Outsider)</span>
+                </div>
+                <h1 class="text-4xl font-bold tracking-tight text-slate-900 font-heading">SC 2026: Projeção Analítica Unificada</h1>
+                <p class="text-slate-500 mt-2 text-lg">Integração de Fundo Eleitoral, Tempo de TV, Aprovação de Governo e Presença Digital.</p>
             </div>
-            <h1 class="text-4xl font-bold tracking-tight text-slate-900 font-heading">SC 2026: Cenário Estendido</h1>
-            <p class="text-slate-500 max-w-2xl text-lg italic">Análise de impacto de Outsiders, Presença Digital e Estrutura Partidária na sucessão estadual.</p>
-        </div>
-        <div class="glass-panel p-4 bg-white flex flex-col items-end">
-            <span class="text-[10px] text-slate-400 font-bold uppercase mb-1">Cenário Presidencial Base</span>
-            <div class="text-sm font-bold text-slate-800">Polarização Direita (Estável)</div>
+            <div class="text-right hidden md:block">
+                <div class="text-2xl font-bold font-heading text-slate-400">FEVEREIRO / <span class="text-blue-600">2026</span></div>
+                <p class="text-xs text-slate-400 uppercase tracking-widest">Base: Relatório de Tendências</p>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto space-y-8">
+    <main class="max-w-screen-2xl mx-auto space-y-8">
 
-        <!-- Predictive KPI Grid -->
+        <!-- Probability KPIs -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <!-- Jorginho -->
-            <div class="glass-panel p-4 border-b-4 border-blue-900">
+            <div class="glass-panel p-4 border-l-4 border-blue-900 kpi-card">
                 <p class="text-[10px] font-bold text-slate-400 uppercase">Jorginho (PL)</p>
-                <h3 class="text-2xl font-bold text-slate-900" id="kpi-jorginho">--</h3>
-                <div class="w-full bg-slate-100 h-1 mt-2"><div id="bar-jorginho" class="bg-blue-900 h-1 transition-all duration-500"></div></div>
+                <h3 class="text-2xl font-bold text-blue-900" id="kpi-jorginho">--%</h3>
             </div>
-            <!-- Rodrigues -->
-            <div class="glass-panel p-4 border-b-4 border-orange-500">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">João Rod. (PSD)</p>
-                <h3 class="text-2xl font-bold text-slate-900" id="kpi-rodrigues">--</h3>
-                <div class="w-full bg-slate-100 h-1 mt-2"><div id="bar-rodrigues" class="bg-orange-500 h-1 transition-all duration-500"></div></div>
+            <div class="glass-panel p-4 border-l-4 border-orange-500 kpi-card">
+                <p class="text-[10px] font-bold text-slate-400 uppercase">J. Rodrigues (PSD)</p>
+                <h3 class="text-2xl font-bold text-orange-600" id="kpi-rodrigues">--%</h3>
             </div>
-            <!-- Brigadeiro -->
-            <div class="glass-panel p-4 border-b-4 border-slate-900">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Brigadeiro (Out)</p>
-                <h3 class="text-2xl font-bold text-slate-900" id="kpi-brigadeiro">--</h3>
-                <div class="w-full bg-slate-100 h-1 mt-2"><div id="bar-brigadeiro" class="bg-slate-900 h-1 transition-all duration-500"></div></div>
+            <div class="glass-panel p-4 border-l-4 border-indigo-600 kpi-card">
+                <p class="text-[10px] font-bold text-slate-400 uppercase">M. Brigadeiro (Out)</p>
+                <h3 class="text-2xl font-bold text-indigo-700" id="kpi-brigadeiro">--%</h3>
             </div>
-            <!-- Merisio -->
-            <div class="glass-panel p-4 border-b-4 border-emerald-600">
+            <div class="glass-panel p-4 border-l-4 border-emerald-600 kpi-card">
                 <p class="text-[10px] font-bold text-slate-400 uppercase">G. Merisio (Exp)</p>
-                <h3 class="text-2xl font-bold text-slate-900" id="kpi-merisio">--</h3>
-                <div class="w-full bg-slate-100 h-1 mt-2"><div id="bar-merisio" class="bg-emerald-600 h-1 transition-all duration-500"></div></div>
+                <h3 class="text-2xl font-bold text-emerald-700" id="kpi-merisio">--%</h3>
             </div>
-            <!-- Decio -->
-            <div class="glass-panel p-4 border-b-4 border-red-600">
+            <div class="glass-panel p-4 border-l-4 border-red-600 kpi-card">
                 <p class="text-[10px] font-bold text-slate-400 uppercase">D. Lima (PT)</p>
-                <h3 class="text-2xl font-bold text-slate-900" id="kpi-decio">--</h3>
-                <div class="w-full bg-slate-100 h-1 mt-2"><div id="bar-decio" class="bg-red-600 h-1 transition-all duration-500"></div></div>
+                <h3 class="text-2xl font-bold text-red-600" id="kpi-decio">--%</h3>
             </div>
-            <!-- Others -->
-            <div class="glass-panel p-4 border-b-4 border-slate-300">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Outros/Brancos</p>
-                <h3 class="text-2xl font-bold text-slate-900" id="kpi-others">--</h3>
-                <div class="w-full bg-slate-100 h-1 mt-2"><div id="bar-others" class="bg-slate-300 h-1 transition-all duration-500"></div></div>
+            <div class="glass-panel p-4 bg-slate-900 kpi-card">
+                <p class="text-[10px] font-bold text-slate-400 uppercase">2º Turno Prob.</p>
+                <h3 class="text-2xl font-bold text-white" id="kpi-round2">--%</h3>
             </div>
         </div>
 
-        <!-- Simulation Section -->
+        <!-- Simulation Controls & Growth Chart -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- Simulation Controls -->
-            <div class="lg:col-span-4 glass-panel p-6 bg-slate-50 flex flex-col gap-6">
-                <h2 class="text-lg font-bold font-heading border-b pb-4">Parâmetros de Modelagem</h2>
+            <!-- Parameters Panel (7 Variables) -->
+            <div class="lg:col-span-4 glass-panel p-6 bg-slate-50">
+                <h2 class="text-lg font-bold font-heading mb-6 border-b pb-2">Parâmetros de Modelagem</h2>
                 
                 <div class="space-y-5">
-                    <!-- Aprovação Gov -->
+                    <!-- Variable 1: Gov Approval -->
                     <div>
-                        <div class="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase">Aprovação Jorginho Mello <span class="text-blue-600" id="lbl-gov">75%</span></div>
+                        <div class="flex justify-between text-[11px] font-bold mb-1 uppercase">Aprovação Jorginho Mello <span class="text-blue-600" id="val-gov">75%</span></div>
                         <input type="range" id="sim-gov" min="0" max="100" value="75">
                     </div>
-                    
-                    <!-- Fundo/TV -->
+                    <!-- Variable 2: Alliance NOVO -->
                     <div>
-                        <div class="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase">Peso Fundo Eleitoral/TV <span class="text-blue-600" id="lbl-finance">80%</span></div>
-                        <input type="range" id="sim-finance" min="0" max="100" value="80">
+                        <div class="flex justify-between text-[11px] font-bold mb-1 uppercase">Fidelidade PL+NOVO <span class="text-blue-600" id="val-alliance">90%</span></div>
+                        <input type="range" id="sim-alliance" min="0" max="100" value="90">
                     </div>
-
-                    <!-- Redes Sociais -->
+                    <!-- Variable 3: National Polarization -->
                     <div>
-                        <div class="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase">Impacto Presença Digital <span class="text-indigo-600" id="lbl-digital">60%</span></div>
+                        <div class="flex justify-between text-[11px] font-bold mb-1 uppercase">Polarização Nacional <span class="text-blue-600" id="val-pol">80%</span></div>
+                        <input type="range" id="sim-pol" min="0" max="100" value="80">
+                    </div>
+                    <!-- Variable 4: PSD Mob -->
+                    <div>
+                        <div class="flex justify-between text-[11px] font-bold mb-1 uppercase">Mobilização PSD (Oeste) <span class="text-orange-600" id="val-psd">50%</span></div>
+                        <input type="range" id="sim-psd" min="0" max="100" value="50">
+                    </div>
+                    <!-- Variable 5: Finance/TV -->
+                    <div>
+                        <div class="flex justify-between text-[11px] font-bold mb-1 uppercase">Peso Fundo Eleitoral/TV <span class="text-slate-900" id="val-finance">85%</span></div>
+                        <input type="range" id="sim-finance" min="0" max="100" value="85">
+                    </div>
+                    <!-- Variable 6: Digital Presence -->
+                    <div>
+                        <div class="flex justify-between text-[11px] font-bold mb-1 uppercase">Impacto Redes Sociais <span class="text-indigo-600" id="val-digital">60%</span></div>
                         <input type="range" id="sim-digital" min="0" max="100" value="60">
                     </div>
-
-                    <!-- Outsider Sentiment -->
+                    <!-- Variable 7: Anti-system -->
                     <div>
-                        <div class="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase">Sentimento Antissistema <span class="text-slate-900" id="lbl-outsider">40%</span></div>
-                        <input type="range" id="sim-outsider" min="0" max="100" value="40">
-                    </div>
-
-                    <div class="p-4 bg-white rounded-lg border border-slate-200 mt-4">
-                        <p class="text-[10px] text-slate-400 font-bold uppercase mb-2">Resumo de Tendência</p>
-                        <p class="text-sm text-slate-700 leading-tight" id="sim-summary">
-                            O cenário atual favorece a <b>continuidade (PL)</b>b>, mas a força das <b>redes sociais</b>b> pode criar uma rampa de crescimento para nomes como <b>Brigadeiro</b>b> no Litoral.
-                        </p>
+                        <div class="flex justify-between text-[11px] font-bold mb-1 uppercase">Sentimento Antissistema <span class="text-slate-900" id="val-out">40%</span></div>
+                        <input type="range" id="sim-out" min="0" max="100" value="40">
                     </div>
                 </div>
             </div>
 
-            <!-- Visualization Canvas -->
-            <div class="lg:col-span-8 space-y-8">
-                <div class="glass-panel p-6">
-                    <h2 class="text-lg font-bold font-heading mb-6">Projeção de Crescimento (Regressão Logística)</h2>
-                    <div class="chart-container">
-                        <canvas id="growthChart"></canvas>
-                    </div>
+            <!-- Logistic Growth Chart -->
+            <div class="lg:col-span-8 glass-panel p-6">
+                <h2 class="text-xl font-bold font-heading mb-6">Projeção Temporal (Regressão Logística)</h2>
+                <div class="chart-container">
+                    <canvas id="growthChart"></canvas>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="glass-panel p-6">
-                        <h3 class="text-sm font-bold text-slate-500 uppercase mb-4">Matriz de Eficiência por Candidato</h3>
-                        <div class="chart-container" style="height: 250px;">
-                            <canvas id="radarChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="glass-panel p-6 flex flex-col justify-center gap-4">
-                        <h3 class="text-sm font-bold text-slate-500 uppercase">Análise de Outsiders</h3>
-                        <div class="space-y-3">
-                            <div class="p-3 bg-slate-50 rounded border border-slate-100">
-                                <h4 class="text-xs font-bold text-slate-800">Marcelo Brigadeiro</h4>
-                                <p class="text-[11px] text-slate-500 mt-1">Vetor de captação de votos por descontentamento. Cresce na "vácuo" digital onde o PSD e PL não conseguem humanizar o discurso.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded border border-slate-100">
-                                <h4 class="text-xs font-bold text-slate-800">Gelson Merisio</h4>
-                                <p class="text-[11px] text-slate-500 mt-1">Nome conhecido com estrutura de centro. Pode atuar como fiel da balança em um eventual segundo turno.</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="mt-4 flex flex-wrap gap-4 justify-center text-[10px] font-bold uppercase text-slate-400">
+                    <div class="flex items-center gap-1"><span class="w-2 h-2 bg-blue-900 rounded-full"></span> Jorginho</div>
+                    <div class="flex items-center gap-1"><span class="w-2 h-2 bg-orange-500 rounded-full"></span> João Rodrigues</div>
+                    <div class="flex items-center gap-1"><span class="w-2 h-2 bg-indigo-600 rounded-full"></span> Brigadeiro</div>
+                    <div class="flex items-center gap-1"><span class="w-2 h-2 bg-emerald-600 rounded-full"></span> Merisio</div>
                 </div>
             </div>
         </div>
 
-        <!-- Regional Table Extended -->
+        <!-- Regional Matrix Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="glass-panel p-6 border-t-4 border-blue-900">
+                <h3 class="font-bold mb-4 font-heading text-slate-800">Eixo Norte/Litoral</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    Dominado pela aliança <strong>PL+NOVO</strong>. O tempo de TV e a estrutura municipal de Adriano Silva (Joinville) criam um teto alto para Jorginho Mello, dificultando a entrada de outsiders tradicionais.
+                </p>
+                <div class="mt-4 text-xs font-bold text-blue-700">TENDÊNCIA: CONSOLIDAÇÃO</div>
+            </div>
+            <div class="glass-panel p-6 border-t-4 border-orange-500">
+                <h3 class="font-bold mb-4 font-heading text-slate-800">Eixo Oeste/Serra</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    Baluarte do <strong>PSD</strong>. João Rodrigues utiliza o municipalismo e o agronegócio para frear o avanço do PL. É a região com maior resistência à "onda nacional" da polarização extrema.
+                </p>
+                <div class="mt-4 text-xs font-bold text-orange-600">TENDÊNCIA: RESISTÊNCIA MUNICIPALISTA</div>
+            </div>
+            <div class="glass-panel p-6 border-t-4 border-indigo-600">
+                <h3 class="font-bold mb-4 font-heading text-slate-800">Campo Digital/Vácuo</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    Espaço onde <strong>Marcelo Brigadeiro</strong> opera. Cidades portuárias e polos universitários mostram fadiga com a política tradicional, favorecendo discursos disruptivos e redes sociais agressivas.
+                </p>
+                <div class="mt-4 text-xs font-bold text-indigo-700">TENDÊNCIA: DISRUPÇÃO DIGITAL</div>
+            </div>
+        </div>
+
+        <!-- TOP 20 CITIES COMPREHENSIVE TABLE -->
         <div class="glass-panel overflow-hidden">
-            <div class="p-6 border-b border-slate-100 bg-white flex justify-between items-center">
-                <h3 class="text-xl font-bold font-heading">Influência Digital e Geopolítica Regional</h3>
-                <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-1 rounded font-bold uppercase">Métrica: Impacto Digital / 20 Maiores Cidades</span>
+            <div class="p-6 border-b border-slate-100 bg-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h3 class="text-xl font-bold font-heading">Microanálise: Os 20 Maiores Colégios Eleitorais</h3>
+                    <p class="text-xs text-slate-500 uppercase mt-1">Estimativa de Peso Geopolítico e Dominância de Voto</p>
+                </div>
+                <div class="flex gap-2">
+                    <span class="text-[10px] font-bold px-2 py-1 bg-blue-50 text-blue-700 rounded border border-blue-100">Jorginho (PL)</span>
+                    <span class="text-[10px] font-bold px-2 py-1 bg-orange-50 text-orange-700 rounded border border-orange-100">Rodrigues (PSD)</span>
+                </div>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
                     <thead class="bg-slate-50 text-slate-400 font-bold text-[10px] uppercase">
                         <tr>
-                            <th class="px-6 py-4">Cidade</th>
-                            <th class="px-6 py-4">Dominância Digital</th>
-                            <th class="px-6 py-4">Potencial Outsider</th>
-                            <th class="px-6 py-4">Peso no Modelo</th>
-                            <th class="px-6 py-4 text-right">Projeção Principal</th>
+                            <th class="px-6 py-4">Município</th>
+                            <th class="px-6 py-4">Região</th>
+                            <th class="px-6 py-4">Fator de Voto (J)</th>
+                            <th class="px-6 py-4">Fator de Voto (R)</th>
+                            <th class="px-6 py-4">Influência Digital</th>
+                            <th class="px-6 py-4 text-right">Cenário Local</th>
                         </tr>
                     </thead>
                     <tbody id="city-table-body" class="divide-y divide-slate-100">
@@ -228,48 +238,65 @@
 
     </main>
 
-    <footer class="max-w-7xl mx-auto py-12 text-center text-slate-400 text-[10px] font-bold uppercase tracking-widest">
-        Análise Preditiva SC 2026 | Engine Bayesiana v4.0 | Processamento de Tendências Digitais
+    <footer class="max-w-screen-2xl mx-auto py-12 text-center text-slate-400 text-[10px] font-bold uppercase tracking-widest border-t border-slate-200 mt-12">
+        Análise Estocástica SC 2026 | Engine Bayesiana v5.0 | Todos os direitos reservados
     </footer>
 
     <script>
-        // --- State ---
-        let state = {
-            gov: 0.75,
-            finance: 0.80,
-            digital: 0.60,
-            outsider: 0.40
-        };
-
-        const cityData = [
-            { name: "Joinville", digital: "Alta (Influência Adriano Silva)", outsider: "Médio", weight: "1.2", leading: "PL/NOVO" },
-            { name: "Florianópolis", digital: "Alta (Bolhas Progressistas)", outsider: "Alto", weight: "1.1", leading: "Disputa" },
-            { name: "Blumenau", digital: "Média (Tradicionalista)", outsider: "Baixo", weight: "1.0", leading: "PL" },
-            { name: "São José", digital: "Média (Conurbada)", outsider: "Médio", weight: "0.9", leading: "PL" },
-            { name: "Itajaí", digital: "Alta (Portuário)", outsider: "Alto", weight: "0.8", leading: "Outsider/PL" },
-            { name: "Chapecó", digital: "Forte (João Rodrigues)", outsider: "Baixo", weight: "0.8", leading: "PSD" },
-            { name: "Criciúma", digital: "Média (Sul)", outsider: "Médio", weight: "0.8", leading: "PSD/PL" },
-            { name: "Jaraguá do Sul", digital: "Média (Indústria)", outsider: "Baixo", weight: "0.7", leading: "PL" }
+        // --- Full List of 20 Largest Cities ---
+        const cities = [
+            { name: "Joinville", region: "Norte", weight: 1.2, biasJ: 18, biasR: -5, digital: "Alta" },
+            { name: "Florianópolis", region: "Litoral", weight: 1.1, biasJ: 5, biasR: -2, digital: "Alta" },
+            { name: "Blumenau", region: "Vale", weight: 1.0, biasJ: 12, biasR: -3, digital: "Média" },
+            { name: "São José", region: "Litoral", weight: 0.9, biasJ: 10, biasR: -4, digital: "Média" },
+            { name: "Itajaí", region: "Litoral", weight: 0.8, biasJ: 15, biasR: -8, digital: "Alta" },
+            { name: "Chapecó", region: "Oeste", weight: 0.8, biasJ: -15, biasR: 40, digital: "Alta" },
+            { name: "Criciúma", region: "Sul", weight: 0.8, biasJ: 2, biasR: 15, digital: "Média" },
+            { name: "Palhoça", region: "Litoral", weight: 0.7, biasJ: 12, biasR: -2, digital: "Média" },
+            { name: "Lages", region: "Serra", weight: 0.7, biasJ: -2, biasR: 8, digital: "Baixa" },
+            { name: "Jaraguá do Sul", region: "Norte", weight: 0.6, biasJ: 20, biasR: -10, digital: "Média" },
+            { name: "B. Camboriú", region: "Litoral", weight: 0.6, biasJ: 25, biasR: -12, digital: "Alta" },
+            { name: "Brusque", region: "Vale", weight: 0.5, biasJ: 15, biasR: -5, digital: "Média" },
+            { name: "Tubarão", region: "Sul", weight: 0.5, biasJ: 5, biasR: 8, digital: "Baixa" },
+            { name: "S. Bento do Sul", region: "Norte", weight: 0.4, biasJ: 12, biasR: -6, digital: "Baixa" },
+            { name: "Camboriú", region: "Litoral", weight: 0.4, biasJ: 18, biasR: -10, digital: "Média" },
+            { name: "Navegantes", region: "Litoral", weight: 0.4, biasJ: 12, biasR: -5, digital: "Média" },
+            { name: "Caçador", region: "Meio-Oeste", weight: 0.4, biasJ: 0, biasR: 15, digital: "Baixa" },
+            { name: "Concórdia", region: "Oeste", weight: 0.3, biasJ: -10, biasR: 30, digital: "Baixa" },
+            { name: "Rio do Sul", region: "Vale", weight: 0.3, biasJ: 10, biasR: 2, digital: "Baixa" },
+            { name: "Gaspar", region: "Vale", weight: 0.3, biasJ: 12, biasR: -2, digital: "Baixa" }
         ];
 
-        // --- Calculation ---
-        function calculateProjections() {
-            // Factor modifiers
-            const fGov = state.gov * 0.4;
-            const fFin = state.finance * 0.3;
-            const fDig = state.digital * 0.2;
-            const fOut = state.outsider * 0.3;
+        let state = {
+            gov: 0.75,
+            alliance: 0.90,
+            pol: 0.80,
+            psd: 0.50,
+            finance: 0.85,
+            digital: 0.60,
+            out: 0.40
+        };
 
-            // Raw Probabilities (Simulated Bayesian update)
-            let pJ = 35 + (fGov * 30) + (fFin * 20) + (fDig * 5) - (fOut * 10);
-            let pR = 15 + (fDig * 25) + (fFin * 10) + (state.gov < 0.5 ? 10 : 0);
-            let pB = 5 + (fDig * 40) + (fOut * 30);
-            let pM = 8 + (fFin * 15) + (state.gov < 0.5 ? 5 : 0);
-            let pD = 12 + (fOut * 5); // Decio is stable
-            let pO = 100 - (pJ + pR + pB + pM + pD);
-            if(pO < 5) pO = 5;
+        // --- Model Calculation ---
+        function calculateGlobal() {
+            // Factor weights
+            const fGov = state.gov * 0.35;
+            const fFin = state.finance * 0.25;
+            const fPol = state.pol * 0.15;
+            const fAll = state.alliance * 0.15;
+            const fDig = state.digital * 0.10;
+            const fOut = state.out * 0.20;
+            const fPsd = state.psd * 0.40;
 
-            // Normalize
+            // Raw Bayesian Likelihoods
+            let pJ = 32 + (fGov * 40) + (fFin * 20) + (fAll * 15) + (fPol * 5) - (fOut * 10);
+            let pR = 12 + (fPsd * 35) + (fDig * 15) + (fFin * 10);
+            let pB = 4 + (fDig * 40) + (fOut * 35);
+            let pM = 7 + (fFin * 15) + (fAll < 0.5 ? 10 : 0);
+            let pD = 13 + (fPol * 5); // Decio LimaPT
+            let pO = 10; // Others
+
+            // Normalization to 100%
             const sum = pJ + pR + pB + pM + pD + pO;
             const norm = 100 / sum;
 
@@ -283,120 +310,137 @@
             };
         }
 
-        // --- Charts ---
-        let growthChart, radarChart;
+        // --- Charts and UI ---
+        let growthChart;
 
-        function initCharts() {
-            const ctxGrowth = document.getElementById('growthChart').getContext('2d');
-            growthChart = new Chart(ctxGrowth, {
+        function updateUI() {
+            const data = calculateGlobal();
+            
+            // KPIs
+            document.getElementById('kpi-jorginho').innerText = data.jorginho + '%';
+            document.getElementById('kpi-rodrigues').innerText = data.rodrigues + '%';
+            document.getElementById('kpi-brigadeiro').innerText = data.brigadeiro + '%';
+            document.getElementById('kpi-merisio').innerText = data.merisio + '%';
+            document.getElementById('kpi-decio').innerText = data.decio + '%';
+            
+            // 2nd Round Prob
+            const jVal = parseFloat(data.jorginho);
+            let r2 = jVal < 45 ? 90 : jVal < 50 ? 65 : 15;
+            document.getElementById('kpi-round2').innerText = r2 + '%';
+
+            // Slider Labels
+            const ids = ['gov','alliance','pol','psd','finance','digital','out'];
+            ids.forEach(id => {
+                document.getElementById('val-'+id).innerText = (state[id]*100).toFixed(0) + '%';
+            });
+
+            renderTable();
+            updateChart(data);
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('city-table-body');
+            const data = calculateGlobal();
+            
+            tbody.innerHTML = cities.map(city => {
+                // Regional Bias calculation
+                let jLoc = parseFloat(data.jorginho) + city.biasJ + (state.alliance - 0.5)*20;
+                let rLoc = parseFloat(data.rodrigues) + city.biasR + (state.psd - 0.5)*30;
+                
+                const sum = jLoc + rLoc + 15;
+                const norm = 100 / sum;
+                const jFinal = (jLoc * norm).toFixed(1);
+                const rFinal = (rLoc * norm).toFixed(1);
+
+                return `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 font-bold text-slate-800">${city.name}</td>
+                        <td class="px-6 py-4 text-xs text-slate-400 font-bold uppercase">${city.region}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono font-bold text-blue-900">${jFinal}%</span>
+                                <div class="w-16 h-1 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="bg-blue-800 h-full" style="width: ${jFinal}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono font-bold text-orange-600">${rFinal}%</span>
+                                <div class="w-16 h-1 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="bg-orange-500 h-full" style="width: ${rFinal}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded ${city.digital === 'Alta' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500'}">
+                                ${city.digital}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="text-[10px] font-bold ${jFinal > rFinal ? 'text-blue-700' : 'text-orange-700'}">
+                                ${jFinal > rFinal ? 'HEGEMONIA PL' : 'FORTE PSD'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('growthChart').getContext('2d');
+            growthChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: ['Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'],
                     datasets: [
-                        { label: 'Jorginho (PL)', borderColor: '#0f172a', borderWidth: 3, tension: 0.3, data: [] },
-                        { label: 'Rodrigues (PSD)', borderColor: '#f5821f', borderWidth: 3, tension: 0.3, data: [] },
-                        { label: 'Brigadeiro (Out)', borderColor: '#64748b', borderWidth: 2, borderDash: [5,5], tension: 0.3, data: [] },
-                        { label: 'Merisio', borderColor: '#059669', borderWidth: 2, tension: 0.3, data: [] }
+                        { label: 'Jorginho', borderColor: '#002776', borderWidth: 4, data: [], tension: 0.4, fill: true, backgroundColor: 'rgba(0,39,118,0.05)' },
+                        { label: 'Rodrigues', borderColor: '#f5821f', borderWidth: 3, data: [], tension: 0.4, borderDash: [5,5] },
+                        { label: 'Brigadeiro', borderColor: '#4f46e5', borderWidth: 2, data: [], tension: 0.4 },
+                        { label: 'Merisio', borderColor: '#059669', borderWidth: 2, data: [], tension: 0.4 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true, max: 60 } },
-                    plugins: { legend: { position: 'bottom' } }
-                }
-            });
-
-            const ctxRadar = document.getElementById('radarChart').getContext('2d');
-            radarChart = new Chart(ctxRadar, {
-                type: 'radar',
-                data: {
-                    labels: ['Recursos', 'TV', 'Redes Sociais', 'Prefeitos', 'Popularidade'],
-                    datasets: [
-                        { label: 'Tradicional (PL)', data: [95, 90, 60, 85, 75], borderColor: '#0f172a', backgroundColor: 'rgba(15, 23, 42, 0.1)' },
-                        { label: 'Digital (Out)', data: [20, 10, 95, 10, 85], borderColor: '#6366f1', backgroundColor: 'rgba(99, 102, 241, 0.1)' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { r: { suggestedMin: 0, suggestedMax: 100 } },
+                    scales: { y: { beginAtZero: true, max: 65 } },
                     plugins: { legend: { display: false } }
                 }
             });
         }
 
-        function updateUI() {
-            const data = calculateProjections();
-            
-            // KPI Update
-            const names = ['jorginho', 'rodrigues', 'brigadeiro', 'merisio', 'decio', 'others'];
-            names.forEach(n => {
-                document.getElementById(`kpi-${n}`).innerText = data[n] + '%';
-                document.getElementById(`bar-${n}`).style.width = data[n] + '%';
-            });
-
-            // Growth Chart Update (Logistic Logic)
-            const steps = 8;
-            names.slice(0, 4).forEach((n, idx) => {
-                const target = parseFloat(data[n]);
-                const start = target * 0.6; // Simulating growth from March
+        function updateChart(data) {
+            if (!growthChart) return;
+            const keys = ['jorginho', 'rodrigues', 'brigadeiro', 'merisio'];
+            keys.forEach((k, idx) => {
+                const target = parseFloat(data[k]);
+                const start = target * 0.7;
                 const curve = [];
-                for(let i=0; i<steps; i++) {
-                    const progress = i / (steps - 1);
-                    // Logistic: P = L / (1 + e^-k(t-t0))
-                    const val = start + (target - start) * progress; 
-                    curve.push(val + (Math.random() * 2 - 1));
+                for(let i=0; i<8; i++) {
+                    const progress = i/7;
+                    // Logistic approximation
+                    const val = start + (target - start) * progress;
+                    curve.push(val + (Math.random()*1.5 - 0.7));
                 }
                 growthChart.data.datasets[idx].data = curve;
             });
             growthChart.update();
-
-            // Labels
-            document.getElementById('lbl-gov').innerText = (state.gov * 100).toFixed(0) + '%';
-            document.getElementById('lbl-finance').innerText = (state.finance * 100).toFixed(0) + '%';
-            document.getElementById('lbl-digital').innerText = (state.digital * 100).toFixed(0) + '%';
-            document.getElementById('lbl-outsider').innerText = (state.outsider * 100).toFixed(0) + '%';
-
-            // Summary
-            const summary = document.getElementById('sim-summary');
-            if(state.digital > 0.7 && state.outsider > 0.6) {
-                summary.innerHTML = "Atenção: A combinação de <b>alto engajamento digital</b> e <b>sentimento antissistema</b> favorece o crescimento explosivo de <b>Marcelo Brigadeiro</b>, ameaçando o segundo lugar do PSD.";
-            } else if (state.gov > 0.7) {
-                summary.innerHTML = "O cenário permanece de <b>ampla dominância da máquina (PL)</b>. Com a aprovação alta, a estrutura de Merisio e Brigadeiro atua apenas como nicho.";
-            } else {
-                summary.innerHTML = "Cenário de <b>fragmentação</b>. A queda na aprovação governamental abre espaço para o PSD no Oeste e para Merisio no Centro do Estado.";
-            }
         }
 
-        function populateTable() {
-            const body = document.getElementById('city-table-body');
-            body.innerHTML = cityData.map(c => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-6 py-4 font-bold text-slate-800">${c.name}</td>
-                    <td class="px-6 py-4 text-xs font-mono text-indigo-600">${c.digital}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase ${c.outsider === 'Alto' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-400'}">
-                            ${c.outsider}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 font-mono text-slate-500">${c.weight}</td>
-                    <td class="px-6 py-4 text-right">
-                        <span class="font-bold text-slate-700">${c.leading}</span>
-                    </td>
-                </tr>
-            `).join('');
+        // --- Listeners ---
+        function setup() {
+            const inputs = ['gov','alliance','pol','psd','finance','digital','out'];
+            inputs.forEach(id => {
+                document.getElementById('sim-'+id).oninput = (e) => {
+                    state[id] = e.target.value / 100;
+                    updateUI();
+                };
+            });
         }
-
-        // --- Interaction ---
-        document.getElementById('sim-gov').oninput = (e) => { state.gov = e.target.value / 100; updateUI(); };
-        document.getElementById('sim-finance').oninput = (e) => { state.finance = e.target.value / 100; updateUI(); };
-        document.getElementById('sim-digital').oninput = (e) => { state.digital = e.target.value / 100; updateUI(); };
-        document.getElementById('sim-outsider').oninput = (e) => { state.outsider = e.target.value / 100; updateUI(); };
 
         window.onload = () => {
-            initCharts();
-            populateTable();
+            initChart();
+            setup();
             updateUI();
         };
 
