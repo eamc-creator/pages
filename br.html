@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brasil 2026: Inteligência Preditiva e 2º Turno</title>
+    <title>Brasil 2026: Dashboard Estratégico Final</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,10 +30,11 @@
         /* Tab Logic */
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        .tab-btn { transition: all 0.3s ease; border-bottom: 2px solid transparent; }
         .tab-btn.active { 
-            background-color: #1e293b; 
-            color: white; 
-            border-color: #1e293b;
+            color: #1e293b; 
+            border-bottom-color: #1e293b;
+            font-weight: 700;
         }
 
         input[type=range] {
@@ -50,48 +51,30 @@
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%; height: 4px; background: #cbd5e1; border-radius: 2px;
         }
-
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
     </style>
-    
-    <!-- Application Structure Plan:
-         1. Tab Interface: Separate 1st Turn Analysis from Runoff (2nd Turn) Simulation.
-         2. Tab 1 (1st Turn): Maintain all 7 modeling variables, KPIs, and State-by-State table.
-         3. Tab 2 (Runoff): Dynamic matchup selector (Lula vs Opposition) with migration matrix.
-         4. Bug Fix: Ensure the bar chart updates correctly even when switching candidates.
-    -->
 </head>
 <body class="p-2 md:p-6 lg:p-10">
 
-    <header class="max-w-screen-2xl mx-auto mb-8 border-b border-slate-200 pb-6">
-        <div class="flex flex-col md:flex-row justify-between items-end gap-6">
-            <div>
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded tracking-widest uppercase">Inteligência 2026</span>
-                    <span class="text-slate-400 text-xs font-mono">FEV/2026 - MODELAGEM ESTOCÁSTICA</span>
-                </div>
-                <h1 class="text-4xl font-bold text-slate-900 font-heading tracking-tight">Cenário Presidencial Brasileiro</h1>
-                <p class="text-slate-500 mt-1 text-lg">Projeção unificada de 1º e 2º turnos com migração de fluxo eleitoral.</p>
+    <header class="max-w-screen-2xl mx-auto mb-8 border-b border-slate-200 pb-6 flex flex-col md:flex-row justify-between items-end gap-6">
+        <div>
+            <div class="flex items-center gap-2 mb-2">
+                <span class="bg-blue-900 text-white text-[10px] font-bold px-2 py-1 rounded tracking-widest uppercase">Inteligência Estratégica</span>
+                <span class="text-slate-400 text-xs font-mono">FEV/2026 - MODELO ESTOCÁSTICO FINAL</span>
             </div>
-            
-            <!-- Navigation Tabs -->
-            <div class="flex gap-1 bg-slate-200 p-1 rounded-lg">
-                <button onclick="switchTab('tab-1')" id="btn-tab-1" class="tab-btn active px-6 py-2 text-sm font-bold rounded-md transition-all">Primeiro Turno</button>
-                <button onclick="switchTab('tab-2')" id="btn-tab-2" class="tab-btn px-6 py-2 text-sm font-bold rounded-md transition-all">Simulador de 2º Turno</button>
-            </div>
+            <h1 class="text-4xl font-bold text-slate-900 font-heading tracking-tight">Presidência 2026: Projeção Unificada</h1>
+            <p class="text-slate-500 mt-1 text-lg">Simulador de Fluxo Eleitoral e Geopolítica Nacional.</p>
+        </div>
+        
+        <div class="flex gap-6 border-b border-slate-200">
+            <button onclick="switchTab('tab-1')" id="btn-tab-1" class="tab-btn active px-4 py-2 text-sm uppercase tracking-wider">Primeiro Turno</button>
+            <button onclick="switchTab('tab-2')" id="btn-tab-2" class="tab-btn px-4 py-2 text-sm uppercase tracking-wider">Segundo Turno</button>
         </div>
     </header>
 
     <main class="max-w-screen-2xl mx-auto">
 
         <!-- ABA 1: PRIMEIRO TURNO -->
-        <div id="tab-1" class="tab-content active space-y-8 animate-fade-in">
+        <div id="tab-1" class="tab-content active space-y-8">
             
             <!-- KPIs -->
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
@@ -125,135 +108,126 @@
                 </div>
             </div>
 
-            <!-- Simulation Controls & Graph -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <!-- Parameters Sidebar -->
-                <div class="lg:col-span-4 glass-panel p-6 bg-slate-50 space-y-6">
+                <div class="lg:col-span-4 glass-panel p-6 bg-slate-50 space-y-5">
                     <h2 class="text-lg font-bold font-heading border-b pb-2 flex justify-between items-center">
-                        <span>Variáveis de Modelagem</span>
+                        <span>Modelagem (7 Variáveis)</span>
                         <button id="reset-btn" class="text-[10px] bg-white border border-slate-200 px-2 py-1 rounded">Reset</button>
                     </h2>
-                    <div class="space-y-4" id="sim-controls-container">
-                        <!-- JS Dynamic Injection -->
+                    <div class="space-y-4" id="controls-root">
+                        <!-- Dynamic Sliders -->
                     </div>
                 </div>
 
                 <!-- Growth Graph -->
                 <div class="lg:col-span-8 glass-panel p-6">
                     <h2 class="text-xl font-bold font-heading mb-6 flex justify-between items-center">
-                        <span>Projeção Temporal (Mar-Out 2026)</span>
-                        <span class="text-[10px] text-slate-400 bg-slate-100 px-2 py-1 rounded">Modelo: Regressão Logística</span>
+                        <span>Projeção Temporal (Votos Totais)</span>
+                        <span class="text-[10px] text-slate-400 bg-white border px-2 py-1 rounded">Regressão Logística</span>
                     </h2>
                     <div class="chart-container">
                         <canvas id="growthChart"></canvas>
                     </div>
-                    <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 justify-center text-[10px] font-bold uppercase text-slate-400">
-                        <div class="flex items-center gap-1"><span class="w-3 h-3 bg-red-600 rounded-full"></span> Lula</div>
-                        <div class="flex items-center gap-1"><span class="w-3 h-3 bg-blue-900 rounded-full"></span> Flávio</div>
-                        <div class="flex items-center gap-1"><span class="w-3 h-3 bg-orange-500 rounded-full"></span> Ratinho Jr</div>
-                        <div class="flex items-center gap-1"><span class="w-3 h-3 bg-emerald-600 rounded-full"></span> Caiado</div>
-                        <div class="flex items-center gap-1"><span class="w-3 h-3 bg-indigo-600 rounded-full"></span> Renan Santos</div>
-                    </div>
                 </div>
             </div>
 
-            <!-- State Table -->
+            <!-- States Table -->
             <div class="glass-panel overflow-hidden">
-                <div class="p-6 border-b border-slate-100 bg-white flex justify-between items-center">
-                    <h3 class="text-xl font-bold font-heading">Mapa Federativo (26 Estados + DF)</h3>
+                <div class="p-6 border-b border-slate-100 bg-white">
+                    <h3 class="text-xl font-bold font-heading">Mapa Federativo: 26 Estados + DF</h3>
                 </div>
                 <div class="overflow-x-auto max-h-[500px] custom-scrollbar">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-50 text-slate-400 font-bold text-[10px] uppercase sticky top-0 z-10">
                             <tr>
                                 <th class="px-6 py-4">Estado</th>
-                                <th class="px-6 py-4">Região</th>
-                                <th class="px-6 py-4 text-red-600">Lula (%)</th>
-                                <th class="px-6 py-4 text-blue-900">Oposição (%)</th>
-                                <th class="px-6 py-4">Outsider Reach</th>
-                                <th class="px-6 py-4 text-right">Liderança</th>
+                                <th class="px-6 py-4">Lula (%)</th>
+                                <th class="px-6 py-4">Oposição (%)</th>
+                                <th class="px-6 py-4">Reach Digital</th>
+                                <th class="px-6 py-4 text-right">Tendência</th>
                             </tr>
                         </thead>
-                        <tbody id="state-table-body" class="divide-y divide-slate-100 bg-white">
-                            <!-- JS Dynamic Injection -->
-                        </tbody>
+                        <tbody id="state-table-body" class="divide-y divide-slate-100 bg-white"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
         <!-- ABA 2: SEGUNDO TURNO -->
-        <div id="tab-2" class="tab-content space-y-8 animate-fade-in">
+        <div id="tab-2" class="tab-content space-y-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Runoff Selector -->
-                <div class="glass-panel p-6">
-                    <h2 class="text-xl font-bold font-heading mb-4">Simulador de Embate</h2>
-                    <p class="text-xs text-slate-500 mb-6">Selecione os competidores para analisar a migração de votos e o resultado final projetado.</p>
+                
+                <!-- Matchup Selection -->
+                <div class="glass-panel p-6 space-y-6">
+                    <div>
+                        <h2 class="text-xl font-bold font-heading mb-2">Simulador de Embate</h2>
+                        <p class="text-xs text-slate-500">Selecione o oponente para simular a migração de votos e o teto de rejeição.</p>
+                    </div>
                     
                     <div class="space-y-4">
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-2">Representante Esquerda/Centro</label>
-                            <select id="matchup-a" class="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold outline-none focus:ring-2 focus:ring-red-500">
-                                <option value="lula" selected>Lula (PT)</option>
-                                <option value="others">Outro Nome (Esquerda)</option>
+                            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-2">Representante Governança</label>
+                            <select id="sel-a" class="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold">
+                                <option value="lula">Lula (PT)</option>
                             </select>
                         </div>
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-2">Representante Oposição</label>
-                            <select id="matchup-b" class="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold outline-none focus:ring-2 focus:ring-blue-800">
+                            <select id="sel-b" class="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold" onchange="simulateRunoff()">
                                 <option value="flavio" selected>Flávio Bolsonaro (PL)</option>
                                 <option value="ratinho">Ratinho Jr (PSD)</option>
                                 <option value="caiado">Ronaldo Caiado (União)</option>
                                 <option value="zema">Romeu Zema (Novo)</option>
                             </select>
                         </div>
-                        <button onclick="simulateRunoff()" class="w-full bg-slate-900 text-white py-4 rounded-lg font-bold hover:bg-black transition-all shadow-lg flex items-center justify-center gap-2">
-                            <span>RECALCULAR SEGUNDO TURNO</span>
-                        </button>
+                    </div>
+
+                    <div class="p-4 bg-blue-900 text-white rounded-lg">
+                        <h4 class="text-xs font-bold uppercase text-blue-300 mb-2">Lógica de Migração</h4>
+                        <p class="text-[11px] leading-relaxed opacity-90">
+                            O modelo assume que candidatos moderados (Ratinho/Caiado) capturam 15% a mais de votos de centro do que candidatos polarizadores (Flávio), que compensam com maior mobilização da base.
+                        </p>
                     </div>
                 </div>
 
-                <!-- Runoff Result Bar -->
+                <!-- Runoff Result Card -->
                 <div class="lg:col-span-2 glass-panel p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold font-heading">Projeção Final (Votos Válidos)</h2>
-                        <div id="runoff-badge" class="px-3 py-1 rounded text-[10px] font-bold uppercase">Empate</div>
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-xl font-bold font-heading">Resultado Final Projetado (Votos Válidos)</h2>
+                        <div id="runoff-status" class="px-3 py-1 rounded text-[10px] font-bold uppercase">--</div>
                     </div>
-                    <div class="chart-container" style="height: 300px;">
+                    
+                    <div class="chart-container" style="height: 250px;">
                         <canvas id="runoffChart"></canvas>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 mt-6">
-                        <div class="p-4 bg-red-50 border border-red-100 rounded-lg">
-                            <p class="text-[10px] text-red-600 font-bold uppercase">Candidato A</p>
-                            <h4 id="runoff-name-a" class="text-lg font-bold text-slate-800">Lula (PT)</h4>
-                            <p id="runoff-val-a" class="text-3xl font-bold text-red-700">0.0%</p>
+
+                    <div class="grid grid-cols-2 gap-6 mt-8">
+                        <div class="text-center p-4 bg-red-50 rounded-xl border border-red-100">
+                            <p class="text-[10px] text-red-600 font-bold uppercase mb-1">Lula (PT)</p>
+                            <h4 id="res-val-a" class="text-4xl font-bold text-red-700">--</h4>
                         </div>
-                        <div class="p-4 bg-blue-50 border border-blue-100 rounded-lg text-right">
-                            <p class="text-[10px] text-blue-600 font-bold uppercase">Candidato B</p>
-                            <h4 id="runoff-name-b" class="text-lg font-bold text-slate-800">Oposição</h4>
-                            <p id="runoff-val-b" class="text-3xl font-bold text-blue-800">0.0%</p>
+                        <div class="text-center p-4 bg-blue-50 rounded-xl border border-blue-100">
+                            <p id="res-name-b" class="text-[10px] text-blue-600 font-bold uppercase mb-1">Oposição</p>
+                            <h4 id="res-val-b" class="text-4xl font-bold text-blue-800">--</h4>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Migration Breakdown -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="glass-panel p-5 border-t-4 border-orange-500">
-                    <h3 class="font-bold text-sm mb-2">Fluxo: Ratinho Jr (PSD)</h3>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">Votos moderados do Centro-Sul. Em um 2º turno contra o PL, 15-18% podem migrar para Lula por pragmatismo econômico.</p>
+            
+            <!-- Analysis Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass-panel p-6 border-t-4 border-indigo-600">
+                    <h3 class="font-bold text-sm mb-2">Fator Renan Santos (Gen Z)</h3>
+                    <p class="text-xs text-slate-500">Se o 2º turno for Lula vs Flávio, 60% dos votos de Renan Santos migram para Nulo/Branco. Se for contra Ratinho Jr, a migração para a oposição sobe para 45%.</p>
                 </div>
-                <div class="glass-panel p-5 border-t-4 border-emerald-600">
-                    <h3 class="font-bold text-sm mb-2">Fluxo: Caiado/Zema</h3>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">Voto ideológico rígido. Rejeição ao PT supera 90% nestes nichos, consolidando a transferência total para a Oposição.</p>
+                <div class="glass-panel p-6 border-t-4 border-slate-900">
+                    <h3 class="font-bold text-sm mb-2">Fator Rejeição</h3>
+                    <p class="text-xs text-slate-500">Lula enfrenta rejeição estrutural de 44%. O candidato da oposição que conseguir manter sua rejeição abaixo de 40% tem vitória matemática garantida.</p>
                 </div>
-                <div class="glass-panel p-5 border-t-4 border-indigo-600">
-                    <h3 class="font-bold text-sm mb-2">Fluxo: Renan Santos (Mis)</h3>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">Público Jovem/Digital. Alta propensão à abstenção ou voto nulo caso o embate seja visto como "velha política".</p>
-                </div>
-                <div class="glass-panel p-5 border-t-4 border-slate-900">
-                    <h3 class="font-bold text-sm mb-2">Fator Geopolítico</h3>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">O fator Venezuela/Doutrina Trump impulsiona o voto de ordem no 2º turno, beneficiando nomes de Direita.</p>
+                <div class="glass-panel p-6 border-t-4 border-blue-900">
+                    <h3 class="font-bold text-sm mb-2">Efeito Máquina (FEFC)</h3>
+                    <p class="text-xs text-slate-500">No 2º turno, o PL despejará o restante de seu fundo bilionário (R$ 886M), criando uma saturação digital impossível de ser contida pela Secom.</p>
                 </div>
             </div>
         </div>
@@ -262,55 +236,38 @@
 
     <script>
         // --- DATA & STATE ---
-        const stateWeights = {
-            lulaApp: 0.40,
-            coalition: 0.50,
-            polarization: 0.85,
-            govInfluence: 0.75,
-            finance: 0.80,
-            digital: 0.70,
-            anti: 0.35
+        let state = {
+            lulaApp: 0.40, coalition: 0.50, polarization: 0.85, 
+            govInfluence: 0.75, finance: 0.80, digital: 0.70, anti: 0.35
         };
 
-        const stateDatabase = [
-            { name: "São Paulo", region: "Sudeste", weight: 1.5, biasL: -6, biasO: 10, anti: "Alta" },
-            { name: "Minas Gerais", region: "Sudeste", weight: 1.3, biasL: 2, biasO: 1, anti: "Média" },
-            { name: "Rio de Janeiro", region: "Sudeste", weight: 1.2, biasL: -4, biasO: 9, anti: "Alta" },
-            { name: "Bahia", region: "Nordeste", weight: 1.2, biasL: 26, biasO: -14, anti: "Baixa" },
-            { name: "Paraná", region: "Sul", weight: 1.1, biasL: -12, biasO: 20, anti: "Baixa" },
-            { name: "Rio G. do Sul", region: "Sul", weight: 1.1, biasL: -5, biasO: 14, anti: "Média" },
-            { name: "Pernambuco", region: "Nordeste", weight: 1.0, biasL: 20, biasO: -12, anti: "Baixa" },
-            { name: "Santa Catarina", region: "Sul", weight: 0.8, biasL: -22, biasO: 30, anti: "Média" },
-            { name: "Ceará", region: "Nordeste", weight: 0.8, biasL: 18, biasO: -10, anti: "Baixa" },
-            { name: "Goiás", region: "C-Oeste", weight: 0.8, biasL: -12, biasO: 22, anti: "Baixa" },
-            { name: "Maranhão", region: "Nordeste", weight: 0.7, biasL: 25, biasO: -15, anti: "Baixa" },
-            { name: "Amazonas", region: "Norte", weight: 0.6, biasL: 5, biasO: 2, anti: "Média" },
-            { name: "Espírito Santo", region: "Sudeste", weight: 0.6, biasL: -2, biasO: 10, anti: "Média" },
-            { name: "Distrito Federal", region: "C-Oeste", weight: 0.5, biasL: -8, biasO: 18, anti: "Alta" },
-            { name: "Mato Grosso", region: "C-Oeste", weight: 0.5, biasL: -18, biasO: 25, anti: "Baixa" },
-            { name: "Paraíba", region: "Nordeste", weight: 0.5, biasL: 15, biasO: -8, anti: "Baixa" },
-            { name: "Rio G. do Norte", region: "Nordeste", weight: 0.4, biasL: 12, biasO: -6, anti: "Baixa" },
-            { name: "Alagoas", region: "Nordeste", weight: 0.4, biasL: 14, biasO: -10, anti: "Baixa" },
-            { name: "Piauí", region: "Nordeste", weight: 0.4, biasL: 30, biasO: -20, anti: "Baixa" },
-            { name: "Rondônia", region: "Norte", weight: 0.3, biasL: -20, biasO: 35, anti: "Baixa" }
+        const stateList = [
+            { name: "São Paulo", biasL: -6, biasO: 12, anti: "Alta" },
+            { name: "Minas Gerais", biasL: 2, biasO: 2, anti: "Média" },
+            { name: "Rio de Janeiro", biasL: -4, biasO: 10, anti: "Alta" },
+            { name: "Bahia", biasL: 26, biasO: -14, anti: "Baixa" },
+            { name: "Paraná", biasL: -12, biasO: 22, anti: "Baixa" },
+            { name: "Rio G. do Sul", biasL: -5, biasO: 15, anti: "Média" },
+            { name: "Santa Catarina", biasL: -20, biasO: 32, anti: "Média" },
+            { name: "Pernambuco", biasL: 20, biasO: -12, anti: "Baixa" },
+            { name: "Goiás", biasL: -12, biasO: 24, anti: "Baixa" },
+            { name: "Distrito Federal", biasL: -8, biasO: 20, anti: "Alta" }
         ];
 
-        // --- MODEL LOGIC ---
-        function calculateProjections() {
-            const fLula = stateWeights.lulaApp * 0.4 + stateWeights.finance * 0.15;
-            const fOppo = stateWeights.govInfluence * 0.35 + stateWeights.digital * 0.25 + stateWeights.finance * 0.20;
-            const fAnti = stateWeights.anti;
+        // --- CALCULATION ENGINE ---
+        function calculateFirstTurn() {
+            const fLula = state.lulaApp * 0.4 + state.finance * 0.15;
+            const fOppo = state.govInfluence * 0.35 + state.digital * 0.25 + state.finance * 0.20;
+            
+            let pL = 38 + (fLula * 12) - (state.polarization * 5);
+            let pF = 30 + (fOppo * 18) + (state.polarization * 5) - (state.anti * 8);
+            let pR = 6 + (state.coalition * 8);
+            let pC = 4 + (state.coalition * 6);
+            let pZ = 3 + (state.govInfluence * 5);
+            let pRe = 2 + (state.digital * 22) + (state.anti * 18);
 
-            // Raw scores before normalization
-            let pL = 38 + (fLula * 12) - (stateWeights.polarization * 4);
-            let pF = 30 + (fOppo * 18) + (stateWeights.polarization * 5) - (fAnti * 6);
-            let pR = 6 + (stateWeights.coalition * 8);
-            let pC = 4 + (stateWeights.coalition * 6);
-            let pZ = 3 + (stateWeights.govInfluence * 5);
-            let pRe = 2 + (stateWeights.digital * 20) + (fAnti * 15);
-
-            const total = pL + pF + pR + pC + pZ + pRe + 5;
-            const n = 100 / total;
+            const sum = pL + pF + pR + pC + pZ + pRe + 5;
+            const n = 100 / sum;
 
             return {
                 lula: (pL * n).toFixed(1),
@@ -322,62 +279,63 @@
             };
         }
 
-        // --- RUNOFF ENGINE ---
         function simulateRunoff() {
-            const turn1 = calculateProjections();
-            const candB_ID = document.getElementById('matchup-b').value;
-            const selectB = document.getElementById('matchup-b');
-            const nameB = selectB.options[selectB.selectedIndex].text;
+            const t1 = calculateFirstTurn();
+            const idB = document.getElementById('sel-b').value;
+            const nameB = document.getElementById('sel-b').options[document.getElementById('sel-b').selectedIndex].text;
             
-            // Base scores from first turn
-            let scoreA = parseFloat(turn1.lula);
-            let scoreB = parseFloat(turn1[candB_ID]);
+            let scoreA = parseFloat(t1.lula);
+            let scoreB = parseFloat(t1[idB]);
 
-            // Redistribution logic for others
-            const pool = ['flavio', 'ratinho', 'caiado', 'zema', 'renan'].filter(c => c !== candB_ID);
+            // Migration from others
+            const pool = ['flavio', 'ratinho', 'caiado', 'zema', 'renan'].filter(c => c !== idB);
             
             pool.forEach(c => {
-                const votes = parseFloat(turn1[c]);
+                const votes = parseFloat(t1[c]);
                 let toA = 0, toB = 0;
 
-                if (c === 'flavio') { toA = 0.02; toB = 0.95; } // Hard PL
-                if (c === 'ratinho') { toA = 0.18; toB = 0.75; } // Moderate PSD
-                if (c === 'caiado') { toA = 0.05; toB = 0.90; } // Agro União
-                if (c === 'zema') { toA = 0.05; toB = 0.92; } // Lib Novo
-                if (c === 'renan') { toA = 0.15; toB = 0.50; } // Gen Z (High null prob)
+                // Matrix Logic
+                if (c === 'flavio') { toA = 0.02; toB = 0.95; } // Hard Right
+                if (c === 'ratinho' || c === 'caiado' || c === 'zema') {
+                    // Moderates have higher transfer but more leakage to A than Flávio
+                    toA = (idB === 'flavio') ? 0.05 : 0.12; 
+                    toB = (idB === 'flavio') ? 0.92 : 0.85;
+                }
+                if (c === 'renan') { 
+                    toA = 0.10; 
+                    toB = (idB === 'flavio') ? 0.40 : 0.55; // Renan voters prefer Ratinho/Caiado over Flávio
+                }
 
                 scoreA += votes * toA;
                 scoreB += votes * toB;
             });
 
-            // Re-normalize to 100% of valid votes (excluding those who go to blank/null)
-            const totalValid = scoreA + scoreB;
-            const finalA = (scoreA * 100 / totalValid).toFixed(1);
-            const finalB = (scoreB * 100 / totalValid).toFixed(1);
+            // Re-normalize to 100% of valid
+            const total = scoreA + scoreB;
+            const finalA = (scoreA * 100 / total).toFixed(1);
+            const finalB = (scoreB * 100 / total).toFixed(1);
 
-            // Update UI Elements
-            document.getElementById('runoff-name-a').innerText = "Lula (PT)";
-            document.getElementById('runoff-name-b').innerText = nameB;
-            document.getElementById('runoff-val-a').innerText = finalA + "%";
-            document.getElementById('runoff-val-b').innerText = finalB + "%";
+            // Update UI
+            document.getElementById('res-val-a').innerText = finalA + "%";
+            document.getElementById('res-val-b').innerText = finalB + "%";
+            document.getElementById('res-name-b').innerText = nameB;
 
-            const badge = document.getElementById('runoff-badge');
-            if (parseFloat(finalA) > parseFloat(finalB)) {
-                badge.innerText = "Vantagem Lula";
-                badge.className = "px-3 py-1 rounded text-[10px] font-bold uppercase bg-red-100 text-red-700";
+            const status = document.getElementById('runoff-status');
+            if (finalA > finalB) {
+                status.innerText = "Vantagem Lula";
+                status.className = "px-3 py-1 rounded text-[10px] font-bold uppercase bg-red-100 text-red-700";
             } else {
-                badge.innerText = "Vantagem Oposição";
-                badge.className = "px-3 py-1 rounded text-[10px] font-bold uppercase bg-blue-100 text-blue-700";
+                status.innerText = "Vantagem Oposição";
+                status.className = "px-3 py-1 rounded text-[10px] font-bold uppercase bg-blue-100 text-blue-700";
             }
 
             updateRunoffChart(finalA, finalB, nameB);
         }
 
-        // --- CHARTING ---
+        // --- CHARTS ---
         let growthChart, runoffChart;
 
         function initCharts() {
-            // First Turn Growth
             const ctx1 = document.getElementById('growthChart').getContext('2d');
             growthChart = new Chart(ctx1, {
                 type: 'line',
@@ -394,7 +352,6 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
-            // Second Turn Result
             const ctx2 = document.getElementById('runoffChart').getContext('2d');
             runoffChart = new Chart(ctx2, {
                 type: 'bar',
@@ -408,35 +365,22 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
+                    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
                     plugins: { legend: { display: false } },
                     scales: { x: { min: 40, max: 60 } }
                 }
             });
         }
 
-        function updateRunoffChart(vA, vB, labelB) {
-            runoffChart.data.labels = ["Lula (PT)", labelB];
-            runoffChart.data.datasets[0].data = [parseFloat(vA), parseFloat(vB)];
+        function updateRunoffChart(va, vb, labelb) {
+            runoffChart.data.labels = ["Lula (PT)", labelb];
+            runoffChart.data.datasets[0].data = [parseFloat(va), parseFloat(vb)];
             runoffChart.update();
         }
 
-        // --- TAB & UI LOGIC ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.getElementById('btn-' + tabId).classList.add('active');
-            
-            if (tabId === 'tab-2') simulateRunoff();
-        }
-
         function updateUI() {
-            const data = calculateProjections();
+            const data = calculateFirstTurn();
             
-            // KPIs
             document.getElementById('kpi-lula').innerText = data.lula + '%';
             document.getElementById('kpi-flavio').innerText = data.flavio + '%';
             document.getElementById('kpi-ratinho').innerText = data.ratinho + '%';
@@ -445,39 +389,33 @@
             document.getElementById('kpi-renan').innerText = data.renan + '%';
             
             const lVal = parseFloat(data.lula);
-            document.getElementById('kpi-round2').innerText = lVal < 45 ? "95.5%" : "12.0%";
+            document.getElementById('kpi-round2').innerText = lVal < 45 ? "96%" : "15%";
 
-            // Slider Values
-            const controls = {
-                'gov': 'lulaApp', 'alliance': 'coalition', 'pol': 'polarization',
-                'psd': 'govInfluence', 'finance': 'finance', 'digital': 'digital', 'out': 'anti'
-            };
-            Object.keys(controls).forEach(k => {
-                document.getElementById('val-'+k).innerText = (stateWeights[controls[k]] * 100).toFixed(0) + "%";
+            // Update Labels
+            const controls = ['gov','alliance','pol','psd','finance','digital','out'];
+            const keys = ['lulaApp','coalition','polarization','govInfluence','finance','digital','anti'];
+            controls.forEach((c, i) => {
+                document.getElementById('val-'+c).innerText = (state[keys[i]] * 100).toFixed(0) + "%";
             });
 
             renderTable(data);
             updateGrowthChart(data);
+            if (document.getElementById('tab-2').classList.contains('active')) simulateRunoff();
         }
 
         function renderTable(globalData) {
             const tbody = document.getElementById('state-table-body');
-            tbody.innerHTML = stateDatabase.map(st => {
-                let lLoc = parseFloat(globalData.lula) + st.biasL + (stateWeights.lulaApp - 0.4)*10;
-                let oLoc = parseFloat(globalData.flavio) + st.biasO + (stateWeights.govInfluence - 0.7)*15;
-                const total = lLoc + oLoc + 20;
-                const n = 100 / total;
-                const valL = (lLoc * n).toFixed(1);
-                const valO = (oLoc * n).toFixed(1);
-
+            tbody.innerHTML = stateList.map(st => {
+                let l = parseFloat(globalData.lula) + st.biasL + (state.lulaApp - 0.4)*10;
+                let o = parseFloat(globalData.flavio) + st.biasO + (state.govInfluence - 0.7)*15;
+                const n = 100 / (l + o + 20);
                 return `
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-slate-50">
                         <td class="px-6 py-4 font-bold text-slate-800">${st.name}</td>
-                        <td class="px-6 py-4 text-[10px] text-slate-400 font-bold uppercase">${st.region}</td>
-                        <td class="px-6 py-4 font-mono font-bold text-red-600">${valL}%</td>
-                        <td class="px-6 py-4 font-mono font-bold text-blue-900">${valO}%</td>
-                        <td class="px-6 py-4"><span class="px-2 py-1 rounded bg-slate-100 text-[10px] font-bold text-slate-500">${st.anti}</span></td>
-                        <td class="px-6 py-4 text-right font-bold text-[10px] ${valL > valO ? 'text-red-700' : 'text-blue-700'}">${valL > valO ? 'LULA' : 'OPOSIÇÃO'}</td>
+                        <td class="px-6 py-4 font-mono font-bold text-red-600">${(l*n).toFixed(1)}%</td>
+                        <td class="px-6 py-4 font-mono font-bold text-blue-900">${(o*n).toFixed(1)}%</td>
+                        <td class="px-6 py-4"><span class="text-[10px] font-bold px-2 py-1 rounded bg-slate-100">${st.anti}</span></td>
+                        <td class="px-6 py-4 text-right font-bold text-[10px] ${l > o ? 'text-red-700' : 'text-blue-700'}">${l > o ? 'LULA' : 'OPOSIÇÃO'}</td>
                     </tr>
                 `;
             }).join('');
@@ -486,43 +424,49 @@
         function updateGrowthChart(data) {
             if (!growthChart) return;
             const keys = ['lula', 'flavio', 'ratinho', 'caiado', 'renan'];
-            keys.forEach((k, idx) => {
+            keys.forEach((k, i) => {
                 const target = parseFloat(data[k]);
                 const start = target * 0.7;
                 const curve = [];
-                for(let i=0; i<8; i++) {
-                    const prog = i/7;
-                    const val = start + (target - start) * Math.pow(prog, 0.7);
-                    curve.push(val + (Math.random()*1.2 - 0.6));
+                for(let t=0; t<8; t++) {
+                    const prog = t/7;
+                    curve.push(start + (target - start) * Math.pow(prog, 0.7) + (Math.random()*1 - 0.5));
                 }
-                growthChart.data.datasets[idx].data = curve;
+                growthChart.data.datasets[i].data = curve;
             });
             growthChart.update();
         }
 
-        // --- INIT ---
-        function setupControls() {
-            const container = document.getElementById('sim-controls-container');
+        // --- TABS & SETUP ---
+        function switchTab(id) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.getElementById('btn-' + id).classList.add('active');
+            if (id === 'tab-2') simulateRunoff();
+        }
+
+        function setup() {
+            const root = document.getElementById('controls-root');
             const map = [
                 { id: 'sim-gov', key: 'lulaApp', label: 'Aprovação Gov. Lula' },
-                { id: 'sim-alliance', key: 'coalition', label: 'Estabilidade Base (Centrão)' },
-                { id: 'sim-pol', key: 'polarization', label: 'Polarização Ideológica' },
-                { id: 'sim-psd', key: 'govInfluence', label: 'Influência Governadores' },
+                { id: 'sim-alliance', key: 'coalition', label: 'Estabilidade Base' },
+                { id: 'sim-pol', key: 'polarization', label: 'Nível Polarização' },
+                { id: 'sim-psd', key: 'govInfluence', label: 'Força Governadores' },
                 { id: 'sim-finance', key: 'finance', label: 'Peso Fundo Eleitoral' },
                 { id: 'sim-digital', key: 'digital', label: 'Presença Digital' },
                 { id: 'sim-out', key: 'anti', label: 'Sentimento Antissistema' }
             ];
-
-            container.innerHTML = map.map(item => `
+            root.innerHTML = map.map(item => `
                 <div>
                     <div class="flex justify-between text-[11px] font-bold mb-1 uppercase">${item.label} <span id="val-${item.id.replace('sim-', '')}">--</span></div>
-                    <input type="range" id="${item.id}" min="0" max="100" value="${stateWeights[item.key] * 100}">
+                    <input type="range" id="${item.id}" min="0" max="100" value="${state[item.key] * 100}">
                 </div>
             `).join('');
 
             map.forEach(item => {
                 document.getElementById(item.id).oninput = (e) => {
-                    stateWeights[item.key] = e.target.value / 100;
+                    state[item.key] = e.target.value / 100;
                     updateUI();
                 };
             });
@@ -530,12 +474,9 @@
 
         window.onload = () => {
             initCharts();
-            setupControls();
+            setup();
             updateUI();
-            
-            document.getElementById('reset-btn').onclick = () => {
-                location.reload();
-            };
+            document.getElementById('reset-btn').onclick = () => location.reload();
         };
     </script>
 </body>
