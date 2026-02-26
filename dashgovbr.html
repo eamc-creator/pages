@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Eleitoral 2026 - Intelligence Dashboard</title>
+    
+    <!-- Tailwind CSS (Estilização) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js (Gráficos) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Lucide Icons (Ícones) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f1f5f9; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+        
+        .tab-btn.active { background-color: rgba(37, 99, 235, 0.1); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.2); }
+        .scenario-btn.active { background-color: #2563eb; border-color: #3b82f6; color: white; transform: scale(1.02); }
+        .scenario-btn.inactive { background-color: #334155; border-color: #475569; color: #cbd5e1; }
+        .scenario-btn.inactive:hover { background-color: #475569; }
+
+        /* Hide sections initially */
+        .hidden-section { display: none; }
+        
+        .analysis-card { background-color: rgba(30, 41, 59, 0.5); border: 1px solid #334155; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; }
+        .citation-box { background-color: rgba(15, 23, 42, 0.6); border-left: 4px solid #3b82f6; padding: 1rem; margin-top: 1rem; font-size: 0.9rem; color: #94a3b8; font-style: italic; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden selection:bg-blue-500/30">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col">
+        <div class="p-6 border-b border-slate-800 flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                <i data-lucide="activity" class="text-white w-5 h-5"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-white tracking-tight">POLÍTICA<span class="text-blue-500">2026</span></h1>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Analytics Dashboard</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-2">
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Sala de Situação
+            </button>
+            <button onclick="switchTab('analysis')" id="btn-analysis" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:bg-slate-800 hover:text-white">
+                <i data-lucide="file-text" class="w-4 h-4"></i> Relatório de Inteligência
+            </button>
+            
+            <div class="pt-8 px-4">
+                <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-4">Fontes de Dados (Fev/26)</p>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                        <div class="w-2 h-2 rounded-full bg-green-500"></div> AtlasIntel (2º Turno)
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                        <div class="w-2 h-2 rounded-full bg-blue-500"></div> Paraná Pesquisas
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                        <div class="w-2 h-2 rounded-full bg-orange-500"></div> TSE (Fundo Partidário)
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800">
+            <div class="bg-slate-800 rounded-lg p-4">
+                <p class="text-xs text-slate-400 mb-2">Confiabilidade do Modelo</p>
+                <div class="w-full bg-slate-700 h-1.5 rounded-full mb-1">
+                    <div class="bg-blue-500 h-1.5 rounded-full w-[90%]"></div>
+                </div>
+                <p class="text-right text-xs text-blue-400 font-bold">Muito Alta (90%)</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full relative w-full md:ml-0 transition-all">
+        
+        <!-- Mobile Header -->
+        <div class="md:hidden flex items-center justify-between p-4 bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
+            <div class="font-bold text-white">POLÍTICA<span class="text-blue-500">2026</span></div>
+            <button onclick="toggleSidebar()" class="text-slate-400 p-2">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+        
+        <!-- Content Container -->
+        <div class="flex-1 overflow-y-auto p-6 md:p-12 relative">
+            <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
+
+            <!-- DASHBOARD VIEW -->
+            <div id="view-dashboard" class="animate-fade-in max-w-7xl mx-auto space-y-8">
+                
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Card 1 -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold">Tensão 2º Turno</p>
+                                <h3 class="text-2xl font-bold text-white mt-1">Empate Técnico</h3>
+                            </div>
+                            <div class="p-3 rounded-lg bg-orange-500/10 text-orange-400">
+                                <i data-lucide="alert-triangle"></i>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm flex items-center gap-2">
+                            <i data-lucide="activity" class="text-orange-400 w-4 h-4"></i>
+                            Flávio 46.3% x Lula 46.2%
+                        </p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold">Guerra de Coligações</p>
+                                <h3 class="text-xl font-bold text-white mt-1">Isolamento do PT</h3>
+                            </div>
+                            <div class="p-3 rounded-lg bg-red-500/10 text-red-400">
+                                <i data-lucide="users-minus"></i>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm flex items-center gap-2">
+                            <i data-lucide="trending-down" class="text-red-400 w-4 h-4"></i>
+                            Afastamento de PSD e MDB
+                        </p>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold">Fundo Eleitoral PL</p>
+                                <h3 class="text-3xl font-bold text-emerald-400 mt-1">R$ 886M</h3>
+                            </div>
+                            <div class="p-3 rounded-lg bg-emerald-500/10 text-emerald-400">
+                                <i data-lucide="landmark"></i>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-sm flex items-center gap-2">
+                            <i data-lucide="arrow-up-right" class="text-emerald-400 w-4 h-4"></i>
+                            Maior fatia do bolo (18%)
+                        </p>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-slate-400 text-sm uppercase tracking-wider font-semibold">Impacto Externo</p>
+                                <h3 class="text-lg font-bold text-white mt-1">Crise Venezuela</h3>
+                            </div>
+                            <div class="p-3 rounded-lg bg-blue-500/10 text-blue-400">
+                                <i data-lucide="globe"></i>
+                            </div>
+                        </div>
+                        <p class="text-slate-400 text-xs flex items-center gap-1 mt-1">
+                            <i data-lucide="crosshairs" class="text-blue-400 w-4 h-4"></i>
+                            Munição retórica p/ Direita
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- 1st Round Chart -->
+                    <div class="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg">
+                        <h3 class="text-lg font-bold text-white mb-6">Projeção 1º Turno (Fev/2026)</h3>
+                        <div class="h-80 w-full">
+                            <canvas id="chartFirstRound"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-4 text-center">Consolidação de levantamentos recentes (AtlasIntel e Paraná Pesquisas)</p>
+                    </div>
+
+                    <!-- Resources/Coalition Chart -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg flex flex-col">
+                        <h3 class="text-lg font-bold text-white mb-2">Fundo Eleitoral (R$ 5 Bi)</h3>
+                        <p class="text-xs text-slate-400 mb-4">Fatias de distribuição para campanha</p>
+                        <div class="flex-1 relative w-full h-64">
+                            <canvas id="chartResources"></canvas>
+                        </div>
+                        <div class="mt-4 text-xs text-slate-400 flex flex-wrap gap-2 justify-center">
+                            <span class="inline-block px-2 py-1 bg-slate-700 rounded"><span class="w-2 h-2 inline-block bg-blue-700 rounded-full mr-1"></span> PL (18%)</span>
+                            <span class="inline-block px-2 py-1 bg-slate-700 rounded"><span class="w-2 h-2 inline-block bg-red-600 rounded-full mr-1"></span> PT (12.5%)</span>
+                            <span class="inline-block px-2 py-1 bg-slate-700 rounded"><span class="w-2 h-2 inline-block bg-cyan-600 rounded-full mr-1"></span> União (10.8%)</span>
+                            <span class="inline-block px-2 py-1 bg-slate-700 rounded"><span class="w-2 h-2 inline-block bg-orange-500 rounded-full mr-1"></span> PSD (8.5%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulator Section -->
+                <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-xl p-8 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-5">
+                        <i data-lucide="brain" class="w-32 h-32 text-white"></i>
+                    </div>
+                    
+                    <div class="mb-8 relative z-10">
+                        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                            <div class="w-1 h-8 bg-blue-500 rounded-full mr-2"></div>
+                            Termômetro de 2º Turno (Lula vs. Flávio)
+                        </h2>
+                        <p class="text-slate-400 mt-1 ml-4">Projeções atualizadas com base nos choques recentes de alianças e geopolítica.</p>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-8 items-center relative z-10">
+                        <!-- Controls -->
+                        <div class="w-full md:w-1/3 space-y-4">
+                            <button onclick="updateScenario('current')" id="btn-current" class="scenario-btn active w-full p-4 rounded-lg border flex items-center justify-between transition-all">
+                                <div class="text-left">
+                                    <span class="text-xs uppercase tracking-wider block opacity-70">Fotografia Fev/2026</span>
+                                    <span class="font-bold text-lg">Empate Técnico</span>
+                                </div>
+                                <div id="indicator-current" class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+                            </button>
+
+                            <button onclick="updateScenario('trend')" id="btn-trend" class="scenario-btn inactive w-full p-4 rounded-lg border flex items-center justify-between transition-all">
+                                <div class="text-left">
+                                    <span class="text-xs uppercase tracking-wider block opacity-70">Dinâmica de Campanha</span>
+                                    <span class="font-bold text-lg">TV x Fundo/Redes</span>
+                                </div>
+                                <div id="indicator-trend" class="w-3 h-3 bg-white rounded-full hidden"></div>
+                            </button>
+                        </div>
+
+                        <!-- Result Display -->
+                        <div class="w-full md:w-2/3 flex flex-col items-center justify-center bg-slate-800/50 rounded-xl p-6 backdrop-blur-sm border border-slate-700/50">
+                            <h4 id="scenario-title" class="text-xl font-bold text-white mb-2">Empate Técnico Absoluto</h4>
+                            
+                            <div class="h-64 w-full max-w-sm relative">
+                                <canvas id="chartScenario"></canvas>
+                                <!-- Center Text for Doughnut -->
+                                <div id="undecided-label" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                    <span class="text-3xl font-bold text-slate-300">7.5%</span>
+                                    <span class="text-xs text-slate-500 uppercase">Indecisos/Nulos</span>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between w-full px-4 md:px-12 mt-4">
+                                <div class="text-center">
+                                    <p id="res-lula-val" class="text-3xl font-bold text-white">46.2%</p>
+                                    <p class="text-sm text-red-400 font-semibold">Lula (PT)</p>
+                                </div>
+                                <div class="text-center">
+                                    <p id="res-opp-val" class="text-3xl font-bold text-white">46.3%</p>
+                                    <p id="res-opp-name" class="text-sm font-semibold text-blue-400">Flávio (PL)</p>
+                                </div>
+                            </div>
+                            
+                            <p id="scenario-desc" class="mt-6 text-sm text-slate-400 text-center max-w-md">
+                                O choque geopolítico da Venezuela e o desgaste interno anularam a vantagem do Planalto. A eleição encontra-se na margem de erro, dependendo puramente dos indecisos.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ANALYSIS VIEW -->
+            <div id="view-analysis" class="hidden-section animate-fade-in max-w-4xl mx-auto pb-20">
+                <div class="text-center mb-16">
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">O Cenário Presidencial 2026</h1>
+                    <p class="text-xl text-slate-400">Relatório de Inteligência - Atualização Final de Fevereiro</p>
+                    <div class="flex justify-center gap-4 mt-6 flex-wrap">
+                       <span class="px-3 py-1 rounded-full bg-blue-900/30 text-blue-400 text-xs font-bold border border-blue-800">GEOPOLÍTICA</span>
+                       <span class="px-3 py-1 rounded-full bg-emerald-900/30 text-emerald-400 text-xs font-bold border border-emerald-800">TV vs REDES</span>
+                       <span class="px-3 py-1 rounded-full bg-orange-900/30 text-orange-400 text-xs font-bold border border-orange-800">EMPATE TÉCNICO</span>
+                    </div>
+                </div>
+
+                <!-- Section 1: Geopolitics -->
+                <div class="analysis-card border-l-4 border-blue-500">
+                    <h3 class="text-xl font-bold text-white mb-4 border-b border-slate-700 pb-2">1. O Choque Externo e o Empate Técnico</h3>
+                    <div class="text-slate-300 leading-relaxed space-y-4 text-justify">
+                        <p>O impacto internacional da invasão militar dos EUA na Venezuela sob ordem de Donald Trump implodiu a agenda doméstica. O evento acirrou violentamente a polarização interna.</p>
+                        <p>A oposição, capitaneada por Flávio Bolsonaro, alinhou-se ao avanço norte-americano, obtendo forte munição retórica e capitalizando o sentimento "anti-esquerda". Enquanto isso, o governo Lula sofreu desgaste ao tentar equilibrar a diplomacia sem contrariar sua base ideológica, que protesta contra o "imperialismo".</p>
+                        <p><strong>Reflexo Direto (AtlasIntel Fev/26):</strong> Esse clima provocou um estreitamento drástico nas projeções. Em simulação de segundo turno, <strong>Flávio Bolsonaro (46,3%) e Lula (46,2%)</strong> encontram-se em um inédito e perigoso empate técnico absoluto.</p>
+                    </div>
+                </div>
+
+                <!-- Section 2: Coalitions & TV -->
+                <div class="analysis-card border-l-4 border-red-600">
+                    <h3 class="text-xl font-bold text-white mb-4 border-b border-slate-700 pb-2">2. Colapso das Alianças e o Risco para o PT</h3>
+                    <div class="text-slate-300 leading-relaxed space-y-4 text-justify">
+                        <p>O xadrez das coligações partidárias sofreu abalos sísmicos neste mês. As engrenagens tradicionais de Brasília estão emperradas, alterando o acesso ao precioso <strong>Tempo de Televisão</strong>, vital para o PT furar bolhas.</p>
+                        <ul class="list-disc pl-5 space-y-2 mt-2">
+                            <li><strong>O Isolamento do Planalto:</strong> O PT admitiu que siglas como PSD e MDB provavelmente não estarão em sua coligação no 1º turno devido a divergências regionais. O MDB do RJ, por exemplo, já flerta com o bolsonarismo. Isso significa uma perda massiva de minutos diários na propaganda gratuita para Lula.</li>
+                            <li><strong>O Fracasso da Federação de Direita:</strong> A mega-federação União Brasil + PP subiu no telhado devido a brigas pelo controle regional. Isso mantém essas legendas fraturadas, embora não enfraqueça o PL, que segue consolidando apoio de governadores do Sul e Sudeste.</li>
+                            <li><strong>Guerra Fria no PSD:</strong> Gilberto Kassab está sob pressão. Ratinho Jr., Caiado e Eduardo Leite disputam espaço, mas a ameaça de Flávio Bolsonaro de apoiar Sergio Moro no PR forçou um recuo estratégico que favorece a polarização.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Section 3: Machine & Resources -->
+                <div class="analysis-card border-l-4 border-emerald-500">
+                    <h3 class="text-xl font-bold text-white mb-4 border-b border-slate-700 pb-2">3. O Fundo de R$ 5 Bilhões: TV x Máquina Digital</h3>
+                    <div class="text-slate-300 leading-relaxed space-y-4 text-justify">
+                        <p>Para a eleição de 2026, o Congresso aprovou um Fundo Eleitoral bilionário. A assimetria nessa distribuição é a chave para prever as dinâmicas de campanha.</p>
+                        
+                        <div class="bg-slate-900 p-4 rounded-lg my-4 flex flex-col md:flex-row gap-4 items-center">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-emerald-400">Poder de Fogo (Fundo)</h4>
+                                <ul class="text-sm mt-2 space-y-1">
+                                    <li><span class="text-blue-400 font-bold">PL:</span> R$ 886 Milhões (18%)</li>
+                                    <li><span class="text-red-400 font-bold">PT:</span> R$ 619 Milhões (12.4%)</li>
+                                    <li><span class="text-cyan-400 font-bold">União Brasil:</span> ~10.8%</li>
+                                    <li><span class="text-orange-400 font-bold">PSD:</span> ~8.4%</li>
+                                </ul>
+                            </div>
+                            <div class="flex-1 text-sm italic text-slate-400 border-l border-slate-700 pl-4">
+                                "Com o recurso concentrado, as cúpulas asfixiam candidaturas internas. O PL usará esse recurso colossal para formar um exército de deputados atuando como cabos eleitorais nas bases."
+                            </div>
+                        </div>
+
+                        <h4 class="font-bold text-white mt-4">A Dinâmica Estratégica da Decisão de Voto</h4>
+                        <p>A ciência política avalia que a <strong>TV não exclui as Redes; elas se complementam.</strong> O tempo de TV (baseado em coligações) serve para atingir o eleitor menos politizado. O isolamento do PT no 1º turno torna a campanha de Lula extremamente vulnerável neste flanco. Em contrapartida, as redes sociais dominadas pela direita ditam a pauta moral e definem a rejeição. Flávio Bolsonaro utilizará a máquina digital orgânica + o maior fundo eleitoral da história para compensar qualquer déficit em coligações tradicionais.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="border-t border-slate-800 pt-8 pb-2 text-center text-slate-500 text-sm">
+                <p>Painel gerado com base em Análises de Tendências Eleitorais - Atualização Fev/2026.</p>
+                <p class="mt-2 text-xs">Atualizado em 26 Fev 2026 • Florianópolis, SC</p>
+            </footer>
+
+        </div>
+    </main>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- 1. CONFIGURAÇÃO GERAL E DADOS ---
+        lucide.createIcons();
+
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = '#334155';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        const COLORS = {
+            pt: '#c4122d',
+            pl: '#1f3a93',
+            psd: '#f39c12',
+            novo: '#f16522',
+            uniao: '#0891b2', // cyan-600
+            missao: '#000000',
+            neutral: '#475569',
+            white: '#ffffff'
+        };
+
+        // --- 2. GRÁFICO 1º TURNO (BARRA HORIZONTAL) ---
+        // Dados ajustados conforme texto: Lula ~42.4 (entre 39.8 e 45), Flavio ~36.3 (entre 33.1 e 39.5)
+        const ctxFirst = document.getElementById('chartFirstRound').getContext('2d');
+        new Chart(ctxFirst, {
+            type: 'bar',
+            data: {
+                labels: ['Lula (PT)', 'Flávio (PL)', 'Ratinho Jr (PSD)', 'Caiado (União)', 'Zema (Novo)', 'Eduardo Leite (PSDB)'],
+                datasets: [{
+                    label: '% Votos',
+                    data: [42.4, 36.3, 7.1, 5.3, 4.4, 3.6],
+                    backgroundColor: [COLORS.pt, COLORS.pl, COLORS.psd, COLORS.uniao, COLORS.novo, COLORS.neutral],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: '#1e293b' } },
+                    y: { grid: { display: false } }
+                }
+            }
+        });
+
+        // --- 3. GRÁFICO RECURSOS/FUNDO (DOUGHNUT) ---
+        const ctxResources = document.getElementById('chartResources').getContext('2d');
+        new Chart(ctxResources, {
+            type: 'doughnut',
+            data: {
+                labels: ['PL', 'PT', 'União Brasil', 'PSD', 'Demais Partidos'],
+                datasets: [{
+                    data: [18.0, 12.49, 10.81, 8.48, 50.22], 
+                    backgroundColor: [COLORS.pl, COLORS.pt, COLORS.uniao, COLORS.psd, COLORS.neutral],
+                    borderWidth: 2,
+                    borderColor: '#1e293b',
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '50%',
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.label + ': ' + context.raw + '% (~ R$ ' + ((context.raw/100)*5000).toFixed(0) + ' Milhões)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- 4. GRÁFICO SIMULADOR (DOUGHNUT) ---
+        const ctxScenario = document.getElementById('chartScenario').getContext('2d');
+        let chartScenario = new Chart(ctxScenario, {
+            type: 'doughnut',
+            data: {
+                labels: ['Lula (PT)', 'Flávio (PL)', 'Indecisos/Nulos'],
+                datasets: [{
+                    data: [46.2, 46.3, 7.5],
+                    backgroundColor: [COLORS.pt, COLORS.pl, '#334155'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // --- LÓGICA DE UI ---
+
+        // Alternar Abas
+        function switchTab(tabId) {
+            document.getElementById('view-dashboard').classList.add('hidden-section');
+            document.getElementById('view-analysis').classList.add('hidden-section');
+            document.getElementById('btn-dashboard').classList.remove('active');
+            document.getElementById('btn-analysis').classList.remove('active');
+
+            document.getElementById('view-' + tabId).classList.remove('hidden-section');
+            document.getElementById('btn-' + tabId).classList.add('active');
+
+            // Toggle Sidebar on mobile automatically
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
+        }
+
+        // Alternar Sidebar Mobile
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+        
+        function toggleSidebar() {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
+        // Lógica do Simulador
+        function updateScenario(type) {
+            const btnCurrent = document.getElementById('btn-current');
+            const btnTrend = document.getElementById('btn-trend');
+            const indCurrent = document.getElementById('indicator-current');
+            const indTrend = document.getElementById('indicator-trend');
+            
+            const title = document.getElementById('scenario-title');
+            const desc = document.getElementById('scenario-desc');
+            const valLula = document.getElementById('res-lula-val');
+            const valOpp = document.getElementById('res-opp-val');
+            const undecidedLabel = document.getElementById('undecided-label');
+
+            if (type === 'current') {
+                // Style updates
+                btnCurrent.className = 'scenario-btn active w-full p-4 rounded-lg border flex items-center justify-between transition-all';
+                btnTrend.className = 'scenario-btn inactive w-full p-4 rounded-lg border flex items-center justify-between transition-all';
+                indCurrent.classList.remove('hidden');
+                indTrend.classList.add('hidden');
+                undecidedLabel.style.display = 'flex';
+
+                // Content updates
+                title.innerText = 'Empate Técnico Absoluto';
+                desc.innerText = "O choque geopolítico da Venezuela e o desgaste interno anularam a vantagem do Planalto. A eleição encontra-se na margem de erro, dependendo puramente dos indecisos (7,5%).";
+                valLula.innerText = '46.2%';
+                valOpp.innerText = '46.3%';
+
+                // Chart updates
+                chartScenario.data.datasets[0].data = [46.2, 46.3, 7.5];
+            } else {
+                // Style updates
+                btnCurrent.className = 'scenario-btn inactive w-full p-4 rounded-lg border flex items-center justify-between transition-all';
+                btnTrend.className = 'scenario-btn active w-full p-4 rounded-lg border flex items-center justify-between transition-all';
+                indCurrent.classList.add('hidden');
+                indTrend.classList.remove('hidden');
+                undecidedLabel.style.display = 'none';
+
+                // Content updates
+                title.innerText = 'Projeção Válidos (Impacto da TV)';
+                desc.innerText = "Isolado sem o tempo de TV do MDB/PSD, Lula sangra votos. O PL utiliza seu mega fundo de R$ 886M e domínio online para consolidar a vitória nos votos válidos.";
+                valLula.innerText = '48.9%'; // Excluindo nulos (46.2 de 92.5)
+                valOpp.innerText = '51.1%';   // Excluindo nulos (46.3 + migração leve de abstenções da terceira via/MDB)
+
+                // Chart updates - Removemos o cinza (indecisos) para simular votos válidos projetados
+                chartScenario.data.datasets[0].data = [48.9, 51.1, 0];
+            }
+            chartScenario.update();
+        }
+    </script>
+</body>
+</html>
