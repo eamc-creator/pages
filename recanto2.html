@@ -821,7 +821,7 @@ function updateKPIs(rows) {
 
 function updateBadge(rows) {
   const saldo = rows.length ? Math.max(0, rows[rows.length-1].saldo) : config.valorEmprestimo;
-  document.getElementById('saldoBadge').textContent = 'Saldo Atual: ' + fmt(saldo);
+  document.getElementById('saldoBadge').textContent = 'Saldo Remanescente: ' + fmt(saldo);
 }
 
 // ════════════════════════════════════════════════════
