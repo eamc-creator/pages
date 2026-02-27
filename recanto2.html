@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle de Empréstimo — Thiago</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --border: #252a3a;
+    --accent: #f0a500;
+    --accent2: #e05c3a;
+    --green: #3ecf8e;
+    --blue: #4f8ef7;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --danger: #ef4444;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #1a1f2e 0%, #0d1520 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .header-left h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  .header-left p { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .header-badge {
+    background: rgba(240,165,0,0.12);
+    border: 1px solid rgba(240,165,0,0.3);
+    color: var(--accent);
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1300px; margin: 0 auto; padding: 32px 40px; }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex; gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px;
+    margin-bottom: 32px;
+    width: fit-content;
+  }
+  .tab {
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    transition: all 0.2s;
+    border: none; background: none;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+  }
+
+  /* ── KPI CARDS ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .kpi:hover { transform: translateY(-2px); }
+  .kpi::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .kpi.accent::before { background: var(--accent); }
+  .kpi.danger::before { background: var(--danger); }
+  .kpi.green::before  { background: var(--green); }
+  .kpi.blue::before   { background: var(--blue); }
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 600; }
+  .kpi-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: 8px;
+    letter-spacing: -1px;
+  }
+  .kpi.accent .kpi-value { color: var(--accent); }
+  .kpi.danger .kpi-value { color: var(--danger); }
+  .kpi.green  .kpi-value { color: var(--green); }
+  .kpi.blue   .kpi-value { color: var(--blue); }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── SECTION ── */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface2);
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    color: var(--text);
+  }
+  .section-body { padding: 24px; }
+
+  /* ── CONFIG FORM ── */
+  .config-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .field label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .field input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field input:focus { border-color: var(--accent); }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  tbody tr.filled { }
+  tbody tr.empty { opacity: 0.45; }
+  td {
+    padding: 11px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  td.num { text-align: right; }
+  td.center { text-align: center; }
+  td.input-cell input {
+    background: rgba(240,165,0,0.07);
+    border: 1px solid rgba(240,165,0,0.25);
+    color: var(--accent);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    width: 100%;
+    min-width: 90px;
+    transition: border-color 0.2s;
+  }
+  td.input-cell input:focus { border-color: var(--accent); }
+  td.saldo-pos { color: var(--danger); font-weight: 500; }
+  td.saldo-zero { color: var(--green); font-weight: 500; }
+  td.seq { color: var(--muted); font-size: 11px; }
+  td.juros-val { color: var(--accent2); }
+  td.amort-val { color: var(--green); }
+
+  .delete-btn {
+    background: none; border: none;
+    color: var(--muted); cursor: pointer;
+    padding: 4px 6px; border-radius: 4px;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .delete-btn:hover { color: var(--danger); }
+
+  /* ── ADD PAYMENT ── */
+  .add-row {
+    display: flex; gap: 12px; align-items: flex-end;
+    padding: 20px 24px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+  }
+  .add-row .field { flex: 1; }
+  .btn {
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:hover { background: #ffb930; transform: translateY(-1px); }
+  .btn-danger {
+    background: rgba(239,68,68,0.15);
+    color: var(--danger);
+    border: 1px solid rgba(239,68,68,0.3);
+  }
+  .btn-danger:hover { background: rgba(239,68,68,0.25); }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--surface2); }
+
+  /* ── CHART ── */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  .chart-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .chart-box h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .chart-container { position: relative; height: 260px; }
+
+  /* ── PROJECTION ── */
+  .proj-controls {
+    display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .proj-controls .field { min-width: 200px; }
+  .proj-result {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .proj-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-family: 'DM Mono', monospace;
+  }
+  .proj-badge span { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .proj-badge strong { font-size: 18px; }
+  .proj-badge.ok strong { color: var(--green); }
+  .proj-badge.warn strong { color: var(--accent); }
+  .proj-badge.bad strong { color: var(--danger); }
+
+  .proj-table { max-height: 360px; overflow-y: auto; }
+  .proj-table table thead th { position: sticky; top: 0; z-index: 1; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { margin: 20px 0; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .progress-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 999px;
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--green);
+    color: #000;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── TABS PANEL ── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .container { padding: 16px 16px; }
+    .kpi-grid { grid-template-columns: repeat(2,1fr); }
+    .chart-grid { grid-template-columns: 1fr; }
+    .config-grid { grid-template-columns: 1fr 1fr; }
+    .header { padding: 16px 20px; }
+  }
+
+  .zero-line {
+    border-top: 2px dashed var(--green);
+    margin: 4px 0;
+  }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .tag-jo { background: rgba(79,142,247,0.2); color: var(--blue); }
+  .tag-emerson { background: rgba(240,165,0,0.2); color: var(--accent); }
+  .tag-other { background: rgba(110,118,130,0.2); color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>💰 Controle de Empréstimo</h1>
+    <p>Thiago → Apartamento Recanto · Taxa Selic · Pagamentos flexíveis</p>
+  </div>
+  <div class="header-badge" id="saldoBadge">Saldo: R$ 0,00</div>
+</div>
+
+<div class="container">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('pagamentos')">📋 Pagamentos</button>
+    <button class="tab" onclick="switchTab('graficos')">📊 Gráficos</button>
+    <button class="tab" onclick="switchTab('projecao')">🔮 Projeção</button>
+    <button class="tab" onclick="switchTab('config')">⚙️ Configurações</button>
+  </div>
+
+  <!-- ════ TAB: PAGAMENTOS ════ -->
+  <div class="tab-panel active" id="tab-pagamentos">
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi danger">
+        <div class="kpi-label">Saldo Devedor Atual</div>
+        <div class="kpi-value" id="kpi-saldo">—</div>
+        <div class="kpi-sub" id="kpi-saldo-pct">— % do total</div>
+      </div>
+      <div class="kpi accent">
+        <div class="kpi-label">Total Pago</div>
+        <div class="kpi-value" id="kpi-pago">—</div>
+        <div class="kpi-sub" id="kpi-npagamentos">— pagamentos</div>
+      </div>
+      <div class="kpi blue">
+        <div class="kpi-label">Total Juros Pagos</div>
+        <div class="kpi-value" id="kpi-juros">—</div>
+        <div class="kpi-sub">Custo financeiro acumulado</div>
+      </div>
+      <div class="kpi green">
+        <div class="kpi-label">Total Amortizado</div>
+        <div class="kpi-value" id="kpi-amort">—</div>
+        <div class="kpi-sub">Capital devolvido ao credor</div>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progresso de quitação</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <!-- Payments table -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Histórico de Pagamentos</span>
+        <button class="btn btn-danger" onclick="clearAll()">🗑 Limpar tudo</button>
+      </div>
+      <div class="table-wrap">
+        <table id="paymentsTable">
+          <thead>
+            <tr>
+              <th>Nº</th>
+              <th>Data</th>
+              <th>Dias</th>
+              <th style="text-align:right">Juros (R$)</th>
+              <th style="text-align:right">Valor Pago (R$)</th>
+              <th style="text-align:right">Amortização (R$)</th>
+              <th style="text-align:right">Saldo Devedor (R$)</th>
+              <th>Quem Pagou</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="paymentsBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Add payment form -->
+      <div class="add-row">
+        <div class="field">
+          <label>Data do Pagamento</label>
+          <input type="date" id="inp-date" />
+        </div>
+        <div class="field">
+          <label>Valor Pago (R$)</label>
+          <input type="number" id="inp-valor" placeholder="0,00" step="0.01" min="0" />
+        </div>
+        <div class="field">
+          <label>Quem Pagou</label>
+          <input type="text" id="inp-quem" placeholder="Jo, Emerson..." />
+        </div>
+        <button class="btn btn-primary" onclick="addPayment()">+ Adicionar Pagamento</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════ TAB: GRÁFICOS ════ -->
+  <div class="tab-panel" id="tab-graficos">
+    <div class="chart-grid">
+      <div class="chart-box">
+        <h3>📉 Evolução do Saldo Devedor</h3>
+        <div class="chart-container"><canvas id="chartSaldo"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h3>📊 Pagamentos: Juros vs Amortização</h3>
+        <div class="chart-container"><canvas id="chartBar"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h3>🥧 Composição Total dos Pagamentos</h3>
+        <div class="chart-container"><canvas id="chartDoughnut"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h3>📅 Pagamentos ao Longo do Tempo</h3>
+        <div class="chart-container"><canvas id="chartTimeline"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TAB: PROJEÇÃO ════ -->
+  <div class="tab-panel" id="tab-projecao">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">🔮 Projeção de Quitação</span>
+      </div>
+      <div class="section-body">
+        <div class="proj-controls">
+          <div class="field">
+            <label>Pagamento Mensal Estimado (R$)</label>
+            <input type="number" id="proj-pgto" value="5000" step="100" oninput="updateProjection()" />
+          </div>
+          <div class="field">
+            <label>Data Início Projeção</label>
+            <input type="date" id="proj-inicio" oninput="updateProjection()" />
+          </div>
+        </div>
+        <div class="proj-result" id="proj-result"></div>
+        <div class="chart-box" style="margin-bottom:20px">
+          <h3>📉 Curva de Quitação Projetada</h3>
+          <div class="chart-container" style="height:300px"><canvas id="chartProj"></canvas></div>
+        </div>
+        <div class="proj-table">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mês</th>
+                  <th>Data</th>
+                  <th style="text-align:right">Saldo Inicial</th>
+                  <th style="text-align:right">Juros</th>
+                  <th style="text-align:right">Pagamento</th>
+                  <th style="text-align:right">Amortização</th>
+                  <th style="text-align:right">Saldo Final</th>
+                </tr>
+              </thead>
+              <tbody id="projBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TAB: CONFIG ════ -->
+  <div class="tab-panel" id="tab-config">
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">⚙️ Configurações do Empréstimo</span>
+      </div>
+      <div class="section-body">
+        <div class="config-grid">
+          <div class="field">
+            <label>Credor</label>
+            <input type="text" id="cfg-credor" value="Thiago" oninput="saveConfig()" />
+          </div>
+          <div class="field">
+            <label>Data do Empréstimo</label>
+            <input type="date" id="cfg-data" oninput="saveConfig()" />
+          </div>
+          <div class="field">
+            <label>Valor do Empréstimo (R$)</label>
+            <input type="number" id="cfg-valor" value="80000" oninput="saveConfig()" />
+          </div>
+          <div class="field">
+            <label>Taxa Selic Anual (%)</label>
+            <input type="number" id="cfg-taxa" value="15" step="0.01" oninput="saveConfig()" />
+          </div>
+          <div class="field" style="display:flex;align-items:flex-end">
+            <div style="width:100%">
+              <label>Taxa Diária (calculada)</label>
+              <input type="text" id="cfg-taxa-diaria" readonly style="opacity:0.6;color:var(--muted)" />
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:24px; padding:16px; background:var(--surface2); border-radius:8px; font-size:12px; color:var(--muted); border:1px solid var(--border);">
+          ⚠️ <strong style="color:var(--accent)">Atenção:</strong> Os dados são salvos automaticamente no seu navegador (localStorage). 
+          Para exportar, use o botão abaixo.
+          <br><br>
+          <button class="btn btn-secondary" onclick="exportCSV()" style="margin-right:8px">📥 Exportar CSV</button>
+          <button class="btn btn-secondary" onclick="exportJSON()">💾 Backup JSON</button>
+          <button class="btn btn-secondary" onclick="importJSON()" style="margin-left:8px">📤 Restaurar JSON</button>
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="doImport(event)" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════
+let config = {
+  credor: 'Thiago',
+  dataEmprestimo: '2026-01-06',
+  valorEmprestimo: 80000,
+  taxaAnual: 0.15
+};
+
+// Initial payments from notebook
+let payments = [
+  { date: '2026-01-30', valor: 4000,  quem: 'Jo' },
+  { date: '2026-02-04', valor: 1200,  quem: 'Jo' },
+  { date: '2026-02-04', valor: 1050,  quem: 'Jo' },
+  { date: '2026-02-06', valor: 8000,  quem: 'Emerson' },
+  { date: '2026-02-11', valor: 2000,  quem: 'Jo' },
+  { date: '2026-02-27', valor: 5500,  quem: 'Emerson' },
+];
+
+let charts = {};
+
+// ════════════════════════════════════════════════════
+// LOCAL STORAGE
+// ════════════════════════════════════════════════════
+function save() {
+  localStorage.setItem('loan_config', JSON.stringify(config));
+  localStorage.setItem('loan_payments', JSON.stringify(payments));
+}
+
+function load() {
+  const c = localStorage.getItem('loan_config');
+  const p = localStorage.getItem('loan_payments');
+  if (c) config = { ...config, ...JSON.parse(c) };
+  if (p) payments = JSON.parse(p);
+}
+
+// ════════════════════════════════════════════════════
+// CALCULATIONS
+// ════════════════════════════════════════════════════
+function taxaDiaria() { return config.taxaAnual / 365; }
+
+function calcRows() {
+  let saldo = config.valorEmprestimo;
+  let prevDate = new Date(config.dataEmprestimo + 'T00:00:00');
+  const rows = [];
+
+  for (let i = 0; i < payments.length; i++) {
+    const p = payments[i];
+    const dt = new Date(p.date + 'T00:00:00');
+    const dias = Math.round((dt - prevDate) / 86400000);
+    const juros = saldo * taxaDiaria() * dias;
+    const amort = p.valor - juros;
+    saldo = saldo + juros - p.valor;
+    rows.push({ num: i+1, date: p.date, dias, juros, valor: p.valor, amort, saldo, quem: p.quem });
+    prevDate = dt;
+  }
+  return rows;
+}
+
+function fmt(v, dec=2) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+}
+function fmtShort(v) {
+  if (Math.abs(v) >= 1000) return 'R$ ' + (v/1000).toFixed(1) + 'k';
+  return 'R$ ' + v.toFixed(0);
+}
+function fmtDate(s) {
+  if (!s) return '—';
+  const [y,m,d] = s.split('-');
+  return `${d}/${m}/${y}`;
+}
+function tagQuem(q) {
+  if (!q) return '';
+  const low = q.toLowerCase();
+  if (low === 'jo') return `<span class="tag tag-jo">Jo</span>`;
+  if (low === 'emerson') return `<span class="tag tag-emerson">Emerson</span>`;
+  return `<span class="tag tag-other">${q}</span>`;
+}
+
+// ════════════════════════════════════════════════════
+// RENDER TABLE
+// ════════════════════════════════════════════════════
+function renderTable() {
+  const rows = calcRows();
+  const tbody = document.getElementById('paymentsBody');
+  tbody.innerHTML = '';
+
+  // Initial row
+  const initTr = document.createElement('tr');
+  initTr.innerHTML = `
+    <td class="seq">—</td>
+    <td>${fmtDate(config.dataEmprestimo)}</td>
+    <td class="center" style="color:var(--muted)">Empréstimo</td>
+    <td class="num" style="color:var(--muted)">—</td>
+    <td class="num" style="color:var(--muted)">—</td>
+    <td class="num" style="color:var(--muted)">—</td>
+    <td class="num" style="color:var(--accent);font-weight:600">${fmt(config.valorEmprestimo)}</td>
+    <td style="color:var(--muted);font-size:11px">${config.credor}</td>
+    <td></td>
+  `;
+  tbody.appendChild(initTr);
+
+  rows.forEach((r, i) => {
+    const tr = document.createElement('tr');
+    tr.className = 'filled';
+    const saldoClass = r.saldo <= 0 ? 'saldo-zero' : 'saldo-pos';
+    tr.innerHTML = `
+      <td class="seq">${r.num}</td>
+      <td>${fmtDate(r.date)}</td>
+      <td class="center">${r.dias}d</td>
+      <td class="num juros-val">${fmt(r.juros)}</td>
+      <td class="num" style="color:var(--text);font-weight:500">${fmt(r.valor)}</td>
+      <td class="num amort-val">${fmt(r.amort)}</td>
+      <td class="num ${saldoClass}">${fmt(Math.max(0, r.saldo))}</td>
+      <td>${tagQuem(r.quem)}</td>
+      <td><button class="delete-btn" onclick="deletePayment(${i})" title="Remover">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  updateKPIs(rows);
+  updateBadge(rows);
+}
+
+function updateKPIs(rows) {
+  const saldo = rows.length ? Math.max(0, rows[rows.length-1].saldo) : config.valorEmprestimo;
+  const totalPago = rows.reduce((a,r) => a + r.valor, 0);
+  const totalJuros = rows.reduce((a,r) => a + r.juros, 0);
+  const totalAmort = rows.reduce((a,r) => a + r.amort, 0);
+  const pct = ((config.valorEmprestimo - saldo) / config.valorEmprestimo * 100).toFixed(1);
+
+  document.getElementById('kpi-saldo').textContent = fmt(saldo);
+  document.getElementById('kpi-saldo-pct').textContent = `${pct}% quitado`;
+  document.getElementById('kpi-pago').textContent = fmt(totalPago);
+  document.getElementById('kpi-npagamentos').textContent = `${rows.length} pagamento${rows.length !== 1 ? 's' : ''}`;
+  document.getElementById('kpi-juros').textContent = fmt(totalJuros);
+  document.getElementById('kpi-amort').textContent = fmt(totalAmort);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+function updateBadge(rows) {
+  const saldo = rows.length ? Math.max(0, rows[rows.length-1].saldo) : config.valorEmprestimo;
+  document.getElementById('saldoBadge').textContent = 'Saldo: ' + fmt(saldo);
+}
+
+// ════════════════════════════════════════════════════
+// PAYMENTS CRUD
+// ════════════════════════════════════════════════════
+function addPayment() {
+  const date  = document.getElementById('inp-date').value;
+  const valor = parseFloat(document.getElementById('inp-valor').value);
+  const quem  = document.getElementById('inp-quem').value.trim();
+
+  if (!date) return showToast('⚠ Informe a data do pagamento', true);
+  if (!valor || valor <= 0) return showToast('⚠ Informe um valor válido', true);
+
+  payments.push({ date, valor, quem: quem || '' });
+  payments.sort((a,b) => a.date.localeCompare(b.date));
+  save();
+  renderAll();
+
+  document.getElementById('inp-date').value = '';
+  document.getElementById('inp-valor').value = '';
+  document.getElementById('inp-quem').value = '';
+  showToast('✓ Pagamento adicionado!');
+}
+
+function deletePayment(i) {
+  if (!confirm('Remover este pagamento?')) return;
+  payments.splice(i, 1);
+  save();
+  renderAll();
+  showToast('Pagamento removido.');
+}
+
+function clearAll() {
+  if (!confirm('Limpar TODOS os pagamentos? Esta ação não pode ser desfeita.')) return;
+  payments = [];
+  save();
+  renderAll();
+}
+
+// ════════════════════════════════════════════════════
+// CHARTS
+// ════════════════════════════════════════════════════
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+const chartDefaults = {
+  color: '#6b7280',
+  plugins: { legend: { labels: { color: '#9ca3af', font: { family: 'DM Sans', size: 11 } } } },
+};
+
+function renderCharts() {
+  const rows = calcRows();
+
+  // ---- Saldo line ----
+  destroyChart('saldo');
+  const saldoLabels = [fmtDate(config.dataEmprestimo), ...rows.map(r => fmtDate(r.date))];
+  const saldoData   = [config.valorEmprestimo, ...rows.map(r => Math.max(0, r.saldo))];
+  charts.saldo = new Chart(document.getElementById('chartSaldo'), {
+    type: 'line',
+    data: {
+      labels: saldoLabels,
+      datasets: [{
+        label: 'Saldo Devedor',
+        data: saldoData,
+        borderColor: '#f0a500',
+        backgroundColor: 'rgba(240,165,0,0.08)',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#f0a500',
+        pointRadius: 5,
+        tension: 0.35,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#6b7280', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#6b7280', font: { size: 10 }, callback: v => fmtShort(v) }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+
+  // ---- Bar: juros vs amort ----
+  destroyChart('bar');
+  charts.bar = new Chart(document.getElementById('chartBar'), {
+    type: 'bar',
+    data: {
+      labels: rows.map(r => `#${r.num} ${fmtDate(r.date)}`),
+      datasets: [
+        { label: 'Amortização', data: rows.map(r => Math.max(0,r.amort)), backgroundColor: 'rgba(62,207,142,0.7)', borderRadius: 4 },
+        { label: 'Juros', data: rows.map(r => r.juros), backgroundColor: 'rgba(224,92,58,0.7)', borderRadius: 4 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#9ca3af', font: { size: 11 } } } },
+      scales: {
+        x: { stacked: true, ticks: { color: '#6b7280', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { stacked: true, ticks: { color: '#6b7280', font: { size: 10 }, callback: v => fmtShort(v) }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+
+  // ---- Doughnut ----
+  destroyChart('doughnut');
+  const totalJuros = rows.reduce((a,r)=>a+r.juros,0);
+  const totalAmort = rows.reduce((a,r)=>a+Math.max(0,r.amort),0);
+  const saldoRem   = rows.length ? Math.max(0, rows[rows.length-1].saldo) : config.valorEmprestimo;
+  charts.doughnut = new Chart(document.getElementById('chartDoughnut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Amortização paga', 'Juros pagos', 'Saldo remanescente'],
+      datasets: [{
+        data: [totalAmort, totalJuros, saldoRem],
+        backgroundColor: ['rgba(62,207,142,0.8)','rgba(224,92,58,0.8)','rgba(79,142,247,0.5)'],
+        borderWidth: 0,
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#9ca3af', font: { size: 11 }, padding: 16 } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${fmt(ctx.raw)}` } }
+      }
+    }
+  });
+
+  // ---- Timeline ----
+  destroyChart('timeline');
+  charts.timeline = new Chart(document.getElementById('chartTimeline'), {
+    type: 'bar',
+    data: {
+      labels: rows.map(r => fmtDate(r.date)),
+      datasets: [{
+        label: 'Valor Pago',
+        data: rows.map(r => r.valor),
+        backgroundColor: 'rgba(79,142,247,0.7)',
+        borderRadius: 5,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#6b7280', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color: '#6b7280', font: { size: 10 }, callback: v => fmtShort(v) }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════
+// PROJECTION
+// ════════════════════════════════════════════════════
+function updateProjection() {
+  const rows = calcRows();
+  const saldoAtual = rows.length ? Math.max(0, rows[rows.length-1].saldo) : config.valorEmprestimo;
+  const pgtoMensal = parseFloat(document.getElementById('proj-pgto').value) || 5000;
+  const inicioStr  = document.getElementById('proj-inicio').value;
+  const inicio = inicioStr ? new Date(inicioStr + 'T00:00:00') : new Date();
+
+  const taxaMensal = config.taxaAnual / 12;
+  let saldo = saldoAtual;
+  const projRows = [];
+  let mes = 0;
+
+  while (saldo > 0.01 && mes < 120) {
+    mes++;
+    const dt = new Date(inicio);
+    dt.setMonth(dt.getMonth() + mes - 1);
+    const saldoInicio = saldo;
+    const juros = saldo * taxaMensal;
+    const pgto  = Math.min(pgtoMensal, saldo + juros);
+    const amort = pgto - juros;
+    saldo = Math.max(0, saldo + juros - pgto);
+    projRows.push({
+      mes, dt,
+      saldoInicio, juros, pgto, amort, saldoFinal: saldo
+    });
+  }
+
+  const totalJurosProj = projRows.reduce((a,r)=>a+r.juros,0);
+  const meses = projRows.length;
+  const anos = Math.floor(meses/12);
+  const mesesResto = meses % 12;
+  const dtFim = projRows.length ? projRows[projRows.length-1].dt : null;
+
+  // Badges
+  const res = document.getElementById('proj-result');
+  const dtFimStr = dtFim ? dtFim.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}) : '—';
+  const pgtoOk = pgtoMensal > saldoAtual * taxaMensal;
+  res.innerHTML = `
+    <div class="proj-badge ${meses<24?'ok':meses<60?'warn':'bad'}">
+      <span>Prazo estimado</span>
+      <strong>${meses} meses ${anos>0?`(${anos}a ${mesesResto}m)`:''}</strong>
+    </div>
+    <div class="proj-badge warn">
+      <span>Data de quitação</span>
+      <strong>${dtFimStr}</strong>
+    </div>
+    <div class="proj-badge bad">
+      <span>Total de juros futuros</span>
+      <strong>${fmt(totalJurosProj)}</strong>
+    </div>
+    <div class="proj-badge ${pgtoOk?'ok':'bad'}">
+      <span>Status do pagamento</span>
+      <strong>${pgtoOk?'✓ Cobre os juros':'⚠ Abaixo dos juros'}</strong>
+    </div>
+  `;
+
+  // Projection table
+  const tbody = document.getElementById('projBody');
+  tbody.innerHTML = projRows.map(r => `
+    <tr>
+      <td class="seq">${r.mes}</td>
+      <td>${r.dt.toLocaleDateString('pt-BR',{month:'2-digit',year:'numeric'})}</td>
+      <td class="num">${fmt(r.saldoInicio)}</td>
+      <td class="num juros-val">${fmt(r.juros)}</td>
+      <td class="num" style="color:var(--text)">${fmt(r.pgto)}</td>
+      <td class="num amort-val">${fmt(r.amort)}</td>
+      <td class="num ${r.saldoFinal<=0?'saldo-zero':'saldo-pos'}">${fmt(r.saldoFinal)}</td>
+    </tr>
+  `).join('');
+
+  // Projection chart
+  destroyChart('proj');
+  const maxShow = Math.min(projRows.length, 60);
+  charts.proj = new Chart(document.getElementById('chartProj'), {
+    type: 'line',
+    data: {
+      labels: projRows.slice(0,maxShow).map(r => r.dt.toLocaleDateString('pt-BR',{month:'short',year:'numeric'})),
+      datasets: [
+        {
+          label: 'Saldo Projetado',
+          data: projRows.slice(0,maxShow).map(r => r.saldoFinal),
+          borderColor: '#f0a500',
+          backgroundColor: 'rgba(240,165,0,0.08)',
+          borderWidth: 2.5,
+          tension: 0.3,
+          fill: true,
+          pointRadius: 3,
+        },
+        {
+          label: 'Juros Mensais',
+          data: projRows.slice(0,maxShow).map(r => r.juros),
+          borderColor: '#e05c3a',
+          borderWidth: 1.5,
+          tension: 0.3,
+          fill: false,
+          pointRadius: 2,
+          borderDash: [4,3],
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#9ca3af', font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { color: '#6b7280', font: { size: 9 }, maxTicksLimit: 12 }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#6b7280', font: { size: 10 }, callback: v => fmtShort(v) }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════
+// CONFIG
+// ════════════════════════════════════════════════════
+function saveConfig() {
+  config.credor = document.getElementById('cfg-credor').value;
+  config.dataEmprestimo = document.getElementById('cfg-data').value;
+  config.valorEmprestimo = parseFloat(document.getElementById('cfg-valor').value) || 80000;
+  config.taxaAnual = (parseFloat(document.getElementById('cfg-taxa').value) || 15) / 100;
+  document.getElementById('cfg-taxa-diaria').value = ((config.taxaAnual/365)*100).toFixed(6) + '% ao dia';
+  save();
+  renderAll();
+}
+
+function loadConfigUI() {
+  document.getElementById('cfg-credor').value = config.credor;
+  document.getElementById('cfg-data').value = config.dataEmprestimo;
+  document.getElementById('cfg-valor').value = config.valorEmprestimo;
+  document.getElementById('cfg-taxa').value = (config.taxaAnual * 100).toFixed(2);
+  document.getElementById('cfg-taxa-diaria').value = ((config.taxaAnual/365)*100).toFixed(6) + '% ao dia';
+}
+
+// ════════════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['pagamentos','graficos','projecao','config'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if (name === 'graficos') renderCharts();
+  if (name === 'projecao') updateProjection();
+}
+
+// ════════════════════════════════════════════════════
+// EXPORT / IMPORT
+// ════════════════════════════════════════════════════
+function exportCSV() {
+  const rows = calcRows();
+  const header = 'Nº,Data,Dias,Juros,Valor Pago,Amortização,Saldo Devedor,Quem Pagou\n';
+  const lines = rows.map(r =>
+    `${r.num},${fmtDate(r.date)},${r.dias},${r.juros.toFixed(2)},${r.valor.toFixed(2)},${r.amort.toFixed(2)},${Math.max(0,r.saldo).toFixed(2)},${r.quem}`
+  ).join('\n');
+  download('emprestimo_thiago.csv', header + lines, 'text/csv');
+}
+
+function exportJSON() {
+  const data = JSON.stringify({ config, payments }, null, 2);
+  download('emprestimo_thiago.json', data, 'application/json');
+}
+
+function importJSON() { document.getElementById('import-file').click(); }
+
+function doImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.config) config = { ...config, ...data.config };
+      if (data.payments) payments = data.payments;
+      save();
+      loadConfigUI();
+      renderAll();
+      showToast('✓ Dados restaurados!');
+    } catch { showToast('⚠ Arquivo inválido', true); }
+  };
+  reader.readAsText(file);
+}
+
+function download(filename, content, type) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = filename;
+  a.click();
+}
+
+// ════════════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════════════
+function showToast(msg, isWarn=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isWarn ? 'var(--accent)' : 'var(--green)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ════════════════════════════════════════════════════
+// RENDER ALL
+// ════════════════════════════════════════════════════
+function renderAll() {
+  renderTable();
+  // Charts rendered lazily when tab is active
+  const activeTab = document.querySelector('.tab.active');
+}
+
+// ════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  load();
+  loadConfigUI();
+
+  // Set default projection date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('proj-inicio').value = today;
+
+  renderAll();
+});
+</script>
+</body>
+</html>
